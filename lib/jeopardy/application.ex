@@ -14,9 +14,10 @@ defmodule Jeopardy.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Jeopardy.PubSub},
       # Start the Endpoint (http/https)
-      JeopardyWeb.Endpoint
+      JeopardyWeb.Endpoint,
       # Start a worker by calling: Jeopardy.Worker.start_link(arg)
       # {Jeopardy.Worker, arg}
+      Jeopardy.Cache
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
