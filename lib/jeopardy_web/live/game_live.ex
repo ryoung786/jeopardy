@@ -7,13 +7,13 @@ defmodule JeopardyWeb.GameLive do
   @impl true
   def mount(_params, %{"name" => name} = session, socket) do
     Logger.info("MOUNT #{inspect(session)}")
-    if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, "buzz")
-    if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, "clear")
+    if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, "1")
 
     game = Games.find(1)
 
     socket = socket
     |> assign(name: name)
+    |> assign(game: game)
     |> assign(buzzer: game.buzzer)
 
     {:ok, socket}
@@ -34,29 +34,29 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
-  def handle_event("buzz", _, socket) do
-    Logger.info("BUZZ CLICKED #{inspect(socket.assigns.name)}")
-    Games.buzzer(1, socket.assigns.name)
+  def handle_event("buzz", _, %{assigns: %{name: name}} = socket) do
+    Logger.info("buzz attempt by #{name}")
+    Games.buzzer(1, name)
     {:noreply, socket}
   end
 
   @impl true
-  def handle_event("clear", _, socket) do
-    Logger.info("CLEAR CLICKED")
+  def handle_event("clear", _, %{assigns: %{name: name}} = socket) do
+    Logger.info("#{name} attempted to clear the buzzer")
     Games.clearBuzzer(1)
     {:noreply, socket}
   end
 
   @impl true
   def handle_info({:buzz, name}, socket) do
-    Logger.info("handle_info #{inspect(socket)}")
+    Logger.info("#{name} buzzed in")
     Logger.info("BROADCAST RECEIVED handle_info #{name}")
     {:noreply, update(socket, :buzzer, fn _ -> name end)}
   end
 
   @impl true
-  def handle_info(:clear, socket) do
-    Logger.info("BROADCAST RECEIVED handle_info clear")
+  def handle_info(:clear, %{assigns: %{name: name}} = socket) do
+    Logger.info("#{name} successfully cleared the buzzer")
     {:noreply, update(socket, :buzzer, fn _ -> :clear end)}
   end
 end
