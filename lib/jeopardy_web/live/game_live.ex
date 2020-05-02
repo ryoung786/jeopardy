@@ -25,7 +25,11 @@ defmodule JeopardyWeb.GameLive do
   def render(assigns) do
     ~L"""
     <h1>Welcome <%= @name %></h1>
-    <%= submit "Buzz", "phx-click": "buzz"%>
+    <%= if @buzzer == nil do %>
+      <%= submit "Buzz", "phx-click": "buzz" %>
+    <%= else %>
+      <%= submit "Buzz", "phx-click": "buzz", disabled: true %>
+    <% end %>
     <%= if @buzzer != nil do %>
       <div><%= @buzzer %> buzzed in</div>
       <%= submit "Clear Buzzer", "phx-click": "clear"%>
