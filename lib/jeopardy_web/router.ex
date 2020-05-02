@@ -22,7 +22,6 @@ defmodule JeopardyWeb.Router do
     post "/games", GameController, :create
     live "/games/:code", GameLive
     live "/games/:code/tv", TvLive
-    live "/buzz", GameLive
 
     # resources "/games", GameController, only: [:create, :show]
   end
