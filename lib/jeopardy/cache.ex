@@ -15,6 +15,12 @@ defmodule Jeopardy.Cache do
     {:ok, nil}
   end
 
+  def create(code) do
+    game = GenServer.call(Jeopardy.Cache, {:create, code})
+    Logger.info("CREATE game #{inspect(game)}")
+    game
+  end
+
   def find(id) do
     GenServer.call(Jeopardy.Cache, {:find, id})
   end
@@ -31,6 +37,13 @@ defmodule Jeopardy.Cache do
     GenServer.cast(Jeopardy.Cache, {:clear_buzzer, id})
   end
 
+
+  @impl true
+  def handle_call({:create, code}, _from, _state) do
+    game = %{id: code, code: code, buzzer: :clear}
+    :ets.insert(@table, {code, game})
+    {:reply, game, nil}
+  end
 
   @impl true
   def handle_call({:find, id}, _from, _state) do

@@ -2,7 +2,6 @@ defmodule JeopardyWeb.GameLive do
   use JeopardyWeb, :live_view
   require Logger
   alias Jeopardy.Cache, as: Games
-  require Jeopardy.Cache
 
   @impl true
   def mount(_params, %{"name" => name} = session, socket) do

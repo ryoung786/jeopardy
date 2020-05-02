@@ -2,5 +2,12 @@
 
 <%= form_for @conn, Routes.page_path(@conn, :index), fn f -> %>
     <%= text_input f, :name, placeholder: "Name" %>
+    <%= text_input f, :code, placeholder: "ABCD" %>
     <%= submit "Join" %>
+<% end %>
+
+<h2>or</h2>
+
+<%= form_for @conn, Routes.game_path(@conn, :create), fn _ -> %>
+    <%= submit "New Game" %>
 <% end %>

@@ -19,8 +19,9 @@ defmodule JeopardyWeb.Router do
 
     get "/", PageController, :index
     post "/", SessionController, :create
+    post "/games", GameController, :create
+    live "/games/:code/tv", TvLive
     live "/buzz", GameLive
-    # resources "rooms", RoomsController, :only [:show]
   end
 
   # Other scopes may use custom stacks.
