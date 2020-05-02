@@ -21,4 +21,17 @@ defmodule JeopardyWeb.TvLive do
   def handle_event("start_game", _params, socket) do
     {:noreply, socket}
   end
+
+  @impl true
+  def handle_info({:buzz, name}, socket) do
+    Logger.info("#{name} buzzed in")
+    Logger.info("BROADCAST RECEIVED handle_info #{name}")
+    {:noreply, update(socket, :buzzer, fn _ -> name end)}
+  end
+
+  @impl true
+  def handle_info(:clear, socket) do
+    Logger.info("successfully cleared the buzzer")
+    {:noreply, update(socket, :buzzer, fn _ -> :clear end)}
+  end
 end

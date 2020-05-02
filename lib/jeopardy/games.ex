@@ -48,8 +48,12 @@ defmodule Jeopardy.Games do
   @doc """
   Returns a random 4-letter code
   """
-  def generateGameCode() do
-    "ABCD"
+  defp generateGameCode() do
+    chars = "ABCDEFGHJKMNPQRSTUVWXYZ" |> String.split("", trim: true)
+
+    Enum.reduce((1..4), [], fn (_i, acc) ->
+      [Enum.random(chars) | acc]
+    end) |> Enum.join("")
   end
 
   @doc """
@@ -69,6 +73,9 @@ defmodule Jeopardy.Games do
     |> Game.changeset(attrs)
     |> Repo.update()
   end
+
+  def buzzer(code, name), do: Cache.buzzer(code, name)
+  def clear_buzzer(code), do: Cache.clear_buzzer(code)
 
   @doc """
   Deletes a game.

@@ -35,7 +35,7 @@ defmodule Jeopardy.Cache do
     GenServer.cast(Jeopardy.Cache, {:buzzer, id, name})
   end
 
-  def clearBuzzer(id) do
+  def clear_buzzer(id) do
     GenServer.cast(Jeopardy.Cache, {:clear_buzzer, id})
   end
 
@@ -77,7 +77,7 @@ defmodule Jeopardy.Cache do
       :ets.insert(@table, {game.id, game})
 
       # broadcast out that we got a successful buzz
-      Phoenix.PubSub.broadcast(Jeopardy.PubSub, Integer.to_string(game_id), {:buzz, name})
+      Phoenix.PubSub.broadcast(Jeopardy.PubSub, game_id, {:buzz, name})
     end
     {:noreply, false}
   end
@@ -90,7 +90,7 @@ defmodule Jeopardy.Cache do
     end
     game = %{game | buzzer: :clear}
     :ets.insert(@table, {game.id, game})
-    Phoenix.PubSub.broadcast(Jeopardy.PubSub, Integer.to_string(game_id), :clear)
+    Phoenix.PubSub.broadcast(Jeopardy.PubSub, game_id, :clear)
     {:noreply, false}
   end
 end

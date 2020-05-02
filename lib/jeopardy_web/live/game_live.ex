@@ -1,21 +1,27 @@
 defmodule JeopardyWeb.GameLive do
   use JeopardyWeb, :live_view
   require Logger
-  alias Jeopardy.Cache, as: Games
+  alias Jeopardy.Games
 
   @impl true
-  def mount(_params, %{"name" => name} = session, socket) do
-    Logger.info("MOUNT #{inspect(session)}")
-    if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, "1")
+  def mount(%{"code" => code}, %{"name" => name} = session, socket) do
+    game = Games.get_game!(code)
 
-    game = Games.find(1)
+    case name do
+      "" -> {:ok, socket |> put_flash(:info, "Please enter a name") |> redirect(to: "/")}
+      _ ->
+        Logger.info("MOUNT session #{inspect(session)}")
+        Logger.info("MOUNT socket #{inspect(socket)}")
+        if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
 
-    socket = socket
-    |> assign(name: name)
-    |> assign(game: game)
-    |> assign(buzzer: game.buzzer)
 
-    {:ok, socket}
+        socket = socket
+        |> assign(name: name)
+        |> assign(game: game)
+        |> assign(buzzer: game.buzzer)
+
+        {:ok, socket}
+    end
   end
 
   @impl true
@@ -33,16 +39,16 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
-  def handle_event("buzz", _, %{assigns: %{name: name}} = socket) do
+  def handle_event("buzz", _, %{assigns: %{name: name, game: %{code: code}}} = socket) do
     Logger.info("buzz attempt by #{name}")
-    Games.buzzer(1, name)
+    Games.buzzer(code, name)
     {:noreply, socket}
   end
 
   @impl true
-  def handle_event("clear", _, %{assigns: %{name: name}} = socket) do
+  def handle_event("clear", _, %{assigns: %{name: name, game: %{code: code}}} = socket) do
     Logger.info("#{name} attempted to clear the buzzer")
-    Games.clearBuzzer(1)
+    Games.clear_buzzer(code)
     {:noreply, socket}
   end
 
@@ -54,8 +60,8 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
-  def handle_info(:clear, %{assigns: %{name: name}} = socket) do
-    Logger.info("#{name} successfully cleared the buzzer")
+  def handle_info(:clear, socket) do
+    Logger.info("successfully cleared the buzzer")
     {:noreply, update(socket, :buzzer, fn _ -> :clear end)}
   end
 end

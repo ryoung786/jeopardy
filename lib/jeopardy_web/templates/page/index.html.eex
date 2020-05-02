@@ -1,4 +1,4 @@
-<h1>My page</h1>
+<h1>Welcome to Jeopardy!</h1>
 
 <%= form_for @conn, Routes.page_path(@conn, :index), fn f -> %>
     <%= text_input f, :name, placeholder: "Name" %>

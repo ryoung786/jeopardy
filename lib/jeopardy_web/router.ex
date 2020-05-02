@@ -1,5 +1,7 @@
 defmodule JeopardyWeb.Router do
   use JeopardyWeb, :router
+  require Logger
+  alias Jeopardy.Games
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -20,10 +22,27 @@ defmodule JeopardyWeb.Router do
     get "/", PageController, :index
     post "/", PageController, :join
     post "/games", GameController, :create
-    live "/games/:code", GameLive
-    live "/games/:code/tv", TvLive
+
+    scope "/games/:code" do
+      pipe_through :games
+      live "/", GameLive
+      live "/tv", TvLive
+    end
 
     # resources "/games", GameController, only: [:create, :show]
+  end
+
+  pipeline :games do
+    plug :ensure_game_exists
+  end
+
+  def ensure_game_exists(conn, _opts) do
+    case Games.get_game!(conn.path_params["code"]) do
+      nil ->
+        conn |> put_flash(:info, "Game not found") |> redirect(to: "/") |> halt()
+      game ->
+        assign(conn, :game, game)
+    end
   end
 
   # Other scopes may use custom stacks.
