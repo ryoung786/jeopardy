@@ -2,6 +2,8 @@ defmodule Jeopardy.Cache do
   use GenServer
   require Logger
 
+  # alias Jeopardy.Games.Game
+
   @table :games
 
   def start_link(_args) do
@@ -40,6 +42,9 @@ defmodule Jeopardy.Cache do
 
   @impl true
   def handle_call({:create, code}, _from, _state) do
+    # %Game{}
+    # |> Game.changeset(%{code: code, id: code, buzzer: :clear})
+
     game = %{id: code, code: code, buzzer: :clear}
     :ets.insert(@table, {code, game})
     {:reply, game, nil}

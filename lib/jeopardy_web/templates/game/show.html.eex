@@ -1,0 +1,23 @@
+<h1>Show Game</h1>
+
+<ul>
+
+  <li>
+    <strong>Code:</strong>
+    <%= @game.code %>
+  </li>
+
+  <li>
+    <strong>Status:</strong>
+    <%= @game.status %>
+  </li>
+
+  <li>
+    <strong>Buzzer:</strong>
+    <%= @game.buzzer %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.game_path(@conn, :edit, @game) %></span>
+<span><%= link "Back", to: Routes.game_path(@conn, :index) %></span>

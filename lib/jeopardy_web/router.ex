@@ -18,10 +18,13 @@ defmodule JeopardyWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    post "/", SessionController, :create
+    post "/", PageController, :join
     post "/games", GameController, :create
+    live "/games/:code", GameLive
     live "/games/:code/tv", TvLive
     live "/buzz", GameLive
+
+    # resources "/games", GameController, only: [:create, :show]
   end
 
   # Other scopes may use custom stacks.
