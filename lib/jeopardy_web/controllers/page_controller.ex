@@ -1,6 +1,7 @@
 defmodule JeopardyWeb.PageController do
   use JeopardyWeb, :controller
   alias Jeopardy.Games
+  alias Jeopardy.Games.Game
   require Logger
 
   def index(conn, _params) do
@@ -13,21 +14,18 @@ defmodule JeopardyWeb.PageController do
   end
 
   def join(conn, %{"name" => name, "code" => code}) do
-    game = Games.get_game!(code)
-    Logger.info("INspectING game: #{inspect(game)}")
-
-    with %{} <- Games.get_game!(code) do
-      conn
-      |> put_flash(:info, "Welcome back!")
-      |> put_session(:name, name)
-      |> put_session(:code, code)
-      # |> configure_session(renew: true)
-      |> redirect(to: "/games/#{code}")
-    else
-      _ ->
+    code = String.upcase(code)
+    case Games.get_by_code(code) do
+      nil ->
         conn
-        |> put_flash(:error, "Room doesn't exist")
+        |> put_flash(:info, "Sorry, that game doesn't exist")
         |> redirect(to: "/")
+      %Game{} ->
+        conn
+        |> put_flash(:info, "Welcome back!")
+        |> put_session(:name, name)
+        |> put_session(:code, code)
+        |> redirect(to: "/games/#{code}")
     end
   end
 end

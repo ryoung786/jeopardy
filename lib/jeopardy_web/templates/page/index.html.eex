@@ -2,7 +2,7 @@
 
 <%= form_for @conn, Routes.page_path(@conn, :index), fn f -> %>
     <%= text_input f, :name, placeholder: "Name" %>
-    <%= text_input f, :code, placeholder: "ABCD" %>
+    <%= text_input f, :code, placeholder: "ABCD", maxlength: "4", style: "text-transform: uppercase"%>
     <%= submit "Join" %>
 <% end %>
 

@@ -1,1 +1,10 @@
 <h1>Share this on your TV</h1>
+
+<h2>Room Code: <%= @game.code %></h2>
+
+<%= if @game.buzzer != nil do %>
+    <h3><%= @game.buzzer %> has buzzed in!</h3>
+    <%= submit "Clear buzzer", "phx-click": "clear" %>
+<%= else %>
+    <h3>Waiting for a player to buzz</h3>
+<%= end %>

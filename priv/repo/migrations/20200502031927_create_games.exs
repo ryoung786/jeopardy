@@ -3,7 +3,7 @@ defmodule Jeopardy.Repo.Migrations.CreateGames do
 
   def change do
     create table(:games) do
-      add :code, :string
+      add :code, :string, size: 4
       add :status, :string
       add :buzzer, :string
 

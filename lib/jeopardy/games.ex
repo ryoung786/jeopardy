@@ -6,7 +6,20 @@ defmodule Jeopardy.Games do
   import Ecto.Query, warn: false
 
   alias Jeopardy.Games.Game
-  alias Jeopardy.Cache
+  alias Jeopardy.Repo
+
+  @doc """
+  Returns the list of games.
+
+  ## Examples
+
+      iex> list_games()
+      [%Game{}, ...]
+
+  """
+  def list_games do
+    Repo.all(Game)
+  end
 
   @doc """
   Gets a single game.
@@ -22,38 +35,26 @@ defmodule Jeopardy.Games do
       ** (Ecto.NoResultsError)
 
   """
-  def get_game!(code), do: Cache.find(code)
+  def get_game!(id), do: Repo.get!(Game, id)
+
+  def get_by_code(code), do: Repo.get_by(Game, code: code)
 
   @doc """
   Creates a game.
 
   ## Examples
 
-      iex> create_game(%{field: value})
+      iex> create()
       {:ok, %Game{}}
 
-      iex> create_game(%{field: bad_value})
+      iex> create()
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_game() do
-    generateGameCode()
-    |> Cache.create()
-
-    # %Game{}
-    # |> Game.changeset(attrs)
-    # |> Repo.insert()
-  end
-
-  @doc """
-  Returns a random 4-letter code
-  """
-  defp generateGameCode() do
-    chars = "ABCDEFGHJKMNPQRSTUVWXYZ" |> String.split("", trim: true)
-
-    Enum.reduce((1..4), [], fn (_i, acc) ->
-      [Enum.random(chars) | acc]
-    end) |> Enum.join("")
+  def create() do
+    %Game{}
+    |> Game.changeset(%{code: generateGameCode()})
+    |> Repo.insert()
   end
 
   @doc """
@@ -73,9 +74,6 @@ defmodule Jeopardy.Games do
     |> Game.changeset(attrs)
     |> Repo.update()
   end
-
-  def buzzer(code, name), do: Cache.buzzer(code, name)
-  def clear_buzzer(code), do: Cache.clear_buzzer(code)
 
   @doc """
   Deletes a game.
@@ -105,4 +103,34 @@ defmodule Jeopardy.Games do
   def change_game(%Game{} = game, attrs \\ %{}) do
     Game.changeset(game, attrs)
   end
+
+  _ = """
+  Returns a random 4-letter code
+  """
+  defp generateGameCode() do
+    chars = "ABCDEFGHJKMNPQRSTUVWXYZ" |> String.split("", trim: true)
+
+    Enum.reduce((1..4), [], fn (_i, acc) ->
+      [Enum.random(chars) | acc]
+    end) |> Enum.join("")
+  end
+
+  def buzzer(%Game{code: code}, name), do: buzzer(code, name)
+  def buzzer(code, name) do
+    case (from g in Game, where: g.code == ^code and is_nil(g.buzzer), select: g.id)
+    |> Repo.update_all(set: [buzzer: name]) do
+      {0, _} -> {:failed, nil}
+      {1, [id]} ->
+        Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:buzz, name})
+        {:ok, get_game!(id)}
+    end
+  end
+  def clear_buzzer(%Game{code: code}), do: clear_buzzer(code)
+  def clear_buzzer(code) do
+    {_num, [id]} = (from g in Game, where: g.code == ^code, select: g.id)
+    |> Repo.update_all(set: [buzzer: nil])
+    Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, :clear)
+    get_game!(id)
+  end
+
 end

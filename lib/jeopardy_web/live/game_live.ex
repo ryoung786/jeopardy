@@ -5,15 +5,12 @@ defmodule JeopardyWeb.GameLive do
 
   @impl true
   def mount(%{"code" => code}, %{"name" => name} = session, socket) do
-    game = Games.get_game!(code)
+    game = Games.get_by_code(code)
 
     case name do
       "" -> {:ok, socket |> put_flash(:info, "Please enter a name") |> redirect(to: "/")}
       _ ->
-        Logger.info("MOUNT session #{inspect(session)}")
-        Logger.info("MOUNT socket #{inspect(socket)}")
         if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
-
 
         socket = socket
         |> assign(name: name)
@@ -28,12 +25,10 @@ defmodule JeopardyWeb.GameLive do
   def render(assigns) do
     ~L"""
     <h1>Welcome <%= @name %></h1>
-    <div phx-click="buzz">
-      buzz
-    </div>
-    <%= if @buzzer != :clear do %>
+    <%= submit "Buzz", "phx-click": "buzz"%>
+    <%= if @buzzer != nil do %>
       <div><%= @buzzer %> buzzed in</div>
-      <div phx-click="clear">clear buzzer</div>
+      <%= submit "Clear Buzzer", "phx-click": "clear"%>
     <% end %>
     """
   end
@@ -62,6 +57,6 @@ defmodule JeopardyWeb.GameLive do
   @impl true
   def handle_info(:clear, socket) do
     Logger.info("successfully cleared the buzzer")
-    {:noreply, update(socket, :buzzer, fn _ -> :clear end)}
+    {:noreply, update(socket, :buzzer, fn _ -> nil end)}
   end
 end

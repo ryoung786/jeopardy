@@ -37,7 +37,7 @@ defmodule JeopardyWeb.Router do
   end
 
   def ensure_game_exists(conn, _opts) do
-    case Games.get_game!(conn.path_params["code"]) do
+    case Games.get_by_code(conn.path_params["code"]) do
       nil ->
         conn |> put_flash(:info, "Game not found") |> redirect(to: "/") |> halt()
       game ->
