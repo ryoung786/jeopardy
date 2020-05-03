@@ -35,6 +35,12 @@ defmodule JeopardyWeb.TvLive do
   end
 
   @impl true
+  def handle_event("trebek_selection", %{"value" => name}, socket) do
+    Logger.info("trebek submission #{inspect(name)}")
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info({:buzz, _name}, socket) do
     game = Games.get_by_code(socket.assigns.game.code)
     socket = socket
