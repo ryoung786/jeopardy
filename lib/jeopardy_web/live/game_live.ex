@@ -51,6 +51,13 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
+  def handle_event("volunteer_to_host", _, %{assigns: %{name: name, game: %{code: code}}} = socket) do
+    socket.assigns.game
+    |> Games.assign_trebek(name)
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info({:buzz, name}, socket) do
     Logger.info("#{name} buzzed in")
     {:noreply, update(socket, :buzzer, fn _ -> name end)}
@@ -68,10 +75,20 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
-  def handle_info(:game_status_change, socket) do
+  def handle_info({:game_status_change, _new_status}, socket) do
     game = Games.get_by_code(socket.assigns.game.code)
     socket = socket
     |> assign(game: game)
+    |> assign(players: Games.get_just_contestants(game))
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info({:trebek_assigned, _trebek}, socket) do
+    game = Games.get_by_code(socket.assigns.game.code)
+    socket = socket
+    |> assign(game: game)
+    |> assign(players: Games.get_just_contestants(game))
     {:noreply, socket}
   end
 end

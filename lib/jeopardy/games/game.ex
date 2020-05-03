@@ -7,6 +7,8 @@ defmodule Jeopardy.Games.Game do
     field :code, :string, null: false, size: 4
     field :status, :string, default: "awaiting_start"
     field :round_status, :string, default: "awaiting_start"
+    field :trebek, :string, size: 25
+    has_many :players, Jeopardy.Games.Players.Player
 
     timestamps()
   end
@@ -19,5 +21,6 @@ defmodule Jeopardy.Games.Game do
     |> unique_constraint(:code)
     |> validate_required([:code, :status, :round_status])
     |> validate_format(:code, ~r/[A-Z]{4}/, message: "must be 4 uppercase letters")
+    |> validate_length(:trebek, max: 25, message: "Keep it short! 25 letters is the max.")
   end
 end

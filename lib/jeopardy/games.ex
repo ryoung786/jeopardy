@@ -6,6 +6,7 @@ defmodule Jeopardy.Games do
   import Ecto.Query, warn: false
 
   alias Jeopardy.Games.Game
+  alias Jeopardy.Games.Players.Player
   alias Jeopardy.Repo
 
   @doc """
@@ -57,7 +58,10 @@ defmodule Jeopardy.Games do
     |> Repo.insert()
   end
 
-  def start(code) do
+  def start(code, player_names) do
+    game = get_by_code(code)
+    IO.inspect game
+    player_names |> Enum.each(fn name -> add_player(game, name) end)
     update_game_status(code, "awaiting_start", "selecting_trebek")
   end
 
@@ -69,6 +73,24 @@ defmodule Jeopardy.Games do
         Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:game_status_change, to})
         {:ok, get_game!(id)}
     end
+  end
+
+  def assign_trebek(%Game{code: code} = game, name) do
+    case (from g in Game, where: g.id == ^game.id and is_nil(g.trebek), select: g.id)
+    |> Repo.update_all(set: [trebek: name]) do
+      {0, _} -> {:failed, nil}
+      {1, [_id]} ->
+        # Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:trebek_assigned, name})
+        update_game_status(code, game.status, "round_one_intro")
+    end
+  end
+
+  def get_just_contestants(%Game{} = game) do
+    from(p in Player, where: p.game_id == ^game.id and p.name != ^game.trebek) |> Repo.all
+  end
+
+  def get_player(%Game{} = game, name) do
+    from(p in Player, where: p.game_id == ^game.id and p.name == ^name) |> Repo.one
   end
 
   @doc """
@@ -145,6 +167,13 @@ defmodule Jeopardy.Games do
     |> Repo.update_all(set: [buzzer: nil])
     Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, :clear)
     get_game!(id)
+  end
+
+  def players(%Game{} = game), do: Repo.all Ecto.assoc(game, :players)
+
+  def add_player(%Game{} = game, name) do
+    Ecto.build_assoc(game, :players, %{name: name})
+    |> Repo.insert()
   end
 
 end

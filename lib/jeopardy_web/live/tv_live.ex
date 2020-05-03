@@ -18,13 +18,15 @@ defmodule JeopardyWeb.TvLive do
     {:ok, socket}
   end
 
+  @impl true
   def render(assigns) do
     TvView.render("#{assigns.game.status}.html", assigns)
   end
 
   @impl true
   def handle_event("start_game", _params, socket) do
-    Games.start(socket.assigns.game.code)
+    Logger.info("Start game audience: #{inspect(socket.assigns.audience)}")
+    Games.start(socket.assigns.game.code, socket.assigns.audience)
     {:noreply, socket}
   end
 
@@ -36,7 +38,8 @@ defmodule JeopardyWeb.TvLive do
 
   @impl true
   def handle_event("trebek_selection", %{"value" => name}, socket) do
-    Logger.info("trebek submission #{inspect(name)}")
+    socket.assigns.game
+    |> Games.assign_trebek(name)
     {:noreply, socket}
   end
 
@@ -57,15 +60,25 @@ defmodule JeopardyWeb.TvLive do
   end
 
   @impl true
-  def handle_info(:game_status_change, socket) do
+  def handle_info({:game_status_change, _new_status}, socket) do
     game = Games.get_by_code(socket.assigns.game.code)
     socket = socket
     |> assign(game: game)
+    |> assign(players: Games.get_just_contestants(game))
     {:noreply, socket}
   end
 
   @impl true
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
+  end
+
+  @impl true
+  def handle_info({:trebek_assigned, _trebek}, socket) do
+    game = Games.get_by_code(socket.assigns.game.code)
+    socket = socket
+    |> assign(game: game)
+    |> assign(players: Games.get_just_contestants(game))
+    {:noreply, socket}
   end
 end

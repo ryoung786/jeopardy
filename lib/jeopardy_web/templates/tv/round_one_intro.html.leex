@@ -1,0 +1,10 @@
+<h1>This is JEOPARDY!</h1>
+<h2>With your host, <em><%= @game.trebek %></em></h2>
+
+<h2>And introducing today's contestants:</h2>
+
+<ul>
+    <%= for player <- @players do %>
+        <li><%= player.name %></li>
+    <% end %>
+</ul>
