@@ -14,9 +14,9 @@ defmodule Jeopardy.Games.Game do
   def changeset(game, attrs) do
     game
     |> cast(attrs, [:code, :status, :buzzer])
+    |> update_change(:code, &String.upcase/1)
     |> unique_constraint(:code)
     |> validate_required([:code, :status])
-    # |> validate_length(:code, is: 4, message: "must be 4 uppercase letters")
     |> validate_format(:code, ~r/[A-Z]{4}/, message: "must be 4 uppercase letters")
   end
 end

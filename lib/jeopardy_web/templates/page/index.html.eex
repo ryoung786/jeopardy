@@ -1,8 +1,10 @@
 <h1>Welcome to Jeopardy!</h1>
 
-<%= form_for @conn, Routes.page_path(@conn, :index), fn f -> %>
-    <%= text_input f, :name, placeholder: "Name" %>
-    <%= text_input f, :code, placeholder: "ABCD", maxlength: "4", style: "text-transform: uppercase"%>
+<%= form_for @changeset, Routes.page_path(@conn, :index), fn f -> %>
+    <%= text_input f, :name, placeholder: "Name", maxlength: 25 %>
+    <%= error_tag f, :name %>
+    <%= text_input f, :code, placeholder: "ABCD", style: "text-transform: uppercase", maxlength: 4 %>
+    <%= error_tag f, :code %>
     <%= submit "Join" %>
 <% end %>
 
