@@ -8,13 +8,7 @@ defmodule JeopardyWeb.GameLive do
   @impl true
   def mount(%{"code" => code}, %{"name" => name}, socket) do
     game = Games.get_by_code(code)
-
-    Presence.track(
-      self(),
-      code,
-      name,
-      %{name: name}
-    )
+    Presence.track(self(), code, name, %{name: name})
 
     case name do
       "" -> {:ok, socket |> put_flash(:info, "Please enter a name") |> redirect(to: "/")}
@@ -58,33 +52,14 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
-  def handle_info({:buzz, name}, socket) do
-    Logger.info("#{name} buzzed in")
-    {:noreply, update(socket, :buzzer, fn _ -> name end)}
-  end
-
-  @impl true
-  def handle_info(:clear, socket) do
-    Logger.info("successfully cleared the buzzer")
-    {:noreply, update(socket, :buzzer, fn _ -> nil end)}
-  end
-
-  @impl true
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
   end
 
   @impl true
-  def handle_info({:game_status_change, _new_status}, socket) do
-    game = Games.get_by_code(socket.assigns.game.code)
-    socket = socket
-    |> assign(game: game)
-    |> assign(players: Games.get_just_contestants(game))
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_info({:trebek_assigned, _trebek}, socket) do
+  # The db got updated, so let's query for the latest everything
+  # and update our assigns
+  def handle_info(_, socket) do
     game = Games.get_by_code(socket.assigns.game.code)
     socket = socket
     |> assign(game: game)

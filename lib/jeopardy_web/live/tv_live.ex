@@ -10,11 +10,9 @@ defmodule JeopardyWeb.TvLive do
     if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
 
     game = Games.get_by_code(code)
-
     socket = socket
-    |> assign(game: game)
+    |> assigns(game)
     |> assign(audience: Presence.list_presences(code))
-
     {:ok, socket}
   end
 
@@ -25,7 +23,6 @@ defmodule JeopardyWeb.TvLive do
 
   @impl true
   def handle_event("start_game", _params, socket) do
-    Logger.info("Start game audience: #{inspect(socket.assigns.audience)}")
     Games.start(socket.assigns.game.code, socket.assigns.audience)
     {:noreply, socket}
   end
@@ -44,41 +41,21 @@ defmodule JeopardyWeb.TvLive do
   end
 
   @impl true
-  def handle_info({:buzz, _name}, socket) do
-    game = Games.get_by_code(socket.assigns.game.code)
-    socket = socket
-    |> assign(game: game)
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_info(:clear, socket) do
-    game = Games.get_by_code(socket.assigns.game.code)
-    socket = socket
-    |> assign(game: game)
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_info({:game_status_change, _new_status}, socket) do
-    game = Games.get_by_code(socket.assigns.game.code)
-    socket = socket
-    |> assign(game: game)
-    |> assign(players: Games.get_just_contestants(game))
-    {:noreply, socket}
-  end
-
-  @impl true
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
   end
 
   @impl true
-  def handle_info({:trebek_assigned, _trebek}, socket) do
+  # The db got updated, so let's query for the latest everything
+  # and update our assigns
+  def handle_info(_, socket) do
     game = Games.get_by_code(socket.assigns.game.code)
-    socket = socket
+    {:noreply, assigns(socket, game)}
+  end
+
+  defp assigns(socket, game) do
+    socket
     |> assign(game: game)
     |> assign(players: Games.get_just_contestants(game))
-    {:noreply, socket}
   end
 end
