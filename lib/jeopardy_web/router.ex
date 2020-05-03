@@ -27,9 +27,8 @@ defmodule JeopardyWeb.Router do
       pipe_through :games
       live "/", GameLive
       live "/tv", TvLive
+      live "/trebek", TrebekLive
     end
-
-    # resources "/games", GameController, only: [:create, :show]
   end
 
   pipeline :games do

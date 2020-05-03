@@ -1,36 +1,33 @@
-defmodule JeopardyWeb.GameLive do
+defmodule JeopardyWeb.TrebekLive do
   use JeopardyWeb, :live_view
   require Logger
   alias Jeopardy.Games
   alias JeopardyWeb.Presence
-  alias JeopardyWeb.GameView
+  alias JeopardyWeb.TrebekView
 
   @impl true
   def mount(%{"code" => code}, %{"name" => name}, socket) do
     game = Games.get_by_code(code)
-    trebek_name = game.trebek
     Presence.track(self(), code, name, %{name: name})
 
-    case name do
-      "" -> {:ok, socket |> put_flash(:info, "Please enter a name") |> redirect(to: "/")}
-      ^trebek_name ->
-        {:ok, redirect(socket, to: "/games/#{game.code}/trebek")}
-      _ ->
+    case game.trebek do
+      ^name ->
         if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
-
         socket = socket
         |> assign(name: name)
         |> assign(game: game)
+        |> assign(is_trebek: name == game.trebek)
         |> assign(audience: Presence.list_presences(code))
         |> assign(buzzer: game.buzzer)
-
         {:ok, socket}
+        _ ->
+          {:ok, socket |> put_flash(:info, "Sorry, unauthorized") |> redirect(to: "/")}
     end
   end
 
   @impl true
   def render(assigns) do
-    GameView.render("#{assigns.game.status}.html", assigns)
+    TrebekView.render("#{assigns.game.status}.html", assigns)
   end
 
   @impl true
@@ -48,9 +45,8 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
-  def handle_event("volunteer_to_host", _, %{assigns: %{name: name}} = socket) do
-    socket.assigns.game
-    |> Games.assign_trebek(name)
+  def handle_event("introduce_round_one_categories", _, %{assigns: %{name: name, game: %{code: code}}} = socket) do
+    Logger.info("onwards to round one categories")
     {:noreply, socket}
   end
 
@@ -64,14 +60,9 @@ defmodule JeopardyWeb.GameLive do
   # and update our assigns
   def handle_info(_, socket) do
     game = Games.get_by_code(socket.assigns.game.code)
-    name = socket.assigns.name
-    case game.trebek do
-      ^name -> {:noreply, redirect(socket, to: "/games/#{game.code}/trebek")}
-      _ ->
-        socket = socket
-        |> assign(game: game)
-        |> assign(players: Games.get_just_contestants(game))
-        {:noreply, socket}
-    end
+    socket = socket
+    |> assign(game: game)
+    |> assign(players: Games.get_just_contestants(game))
+    {:noreply, socket}
   end
 end
