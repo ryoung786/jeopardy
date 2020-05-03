@@ -13,6 +13,8 @@ defmodule Jeopardy.Application do
       JeopardyWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Jeopardy.PubSub},
+      # Start the Presence tracker
+      JeopardyWeb.Presence,
       # Start the Endpoint (http/https)
       JeopardyWeb.Endpoint,
       # Start a worker by calling: Jeopardy.Worker.start_link(arg)

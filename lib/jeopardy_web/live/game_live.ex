@@ -2,10 +2,18 @@ defmodule JeopardyWeb.GameLive do
   use JeopardyWeb, :live_view
   require Logger
   alias Jeopardy.Games
+  alias JeopardyWeb.Presence
 
   @impl true
   def mount(%{"code" => code}, %{"name" => name}, socket) do
     game = Games.get_by_code(code)
+
+    Presence.track(
+      self(),
+      code,
+      name,
+      %{name: name}
+    )
 
     case name do
       "" -> {:ok, socket |> put_flash(:info, "Please enter a name") |> redirect(to: "/")}
@@ -15,6 +23,7 @@ defmodule JeopardyWeb.GameLive do
         socket = socket
         |> assign(name: name)
         |> assign(game: game)
+        |> assign(audience: Presence.list_presences(code))
         |> assign(buzzer: game.buzzer)
 
         {:ok, socket}
@@ -33,6 +42,11 @@ defmodule JeopardyWeb.GameLive do
     <%= if @buzzer != nil do %>
       <div><%= @buzzer %> buzzed in</div>
       <%= submit "Clear Buzzer", "phx-click": "clear"%>
+    <% end %>
+
+    <h3>Members</h3>
+    <%= for name <- @audience do %>
+      <p><%= name %></p>
     <% end %>
     """
   end
@@ -61,5 +75,10 @@ defmodule JeopardyWeb.GameLive do
   def handle_info(:clear, socket) do
     Logger.info("successfully cleared the buzzer")
     {:noreply, update(socket, :buzzer, fn _ -> nil end)}
+  end
+
+  @impl true
+  def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
+    {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
   end
 end

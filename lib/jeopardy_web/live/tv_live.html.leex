@@ -8,3 +8,11 @@
 <% else %>
     <h3>Waiting for a player to buzz</h3>
 <% end %>
+
+<%= if length(@audience) > 0 do %>
+    <h3>Today's contestants!</h3>
+    <ul>
+    <%= for name <- @audience do %>
+        <li><%= name %></li>
+    <% end %>
+<% end %>
