@@ -5,8 +5,7 @@ defmodule JeopardyWeb.Presence do
 
   def list_presences(topic) do
     list(topic)
-    |> Enum.map(fn {name, data} ->
-      # [%{name: name} | _] = data.metas
+    |> Enum.map(fn {name, _data} ->
       name
     end)
   end

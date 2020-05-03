@@ -45,7 +45,7 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
-  def handle_event("introduce_round_one_categories", _, %{assigns: %{name: name, game: %{code: code}}} = socket) do
+  def handle_event("introduce_round_one_categories", _, socket) do
     Logger.info("onwards to round one categories")
     {:noreply, socket}
   end
