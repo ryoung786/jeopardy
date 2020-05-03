@@ -27,7 +27,7 @@ defmodule JeopardyWeb.GameLive do
     <h1>Welcome <%= @name %></h1>
     <%= if @buzzer == nil do %>
       <%= submit "Buzz", "phx-click": "buzz" %>
-    <%= else %>
+    <% else %>
       <%= submit "Buzz", "phx-click": "buzz", disabled: true %>
     <% end %>
     <%= if @buzzer != nil do %>

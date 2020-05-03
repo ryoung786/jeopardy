@@ -16,7 +16,7 @@ defmodule JeopardyWeb.PageController do
   def join(conn, %{"login" => %{"name" => name, "code" => code} = login}) do
     code = String.upcase(code)
 
-    with {:ok, changeset} <- Login.validate(login),
+    with {:ok, _changeset} <- Login.validate(login),
          %Game{} <- Games.get_by_code(code) do
       conn
       |> put_flash(:info, "Welcome back!")

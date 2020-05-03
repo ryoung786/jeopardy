@@ -5,6 +5,6 @@
 <%= if @game.buzzer != nil do %>
     <h3><%= @game.buzzer %> has buzzed in!</h3>
     <%= submit "Clear buzzer", "phx-click": "clear" %>
-<%= else %>
+<% else %>
     <h3>Waiting for a player to buzz</h3>
-<%= end %>
+<% end %>
