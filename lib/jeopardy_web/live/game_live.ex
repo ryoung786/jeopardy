@@ -4,7 +4,7 @@ defmodule JeopardyWeb.GameLive do
   alias Jeopardy.Games
 
   @impl true
-  def mount(%{"code" => code}, %{"name" => name} = session, socket) do
+  def mount(%{"code" => code}, %{"name" => name}, socket) do
     game = Games.get_by_code(code)
 
     case name do
@@ -54,7 +54,6 @@ defmodule JeopardyWeb.GameLive do
   @impl true
   def handle_info({:buzz, name}, socket) do
     Logger.info("#{name} buzzed in")
-    Logger.info("BROADCAST RECEIVED handle_info #{name}")
     {:noreply, update(socket, :buzzer, fn _ -> name end)}
   end
 

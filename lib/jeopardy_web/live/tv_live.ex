@@ -5,7 +5,6 @@ defmodule JeopardyWeb.TvLive do
 
   @impl true
   def mount(%{"code" => code}, _session, socket) do
-    Logger.info("MOUNT code #{inspect(code)}")
     if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
 
     game = Games.get_by_code(code)
