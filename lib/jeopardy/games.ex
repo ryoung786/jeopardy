@@ -57,6 +57,20 @@ defmodule Jeopardy.Games do
     |> Repo.insert()
   end
 
+  def start(code) do
+    update_game_status(code, "awaiting_start", "selecting_trebek")
+  end
+
+  defp update_game_status(code, from, to) do
+    case (from g in Game, where: g.code == ^code and g.status == ^from, select: g.id)
+    |> Repo.update_all(set: [status: to]) do
+      {0, _} -> {:failed, nil}
+      {1, [id]} ->
+        Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:game_status_change, to})
+        {:ok, get_game!(id)}
+    end
+  end
+
   @doc """
   Updates a game.
 

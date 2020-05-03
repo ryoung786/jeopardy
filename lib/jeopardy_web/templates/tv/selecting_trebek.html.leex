@@ -1,0 +1,7 @@
+<h1>Who wants to be the host for this game?</h1>
+<h3>Today's contestants!</h3>
+<ul>
+    <%= for name <- @audience do %>
+        <li><%= submit name, "phx-click": "trebek" %></li>
+    <% end %>
+</ul>

@@ -3,6 +3,7 @@ defmodule JeopardyWeb.TvLive do
   require Logger
   alias Jeopardy.Games
   alias JeopardyWeb.Presence
+  alias JeopardyWeb.TvView
 
   @impl true
   def mount(%{"code" => code}, _session, socket) do
@@ -13,13 +14,17 @@ defmodule JeopardyWeb.TvLive do
     socket = socket
     |> assign(game: game)
     |> assign(audience: Presence.list_presences(code))
-    |> assign(buzzer: game.buzzer)
 
     {:ok, socket}
   end
 
+  def render(assigns) do
+    TvView.render("#{assigns.game.status}.html", assigns)
+  end
+
   @impl true
   def handle_event("start_game", _params, socket) do
+    Games.start(socket.assigns.game.code)
     {:noreply, socket}
   end
 
@@ -34,7 +39,6 @@ defmodule JeopardyWeb.TvLive do
     game = Games.get_by_code(socket.assigns.game.code)
     socket = socket
     |> assign(game: game)
-    |> assign(buzzer: game.buzzer)
     {:noreply, socket}
   end
 
@@ -43,7 +47,14 @@ defmodule JeopardyWeb.TvLive do
     game = Games.get_by_code(socket.assigns.game.code)
     socket = socket
     |> assign(game: game)
-    |> assign(buzzer: game.buzzer)
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info(:game_status_change, socket) do
+    game = Games.get_by_code(socket.assigns.game.code)
+    socket = socket
+    |> assign(game: game)
     {:noreply, socket}
   end
 
