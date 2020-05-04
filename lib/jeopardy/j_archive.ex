@@ -4,5 +4,22 @@ defmodule Jeopardy.JArchive do
   """
 
   import Ecto.Query, warn: false
-  # alias Jeopardy.Repo
+  alias Jeopardy.Repo
+  alias Jeopardy.JArchive.{Game, Board, Category, Clue}
+
+  def random_game() do
+    Repo.get(Game, 2)
+  end
+
+  def board(%Game{} = game) do
+    from(b in Board, where: b.game_id == ^game.id) |> Repo.one
+  end
+
+  def categories(%Board{} = board) do
+    from(c in Category, where: c.board_id == ^board.id) |> Repo.all
+  end
+
+  def clues(%Category{} = category) do
+    from(c in Clue, where: c.category_id == ^category.id, order_by: [asc: c.value]) |> Repo.all
+  end
 end
