@@ -3,8 +3,9 @@ defmodule Jeopardy.JArchive.Board do
   import Ecto.Changeset
 
   schema "boards" do
-    field :categories, {:array, :id}, default: []
-    belongs_to :game, Jeopardy.Games.Game
+    field :category_array, {:array, :id}, default: []
+    belongs_to :game, Jeopardy.JArchive.Game
+    has_many :categories, Jeopardy.JArchive.Category
 
     timestamps()
   end
@@ -12,7 +13,7 @@ defmodule Jeopardy.JArchive.Board do
   @doc false
   def changeset(board, attrs) do
     board
-    |> cast(attrs, [:categories])
-    |> validate_required([:categories])
+    |> cast(attrs, [:category_array])
+    |> validate_required([:category_array])
   end
 end

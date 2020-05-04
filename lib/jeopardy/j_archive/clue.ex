@@ -7,7 +7,7 @@ defmodule Jeopardy.JArchive.Clue do
     field :clue_text, :string
     field :type, :string
     field :value, :integer
-    belongs_to :game, Jeopardy.JArchive.Category
+    belongs_to :category, Jeopardy.JArchive.Category
 
     timestamps()
   end

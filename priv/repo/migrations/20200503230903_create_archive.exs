@@ -8,7 +8,7 @@ defmodule Jeopardy.Repo.Migrations.CreateJArchive do
 
 
     create table(:boards, prefix: "jarchive") do
-      add :categories, {:array, :id}
+      add :category_array, {:array, :id}
       add :game_id, references(:games, on_delete: :nothing)
 
       timestamps()
@@ -18,7 +18,8 @@ defmodule Jeopardy.Repo.Migrations.CreateJArchive do
 
 
     create table(:categories, prefix: "jarchive") do
-      add :clues, {:array, :id}
+      add :name, :string
+      add :clue_array, {:array, :id}
       add :board_id, references(:boards, on_delete: :nothing)
 
       timestamps()

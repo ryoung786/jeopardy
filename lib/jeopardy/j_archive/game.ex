@@ -2,6 +2,8 @@ defmodule Jeopardy.JArchive.Game do
   use Jeopardy.JArchive.Schema
   import Ecto.Changeset
 
+  @schema_prefix "jarchive"
+
   schema "games" do
     has_one :board, Jeopardy.JArchive.Board
 

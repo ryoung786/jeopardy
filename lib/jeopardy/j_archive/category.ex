@@ -3,8 +3,10 @@ defmodule Jeopardy.JArchive.Category do
   import Ecto.Changeset
 
   schema "categories" do
-    field :clues, {:array, :id}, default: []
-    belongs_to :game, Jeopardy.Games.Board
+    field :name, :string
+    field :clue_array, {:array, :id}, default: []
+    belongs_to :board, Jeopardy.JArchive.Board
+    has_many :clues, Jeopardy.JArchive.Clue
 
     timestamps()
   end
@@ -12,7 +14,7 @@ defmodule Jeopardy.JArchive.Category do
   @doc false
   def changeset(category, attrs) do
     category
-    |> cast(attrs, [:clues])
-    |> validate_required([:clues])
+    |> cast(attrs, [:clue_array])
+    |> validate_required([:clue_array])
   end
 end
