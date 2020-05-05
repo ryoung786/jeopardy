@@ -1,10 +1,12 @@
-defmodule Jeopardy.JArchive.Game do
+defmodule Jeopardy.JArchive.Show do
   use Jeopardy.JArchive.Schema
   import Ecto.Changeset
 
-  @schema_prefix "jarchive"
+  @primary_key {:id, :id, []}
+  @derive {Phoenix.Param, key: :id}
 
-  schema "games" do
+  schema "shows" do
+    field :air_date, :date
     has_one :board, Jeopardy.JArchive.Board
 
     timestamps()
@@ -14,6 +16,6 @@ defmodule Jeopardy.JArchive.Game do
   def changeset(archive, attrs) do
     archive
     |> cast(attrs, [:board_id])
-    |> validate_required([:board_id])
+    |> validate_required([:board_id, :airdate])
   end
 end

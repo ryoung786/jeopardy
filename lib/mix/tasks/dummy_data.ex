@@ -3,7 +3,7 @@ defmodule Mix.Tasks.DummyData do
 
   import Ecto.Query, warn: false
   alias Jeopardy.Repo
-  alias Jeopardy.JArchive.{Game, Board, Category, Clue}
+  alias Jeopardy.JArchive.{Show, Board, Category, Clue}
 
   @shortdoc "Sends a greeting to us from Hello Phoenix"
 
@@ -14,7 +14,7 @@ defmodule Mix.Tasks.DummyData do
   def run(_args) do
     Mix.Task.run "app.start"
 
-    {_, g} = %Game{} |> Repo.insert()
+    {_, g} = %Show{} |> Repo.insert()
     Mix.shell.info("created game #{inspect(g)}")
     {_, b} = Ecto.build_assoc(g, :board, %{}) |> Repo.insert()
     Mix.shell.info("created board #{inspect(b)}")

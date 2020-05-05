@@ -4,7 +4,7 @@ defmodule Jeopardy.JArchive.Board do
 
   schema "boards" do
     field :category_array, {:array, :id}, default: []
-    belongs_to :game, Jeopardy.JArchive.Game
+    belongs_to :show, Jeopardy.JArchive.Show
     has_many :categories, Jeopardy.JArchive.Category
 
     timestamps()

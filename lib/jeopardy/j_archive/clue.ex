@@ -4,9 +4,10 @@ defmodule Jeopardy.JArchive.Clue do
 
   schema "clues" do
     field :answer_text, :string
-    field :clue_text, :string
+    field :clue_text, :string, size: 512
     field :type, :string
     field :value, :integer
+    field :category_name, :string
     belongs_to :category, Jeopardy.JArchive.Category
 
     timestamps()

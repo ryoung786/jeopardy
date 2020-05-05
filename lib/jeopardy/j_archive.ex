@@ -5,13 +5,13 @@ defmodule Jeopardy.JArchive do
 
   import Ecto.Query, warn: false
   alias Jeopardy.Repo
-  alias Jeopardy.JArchive.{Game, Board, Category, Clue}
+  alias Jeopardy.JArchive.{Show, Board, Category, Clue}
 
   def random_game() do
-    Repo.get(Game, 2)
+    Repo.get(Show, 2)
   end
 
-  def board(%Game{} = game) do
+  def board(%Show{} = game) do
     from(b in Board, where: b.game_id == ^game.id) |> Repo.one
   end
 

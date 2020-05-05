@@ -2,19 +2,22 @@ defmodule Jeopardy.Repo.Migrations.CreateJArchive do
   use Ecto.Migration
 
   def change do
-    create table(:games, prefix: "jarchive") do
+    create table(:shows, prefix: "jarchive", primary_key: false) do
+      add :id, :id, primary_key: true
+      add :air_date, :date
+
       timestamps()
     end
 
 
     create table(:boards, prefix: "jarchive") do
       add :category_array, {:array, :id}
-      add :game_id, references(:games, on_delete: :nothing)
+      add :show_id, references(:shows, on_delete: :nothing)
 
       timestamps()
     end
 
-    create index(:boards, [:game_id], prefix: "jarchive")
+    create index(:boards, [:show_id], prefix: "jarchive")
 
 
     create table(:categories, prefix: "jarchive") do
@@ -29,10 +32,11 @@ defmodule Jeopardy.Repo.Migrations.CreateJArchive do
 
 
     create table(:clues, prefix: "jarchive") do
-      add :clue_text, :string
+      add :clue_text, :string, size: 512
       add :answer_text, :string
       add :value, :integer
       add :type, :string
+      add :category_name, :string
       add :category_id, references(:categories, on_delete: :nothing)
 
       timestamps()
