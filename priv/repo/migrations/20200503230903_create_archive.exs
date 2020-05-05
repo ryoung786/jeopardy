@@ -2,8 +2,7 @@ defmodule Jeopardy.Repo.Migrations.CreateJArchive do
   use Ecto.Migration
 
   def change do
-    create table(:games, prefix: "jarchive", primary_key: false) do
-      add :id, :id, primary_key: true
+    create table(:games, prefix: "jarchive") do
       add :jeopardy_round_categories, {:array, :string}
       add :double_jeopardy_round_categories, {:array, :string}
       add :final_jeopardy_category, :string
@@ -13,8 +12,8 @@ defmodule Jeopardy.Repo.Migrations.CreateJArchive do
     end
 
     create table(:clues, prefix: "jarchive") do
-      add :clue_text, :string, size: 512
-      add :answer_text, :string
+      add :clue_text, :string, size: 1024
+      add :answer_text, :string, size: 512
       add :value, :integer
       add :round, :string # jeopardy, double_jeopardy, final_jeopardy
       add :type, :string # standard, daily_double

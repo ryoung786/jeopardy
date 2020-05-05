@@ -6,29 +6,33 @@ defmodule Mix.Tasks.ParseJArchiveHtmlDir do
   alias Jeopardy.JArchive.{Game, Clue}
 
   @shortdoc "Sends a greeting to us from Hello Phoenix"
+  @archive_path "/Users/ryany/dev/jeopardy-parser/j-archive"
 
   @moduledoc """
     This is where we would put any long form documentation or doctests.
   """
 
-  def run(_args) do
+  def run(args) do
     Mix.Task.run "app.start"
-
     clean_db()
 
-    path_to_html_files = "/Users/ryany/dev/jeopardy-parser/j-archive"
-    {:ok, files} = File.ls(path_to_html_files)
+    get_files(args) |> process_files()
+  end
+
+  def get_files([_|_] = ids), do: Enum.map(ids, fn id -> "#{id}.html" end)
+  def get_files([]) do
+    {:ok, files} = File.ls(@archive_path)
     files
-    |> Enum.take(10)
-    |> Enum.each(fn f ->
-      Mix.shell.info("f: #{inspect(Path.absname(f))}")
-      {:ok, fp} = File.read(Path.join(path_to_html_files, f))
-
-      # parse(fp)
+  end
+  def process_files(files) do
+    Enum.each(files, fn file ->
+      Mix.shell.info("processing: #{inspect(file)}")
+      with {:ok, f} <- File.read(Path.join(@archive_path, file)) do
+        parse(f)
+      else
+        _ -> Mix.shell.error("Couldn't find #{file}")
+      end
     end)
-
-    {:ok, f} = File.read("../../jeopardy-parser/j-archive/4527.html")
-    parse(f)
   end
 
   def clean_db() do
@@ -38,24 +42,29 @@ defmodule Mix.Tasks.ParseJArchiveHtmlDir do
 
   def parse(f) do
     {:ok, html} = Floki.parse_document(f)
-    show_id =
-      Floki.find(html, "title") |> Floki.text
-      |> String.replace(~r/^.*Show .([0-9]+),.*$/, "\\1") |> String.to_integer
-    {:ok, air_date} = Floki.find(html, "title") |> Floki.text |> String.replace(~r/^.*aired (.*)$/, "\\1") |> Date.from_iso8601
+    # show_id =
+    #   Floki.find(html, "title") |> Floki.text
+    #   |> String.replace(~r/^.*Show .([0-9]+),.*$/, "\\1") |> String.to_integer
+    air_date = parse_air_date(html)
 
-    clues = (Floki.find(html, "#jeopardy_round") |> parse_round(:jeopardy)) ++
-      (Floki.find(html, "#double_jeopardy_round") |> parse_round(:double_jeopardy))
-    # Floki.find(html, "#double_jeopardy_round") |> parse_round(:final_jeopardy)
+    clues = (Floki.find(html, "#jeopardy_round") |> parse_round(:jeopardy))
+    ++ (Floki.find(html, "#double_jeopardy_round") |> parse_round(:double_jeopardy))
+
+    # some archive games don't have a final jeopardy round
+    # in that case, we'll still store what we can, but the game's final_jeopardy_category will be nil
+    # With that set, we'll be able to filter out bad games downstream
+    final_jeopardy_clue = parse_final_jeopardy_clue(html)
 
     {_, game} = %Game{
-      id: show_id,
       air_date: air_date,
       jeopardy_round_categories: categories_by_round(:jeopardy, html),
       double_jeopardy_round_categories: categories_by_round(:double_jeopardy, html),
-      final_jeopardy_category: "placeholder"
+      final_jeopardy_category: final_jeopardy_clue.category
     } |> Repo.insert()
 
-    Enum.each(clues, fn clue ->
+    [final_jeopardy_clue | clues]
+    |> Enum.reject(fn clue -> is_nil(clue.category) end)
+    |> Enum.each(fn clue ->
       Ecto.build_assoc(game, :clues, clue) |> Repo.insert()
     end)
   end
@@ -104,6 +113,38 @@ defmodule Mix.Tasks.ParseJArchiveHtmlDir do
         type: type,
         category: category
       }
+    end
+  end
+
+  def parse_final_jeopardy_clue(html) do
+    clue = Floki.find(html, "table.final_round")
+    question = Floki.find(clue, "td.clue_text") |> Floki.text
+    category = Floki.find(clue, "td.category_name") |> Floki.text
+
+    case category do
+      "" -> %Clue{}
+      _ ->
+        answer = clue
+        |> Floki.attribute("div", "onmouseover") |> List.first
+        |> String.replace(~r/^.*em class.*correct_response.*">(.+)<\/em>.*$/, "\\1")
+
+        %Clue{
+          clue_text: question,
+          answer_text: answer,
+          round: "final_jeopardy",
+          type: "final_jeopardy",
+          category: category
+        }
+    end
+  end
+
+  def parse_air_date(html) do
+    case Floki.find(html, "title")
+    |> Floki.text
+    |> String.replace(~r/^.*([0-9]{4}.[0-9]{2}.[0-9]{2}).*$/, "\\1")
+    |> Date.from_iso8601 do
+      {:ok, air_date} -> air_date
+      _ -> nil
     end
   end
 end
