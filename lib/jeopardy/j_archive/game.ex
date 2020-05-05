@@ -1,13 +1,16 @@
-defmodule Jeopardy.JArchive.Show do
+defmodule Jeopardy.JArchive.Game do
   use Jeopardy.JArchive.Schema
   import Ecto.Changeset
 
   @primary_key {:id, :id, []}
   @derive {Phoenix.Param, key: :id}
 
-  schema "shows" do
+  schema "games" do
     field :air_date, :date
-    has_one :board, Jeopardy.JArchive.Board
+    field :jeopardy_round_categories, {:array, :string}
+    field :double_jeopardy_round_categories, {:array, :string}
+    field :final_jeopardy_category, :string
+    has_many :clues, Jeopardy.JArchive.Clue
 
     timestamps()
   end

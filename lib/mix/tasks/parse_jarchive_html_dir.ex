@@ -3,7 +3,7 @@ defmodule Mix.Tasks.ParseJArchiveHtmlDir do
 
   import Ecto.Query, warn: false
   alias Jeopardy.Repo
-  alias Jeopardy.JArchive.{Show}
+  alias Jeopardy.JArchive.{Game, Clue}
 
   @shortdoc "Sends a greeting to us from Hello Phoenix"
 
@@ -24,76 +24,86 @@ defmodule Mix.Tasks.ParseJArchiveHtmlDir do
       Mix.shell.info("f: #{inspect(Path.absname(f))}")
       {:ok, fp} = File.read(Path.join(path_to_html_files, f))
 
-      parse(fp)
+      # parse(fp)
     end)
 
-    # {:ok, f} = File.read("../../jeopardy-parser/j-archive/4527.html")
-    # parse(f)
+    {:ok, f} = File.read("../../jeopardy-parser/j-archive/4527.html")
+    parse(f)
   end
 
   def clean_db() do
     Ecto.Adapters.SQL.query!(Repo, "delete FROM jarchive.clues")
-    Ecto.Adapters.SQL.query!(Repo, "delete FROM jarchive.categories")
-    Ecto.Adapters.SQL.query!(Repo, "delete FROM jarchive.boards")
-    Ecto.Adapters.SQL.query!(Repo, "delete FROM jarchive.shows")
+    Ecto.Adapters.SQL.query!(Repo, "delete FROM jarchive.games")
   end
 
   def parse(f) do
-
     {:ok, html} = Floki.parse_document(f)
     show_id =
       Floki.find(html, "title") |> Floki.text
       |> String.replace(~r/^.*Show .([0-9]+),.*$/, "\\1") |> String.to_integer
     {:ok, air_date} = Floki.find(html, "title") |> Floki.text |> String.replace(~r/^.*aired (.*)$/, "\\1") |> Date.from_iso8601
-    {_, show} = %Show{id: show_id, air_date: air_date} |> Repo.insert()
-    {_, board} = Ecto.build_assoc(show, :board, %{}) |> Repo.insert()
-    round_one_html = Floki.find(html, "#jeopardy_round")
-    parse_round(1, round_one_html, board)
-    round_two_html = Floki.find(html, "#double_jeopardy_round")
-    parse_round(2, round_two_html, board)
-  end
 
-  def parse_round(round_num, html, board) do
-    category_names = Floki.find(html, ".category_name") |> Enum.map( &Floki.text/1)
+    clues = (Floki.find(html, "#jeopardy_round") |> parse_round(:jeopardy)) ++
+      (Floki.find(html, "#double_jeopardy_round") |> parse_round(:double_jeopardy))
+    # Floki.find(html, "#double_jeopardy_round") |> parse_round(:final_jeopardy)
 
-    categories = category_names |> Enum.map( fn cname ->
-      {_, category} = Ecto.build_assoc(board, :categories, %{name: cname}) |> Repo.insert()
-      category
+    {_, game} = %Game{
+      id: show_id,
+      air_date: air_date,
+      jeopardy_round_categories: categories_by_round(:jeopardy, html),
+      double_jeopardy_round_categories: categories_by_round(:double_jeopardy, html),
+      final_jeopardy_category: "placeholder"
+    } |> Repo.insert()
+
+    Enum.each(clues, fn clue ->
+      Ecto.build_assoc(game, :clues, clue) |> Repo.insert()
     end)
-
-    clues =
-      Floki.find(html, "td.clue") |> Enum.with_index # [{clue, idx}, ...]
-      |> Enum.map( fn {clue, i} -> parse_clue(clue, i, categories, round_num) end)
-    Enum.each(clues, fn clue -> Repo.insert(clue) end)
-
-    {categories, clues}
   end
 
-  def parse_clue(clue, idx, categories, round_num) do
+  defp categories_by_round(round, html) when round == :jeopardy, do: categories_by_round("#jeopardy_round", html)
+  defp categories_by_round(round, html) when round == :double_jeopardy, do: categories_by_round("#double_jeopardy_round", html)
+  defp categories_by_round(round, html) when round == :final_jeopardy, do: categories_by_round("#final_jeopardy_round", html)
+  defp categories_by_round(round, html) do
+    Floki.find(html, "#{round} .category_name") |> Enum.map( &Floki.text/1)
+  end
+
+
+
+  def parse_round(html, round) do
+    categories = Floki.find(html, ".category_name") |> Enum.map( &Floki.text/1)
+
+    Floki.find(html, "td.clue")
+    |> Enum.with_index # [{clue, idx}, ...]
+    |> Enum.map( fn {clue, i} ->
+      parse_clue(clue, i, categories, round)
+    end)
+  end
+
+  def parse_clue(clue, idx, categories, round) do
     category = Enum.at(categories, rem(idx, 6))
-    category_name = category.name
+    round_num = case round do
+                  :jeopardy -> 1
+                  :double_jeopardy -> 2
+                  :final_jeopardy -> 0
+                end
     value = 100 * round_num * (div(idx, 6) + 1)
 
     question = clue |> Floki.find(".clue_text") |> Floki.text
     if question == "" do
-      Ecto.build_assoc(category, :clues, %{value: value, category_name: category.name})
+      %Clue{ value: value, round: Atom.to_string(round), category: category }
     else
       answer = clue |> Floki.attribute("div", "onmouseover") |> List.first |> String.replace(~r/^.*correct_response">(.*)<\/em.*$/, "\\1")
+      is_daily_double = Floki.find(clue, ".clue_value_daily_double") |> Enum.count > 0
+      type = if is_daily_double, do: "daily_double", else: "standard"
 
-      type = cond do
-        Floki.find(clue, ".clue_value_daily_double") |> Enum.count > 0 -> "daily_double"
-        round_num == 1 || round_num == 2 -> "standard"
-        true -> "final_jeopardy"
-      end
-
-      Ecto.build_assoc(category, :clues,
-        %{
-          clue_text: question,
-          answer_text: answer,
-          type: type,
-          value: value,
-          category_name: category_name
-        })
+      %Clue{
+        clue_text: question,
+        answer_text: answer,
+        value: value,
+        round: Atom.to_string(round),
+        type: type,
+        category: category
+      }
     end
   end
 end

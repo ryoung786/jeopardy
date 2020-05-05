@@ -3,12 +3,13 @@ defmodule Jeopardy.JArchive.Clue do
   import Ecto.Changeset
 
   schema "clues" do
-    field :answer_text, :string
     field :clue_text, :string, size: 512
-    field :type, :string
+    field :answer_text, :string
     field :value, :integer
-    field :category_name, :string
-    belongs_to :category, Jeopardy.JArchive.Category
+    field :round, :string
+    field :type, :string
+    field :category, :string
+    belongs_to :game, Jeopardy.JArchive.Game
 
     timestamps()
   end
@@ -17,6 +18,6 @@ defmodule Jeopardy.JArchive.Clue do
   def changeset(clue, attrs) do
     clue
     |> cast(attrs, [:clue_text, :answer_text, :value, :type])
-    |> validate_required([:clue_text, :answer_text, :value, :type])
+    |> validate_required([:clue_text, :answer_text, :value, :round, :type, :category])
   end
 end
