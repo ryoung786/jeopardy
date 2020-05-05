@@ -8,9 +8,10 @@ defmodule Jeopardy.JArchive do
   alias Jeopardy.JArchive.{Game, Clue}
 
   def random_game() do
-    # SELECT * FROM jarchive.games OFFSET floor(random()*2) LIMIT 1;
-    from(g in Game, offset: 0, limit: 1)
-    |> Repo.one()
+    # we use the count of the number of valid games to create a random offset
+    num_games = (from g in Game, select: count(g.id), where: not is_nil(g.final_jeopardy_category)) |> Repo.one()
+    offset = :rand.uniform(num_games)-1
+    (from g in Game, where: not is_nil(g.final_jeopardy_category), offset: ^offset, limit: 1) |> Repo.one()
   end
 
   def specific_game(id), do: Repo.get!(Game, id)
