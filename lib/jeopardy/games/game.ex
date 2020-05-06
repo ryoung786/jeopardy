@@ -1,5 +1,5 @@
 defmodule Jeopardy.Games.Game do
-  use Ecto.Schema
+  use Jeopardy.Games.Schema
   import Ecto.Changeset
 
   schema "games" do
@@ -8,7 +8,16 @@ defmodule Jeopardy.Games.Game do
     field :status, :string, default: "awaiting_start"
     field :round_status, :string, default: "awaiting_start"
     field :trebek, :string, size: 25
-    has_many :players, Jeopardy.Games.Players.Player
+    field :is_active, :boolean, default: true
+
+    field :jarchive_game_id, :id
+    field :jeopardy_round_categories, {:array, :string}
+    field :double_jeopardy_round_categories, {:array, :string}
+    field :final_jeopardy_category, :string
+    field :air_date, :date
+
+    has_many :players, Jeopardy.Games.Player
+    has_many :clues, Jeopardy.Games.Clue
 
     timestamps()
   end
@@ -16,9 +25,11 @@ defmodule Jeopardy.Games.Game do
   @doc false
   def changeset(game, attrs) do
     game
-    |> cast(attrs, [:code, :status, :buzzer])
+    |> cast(attrs, [:code, :status, :buzzer, :round_status, :trebek,
+                   :is_active, :jarchive_game_id, :jeopardy_round_categories,
+                   :double_jeopardy_round_categories, :air_date,
+                   :final_jeopardy_category])
     |> update_change(:code, &String.upcase/1)
-    |> unique_constraint(:code)
     |> validate_required([:code, :status, :round_status])
     |> validate_format(:code, ~r/[A-Z]{4}/, message: "must be 4 uppercase letters")
     |> validate_length(:trebek, max: 25, message: "Keep it short! 25 letters is the max.")

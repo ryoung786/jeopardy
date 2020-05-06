@@ -19,7 +19,6 @@ defmodule JeopardyWeb.PageController do
     with {:ok, _changeset} <- Login.validate(login),
          %Game{} <- Games.get_by_code(code) do
       conn
-      |> put_flash(:info, "Welcome back!")
       |> put_session(:name, name)
       |> put_session(:code, code)
       |> redirect(to: "/games/#{code}")

@@ -1,5 +1,5 @@
 defmodule Jeopardy.Games.Login do
-  use Ecto.Schema
+  use Jeopardy.Games.Schema
   import Ecto.Changeset
 
   embedded_schema do

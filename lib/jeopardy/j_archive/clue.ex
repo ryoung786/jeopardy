@@ -20,6 +20,6 @@ defmodule Jeopardy.JArchive.Clue do
     |> cast(attrs, [:clue_text, :answer_text, :value, :type])
     |> validate_length(:clue_text, max: 1024)
     |> validate_length(:answer_text, max: 512)
-    |> validate_required([:clue_text, :answer_text, :value, :round, :type, :category])
+    |> validate_required([:clue_text, :answer_text, :round, :type, :category])
   end
 end

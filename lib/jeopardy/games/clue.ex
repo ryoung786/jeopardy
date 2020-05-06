@@ -1,14 +1,20 @@
 defmodule Jeopardy.Games.Clue do
-  use Ecto.Schema
+  use Jeopardy.Games.Schema
   import Ecto.Changeset
 
+
   schema "clues" do
-    field :value, :integer, default: 0
-    field :answer_text, :string
+    field :category, :string
     field :clue_text, :string
-    field :status, :string
+    field :answer_text, :string
+    field :value, :integer, default: 0
+    field :round, :string
     field :type, :string
-    belongs_to :game, Jeopardy.Games.Category
+    field :asked_status, :string, default: "unasked"
+    field :wager, :integer
+    field :incorrect_players, {:array, :id}
+    field :correct_players, {:array, :id}
+    belongs_to :game, Jeopardy.Games.Game
 
     timestamps()
   end
@@ -16,7 +22,9 @@ defmodule Jeopardy.Games.Clue do
   @doc false
   def changeset(clue, attrs) do
     clue
-    |> cast(attrs, [:clue_text, :answer_text, :value, :type, :status])
-    |> validate_required([:clue_text, :answer_text, :value, :type, :status])
+    |> cast(attrs, [:category, :clue_text, :answer_text, :value,
+                   :round, :type, :asked_status, :wager,
+                   :incorrect_players, :correct_players])
+    |> validate_required([:clue_text, :answer_text, :type, :asked_status])
   end
 end
