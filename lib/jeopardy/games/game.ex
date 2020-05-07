@@ -5,7 +5,7 @@ defmodule Jeopardy.Games.Game do
   schema "games" do
     field :buzzer, :string
     field :code, :string, null: false, size: 4
-    field :status, :string, default: "awaiting_start"
+    field :status, :string, default: "pre_jeopardy"
     field :round_status, :string
     field :trebek, :string, size: 25
     field :is_active, :boolean, default: true

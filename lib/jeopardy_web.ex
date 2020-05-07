@@ -31,7 +31,8 @@ defmodule JeopardyWeb do
     quote do
       use Phoenix.View,
         root: "lib/jeopardy_web/templates",
-        namespace: JeopardyWeb
+        namespace: JeopardyWeb,
+        pattern: "**/*"
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
@@ -89,6 +90,8 @@ defmodule JeopardyWeb do
       import JeopardyWeb.ErrorHelpers
       import JeopardyWeb.Gettext
       alias JeopardyWeb.Router.Helpers, as: Routes
+
+      def tpl_path(assigns), do: "#{assigns.game.status}/#{assigns.game.round_status}.html"
     end
   end
 

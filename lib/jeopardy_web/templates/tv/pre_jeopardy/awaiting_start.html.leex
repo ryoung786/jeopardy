@@ -2,13 +2,6 @@
 
 <h2>Room Code: <%= @game.code %></h2>
 
-<%= if @game.buzzer != nil do %>
-    <h3><%= @game.buzzer %> has buzzed in!</h3>
-    <%= submit "Clear buzzer", "phx-click": "clear" %>
-<% else %>
-    <h3>Waiting for a player to buzz</h3>
-<% end %>
-
 <%= if length(@audience) > 0 do %>
     <h3>Today's contestants!</h3>
     <ul>

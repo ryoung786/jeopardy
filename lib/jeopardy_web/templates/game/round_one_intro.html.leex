@@ -1,9 +1,0 @@
-<h1>Welcome <%= @name %></h1>
-<%= if @game.buzzer == nil do %>
-    <%= submit "Buzz", "phx-click": "buzz" %>
-<% else %>
-    <%= submit "Buzz", "phx-click": "buzz", disabled: true %>
-<% end %>
-<%= if @game.buzzer != nil do %>
-    <div><%= @game.buzzer %> buzzed in</div>
-<% end %>

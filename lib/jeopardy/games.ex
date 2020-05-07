@@ -5,7 +5,7 @@ defmodule Jeopardy.Games do
 
   import Ecto.Query, warn: false
 
-  alias Jeopardy.Games.{Game, Player}
+  alias Jeopardy.Games.{Game, Player, Clue}
   alias Jeopardy.Repo
   alias Jeopardy.JArchive
   alias Jeopardy.GameState
@@ -29,7 +29,7 @@ defmodule Jeopardy.Games do
   def start(code, player_names) do
     game = get_by_code(code) |> JArchive.load_into_game()
     player_names |> Enum.each(fn name -> add_player(game, name) end)
-    GameState.update_game_status(code, "awaiting_start", "selecting_trebek")
+    GameState.update_round_status(code, "awaiting_start", "selecting_trebek")
   end
 
   def assign_trebek(%Game{code: code} = game, name) do
@@ -38,7 +38,7 @@ defmodule Jeopardy.Games do
       {0, _} -> {:failed, nil}
       {1, [_id]} ->
         # Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:trebek_assigned, name})
-        GameState.update_game_status(code, game.status, "round_one_intro")
+        GameState.update_round_status(code, "selecting_trebek", "introducing_roles")
     end
   end
 
@@ -93,4 +93,15 @@ defmodule Jeopardy.Games do
     |> Repo.insert()
   end
 
+  def clues_by_category(%Game{} = game, round) when round in [:jeopardy, :double_jeopardy] do
+    clues = from(c in Clue,
+      where: c.game_id == ^game.id,
+      where: c.round == ^Atom.to_string(round),
+      order_by: [asc: c.value])
+      |> Repo.all
+    Enum.map(game.jeopardy_round_categories, fn category ->
+      [category: category,
+       clues: clues |> Enum.filter(fn clue -> clue.category == category end)]
+    end)
+  end
 end

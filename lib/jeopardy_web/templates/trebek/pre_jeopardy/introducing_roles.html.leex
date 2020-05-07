@@ -1,0 +1,16 @@
+<h1>Thanks for hosting, <%= @game.trebek %></h1>
+
+<p>
+    As host, it's your job to read clues, call on contestants
+    when they buzz, and determine if they got the clue right or wrong.
+</p>
+
+<p>
+    In general, it's up to you to keep an eye on things and advance the game.
+</p>
+
+<p>
+    When you're ready, click below to introduce the categories for the Jeopardy Round.
+</p>
+
+<%= submit "Let's go!", "phx-click": "advance_to_round" %>

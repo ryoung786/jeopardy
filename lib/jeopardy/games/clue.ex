@@ -27,4 +27,6 @@ defmodule Jeopardy.Games.Clue do
                    :incorrect_players, :correct_players])
     |> validate_required([:clue_text, :answer_text, :type, :asked_status])
   end
+
+  def is_daily_double(%Jeopardy.Games.Clue{} = clue), do: clue.type == "daily_double"
 end

@@ -30,7 +30,7 @@ defmodule JeopardyWeb.GameLive do
 
   @impl true
   def render(assigns) do
-    GameView.render("#{assigns.game.status}.html", assigns)
+    GameView.render(tpl_path(assigns), assigns)
   end
 
   @impl true

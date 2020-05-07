@@ -1,7 +1,9 @@
 defmodule JeopardyWeb.TrebekLive do
   use JeopardyWeb, :live_view
   require Logger
+  alias Jeopardy.Games.Game
   alias Jeopardy.Games
+  alias Jeopardy.GameState
   alias JeopardyWeb.Presence
   alias JeopardyWeb.TrebekView
 
@@ -15,19 +17,17 @@ defmodule JeopardyWeb.TrebekLive do
         if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
         socket = socket
         |> assign(name: name)
-        |> assign(game: game)
-        |> assign(is_trebek: name == game.trebek)
         |> assign(audience: Presence.list_presences(code))
-        |> assign(buzzer: game.buzzer)
+        |> assigns(game)
         {:ok, socket}
-        _ ->
-          {:ok, socket |> put_flash(:info, "Sorry, unauthorized") |> redirect(to: "/")}
+      _ ->
+        {:ok, socket |> put_flash(:info, "Sorry, unauthorized") |> redirect(to: "/")}
     end
   end
 
   @impl true
   def render(assigns) do
-    TrebekView.render("#{assigns.game.status}.html", assigns)
+    TrebekView.render(tpl_path(assigns), assigns)
   end
 
   @impl true
@@ -45,8 +45,14 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
-  def handle_event("introduce_round_one_categories", _, socket) do
-    Logger.info("onwards to round one categories")
+  def handle_event("click_clue", %{"clue_id" => _id}, socket) do
+    # Games.set_current_clue(String.to_integer(id))
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("advance_to_round", _, socket) do
+    GameState.update_game_status(socket.assigns.game.code, "pre_jeopardy", "jeopardy", "revealing_board")
     {:noreply, socket}
   end
 
@@ -59,10 +65,18 @@ defmodule JeopardyWeb.TrebekLive do
   # The db got updated, so let's query for the latest everything
   # and update our assigns
   def handle_info(_, socket) do
+    {:noreply, assigns(socket)}
+  end
+
+  defp assigns(socket) do
     game = Games.get_by_code(socket.assigns.game.code)
-    socket = socket
+    assigns(socket, game)
+  end
+  defp assigns(socket, %Game{} = game) do
+    socket
     |> assign(game: game)
+    |> assign(jeopardy_clues: Games.clues_by_category(game, :jeopardy))
+    |> assign(double_jeopardy_clues: Games.clues_by_category(game, :double_jeopardy))
     |> assign(players: Games.get_just_contestants(game))
-    {:noreply, socket}
   end
 end

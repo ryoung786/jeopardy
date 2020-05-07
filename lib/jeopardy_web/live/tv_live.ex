@@ -18,7 +18,7 @@ defmodule JeopardyWeb.TvLive do
 
   @impl true
   def render(assigns) do
-    TvView.render("#{assigns.game.status}.html", assigns)
+    TvView.render(tpl_path(assigns), assigns)
   end
 
   @impl true
@@ -57,5 +57,7 @@ defmodule JeopardyWeb.TvLive do
     socket
     |> assign(game: game)
     |> assign(players: Games.get_just_contestants(game))
+    |> assign(jeopardy_clues: Games.clues_by_category(game, :jeopardy))
+    |> assign(double_jeopardy_clues: Games.clues_by_category(game, :double_jeopardy))
   end
 end

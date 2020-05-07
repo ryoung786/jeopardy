@@ -1,0 +1,6 @@
+<h1>Welcome <%= @name %></h1>
+
+<h3>Members</h3>
+<%= for name <- @audience do %>
+    <p><%= name %></p>
+<% end %>
