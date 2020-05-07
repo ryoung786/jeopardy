@@ -8,38 +8,15 @@ defmodule Jeopardy.Games do
   alias Jeopardy.Games.{Game, Player}
   alias Jeopardy.Repo
   alias Jeopardy.JArchive
+  alias Jeopardy.GameState
 
-  @doc """
-  Returns the list of games.
-
-  ## Examples
-
-      iex> list_games()
-      [%Game{}, ...]
-
-  """
-  def list_games do
-    Repo.all(Game)
-  end
-
-  @doc """
-  Gets a single game.
-
-  Raises `Ecto.NoResultsError` if the Game does not exist.
-
-  ## Examples
-
-      iex> get_game!(123)
-      %Game{}
-
-      iex> get_game!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_game!(id), do: Repo.get!(Game, id)
+  def get_game!(id), do: Repo.get!(Game |> preload([_,_], [:clues, :players]), id)
 
   def get_by_code(code) do
-    (from g in Game, where: g.code == ^code, where: g.is_active == true)
+    Game
+    |> where([g], g.code == ^code)
+    |> where([g], g.is_active == true)
+    |> preload([_], [:clues, :players])
     |> Repo.one
   end
 
@@ -52,17 +29,7 @@ defmodule Jeopardy.Games do
   def start(code, player_names) do
     game = get_by_code(code) |> JArchive.load_into_game()
     player_names |> Enum.each(fn name -> add_player(game, name) end)
-    update_game_status(code, "awaiting_start", "selecting_trebek")
-  end
-
-  defp update_game_status(code, from, to) do
-    case (from g in Game, where: g.code == ^code and g.status == ^from, select: g.id)
-    |> Repo.update_all_ts(set: [status: to]) do
-      {0, _} -> {:failed, nil}
-      {1, [id]} ->
-        Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:game_status_change, to})
-        {:ok, get_game!(id)}
-    end
+    GameState.update_game_status(code, "awaiting_start", "selecting_trebek")
   end
 
   def assign_trebek(%Game{code: code} = game, name) do
@@ -71,7 +38,7 @@ defmodule Jeopardy.Games do
       {0, _} -> {:failed, nil}
       {1, [_id]} ->
         # Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:trebek_assigned, name})
-        update_game_status(code, game.status, "round_one_intro")
+        GameState.update_game_status(code, game.status, "round_one_intro")
     end
   end
 

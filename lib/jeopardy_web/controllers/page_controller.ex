@@ -17,10 +17,11 @@ defmodule JeopardyWeb.PageController do
     code = String.upcase(code)
 
     with {:ok, _changeset} <- Login.validate(login),
-         %Game{} <- Games.get_by_code(code) do
+         %Game{} = g <- Games.get_by_code(code) do
       conn
       |> put_session(:name, name)
       |> put_session(:code, code)
+      |> put_session(:game_id, g.id)
       |> redirect(to: "/games/#{code}")
     else
       {:error, changeset} -> conn |> render("index.html", changeset: changeset)
