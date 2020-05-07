@@ -1,16 +1,2 @@
-<div style="display:grid; grid-template-columns:repeat(6,1fr); text-align:center; gap: 5px">
-    <%= for [category: category, clues: clues] <- @jeopardy_clues do %>
-        <div class="category" style="display:grid; grid-template-rows:repeat(6,1fr); gap: 5px">
-            <div class="header" style="background:blue; color:white; height:100px; display:grid; place-items:center;">
-                <%= category %>
-            </div>
-            <%= for clue <- clues do %>
-                <div class="clue" style="background:blue; color:gold; height:100px; display:grid; place-items:center;"
-                phx-click="click_clue" phx-value-clue_id=<%= clue.id %>>
-                    $<%= clue.value %>
-                </div>
-            <% end %>
-        </div>
-    <% end %>
-    </div>
-</div>
+<p>When you're finished reading the categories, click below to have a random contestant pick the first clue<p>
+<%= submit "Onward", "phx-click": "finished_intro" %>

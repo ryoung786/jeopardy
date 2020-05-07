@@ -1,7 +1,7 @@
 defmodule JeopardyWeb.TrebekLive do
   use JeopardyWeb, :live_view
   require Logger
-  alias Jeopardy.Games.Game
+  alias Jeopardy.Games.{Game, Clue}
   alias Jeopardy.Games
   alias Jeopardy.GameState
   alias JeopardyWeb.Presence
@@ -45,14 +45,29 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
-  def handle_event("click_clue", %{"clue_id" => _id}, socket) do
-    # Games.set_current_clue(String.to_integer(id))
+  def handle_event("click_clue", %{"clue_id" => id}, socket) do
+    {:ok, game} = Games.set_current_clue(game_from_socket(socket), String.to_integer(id))
+    clue = game.current_clue
+    if Clue.is_daily_double(clue) do
+      5
+      # GameState.update_round_status(socket.assigns.game.code, "selecting_clue", "awaiting_daily_double_wager")
+    else
+      GameState.update_round_status(socket.assigns.game.code, "selecting_clue", "reading_clue")
+    end
+
     {:noreply, socket}
   end
 
   @impl true
   def handle_event("advance_to_round", _, socket) do
     GameState.update_game_status(socket.assigns.game.code, "pre_jeopardy", "jeopardy", "revealing_board")
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("finished_intro", _, socket) do
+    Games.assign_board_control(game_from_socket(socket), :random)
+    GameState.update_round_status(socket.assigns.game.code, "revealing_board", "selecting_clue")
     {:noreply, socket}
   end
 

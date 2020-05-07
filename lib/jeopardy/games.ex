@@ -10,13 +10,13 @@ defmodule Jeopardy.Games do
   alias Jeopardy.JArchive
   alias Jeopardy.GameState
 
-  def get_game!(id), do: Repo.get!(Game |> preload([_,_], [:clues, :players]), id)
+  def get_game!(id), do: Repo.get!(Game |> preload([_], [:clues, :players, :current_clue]), id)
 
   def get_by_code(code) do
     Game
     |> where([g], g.code == ^code)
     |> where([g], g.is_active == true)
-    |> preload([_], [:clues, :players])
+    |> preload([_], [:clues, :players, :current_clue])
     |> Repo.one
   end
 
@@ -40,6 +40,15 @@ defmodule Jeopardy.Games do
         # Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:trebek_assigned, name})
         GameState.update_round_status(code, "selecting_trebek", "introducing_roles")
     end
+  end
+
+  def assign_board_control(%Game{} = game, :random) do
+    player_name = game
+    |> get_just_contestants()
+    |> Enum.random()
+    |> Map.get(:name)
+
+    Game.changeset(game, %{board_control: player_name}) |> Repo.update()
   end
 
   def get_just_contestants(%Game{} = game) do
@@ -103,5 +112,9 @@ defmodule Jeopardy.Games do
       [category: category,
        clues: clues |> Enum.filter(fn clue -> clue.category == category end)]
     end)
+  end
+
+  def set_current_clue(%Game{} = game, clue_id) do
+    Game.changeset(game, %{current_clue: clue_id}) |> Repo.update()
   end
 end

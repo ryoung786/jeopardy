@@ -47,6 +47,8 @@ defmodule JeopardyWeb do
       use Phoenix.LiveView,
         layout: {JeopardyWeb.LayoutView, "live.html"}
 
+      defp game_from_socket(socket), do: Jeopardy.Games.get_by_code(socket.assigns.game.code)
+
       unquote(view_helpers())
     end
   end

@@ -25,8 +25,8 @@ defmodule Mix.Tasks.ParseJArchiveHtmlDir do
     files
   end
   def process_files(files) do
-    Enum.each(files, fn file ->
-      Mix.shell.info("processing: #{inspect(file)}")
+    Enum.with_index(files) |> Enum.each(fn {file, i} ->
+      if rem(i, 100) == 0, do: Mix.shell.info("processed #{i} files")
       with {:ok, f} <- File.read(Path.join(@archive_path, file)) do
         parse(f)
       else

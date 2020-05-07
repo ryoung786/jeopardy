@@ -63,7 +63,7 @@ defmodule JeopardyWeb.GameLive do
   # The db got updated, so let's query for the latest everything
   # and update our assigns
   def handle_info(_, socket) do
-    game = Games.get_by_code(socket.assigns.game.code)
+    game = game_from_socket(socket)
     name = socket.assigns.name
     case game.trebek do
       ^name -> {:noreply, redirect(socket, to: "/games/#{game.code}/trebek")}
