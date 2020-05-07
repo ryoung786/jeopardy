@@ -10,9 +10,12 @@ defmodule Jeopardy.Games.Game do
     field :trebek, :string, size: 25
     field :is_active, :boolean, default: true
 
+    field :board_control, :string, size: 25
+    has_one :current_clue, Jeopardy.Games.Clue
+
     field :jarchive_game_id, :id
-    field :jeopardy_round_categories, {:array, :string}
-    field :double_jeopardy_round_categories, {:array, :string}
+    field :jeopardy_round_categories, {:array, :string}, default: []
+    field :double_jeopardy_round_categories, {:array, :string}, default: []
     field :final_jeopardy_category, :string
     field :air_date, :date
 
@@ -28,7 +31,7 @@ defmodule Jeopardy.Games.Game do
     |> cast(attrs, [:code, :status, :buzzer, :round_status, :trebek,
                    :is_active, :jarchive_game_id, :jeopardy_round_categories,
                    :double_jeopardy_round_categories, :air_date,
-                   :final_jeopardy_category])
+                   :final_jeopardy_category, :board_control])
     |> update_change(:code, &String.upcase/1)
     |> validate_required([:code, :status, :is_active])
     |> validate_format(:code, ~r/[A-Z]{4}/, message: "must be 4 uppercase letters")

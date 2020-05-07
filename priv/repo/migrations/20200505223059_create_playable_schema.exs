@@ -16,9 +16,12 @@ defmodule Jeopardy.Repo.Migrations.CreatePlayableSchema do
       add :buzzer, :string
       add :is_active, :boolean
 
+      add :board_control, :string, size: 25
+      add :current_clue_id, :id
+
       add :jarchive_game_id, references(:games, prefix: "jarchive")
-      add :jeopardy_round_categories, {:array, :string}
-      add :double_jeopardy_round_categories, {:array, :string}
+      add :jeopardy_round_categories, {:array, :string}, default: []
+      add :double_jeopardy_round_categories, {:array, :string}, default: []
       add :final_jeopardy_category, :string
       add :air_date, :date
 
