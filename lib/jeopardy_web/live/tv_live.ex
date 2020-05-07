@@ -19,6 +19,7 @@ defmodule JeopardyWeb.TvLive do
 
   @impl true
   def render(assigns) do
+    Logger.info("Now we render board control: #{inspect(assigns.game)}")
     TvView.render(tpl_path(assigns), assigns)
   end
 
@@ -51,6 +52,10 @@ defmodule JeopardyWeb.TvLive do
   # and update our assigns
   def handle_info(_, socket) do
     game = Games.get_by_code(socket.assigns.game.code)
+
+    Logger.info("aaaWe got an update in tv_live.  Game is now #{inspect(game)}")
+    Logger.info("aaaBoard Control is now #{inspect(game.board_control)}")
+
     {:noreply, assigns(socket, game)}
   end
 
