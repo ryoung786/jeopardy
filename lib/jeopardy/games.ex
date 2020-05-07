@@ -10,13 +10,13 @@ defmodule Jeopardy.Games do
   alias Jeopardy.JArchive
   alias Jeopardy.GameState
 
-  def get_game!(id), do: Repo.get!(Game |> preload([_], [:clues, :players, :current_clue]), id)
+  def get_game!(id), do: Repo.get!(Game |> preload([_], [:players]), id)
 
   def get_by_code(code) do
     Game
     |> where([g], g.code == ^code)
     |> where([g], g.is_active == true)
-    |> preload([_], [:clues, :players, :current_clue])
+    |> preload([_], [:players])
     |> Repo.one
   end
 
@@ -77,22 +77,26 @@ defmodule Jeopardy.Games do
     |> Repo.one > 0
   end
 
-  def buzzer(%Game{code: code}, name), do: buzzer(code, name)
-  def buzzer(code, name) do
-    case (from g in Game, where: g.code == ^code and is_nil(g.buzzer), select: g.id)
-    |> Repo.update_all_ts(set: [buzzer: name]) do
+  def player_buzzer(%Game{} = game, name) do
+    q = (from g in Game,
+      where: g.id == ^game.id,
+      where: g.buzzer_lock_status == "clear",
+      where: is_nil(g.buzzer_player),
+      select: g.id)
+    case Repo.update_all_ts(q, set: [buzzer_player: name, buzzer_lock_status: "player"]) do
       {0, _} -> {:failed, nil}
       {1, [id]} ->
-        Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:buzz, name})
+      # Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, {:buzz, name})
+      # reset clue timer
+        # start contestant timer
         {:ok, get_game!(id)}
     end
   end
-  def clear_buzzer(%Game{code: code}), do: clear_buzzer(code)
-  def clear_buzzer(code) do
-    {_num, [id]} = (from g in Game, where: g.code == ^code, select: g.id)
-    |> Repo.update_all_ts(set: [buzzer: nil])
-    Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, :clear)
-    get_game!(id)
+  def clear_buzzer(%Game{} = game) do
+    (from g in Game, where: g.id == ^game.id)
+    |> Repo.update_all_ts(set: [buzzer_player: nil, buzzer_lock_status: "clear"])
+    Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, :clear)
+    get_game!(game.id)
   end
 
   def players(%Game{} = game), do: Repo.all Ecto.assoc(game, :players)
@@ -115,6 +119,6 @@ defmodule Jeopardy.Games do
   end
 
   def set_current_clue(%Game{} = game, clue_id) do
-    Game.changeset(game, %{current_clue: clue_id}) |> Repo.update()
+    Game.changeset(game, %{current_clue_id: clue_id}) |> Repo.update()
   end
 end

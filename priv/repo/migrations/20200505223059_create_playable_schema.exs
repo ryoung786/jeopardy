@@ -13,11 +13,12 @@ defmodule Jeopardy.Repo.Migrations.CreatePlayableSchema do
       add :status, :string, default: "awaiting_start"
       add :round_status, :string, default: "awaiting_start"
       add :trebek, :string, size: 25
-      add :buzzer, :string
       add :is_active, :boolean
 
       add :board_control, :string, size: 25
       add :current_clue_id, :id
+      add :buzzer_player, :string
+      add :buzzer_lock_status, :string, default: "locked"
 
       add :jarchive_game_id, references(:games, prefix: "jarchive")
       add :jeopardy_round_categories, {:array, :string}, default: []

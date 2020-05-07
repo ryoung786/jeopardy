@@ -2,6 +2,7 @@ defmodule JeopardyWeb.TvLive do
   use JeopardyWeb, :live_view
   require Logger
   alias Jeopardy.Games
+  alias Jeopardy.Games.Game
   alias JeopardyWeb.Presence
   alias JeopardyWeb.TvView
 
@@ -57,6 +58,7 @@ defmodule JeopardyWeb.TvLive do
     socket
     |> assign(game: game)
     |> assign(players: Games.get_just_contestants(game))
+    |> assign(current_clue: Game.current_clue(game))
     |> assign(jeopardy_clues: Games.clues_by_category(game, :jeopardy))
     |> assign(double_jeopardy_clues: Games.clues_by_category(game, :double_jeopardy))
   end

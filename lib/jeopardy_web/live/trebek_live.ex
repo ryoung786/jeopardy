@@ -31,30 +31,8 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
-  def handle_event("buzz", _, %{assigns: %{name: name, game: %{code: code}}} = socket) do
-    Logger.info("buzz attempt by #{name}")
-    Games.buzzer(code, name)
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("clear", _, %{assigns: %{name: name, game: %{code: code}}} = socket) do
-    Logger.info("#{name} attempted to clear the buzzer")
-    Games.clear_buzzer(code)
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("click_clue", %{"clue_id" => id}, socket) do
-    {:ok, game} = Games.set_current_clue(game_from_socket(socket), String.to_integer(id))
-    clue = game.current_clue
-    if Clue.is_daily_double(clue) do
-      5
-      # GameState.update_round_status(socket.assigns.game.code, "selecting_clue", "awaiting_daily_double_wager")
-    else
-      GameState.update_round_status(socket.assigns.game.code, "selecting_clue", "reading_clue")
-    end
-
+  def handle_event("clear", _, socket) do
+    Games.clear_buzzer(game_from_socket(socket))
     {:noreply, socket}
   end
 
@@ -68,6 +46,29 @@ defmodule JeopardyWeb.TrebekLive do
   def handle_event("finished_intro", _, socket) do
     Games.assign_board_control(game_from_socket(socket), :random)
     GameState.update_round_status(socket.assigns.game.code, "revealing_board", "selecting_clue")
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("click_clue", %{"clue_id" => id}, socket) do
+    {:ok, game} = Games.set_current_clue(game_from_socket(socket), String.to_integer(id))
+    Logger.info("Gggg #{inspect(game)}")
+    clue = Game.current_clue(game)
+    if Clue.is_daily_double(clue) do
+      5 # GameState.update_round_status(socket.assigns.game.code, "selecting_clue", "awaiting_daily_double_wager")
+    else
+      GameState.update_round_status(socket.assigns.game.code, "selecting_clue", "reading_clue")
+    end
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("start_clue_timer", _, socket) do
+    # dealing with timers later
+    game = game_from_socket(socket)
+    |> Games.clear_buzzer()
+    GameState.update_round_status(game.code, "reading_clue", "awaiting_buzzer")
     {:noreply, socket}
   end
 

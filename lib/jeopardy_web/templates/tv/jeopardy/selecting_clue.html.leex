@@ -5,8 +5,7 @@
                 <%= category %>
             </div>
             <%= for clue <- clues do %>
-                <div class="clue" style="background:blue; color:gold; height:100px; display:grid; place-items:center;"
-                phx-click="click_clue" phx-value-clue_id=<%= clue.id %>>
+                <div class="clue" style="background:blue; color:gold; height:100px; display:grid; place-items:center;">
                     $<%= clue.value %>
                 </div>
             <% end %>

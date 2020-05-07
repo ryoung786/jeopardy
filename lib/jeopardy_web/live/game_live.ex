@@ -2,6 +2,8 @@ defmodule JeopardyWeb.GameLive do
   use JeopardyWeb, :live_view
   require Logger
   alias Jeopardy.Games
+  alias Jeopardy.Games.Game
+  alias Jeopardy.GameState
   alias JeopardyWeb.Presence
   alias JeopardyWeb.GameView
 
@@ -21,8 +23,8 @@ defmodule JeopardyWeb.GameLive do
         socket = socket
         |> assign(name: name)
         |> assign(game: game)
+        |> assign(current_clue: Game.current_clue(game))
         |> assign(audience: Presence.list_presences(code))
-        |> assign(buzzer: game.buzzer)
 
         {:ok, socket}
     end
@@ -34,9 +36,10 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
-  def handle_event("buzz", _, %{assigns: %{name: name, game: %{code: code}}} = socket) do
+  def handle_event("buzz", _, %{assigns: %{name: name}} = socket) do
     Logger.info("buzz attempt by #{name}")
-    Games.buzzer(code, name)
+    {:ok, game} = Games.player_buzzer(game_from_socket(socket), name)
+    GameState.update_round_status(game.code, "awaiting_buzzer", "answering_clue")
     {:noreply, socket}
   end
 
@@ -71,6 +74,7 @@ defmodule JeopardyWeb.GameLive do
         socket = socket
         |> assign(game: game)
         |> assign(players: Games.get_just_contestants(game))
+        |> assign(current_clue: Game.current_clue(game))
         {:noreply, socket}
     end
   end
