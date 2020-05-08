@@ -94,6 +94,8 @@ defmodule JeopardyWeb do
       alias JeopardyWeb.Router.Helpers, as: Routes
 
       def tpl_path(assigns), do: "#{assigns.game.status}/#{assigns.game.round_status}.html"
+
+      def should_display_clue(clue), do: not is_nil(clue) && not Jeopardy.Games.Clue.asked(clue) && clue.clue_text != ""
     end
   end
 

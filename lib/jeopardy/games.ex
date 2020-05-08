@@ -140,7 +140,7 @@ defmodule Jeopardy.Games do
 
     # record player correctly answered clue and update clue's status
     {_, [clue|_]} = from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
-    |> Repo.update_all_ts(push: [correct_players: player_id], set: [asked_status: "asked"])
+    |> Repo.update_all_ts(push: [correct_players: player_id], set: [asked_status: "asked"]) # TODO: will need to move this to when question is revealed, not when it's answered
 
     # increase score of buzzer player by current clue value
     from(p in Player, select: p, where: p.id == ^player_id)

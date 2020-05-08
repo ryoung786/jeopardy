@@ -29,4 +29,5 @@ defmodule Jeopardy.Games.Clue do
   end
 
   def is_daily_double(clue), do: not is_nil(clue) && clue.type == "daily_double"
+  def asked(clue), do: not is_nil(clue) && clue.asked_status == "asked"
 end
