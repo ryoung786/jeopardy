@@ -51,6 +51,10 @@ defmodule Jeopardy.Games do
     Game.changeset(game, %{board_control: player_name}) |> Repo.update()
   end
 
+  def assign_board_control(%Game{} = game, player_name) do
+    Game.changeset(game, %{board_control: player_name}) |> Repo.update()
+  end
+
   def get_just_contestants(%Game{} = game) do
     from(p in Player, where: p.game_id == ^game.id and p.name != ^game.trebek) |> Repo.all
   end
@@ -98,6 +102,12 @@ defmodule Jeopardy.Games do
     Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, :clear)
     get_game!(game.id)
   end
+  def lock_buzzer(%Game{} = game) do
+    (from g in Game, where: g.id == ^game.id)
+    |> Repo.update_all_ts(set: [buzzer_player: nil, buzzer_lock_status: "locked"])
+    Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, :locked)
+    get_game!(game.id)
+  end
 
   def players(%Game{} = game), do: Repo.all Ecto.assoc(game, :players)
 
@@ -120,5 +130,39 @@ defmodule Jeopardy.Games do
 
   def set_current_clue(%Game{} = game, clue_id) do
     Game.changeset(game, %{current_clue_id: clue_id}) |> Repo.update()
+  end
+
+  def correct_answer(%Game{} = game) do
+    player_id = from(
+      p in Player, select: p.id,
+      where: p.name == ^game.buzzer_player, where: p.game_id == ^game.id
+    ) |> Repo.one
+
+    # record player correctly answered clue and update clue's status
+    {_, [clue|_]} = from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
+    |> Repo.update_all_ts(push: [correct_players: player_id], set: [asked_status: "asked"])
+
+    # increase score of buzzer player by current clue value
+    from(p in Player, select: p, where: p.id == ^player_id)
+    |> Repo.update_all_ts(inc: [score: clue.value], push: [correct_answers: clue.id])
+
+    game
+  end
+
+  def incorrect_answer(%Game{} = game) do
+    player_id = from(
+      p in Player, select: p.id,
+      where: p.name == ^game.buzzer_player, where: p.game_id == ^game.id
+    ) |> Repo.one
+
+    # record player correctly answered clue and update clue's status
+    {_, [clue|_]} = from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
+    |> Repo.update_all_ts(push: [incorrect_players: player_id])
+
+    # clue = Game.current_clue(game)
+
+    # increase score of buzzer player by current clue value
+    from(p in Player, select: p, where: p.id == ^player_id)
+    |> Repo.update_all_ts(inc: [score: -1 * clue.value], push: [correct_answers: clue.id])
   end
 end

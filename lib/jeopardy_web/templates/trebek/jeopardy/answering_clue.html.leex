@@ -2,5 +2,5 @@
     <%= @game.buzzer_player %> buzzed in
 </p>
 
-<%= submit "Correct" %>
-<%= submit "Incorrect" %>
+<%= submit "Correct", "phx-click": "correct" %>
+<%= submit "Incorrect", "phx-click": "incorrect" %>

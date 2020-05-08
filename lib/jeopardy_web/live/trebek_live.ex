@@ -64,6 +64,18 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
+  def handle_event("correct", _, socket) do
+    g = game_from_socket(socket)
+    g
+    |> Games.correct_answer()
+    |> Games.lock_buzzer()
+    |> Games.assign_board_control(g.buzzer_player)
+    GameState.update_round_status(socket.assigns.game.code, "answering_clue", "selecting_clue")
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("start_clue_timer", _, socket) do
     # dealing with timers later
     game = game_from_socket(socket)
