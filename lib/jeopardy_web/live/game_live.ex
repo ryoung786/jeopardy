@@ -44,8 +44,7 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
-  def handle_event("clear", _, %{assigns: %{name: name, game: %{code: code}}} = socket) do
-    Logger.info("#{name} attempted to clear the buzzer")
+  def handle_event("clear", _, %{assigns: %{game: %{code: code}}} = socket) do
     Games.clear_buzzer(code)
     {:noreply, socket}
   end

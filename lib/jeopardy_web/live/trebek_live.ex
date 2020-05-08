@@ -52,7 +52,6 @@ defmodule JeopardyWeb.TrebekLive do
   @impl true
   def handle_event("click_clue", %{"clue_id" => id}, socket) do
     {:ok, game} = Games.set_current_clue(game_from_socket(socket), String.to_integer(id))
-    Logger.info("Gggg #{inspect(game)}")
     clue = Game.current_clue(game)
     if Clue.is_daily_double(clue) do
       5 # GameState.update_round_status(socket.assigns.game.code, "selecting_clue", "awaiting_daily_double_wager")
@@ -83,6 +82,12 @@ defmodule JeopardyWeb.TrebekLive do
     |> Games.lock_buzzer()
     GameState.update_round_status(socket.assigns.game.code, "answering_clue", "revealing_answer")
 
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("revealed_answer", _, socket) do
+    GameState.update_round_status(socket.assigns.game.code, "revealing_answer", "selecting_clue")
     {:noreply, socket}
   end
 

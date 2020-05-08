@@ -1,6 +1,6 @@
 defmodule Jeopardy.Games.Game do
   use Jeopardy.Games.Schema
-  import Ecto.{Changeset, Query}
+  import Ecto.Changeset
 
   schema "games" do
     field :code, :string, null: false, size: 4
