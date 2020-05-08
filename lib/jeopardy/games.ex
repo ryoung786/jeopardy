@@ -155,14 +155,14 @@ defmodule Jeopardy.Games do
       where: p.name == ^game.buzzer_player, where: p.game_id == ^game.id
     ) |> Repo.one
 
-    # record player correctly answered clue and update clue's status
+    # record player incorrectly answered clue and update clue's status
     {_, [clue|_]} = from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
-    |> Repo.update_all_ts(push: [incorrect_players: player_id])
-
-    # clue = Game.current_clue(game)
+    |> Repo.update_all_ts(push: [incorrect_players: player_id], set: [asked_status: "asked"])
 
     # increase score of buzzer player by current clue value
     from(p in Player, select: p, where: p.id == ^player_id)
-    |> Repo.update_all_ts(inc: [score: -1 * clue.value], push: [correct_answers: clue.id])
+    |> Repo.update_all_ts(inc: [score: -1 * clue.value], push: [incorrect_answers: clue.id])
+
+    game
   end
 end
