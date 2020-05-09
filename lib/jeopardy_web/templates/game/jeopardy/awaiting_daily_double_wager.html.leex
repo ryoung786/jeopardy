@@ -1,7 +1,7 @@
 <div class="daily-double">
     <%= if @game.buzzer_player == @player.name do %>
-        <%= live_component @socket, JeopardyWeb.WagerComponent,
-        id: "1", min: 5, max: 10, changeset: :wager %>
+        <%= live_component @socket, JeopardyWeb.WagerComponent, player: @player,
+        id: "1", changeset: :wager, clue: @current_clue, game_code: @game.code %>
     <% else %>
         <h6><%= @player.name %> hit the Daily Double!</h6>
         <p>Waiting for them to make their wager</p>

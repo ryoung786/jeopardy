@@ -22,4 +22,10 @@ defmodule Jeopardy.Games.Player do
     |> validate_length(:name, max: 25, message: "Keep it short! 25 letters is the max.")
     |> assoc_constraint(:game)
   end
+
+  def min_max_wagers(%Jeopardy.Games.Player{} = p) do
+    min = 5
+    max = max(1000, p.score)
+    {min, max}
+  end
 end

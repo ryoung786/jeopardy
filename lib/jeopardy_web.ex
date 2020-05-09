@@ -97,7 +97,9 @@ defmodule JeopardyWeb do
 
       def should_display_clue(clue), do: not is_nil(clue) && not Jeopardy.Games.Clue.asked(clue) && not is_nil(clue.clue_text)
 
-      "generate a num 1-9 based on the player name and game id, so we can give them a unique font"
+      """
+      generate a num 1-9 based on the player name and game id, so we can give them a unique font
+      """
       def font_from_name(name, game_id) do
         x = :crypto.hash(:sha256, name) |> Base.encode16 |> Integer.parse(16) |> elem(0) |> (&(&1*game_id)).() |> rem(9)
         "font_#{x}"
