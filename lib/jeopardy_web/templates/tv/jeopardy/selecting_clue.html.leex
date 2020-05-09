@@ -1,6 +1,6 @@
 <div class="tv selecting_clue">
     <%= live_component @socket, JeopardyWeb.BoardComponent, board: @jeopardy_clues %>
     <%= live_component @socket, JeopardyWeb.ScoreboardComponent,
-    contestants: @players,
+    contestants: @players, game_id: @game.id,
     buzzer: %{lock_status: @game.buzzer_lock_status, player_name: @game.buzzer_player} %>
 </div>

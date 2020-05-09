@@ -1,5 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Arizonia&family=Cedarville+Cursive&family=Coming+Soon&family=Crafty+Girls&family=Dawning+of+a+New+Day&family=Dokdo&family=Gloria+Hallelujah&family=Rock+Salt&family=Vibur&display=swap');
 @import "board";
 @import "scoreboard";
+
+.font_0 { font-family: "Vibur", cursive; font-size: 2.5rem; }
+.font_1 { font-family: "Arizonia", cursive; }
+.font_2 { font-family: "Cedarville Cursive", cursive; }
+.font_3 { font-family: "Coming Soon", cursive; }
+.font_4 { font-family: "Crafty Girls", cursive; }
+.font_5 { font-family: "Dawning of a New Day", cursive; }
+.font_6 { font-family: "Dokdo", cursive; font-size: 2.5rem; }
+.font_7 { font-family: "Gloria Hallelujah", cursive; }
+.font_8 { font-family: "Rock Salt", cursive; }
 
 .tv.selecting_clue {
     display: grid;

@@ -8,15 +8,15 @@
         <div class="black"></div>
         <div class="brown"></div>
     </div>
-    <%= for contestant <- @contestants do %>
+    <%= for c <- @contestants do %>
         <div class="podium">
-            <%= if contestant.score < 0 do %>
-                <div class="score negative">-$<%= abs(contestant.score) %></div>
+            <%= if c.score < 0 do %>
+                <div class="score negative">-$<%= abs(c.score) %></div>
             <% else %>
-                <div class="score">$<%= contestant.score %></div>
+                <div class="score">$<%= c.score %></div>
             <% end %>
             <div class="bg"></div>
-            <div class="name"><%= contestant.name %></div>
+            <div class="name <%= font_from_name(c.name, @game_id) %>"><%= c.name %></div>
             <div class="bg"></div>
         </div>
     <% end %>
