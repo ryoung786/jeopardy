@@ -12,6 +12,7 @@ defmodule JeopardyWeb.GameLive do
     game = Games.get_by_code(code)
     trebek_name = game.trebek
     Presence.track(self(), code, name, %{name: name})
+    player = Games.get_player(game, name)
 
     case name do
       "" -> {:ok, socket |> put_flash(:info, "Please enter a name") |> redirect(to: "/")}
@@ -23,7 +24,8 @@ defmodule JeopardyWeb.GameLive do
         socket = socket
         |> assign(name: name)
         |> assign(game: game)
-        |> assign(can_buzz: Games.can_buzz?(game, Games.get_player(game, name)))
+        |> assign(player: player)
+        |> assign(can_buzz: Games.can_buzz?(game, player))
         |> assign(current_clue: Game.current_clue(game))
         |> assign(audience: Presence.list_presences(code))
 
@@ -69,12 +71,14 @@ defmodule JeopardyWeb.GameLive do
   def handle_info(_, socket) do
     game = game_from_socket(socket)
     name = socket.assigns.name
+    player = Games.get_player(game, name)
     case game.trebek do
       ^name -> {:noreply, redirect(socket, to: "/games/#{game.code}/trebek")}
       _ ->
         socket = socket
         |> assign(game: game)
-        |> assign(can_buzz: Games.can_buzz?(game, Games.get_player(game, name)))
+        |> assign(player: player)
+        |> assign(can_buzz: Games.can_buzz?(game, player))
         |> assign(players: Games.get_just_contestants(game))
         |> assign(current_clue: Game.current_clue(game))
         {:noreply, socket}
