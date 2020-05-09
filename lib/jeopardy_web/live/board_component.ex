@@ -4,7 +4,7 @@ defmodule JeopardyWeb.BoardComponent do
 
   def render(assigns) do
     ~L"""
-    <div class="board"">
+    <div class="board">
     <%= for [category: category, clues: clues] <- @board do %>
         <div class="category">
             <div class="header">
