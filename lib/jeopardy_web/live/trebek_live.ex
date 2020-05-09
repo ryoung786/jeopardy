@@ -79,8 +79,7 @@ defmodule JeopardyWeb.TrebekLive do
     g = game_from_socket(socket)
     g
     |> Games.incorrect_answer()
-    |> Games.lock_buzzer()
-    GameState.update_round_status(socket.assigns.game.code, "answering_clue", "revealing_answer")
+    # ^ moved to awaiting_buzzer if more contestants left, otherwise revealing_answer
 
     {:noreply, socket}
   end

@@ -1,3 +1,7 @@
-<%= submit "Buzz", "phx-click": "buzz" %>
+<%= if @can_buzz do %>
+    <%= submit "Buzz", "phx-click": "buzz" %>
+<% else %>
+    <%= submit "Buzz", ["phx-click": "buzz", disabled: true] %>
+<% end %>
 
 <h2>current clue: <%= @current_clue.category %>: $<%= @current_clue.value %></h2>

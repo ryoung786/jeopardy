@@ -5,6 +5,7 @@ defmodule Jeopardy.Games do
 
   import Ecto.Query, warn: false
 
+  alias Jeopardy.Games
   alias Jeopardy.Games.{Game, Player, Clue}
   alias Jeopardy.Repo
   alias Jeopardy.JArchive
@@ -81,12 +82,30 @@ defmodule Jeopardy.Games do
     |> Repo.one > 0
   end
 
+  def can_buzz?(%Game{} = game, %Player{} = player) do
+    (from g in Game,
+      where: g.id == ^game.id,
+      where: g.buzzer_lock_status == "clear",
+      where: is_nil(g.buzzer_player),
+      join: c in Clue, on: c.id == g.current_clue_id, on: ^player.id not in c.incorrect_players,
+      select: g) |> Repo.one() |> is_nil() |> Kernel.not()
+  end
+
   def player_buzzer(%Game{} = game, name) do
+    # [game, clue] = (from g in Game, where: g.id == 12, where: g.buzzer_lock_status == "clear", where: is_nil(g.buzzer_player), join: c in Clue, on: c.id == g.current_clue_id, select: [g, c]) |> Repo.one
+    player = get_player(game, name)
     q = (from g in Game,
       where: g.id == ^game.id,
       where: g.buzzer_lock_status == "clear",
       where: is_nil(g.buzzer_player),
+      join: c in Clue, on: c.id == g.current_clue_id, on: ^player.id not in c.incorrect_players,
       select: g.id)
+
+    # q = (from g in Game,
+    #   where: g.id == ^game.id,
+    #   where: g.buzzer_lock_status == "clear",
+    #   where: is_nil(g.buzzer_player),
+    #   select: g.id)
     case Repo.update_all_ts(q, set: [buzzer_player: name, buzzer_lock_status: "player"]) do
       {0, _} -> {:failed, nil}
       {1, [id]} ->
@@ -163,6 +182,18 @@ defmodule Jeopardy.Games do
     from(p in Player, select: p, where: p.id == ^player_id)
     |> Repo.update_all_ts(inc: [score: -1 * clue.value], push: [incorrect_answers: clue.id])
 
+    case Clue.contestants_remaining?(clue) do
+      true ->
+        Games.clear_buzzer(game)
+        GameState.update_round_status(game.code, "answering_clue", "awaiting_buzzer")
+      _ ->
+        Games.lock_buzzer(game)
+        GameState.update_round_status(game.code, "answering_clue", "revealing_answer")
+    end
+
     game
+  end
+
+  def next_round_after_incorrect_answer(%Game{} = game) do
   end
 end

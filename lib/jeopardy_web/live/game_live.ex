@@ -23,6 +23,7 @@ defmodule JeopardyWeb.GameLive do
         socket = socket
         |> assign(name: name)
         |> assign(game: game)
+        |> assign(can_buzz: Games.can_buzz?(game, Games.get_player(game, name)))
         |> assign(current_clue: Game.current_clue(game))
         |> assign(audience: Presence.list_presences(code))
 
@@ -38,8 +39,9 @@ defmodule JeopardyWeb.GameLive do
   @impl true
   def handle_event("buzz", _, %{assigns: %{name: name}} = socket) do
     Logger.info("buzz attempt by #{name}")
-    {:ok, game} = Games.player_buzzer(game_from_socket(socket), name)
-    GameState.update_round_status(game.code, "awaiting_buzzer", "answering_clue")
+    with {:ok, game} <- Games.player_buzzer(game_from_socket(socket), name) do
+      GameState.update_round_status(game.code, "awaiting_buzzer", "answering_clue")
+    end
     {:noreply, socket}
   end
 
@@ -72,6 +74,7 @@ defmodule JeopardyWeb.GameLive do
       _ ->
         socket = socket
         |> assign(game: game)
+        |> assign(can_buzz: Games.can_buzz?(game, Games.get_player(game, name)))
         |> assign(players: Games.get_just_contestants(game))
         |> assign(current_clue: Game.current_clue(game))
         {:noreply, socket}
