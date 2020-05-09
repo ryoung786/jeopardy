@@ -162,8 +162,9 @@ defmodule Jeopardy.Games do
     |> Repo.update_all_ts(push: [correct_players: player_id], set: [asked_status: "asked"]) # TODO: will need to move this to when question is revealed, not when it's answered
 
     # increase score of buzzer player by current clue value
+    amount = if Clue.is_daily_double(clue), do: clue.wager, else: clue.value
     from(p in Player, select: p, where: p.id == ^player_id)
-    |> Repo.update_all_ts(inc: [score: clue.value], push: [correct_answers: clue.id])
+    |> Repo.update_all_ts(inc: [score: amount], push: [correct_answers: clue.id])
 
     game
   end
@@ -179,16 +180,22 @@ defmodule Jeopardy.Games do
     |> Repo.update_all_ts(push: [incorrect_players: player_id], set: [asked_status: "asked"])
 
     # increase score of buzzer player by current clue value
+    amount = if Clue.is_daily_double(clue), do: clue.wager, else: clue.value
     from(p in Player, select: p, where: p.id == ^player_id)
-    |> Repo.update_all_ts(inc: [score: -1 * clue.value], push: [incorrect_answers: clue.id])
+    |> Repo.update_all_ts(inc: [score: -1 * amount], push: [incorrect_answers: clue.id])
 
-    case Clue.contestants_remaining?(clue) do
-      true ->
-        Games.clear_buzzer(game)
-        GameState.update_round_status(game.code, "answering_clue", "awaiting_buzzer")
-      _ ->
-        Games.lock_buzzer(game)
-        GameState.update_round_status(game.code, "answering_clue", "revealing_answer")
+    if Clue.is_daily_double(clue) do
+      Games.lock_buzzer(game)
+      GameState.update_round_status(game.code, "answering_daily_double", "revealing_answer")
+    else
+      case Clue.contestants_remaining?(clue) do
+        true ->
+          Games.clear_buzzer(game)
+          GameState.update_round_status(game.code, "answering_clue", "awaiting_buzzer")
+        _ ->
+          Games.lock_buzzer(game)
+          GameState.update_round_status(game.code, "answering_clue", "revealing_answer")
+      end
     end
 
     game

@@ -17,6 +17,7 @@ defmodule JeopardyWeb.TrebekLive do
         if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
         socket = socket
         |> assign(name: name)
+        |> assign(current_clue: Game.current_clue(game))
         |> assign(audience: Presence.list_presences(code))
         |> assigns(game)
         {:ok, socket}
@@ -63,13 +64,19 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
+  def handle_event("start_daily_double_timer", _, socket) do
+    GameState.update_round_status(socket.assigns.game.code, "reading_daily_double", "answering_daily_double")
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("correct", _, socket) do
     g = game_from_socket(socket)
     g
     |> Games.correct_answer()
     |> Games.lock_buzzer()
     |> Games.assign_board_control(g.buzzer_player)
-    GameState.update_round_status(socket.assigns.game.code, "answering_clue", "selecting_clue")
+    GameState.update_round_status(socket.assigns.game.code, g.round_status, "selecting_clue") # hack, i know
 
     {:noreply, socket}
   end
@@ -79,7 +86,6 @@ defmodule JeopardyWeb.TrebekLive do
     g = game_from_socket(socket)
     g
     |> Games.incorrect_answer()
-    # ^ moved to awaiting_buzzer if more contestants left, otherwise revealing_answer
 
     {:noreply, socket}
   end
@@ -120,6 +126,7 @@ defmodule JeopardyWeb.TrebekLive do
     |> assign(game: game)
     |> assign(jeopardy_clues: Games.clues_by_category(game, :jeopardy))
     |> assign(double_jeopardy_clues: Games.clues_by_category(game, :double_jeopardy))
+    |> assign(current_clue: Game.current_clue(game))
     |> assign(players: Games.get_just_contestants(game))
   end
 end
