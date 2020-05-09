@@ -1,0 +1,23 @@
+<div class="scoreboard">
+    <div class="bg">
+        <div class="brown"></div>
+        <div class="light"></div>
+        <div class="brown"></div>
+        <div class="light"></div>
+        <div class="brown"></div>
+        <div class="black"></div>
+        <div class="brown"></div>
+    </div>
+    <%= for contestant <- @contestants do %>
+        <div class="podium">
+            <%= if contestant.score < 0 do %>
+                <div class="score negative">-$<%= abs(contestant.score) %></div>
+            <% else %>
+                <div class="score">$<%= contestant.score %></div>
+            <% end %>
+            <div class="bg"></div>
+            <div class="name"><%= contestant.name %></div>
+            <div class="bg"></div>
+        </div>
+    <% end %>
+</div>

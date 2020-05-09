@@ -3,6 +3,8 @@
     grid-template-columns: repeat(6,1fr);
     text-align:center;
     gap: 5px;
+    font-family: "Georgia";
+    text-transform: uppercase;
 }
 
 .board > .category {
@@ -11,18 +13,19 @@
     gap: 5px;
 }
 
-.board > .category > .header {
+.board > .category > div {
     background:blue;
     color:white;
-    height:100px;
+    min-height:70px;
     display:grid;
     place-items:center;
+    padding: 10px;
+    text-shadow: 2px 2px 2px black;
 }
 
 .board > .category > .clue {
-    background:blue;
-    color:gold;
-    height:100px;
-    display:grid;
-    place-items:center;
+    color:#DDA95E;
+    font-size: 3rem;
+    font-weight: bold;
+    font-family: "Helvetica"
 }

@@ -1,2 +1,9 @@
 @import "board";
 @import "scoreboard";
+
+.tv.selecting_clue {
+    display: grid;
+    grid-template-rows: 1fr 200px;
+    justify-content: center;
+    gap: 20px;
+}

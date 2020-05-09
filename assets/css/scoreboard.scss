@@ -1,1 +1,62 @@
+.scoreboard {
+    display: flex;
+    justify-content: space-evenly;
+    position: relative;
+    text-shadow: 2px 2px 2px black;
+}
 
+.scoreboard > .bg {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: red;
+    z-index: -1;
+    grid-column: first / last;
+    display: grid;
+    grid-template-rows: 15px 5px 15px 5px 20px 1fr 10px;
+}
+
+.scoreboard > .bg > .brown {
+    background: #5F3929;
+}
+.scoreboard > .bg > .light {
+    background: #DAB777;
+}
+.scoreboard > .bg > .black {
+    background: #221E21;
+}
+
+.podium {
+    display: grid;
+    grid-template-rows: 50px 20px 70px 1fr;
+    border-left: 5px solid #5F3929;
+    border-right: 5px solid #5F3929;
+    background: black;
+    padding: 5px 5px;
+    min-width: 70px;
+    gap: 5px;
+}
+.podium > .name, .podium > .score {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 10px;
+    width: 100px;
+}
+.podium > .name {
+    background: #0936B9;
+    color: white;
+}
+.podium > .bg {
+    background: #000B6E;
+}
+.podium > .score {
+    background: #0015BE;
+    color: white;
+    font-weight: bold;
+    font-size: 2.5rem;
+}
+.podium > .score.negative {
+    background: #0015BE;
+    color: #E94860;
+}
