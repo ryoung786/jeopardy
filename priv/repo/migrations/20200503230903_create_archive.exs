@@ -4,11 +4,11 @@ defmodule Jeopardy.Repo.Migrations.CreateJArchive do
   def down do
     drop table(:clues)
     drop table(:games)
-    execute "drop SCHEMA jarchive CASCADE";
+    execute "drop SCHEMA jarchive CASCADE;"
   end
 
   def up do
-    execute "CREATE SCHEMA example"
+    execute "CREATE SCHEMA jarchive;"
 
     create table(:games, prefix: "jarchive") do
       add :jeopardy_round_categories, {:array, :string}
