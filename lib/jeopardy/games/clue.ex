@@ -3,7 +3,7 @@ defmodule Jeopardy.Games.Clue do
   import Ecto.{Changeset, Query}
   alias Jeopardy.Repo
   alias Jeopardy.Games
-  alias Jeopardy.Games.{Player, Game, Clue}
+  alias Jeopardy.Games.{Player, Clue}
 
 
   schema "clues" do
