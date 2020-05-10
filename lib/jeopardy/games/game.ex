@@ -2,7 +2,6 @@ defmodule Jeopardy.Games.Game do
   use Jeopardy.Games.Schema
   import Ecto.{Changeset, Query}
   alias Jeopardy.Repo
-  alias Jeopardy.Games
 
   schema "games" do
     field :code, :string, null: false, size: 4
