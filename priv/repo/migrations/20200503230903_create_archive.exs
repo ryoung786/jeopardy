@@ -1,7 +1,15 @@
 defmodule Jeopardy.Repo.Migrations.CreateJArchive do
   use Ecto.Migration
 
-  def change do
+  def down do
+    drop table(:clues)
+    drop table(:games)
+    execute "drop SCHEMA jarchive CASCADE";
+  end
+
+  def up do
+    execute "CREATE SCHEMA example"
+
     create table(:games, prefix: "jarchive") do
       add :jeopardy_round_categories, {:array, :string}
       add :double_jeopardy_round_categories, {:array, :string}
