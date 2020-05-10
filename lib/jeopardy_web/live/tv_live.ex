@@ -55,11 +55,12 @@ defmodule JeopardyWeb.TvLive do
   end
 
   defp assigns(socket, game) do
+    clues = %{"jeopardy" => Games.clues_by_category(game, :jeopardy),
+              "double_jeopardy" => Games.clues_by_category(game, :double_jeopardy)}
     socket
     |> assign(game: game)
     |> assign(players: Games.get_just_contestants(game))
     |> assign(current_clue: Game.current_clue(game))
-    |> assign(jeopardy_clues: Games.clues_by_category(game, :jeopardy))
-    |> assign(double_jeopardy_clues: Games.clues_by_category(game, :double_jeopardy))
+    |> assign(clues: clues)
   end
 end

@@ -1,6 +1,8 @@
 defmodule Jeopardy.Games.Game do
   use Jeopardy.Games.Schema
-  import Ecto.Changeset
+  import Ecto.{Changeset, Query}
+  alias Jeopardy.Repo
+  alias Jeopardy.Games
 
   schema "games" do
     field :code, :string, null: false, size: 4
@@ -45,5 +47,16 @@ defmodule Jeopardy.Games.Game do
       nil -> nil
       _ -> Jeopardy.Repo.get(Jeopardy.Games.Clue, game.current_clue_id)
     end
+  end
+
+  def round_over?(%Jeopardy.Games.Game{} = game) do
+    num_clues_left_in_round = from(c in Jeopardy.Games.Clue,
+      where: c.game_id == ^game.id,
+      where: c.round == ^game.status,
+      where: c.asked_status == "unasked",
+      where: not is_nil(c.clue_text),
+      select: count(1))
+      |> Repo.one
+    num_clues_left_in_round <= 0 ## || round_timer <= 0
   end
 end

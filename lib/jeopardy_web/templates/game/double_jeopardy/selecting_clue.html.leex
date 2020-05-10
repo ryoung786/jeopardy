@@ -1,0 +1,7 @@
+<%= submit "Buzz", disabled: true %>
+
+<%= if @game.board_control == @name do %>
+    <h3>
+        Please select a clue from the board and tell <%= @game.trebek %>.
+    </h3>
+<% end %>

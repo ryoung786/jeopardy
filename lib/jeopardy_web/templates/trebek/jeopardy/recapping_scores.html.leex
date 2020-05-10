@@ -1,0 +1,7 @@
+<p>
+    That's the end of the <%= @game.status %> round.
+    Read the players scores, take a break if need be, and click
+    continue when everyone's ready to advance to the double jeopardy round.
+</p>
+
+<%= submit "Continue to double jeopardy", "phx-click": "advance_to_double_jeopardy"%>

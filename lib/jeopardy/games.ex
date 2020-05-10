@@ -44,11 +44,13 @@ defmodule Jeopardy.Games do
   end
 
   def assign_board_control(%Game{} = game, :random) do
-    player_name = game
-    |> get_just_contestants()
-    |> Enum.random()
-    |> Map.get(:name)
-
+    # in the jeopardy round, we pick who goes first randomly
+    # in the double jeopardy round, it goes to the player with the lowest score
+    contestants = get_just_contestants(game)
+    player_name = case game.status do
+      "jeopardy" -> Enum.random(contestants) |> Map.get(:name)
+      "double_jeopardy" -> Enum.sort_by(contestants, & &1.score, :desc) |> Enum.map(& &1.name) |> List.first
+    end
     Game.changeset(game, %{board_control: player_name}) |> Repo.update()
   end
 
@@ -141,7 +143,8 @@ defmodule Jeopardy.Games do
       where: c.round == ^Atom.to_string(round),
       order_by: [asc: c.value])
       |> Repo.all
-    Enum.map(game.jeopardy_round_categories, fn category ->
+    category_names = if round == :jeopardy, do: game.jeopardy_round_categories, else: game.double_jeopardy_round_categories
+    Enum.map(category_names, fn category ->
       [category: category,
        clues: clues |> Enum.filter(fn clue -> clue.category == category end)]
     end)
@@ -199,8 +202,5 @@ defmodule Jeopardy.Games do
     end
 
     game
-  end
-
-  def next_round_after_incorrect_answer(%Game{} = game) do
   end
 end

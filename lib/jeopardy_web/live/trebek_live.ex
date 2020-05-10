@@ -44,6 +44,12 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
+  def handle_event("advance_to_double_jeopardy", _, socket) do
+    GameState.update_game_status(socket.assigns.game.code, "jeopardy", "double_jeopardy", "revealing_board")
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("finished_intro", _, socket) do
     Games.assign_board_control(game_from_socket(socket), :random)
     GameState.update_round_status(socket.assigns.game.code, "revealing_board", "selecting_clue")
@@ -72,27 +78,22 @@ defmodule JeopardyWeb.TrebekLive do
   @impl true
   def handle_event("correct", _, socket) do
     g = game_from_socket(socket)
-    g
-    |> Games.correct_answer()
+    {:ok, g} = Games.correct_answer(g)
     |> Games.lock_buzzer()
     |> Games.assign_board_control(g.buzzer_player)
-    GameState.update_round_status(socket.assigns.game.code, g.round_status, "selecting_clue") # hack, i know
-
+    GameState.to_selecting_clue(g)
     {:noreply, socket}
   end
 
   @impl true
   def handle_event("incorrect", _, socket) do
-    g = game_from_socket(socket)
-    g
-    |> Games.incorrect_answer()
-
+    Games.incorrect_answer(game_from_socket(socket))
     {:noreply, socket}
   end
 
   @impl true
   def handle_event("revealed_answer", _, socket) do
-    GameState.update_round_status(socket.assigns.game.code, "revealing_answer", "selecting_clue")
+    GameState.to_selecting_clue(game_from_socket(socket))
     {:noreply, socket}
   end
 
@@ -122,10 +123,11 @@ defmodule JeopardyWeb.TrebekLive do
     assigns(socket, game)
   end
   defp assigns(socket, %Game{} = game) do
+    clues = %{"jeopardy" => Games.clues_by_category(game, :jeopardy),
+              "double_jeopardy" => Games.clues_by_category(game, :double_jeopardy)}
     socket
     |> assign(game: game)
-    |> assign(jeopardy_clues: Games.clues_by_category(game, :jeopardy))
-    |> assign(double_jeopardy_clues: Games.clues_by_category(game, :double_jeopardy))
+    |> assign(clues: clues)
     |> assign(current_clue: Game.current_clue(game))
     |> assign(players: Games.get_just_contestants(game))
   end

@@ -1,0 +1,8 @@
+<div class="daily-double">
+    <%= if @game.buzzer_player == @player.name do %>
+        Tell <%= @game.trebek %> your answer when you're ready
+    <% else %>
+        <h6><%= @game.buzzer_player %> hit the Daily Double!</h6>
+        <p>Waiting for them to give their answer</p>
+    <% end %>
+</div>
