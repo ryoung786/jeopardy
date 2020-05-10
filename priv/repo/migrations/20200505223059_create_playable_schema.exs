@@ -5,9 +5,12 @@ defmodule Jeopardy.Repo.Migrations.CreatePlayableSchema do
     drop table(:players)
     drop table(:clues)
     drop table(:games)
+    drop SCHEMA jarchive CASCADE;
   end
 
   def up do
+    execute "CREATE SCHEMA example"
+
     create table(:games) do
       add :code, :string, size: 4
       add :status, :string, default: "awaiting_start"
