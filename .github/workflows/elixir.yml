@@ -22,3 +22,30 @@ jobs:
       run: mix deps.get
     - name: Run Tests
       run: mix test
+
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: postgres:11
+        ports: ['5432:5432']
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: jeopardy_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-elixir@v1
+        with:
+          otp-version: 22.2
+          elixir-version: 1.9.4
+      - run: psql -d jeopardy_test -c "create schema jarchive"
+      - run: mix deps.get
+      - run: mix test
