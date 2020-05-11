@@ -50,6 +50,13 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
+  def handle_event("advance_to_final_jeopardy", _, socket) do
+    Games.set_up_final_jeopardy(game_from_socket(socket))
+    GameState.update_game_status(socket.assigns.game.code, "double_jeopardy", "final_jeopardy", "revealing_category")
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("finished_intro", _, socket) do
     Games.assign_board_control(game_from_socket(socket), :random)
     GameState.update_round_status(socket.assigns.game.code, "revealing_board", "selecting_clue")
@@ -73,6 +80,13 @@ defmodule JeopardyWeb.TrebekLive do
   @impl true
   def handle_event("start_daily_double_timer", _, socket) do
     GameState.update_round_status(socket.assigns.game.code, "reading_daily_double", "answering_daily_double")
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("final_jeopardy_time_expired_click", _, socket) do
+    # update scores
+    GameState.update_round_status(socket.assigns.game.code, "reading_clue", "revealing_final_scores")
     {:noreply, socket}
   end
 
@@ -113,9 +127,19 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
+  def handle_info(:final_jeopardy_wager_submitted, socket) do
+    Logger.info("wager submitted atom")
+    game = game_from_socket(socket)
+    if Games.all_final_jeopardy_wagers_submitted?(game) do
+      GameState.update_round_status(game.code, "revealing_category", "reading_clue")
+    end
+  end
+
+  @impl true
   # The db got updated, so let's query for the latest everything
   # and update our assigns
-  def handle_info(_, socket) do
+  def handle_info(payload, socket) do
+    Logger.info("handle_indo payload: #{inspect(payload)}")
     {:noreply, assigns(socket)}
   end
 

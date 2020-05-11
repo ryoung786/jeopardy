@@ -208,4 +208,21 @@ defmodule Jeopardy.Games do
 
     game
   end
+
+  def set_up_final_jeopardy(%Game{} = game) do
+    final_jeopardy_clue_id = from(c in Clue, select: c.id,
+      where: c.game_id == ^game.id, where: c.round == "final_jeopardy") |> Repo.one()
+    set_current_clue(game, final_jeopardy_clue_id)
+
+    # TODO start wager timer
+  end
+
+  def all_final_jeopardy_wagers_submitted?(%Game{} = game) do
+    num_yet_to_submit = from(p in Player, select: count(1),
+      where: p.game_id == ^game.id,
+      where: p.name != ^game.trebek,
+      where: is_nil(p.final_jeopardy_wager)
+    ) |> Repo.one
+    num_yet_to_submit == 0
+  end
 end

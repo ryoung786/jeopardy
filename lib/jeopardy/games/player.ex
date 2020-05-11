@@ -16,16 +16,18 @@ defmodule Jeopardy.Games.Player do
   @doc false
   def changeset(player, attrs) do
     player
-    |> cast(attrs, [:name, :score])
+    |> cast(attrs, [:name, :score, :final_jeopardy_wager, :correct_answers, :incorrect_answers])
     |> update_change(:name, &String.trim/1)
     |> validate_required([:name, :game_id])
     |> validate_length(:name, max: 25, message: "Keep it short! 25 letters is the max.")
     |> assoc_constraint(:game)
   end
 
-  def min_max_wagers(%Jeopardy.Games.Player{} = p) do
-    min = 5
-    max = max(1000, p.score)
-    {min, max}
+  def min_max_wagers(%Jeopardy.Games.Player{} = p, %Jeopardy.Games.Clue{} = c) do
+    case c.round do
+      "final_jeopardy" -> {0, max(0, p.score)}
+      "double_jeopardy" -> {5, max(2000, p.score)}
+      _ -> {5, max(2000, p.score)}
+    end
   end
 end
