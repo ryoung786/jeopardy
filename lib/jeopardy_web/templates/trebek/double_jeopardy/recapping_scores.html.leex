@@ -1,7 +1,8 @@
-<p>
-    That's the end of the <%= @game.status %> round.
-    Read the players scores, take a break if need be, and click
-    continue when everyone's ready to advance to the double jeopardy round.
-</p>
-
-<%= submit "Continue to double jeopardy", "phx-click": "advance_to_double_jeopardy"%>
+<div class="trebek revealing_answer">
+    <p>
+        That's the end of the <%= @game.status %> round.
+        Read the players scores, take a break if need be, and click
+        continue when everyone's ready to advance to the double jeopardy round.
+    </p>
+    <%= submit "Continue to final jeopardy", "phx-click": "advance_to_final_jeopardy"%>
+</div>
