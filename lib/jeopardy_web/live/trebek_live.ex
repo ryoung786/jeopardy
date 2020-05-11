@@ -128,25 +128,12 @@ defmodule JeopardyWeb.TrebekLive do
 
   @impl true
   def handle_info(:final_jeopardy_wager_submitted, socket) do
-    Logger.info("wager submitted atom")
     game = game_from_socket(socket)
     if Games.all_final_jeopardy_wagers_submitted?(game) do
       GameState.update_round_status(game.code, "revealing_category", "reading_clue")
     end
   end
 
-  @impl true
-  # The db got updated, so let's query for the latest everything
-  # and update our assigns
-  def handle_info(payload, socket) do
-    Logger.info("handle_indo payload: #{inspect(payload)}")
-    {:noreply, assigns(socket)}
-  end
-
-  defp assigns(socket) do
-    game = Games.get_by_code(socket.assigns.game.code)
-    assigns(socket, game)
-  end
   defp assigns(socket, %Game{} = game) do
     clues = %{"jeopardy" => Games.clues_by_category(game, :jeopardy),
               "double_jeopardy" => Games.clues_by_category(game, :double_jeopardy)}

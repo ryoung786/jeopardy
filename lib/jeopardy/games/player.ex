@@ -6,6 +6,7 @@ defmodule Jeopardy.Games.Player do
     field :name, :string, null: false, size: 25
     field :score, :integer, null: false, default: 0
     field :final_jeopardy_wager, :integer
+    field :final_jeopardy_answer, :string, size: 512
     field :correct_answers, {:array, :id}
     field :incorrect_answers, {:array, :id}
     belongs_to :game, Jeopardy.Games.Game
@@ -16,7 +17,7 @@ defmodule Jeopardy.Games.Player do
   @doc false
   def changeset(player, attrs) do
     player
-    |> cast(attrs, [:name, :score, :final_jeopardy_wager, :correct_answers, :incorrect_answers])
+    |> cast(attrs, [:name, :score, :final_jeopardy_wager, :final_jeopardy_answer, :correct_answers, :incorrect_answers])
     |> update_change(:name, &String.trim/1)
     |> validate_required([:name, :game_id])
     |> validate_length(:name, max: 25, message: "Keep it short! 25 letters is the max.")

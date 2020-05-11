@@ -1,0 +1,11 @@
+<div id="<%= @id %>" class="wager">
+    <%= if @player.final_jeopardy_answer == "" or is_nil(@player.final_jeopardy_answer) do %>
+        <%= form_for :submission, "#", ["phx-target": "#{@id}", phx_submit: :save], fn f -> %>
+            <%= text_input f, :answer, placeholder: "answer", required: true,  "phx-debounce": "blur" %>
+            <%= error_tag f, :answer %>
+            <%= submit "Submit" %>
+        <% end %>
+    <% else %>
+        <p>Your answer: <%= @player.final_jeopardy_answer %></p>
+    <% end %>
+</div>

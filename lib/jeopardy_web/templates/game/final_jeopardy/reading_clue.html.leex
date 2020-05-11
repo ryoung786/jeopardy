@@ -1,3 +1,4 @@
 <div class="game final-jeopardy-answer-submission">
-    <p>placeholder for answer submission form</p>
+    <%= live_component @socket, JeopardyWeb.FinalJeopardySubmissionComponent, player: @player,
+    id: "2", clue: @current_clue, game_code: @game.code %>
 </div>

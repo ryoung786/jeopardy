@@ -1,4 +1,7 @@
-.trebek.awaiting_buzzer {
+.trebek.awaiting_buzzer,
+.game.final-jeopardy-answer-submission,
+.revealing_final_scores
+{
     display: grid;
     justify-content: center;
     align-items: center;
