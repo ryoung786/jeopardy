@@ -8,6 +8,8 @@ defmodule JeopardyWeb.WagerComponent do
   require Logger
 
   def render(assigns) do
+    {min, max} = Player.min_max_wagers(assigns.player)
+    assigns = assigns |> Map.put(:min, min) |> Map.put(:max, max)
     WagerView.render("wager.html", assigns)
   end
 
@@ -15,7 +17,12 @@ defmodule JeopardyWeb.WagerComponent do
     {min, max} = Player.min_max_wagers(socket.assigns.player)
 
     cs = Wager.changeset(%Wager{}, %{}, min, max)
-    socket = assign(socket, changeset: cs)
+    socket =
+      socket
+      |> assign(socket, changeset: cs)
+      |> assign(min: min)
+      |> assign(max: max)
+
     {:ok, socket}
   end
 

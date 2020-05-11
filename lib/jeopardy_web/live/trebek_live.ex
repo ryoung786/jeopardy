@@ -61,6 +61,7 @@ defmodule JeopardyWeb.TrebekLive do
     {:ok, game} = Games.set_current_clue(game_from_socket(socket), String.to_integer(id))
     clue = Game.current_clue(game)
     if Clue.is_daily_double(clue) do
+      Games.daily_double_buzzer(game)
       GameState.update_round_status(socket.assigns.game.code, "selecting_clue", "awaiting_daily_double_wager")
     else
       GameState.update_round_status(socket.assigns.game.code, "selecting_clue", "reading_clue")

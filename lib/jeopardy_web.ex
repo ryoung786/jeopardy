@@ -104,6 +104,13 @@ defmodule JeopardyWeb do
         x = :crypto.hash(:sha256, name) |> Base.encode16 |> Integer.parse(16) |> elem(0) |> (&(&1*game_id)).() |> rem(9)
         "font_#{x}"
       end
+
+      def score(score) when score < 0 do
+        ~s(<span class="negative">-$#{abs(score)}</span>) |> raw
+      end
+      def score(score) do
+        ~s(<span>$#{abs(score)}</span>) |> raw
+      end
     end
   end
 

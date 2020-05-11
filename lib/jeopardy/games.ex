@@ -93,6 +93,11 @@ defmodule Jeopardy.Games do
       select: g) |> Repo.one() |> is_nil() |> Kernel.not()
   end
 
+
+  def daily_double_buzzer(%Game{} = game) do
+    Game.changeset(game, %{buzzer_player: game.board_control}) |> Repo.update()
+  end
+
   def player_buzzer(%Game{} = game, name) do
     # [game, clue] = (from g in Game, where: g.id == 12, where: g.buzzer_lock_status == "clear", where: is_nil(g.buzzer_player), join: c in Clue, on: c.id == g.current_clue_id, select: [g, c]) |> Repo.one
     player = get_player(game, name)
@@ -151,7 +156,7 @@ defmodule Jeopardy.Games do
   end
 
   def set_current_clue(%Game{} = game, clue_id) do
-    Game.changeset(game, %{current_clue_id: clue_id}) |> Repo.update()
+     Game.changeset(game, %{current_clue_id: clue_id}) |> Repo.update()
   end
 
   def correct_answer(%Game{} = game) do

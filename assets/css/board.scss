@@ -11,21 +11,21 @@
     display: grid;
     grid-template-rows:repeat(6,1fr);
     gap: 5px;
-}
 
-.board > .category > div {
-    background:blue;
-    color:white;
-    min-height:70px;
-    display:grid;
-    place-items:center;
-    padding: 10px;
-    text-shadow: 2px 2px 2px black;
-}
-
-.board > .category > .clue {
-    color:#DDA95E;
-    font-size: 3rem;
-    font-weight: bold;
-    font-family: "Helvetica"
+    div {
+        background:blue;
+        color:white;
+        min-height:70px;
+        display:grid;
+        place-items:center;
+        padding: 10px;
+        text-shadow: 2px 2px 2px black;
+    }
+    .clue {
+        color:#DDA95E;
+        font-size: 3rem;
+        font-weight: bold;
+        font-family: "Helvetica"
+    }
+    .clue.clickable { cursor: pointer; }
 }

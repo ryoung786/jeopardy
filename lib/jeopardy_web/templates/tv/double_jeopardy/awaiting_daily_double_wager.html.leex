@@ -1,3 +1,8 @@
-<div class="daily-double">
-    <h1>Daily Double</h1>
+<div class="tv daily-double">
+    <div class="display">
+        <h1>Daily <br /> Double</h1>
+    </div>
+    <%= live_component @socket, JeopardyWeb.ScoreboardComponent,
+    contestants: @players, game_id: @game.id,
+    buzzer: %{lock_status: @game.buzzer_lock_status, player_name: @game.buzzer_player} %>
 </div>

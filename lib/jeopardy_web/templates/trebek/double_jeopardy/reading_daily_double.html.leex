@@ -1,4 +1,16 @@
-<p>
-    Once you've finished reading the clue, click "Start timer" to start the question timer.
-</p>
-<%= submit "Start timer", "phx-click": "start_daily_double_timer"%>
+<div class="trebek reading_clue">
+    <div class="clue">
+        <span><%= @current_clue.clue_text %></span>
+    </div>
+
+    <div class="instructions">
+        <ion-icon name="chatbubbles-outline"></ion-icon>
+        <p>
+            Once you've finished reading the clue, click "Start timer" to start the question timer and allow contestants to buzz in.
+        </p>
+    </div>
+
+    <div class="button-group">
+        <%= submit "Start timer", "phx-click": "start_daily_double_timer"%>
+    </div>
+</div>

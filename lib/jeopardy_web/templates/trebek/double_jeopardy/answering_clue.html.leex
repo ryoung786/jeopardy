@@ -1,6 +1,11 @@
-<p>
-    <%= @current_clue.answer_text %>
-</p>
+<div class="trebek answering_clue">
+    <p>
+        <%= raw(@current_clue.answer_text) %>
+    </p>
 
-<%= submit "Correct", "phx-click": "correct" %>
-<%= submit "Incorrect", "phx-click": "incorrect" %>
+    <div class="button-group">
+        <%= submit "Correct", "phx-click": "correct", class: "correct" %>
+        <%= submit "Incorrect", "phx-click": "incorrect", class: "incorrect" %>
+    </div>
+    </div>
+</div>

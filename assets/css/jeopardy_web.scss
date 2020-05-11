@@ -1,6 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Arizonia&family=Cedarville+Cursive&family=Coming+Soon&family=Crafty+Girls&family=Dawning+of+a+New+Day&family=Dokdo&family=Gloria+Hallelujah&family=Rock+Salt&family=Vibur&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arizonia&family=Cedarville+Cursive&family=Coming+Soon&family=Crafty+Girls&family=Dawning+of+a+New+Day&family=Dokdo&family=Roboto+Slab&family=Bungee&family=Gloria+Hallelujah&family=Rock+Salt&family=Vibur&display=swap');
 @import "board";
 @import "scoreboard";
+@import "trebek/reading_clue";
+@import "trebek/answering_clue";
+@import "trebek/awaiting_buzzer";
+@import "game/buzzer";
+@import "game/answering_clue";
+@import "tv/displaying_clue";
+@import "tv/daily_double";
+@import "game/awaiting_daily_double_wager";
+
 
 .font_0 { font-family: "Vibur", cursive; font-size: 2.5rem; }
 .font_1 { font-family: "Arizonia", cursive; }
@@ -11,6 +20,12 @@
 .font_6 { font-family: "Dokdo", cursive; font-size: 2.5rem; }
 .font_7 { font-family: "Gloria Hallelujah", cursive; }
 .font_8 { font-family: "Rock Salt", cursive; }
+
+*{
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
 
 .tv.selecting_clue {
     display: grid;
