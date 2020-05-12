@@ -8,7 +8,10 @@ defmodule JeopardyWeb.TvLive do
 
   @impl true
   def mount(%{"code" => code}, _session, socket) do
-    if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
+      Phoenix.PubSub.subscribe(Jeopardy.PubSub, "#{code}-finaljeopardy")
+    end
 
     game = Games.get_by_code(code)
     socket = socket
@@ -44,6 +47,14 @@ defmodule JeopardyWeb.TvLive do
   @impl true
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
+  end
+
+  def handle_info(%{player: p, step: step}, socket) do
+    send_update(
+      JeopardyWeb.FinalJeopardyScoreRevealComponent,
+      id: 1, player_id: p.id, step: step
+    )
+    {:noreply, socket}
   end
 
   @impl true

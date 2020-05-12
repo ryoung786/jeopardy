@@ -1,5 +1,5 @@
 <div class="game revealing_final_scores">
-    <p>
-        Thanks for hosting!
-    </p>
+    <%= live_component @socket,
+    JeopardyWeb.TrebekNextFinalJeopardyRevealComponent,
+    id: 1, contestants: @players, game: @game %>
 </div>

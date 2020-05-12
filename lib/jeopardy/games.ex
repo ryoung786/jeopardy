@@ -159,6 +159,40 @@ defmodule Jeopardy.Games do
      Game.changeset(game, %{current_clue_id: clue_id}) |> Repo.update()
   end
 
+  def final_jeopardy_correct_answer(%Game{} = game, %Player{} = player) do
+    # record player correctly answered clue and update clue's status
+    {_, [clue|_]} = from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
+    |> Repo.update_all_ts(push: [correct_players: player.id])
+
+    # increase score of buzzer player by current clue value
+    amount = player.final_jeopardy_wager
+    from(p in Player, where: p.id == ^player.id)
+    |> Repo.update_all_ts(
+      inc: [score: amount],
+    push: [correct_answers: clue.id],
+    set: [final_jeopardy_score_updated: true])
+
+    game
+  end
+
+  def final_jeopardy_incorrect_answer(%Game{} = game, %Player{} = player) do
+    # record player correctly answered clue and update clue's status
+    {_, [clue|_]} = from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
+    |> Repo.update_all_ts(push: [incorrect_players: player.id])
+
+    # increase score of buzzer player by current clue value
+    amount = player.final_jeopardy_wager
+    from(p in Player, where: p.id == ^player.id)
+    |> Repo.update_all_ts(
+      inc: [score: -1 * amount],
+    push: [incorrect_answers: clue.id],
+    set: [final_jeopardy_score_updated: true])
+
+    game
+  end
+
+
+
   def correct_answer(%Game{} = game) do
     player_id = from(
       p in Player, select: p.id,
@@ -224,5 +258,14 @@ defmodule Jeopardy.Games do
       where: is_nil(p.final_jeopardy_wager)
     ) |> Repo.one
     num_yet_to_submit == 0
+  end
+
+  def contestants_yet_to_be_updated(%Game{} = game) do
+    from(p in Player,
+      where: p.game_id == ^game.id,
+      where: p.name != ^game.trebek,
+      where: not p.final_jeopardy_score_updated,
+      order_by: [asc: p.score]
+    ) |> Repo.all()
   end
 end

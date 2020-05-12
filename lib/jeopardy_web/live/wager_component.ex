@@ -8,12 +8,12 @@ defmodule JeopardyWeb.WagerComponent do
   require Logger
 
   def render(assigns) do
-    {min, max} = Player.min_max_wagers(assigns.player, assigns.clue)
-    assigns = assigns |> Map.put(:min, min) |> Map.put(:max, max)
+    # {min, max} = Player.min_max_wagers(assigns.player, assigns.clue)
+    # assigns = assigns |> Map.put(:min, min) |> Map.put(:max, max)
     WagerView.render("wager.html", assigns)
   end
 
-  def mount(_params, _session, socket) do
+  def mount(socket) do
     {min, max} = Player.min_max_wagers(socket.assigns.player, socket.assigns.clue)
 
     cs = Wager.changeset(%Wager{}, %{}, min, max)
@@ -27,7 +27,8 @@ defmodule JeopardyWeb.WagerComponent do
   end
 
   def handle_event("validate", %{"wager" => params}, socket) do
-    {min, max} = Player.min_max_wagers(socket.assigns.player, socket.assigns.clue)
+    # {min, max} = Player.min_max_wagers(socket.assigns.player, socket.assigns.clue)
+    {min, max} = {socket.assigns.min, socket.assigns.max}
     changeset =
       %Wager{}
       |> Wager.changeset(params, min, max)
@@ -36,7 +37,8 @@ defmodule JeopardyWeb.WagerComponent do
   end
 
   def handle_event("save", %{"wager" => params}, socket) do
-    {min, max} = Player.min_max_wagers(socket.assigns.player, socket.assigns.clue)
+    # {min, max} = Player.min_max_wagers(socket.assigns.player, socket.assigns.clue)
+    {min, max} = {socket.assigns.min, socket.assigns.max}
     clue = socket.assigns.clue
     player = socket.assigns.player
 

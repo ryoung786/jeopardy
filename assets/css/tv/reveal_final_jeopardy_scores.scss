@@ -1,0 +1,18 @@
+.tv.final-jeopardy .score-reveal {
+    .details {
+        display: none;
+
+        .name, .answer, .wager {
+            opacity: 0;
+            transition: opacity .25s ease-in-out;
+        }
+    }
+    .details.active {
+        display: block;
+        opacity: 100;
+
+        .revealed {
+            opacity: 100;
+        }
+    }
+}

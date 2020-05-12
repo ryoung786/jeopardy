@@ -132,8 +132,23 @@ defmodule JeopardyWeb.TrebekLive do
     if Games.all_final_jeopardy_wagers_submitted?(game) do
       GameState.update_round_status(game.code, "revealing_category", "reading_clue")
     end
+    {:noreply, socket}
   end
 
+  @impl true
+  def handle_info(%{round_status_change: _}, socket), do: {:noreply, assigns(socket)}
+  @impl true
+  def handle_info(%{game_status_change: _}, socket), do: {:noreply, assigns(socket)}
+
+  @impl true
+  # The db got updated, so let's query for the latest everything
+  # and update our assigns
+  def handle_info(_, socket), do: {:noreply, assigns(socket)}
+
+  defp assigns(socket) do
+    game = Games.get_by_code(socket.assigns.game.code)
+    assigns(socket, game)
+  end
   defp assigns(socket, %Game{} = game) do
     clues = %{"jeopardy" => Games.clues_by_category(game, :jeopardy),
               "double_jeopardy" => Games.clues_by_category(game, :double_jeopardy)}
