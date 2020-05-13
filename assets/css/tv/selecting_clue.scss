@@ -1,0 +1,8 @@
+.tv.selecting_clue {
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    grid-template-rows: 1fr 200px;
+    // justify-content: center;
+    gap: 20px;
+}

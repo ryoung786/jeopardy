@@ -13,7 +13,8 @@ defmodule JeopardyWeb.WagerComponent do
     WagerView.render("wager.html", assigns)
   end
 
-  def mount(socket) do
+  def update(assigns, socket) do
+    socket = assign(socket, assigns)
     {min, max} = Player.min_max_wagers(socket.assigns.player, socket.assigns.clue)
 
     cs = Wager.changeset(%Wager{}, %{}, min, max)

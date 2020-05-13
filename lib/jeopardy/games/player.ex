@@ -32,7 +32,7 @@ defmodule Jeopardy.Games.Player do
     case c.round do
       "final_jeopardy" -> {0, max(0, p.score)}
       "double_jeopardy" -> {5, max(2000, p.score)}
-      _ -> {5, max(2000, p.score)}
+      _ -> {5, max(1000, p.score)}
     end
   end
 end

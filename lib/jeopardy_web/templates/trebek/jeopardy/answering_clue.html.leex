@@ -1,6 +1,1 @@
-<p>
-    <%= @current_clue.answer_text %>
-</p>
-
-<%= submit "Correct", "phx-click": "correct" %>
-<%= submit "Incorrect", "phx-click": "incorrect" %>
+<%= render "double_jeopardy/answering_clue.html", assigns %>

@@ -84,6 +84,7 @@ defmodule Jeopardy.Games do
     |> Repo.one > 0
   end
 
+  def can_buzz?(%Game{} = _game, nil), do: false
   def can_buzz?(%Game{} = game, %Player{} = player) do
     (from g in Game,
       where: g.id == ^game.id,
@@ -99,7 +100,6 @@ defmodule Jeopardy.Games do
   end
 
   def player_buzzer(%Game{} = game, name) do
-    # [game, clue] = (from g in Game, where: g.id == 12, where: g.buzzer_lock_status == "clear", where: is_nil(g.buzzer_player), join: c in Clue, on: c.id == g.current_clue_id, select: [g, c]) |> Repo.one
     player = get_player(game, name)
     q = (from g in Game,
       where: g.id == ^game.id,
@@ -108,11 +108,6 @@ defmodule Jeopardy.Games do
       join: c in Clue, on: c.id == g.current_clue_id, on: ^player.id not in c.incorrect_players,
       select: g.id)
 
-    # q = (from g in Game,
-    #   where: g.id == ^game.id,
-    #   where: g.buzzer_lock_status == "clear",
-    #   where: is_nil(g.buzzer_player),
-    #   select: g.id)
     case Repo.update_all_ts(q, set: [buzzer_player: name, buzzer_lock_status: "player"]) do
       {0, _} -> {:failed, nil}
       {1, [id]} ->

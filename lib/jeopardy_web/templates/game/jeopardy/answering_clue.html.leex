@@ -1,7 +1,1 @@
-<%= submit "Buzz", disabled: true %>
-
-<%= if @game.buzzer_player == @name do %>
-    <p>You buzzed in! Tell <%= @game.trebek %> your answer.</p>
-<% end %>
-
-<h2>current clue: <%= @current_clue.category %>: $<%= @current_clue.value %></h2>
+<%= render "double_jeopardy/answering_clue.html", assigns %>

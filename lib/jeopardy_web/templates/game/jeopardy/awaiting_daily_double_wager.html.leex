@@ -1,9 +1,1 @@
-<div class="daily-double">
-    <%= if @game.buzzer_player == @player.name do %>
-        <%= live_component @socket, JeopardyWeb.WagerComponent, player: @player,
-        id: "1", changeset: :wager, clue: @current_clue, game_code: @game.code %>
-    <% else %>
-        <h6><%= @game.buzzer_player %> hit the Daily Double!</h6>
-        <p>Waiting for them to make their wager</p>
-    <% end %>
-</div>
+<%= render "double_jeopardy/awaiting_daily_double_wager.html", assigns %>
