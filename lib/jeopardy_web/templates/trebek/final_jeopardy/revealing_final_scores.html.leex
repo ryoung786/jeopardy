@@ -1,5 +1,5 @@
 <div class="game revealing_final_scores">
     <%= live_component @socket,
     JeopardyWeb.TrebekNextFinalJeopardyRevealComponent,
-    id: 3, contestants: @players, game: @game %>
+    id: 3, contestants: @players, game: @game, clue: @current_clue %>
 </div>

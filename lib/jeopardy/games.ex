@@ -59,7 +59,7 @@ defmodule Jeopardy.Games do
   end
 
   def get_just_contestants(%Game{} = game) do
-    from(p in Player, where: p.game_id == ^game.id and p.name != ^game.trebek) |> Repo.all
+    from(p in Player, where: p.game_id == ^game.id and p.name != ^game.trebek, order_by: [asc: p.id]) |> Repo.all
   end
 
   def get_player(%Game{} = game, name) do
