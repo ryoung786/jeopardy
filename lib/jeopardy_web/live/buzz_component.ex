@@ -11,7 +11,6 @@ defmodule JeopardyWeb.BuzzComponent do
         <%= submit "Buzz", ["phx-click": "buzz", disabled: true] %>
       <% end %>
     </div>
-    <!-- <h2>current clue: <%= @current_clue.category %>: $<%= @current_clue.value %></h2> -->
     """
   end
 end

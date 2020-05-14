@@ -2,53 +2,54 @@ defmodule Jeopardy.Timer do
   use GenServer
   require Logger
 
-  # def start_link() do
-  #   GenServer.start_link __MODULE__, %{}
-  # end
-  ## SERVER ##
+  def start(code, time) do
+    GenServer.start_link(__MODULE__, {code, time})
+    Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{code}", :start)
+  end
+  def stop(code), do: Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{code}", :stop)
 
-  def init({game_id, time}) do
-    Logger.warn "timer server started with id #{game_id}"
-    IO.puts "timer server started with id #{game_id}"
-    # EnchufeWeb.Endpoint.subscribe "timer:start", []
+  def init({code, time}) do
+    Logger.warn "timer server started with id #{code}"
+    IO.puts "timer server started with id #{code}"
 
-    Phoenix.PubSub.subscribe(Jeopardy.PubSub, "timer:#{game_id}")
+    Phoenix.PubSub.subscribe(Jeopardy.PubSub, "timer:#{code}")
 
-    state = %{timer_ref: nil, timer: time, orig_time: time, id: game_id}
+    state = %{timer_ref: nil, timer: time, orig_time: time, code: code}
     {:ok, state}
   end
 
-  def handle_info(:update, %{timer: 0, orig_time: orig, id: id}) do
-    # broadcast 0, "TIMEEEE"
-    Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{id}", :time_expired)
-    IO.puts "time expired"
-    {:noreply, %{timer_ref: nil, timer: 0, orig_time: orig, id: id}}
+  def handle_info(:update, %{timer: t, code: code}) when t <= 0 do
+    Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{code}", :timer_expired)
+    {:stop, :normal, nil}
   end
 
-  def handle_info(:update, %{timer: time, orig_time: orig, id: id}) do
+  def handle_info(:update, %{timer: time, orig_time: orig, code: code}) do
     IO.puts "tick. time left #{time}"
     leftover = time - 1
     timer_ref = schedule_timer 1_000
-    # broadcast leftover, "tick tock... tick tock"
-    Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{id}", {:tick, leftover})
-    {:noreply, %{timer_ref: timer_ref, timer: leftover, orig_time: orig, id: id}}
+    Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{code}", {:timer_tick, time})
+
+    Logger.info("broadcasted :timer_tick to timer:#{code}")
+    {:noreply, %{timer_ref: timer_ref, timer: leftover, orig_time: orig, code: code}}
   end
 
   def handle_info(:start, state) do
-    _timer_ref = schedule_timer 1_000
-    # broadcast state.time, "Started timer!"
+    timer_ref = schedule_timer 1_000
     IO.puts "started timer, state: #{inspect state}"
     IO.puts "started timer, time left #{state.timer}"
-    {:noreply, %{state | timer: state.timer - 1}}
-    # {:noreply, state}
+    {:noreply, %{state | timer: state.timer - 1, timer_ref: timer_ref}}
   end
-  def handle_info(:reset, %{timer_ref: old_timer_ref, orig_time: orig, id: id}) do
+  def handle_info(:reset, %{timer_ref: old_timer_ref, orig_time: orig, code: code}) do
     cancel_timer(old_timer_ref)
-    {:noreply, %{timer_ref: nil, timer: orig, orig_time: orig, id: id}}
+    {:noreply, %{timer_ref: nil, timer: orig, orig_time: orig, code: code}}
   end
-  def handle_info(:pause, %{timer_ref: old_timer_ref, timer: timer, orig_time: orig, id: id}) do
+  def handle_info(:pause, %{timer_ref: old_timer_ref, timer: timer, orig_time: orig, code: code}) do
     cancel_timer(old_timer_ref)
-    {:noreply, %{timer_ref: nil, timer: timer, orig_time: orig, id: id}}
+    {:noreply, %{timer_ref: nil, timer: timer, orig_time: orig, code: code}}
+  end
+  def handle_info(:stop, _state) do
+    Logger.info("IN Timer, stop handled")
+    {:stop, :normal, nil}
   end
 
   def handle_info(_, state), do: {:noreply, state}
@@ -57,8 +58,4 @@ defmodule Jeopardy.Timer do
 
   defp cancel_timer(nil), do: :ok
   defp cancel_timer(ref), do: Process.cancel_timer(ref)
-
-  # defp broadcast(time, response) do
-    # Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{game_id}", {:tick, time})
-  # end
 end

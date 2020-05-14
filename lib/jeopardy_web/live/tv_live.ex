@@ -11,6 +11,7 @@ defmodule JeopardyWeb.TvLive do
     if connected?(socket) do
       Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
       Phoenix.PubSub.subscribe(Jeopardy.PubSub, "#{code}-finaljeopardy")
+      Phoenix.PubSub.subscribe(Jeopardy.PubSub, "timer:#{code}")
     end
 
     game = Games.get_by_code(code)
@@ -57,6 +58,19 @@ defmodule JeopardyWeb.TvLive do
     {:noreply, socket}
   end
 
+  def handle_info(:timer_expired, socket) do
+    Games.no_answer(socket.assigns.game)
+    {:noreply, assign(socket, timer: :expired)}
+  end
+  def handle_info({:timer_start, time_left}, socket), do: {:noreply, assign(socket, timer: time_left)}
+  def handle_info({:timer_tick, time_left} = _event, socket) do
+    Logger.info("TV: time_left: #{inspect time_left}")
+    {:noreply, assign(socket, timer: time_left)}
+  end
+  def handle_info(:start, socket) do
+    {:noreply, assign(socket, timer: 3)}
+  end
+
   @impl true
   # The db got updated, so let's query for the latest everything
   # and update our assigns
@@ -73,5 +87,6 @@ defmodule JeopardyWeb.TvLive do
     |> assign(players: Games.get_just_contestants(game))
     |> assign(current_clue: Game.current_clue(game))
     |> assign(clues: clues)
+    |> assign(timer: nil)
   end
 end

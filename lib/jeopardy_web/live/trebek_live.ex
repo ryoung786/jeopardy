@@ -118,6 +118,9 @@ defmodule JeopardyWeb.TrebekLive do
     game = game_from_socket(socket)
     |> Games.clear_buzzer()
     GameState.update_round_status(game.code, "reading_clue", "awaiting_buzzer")
+
+    Jeopardy.Timer.start(game.code, 3)
+
     {:noreply, socket}
   end
 

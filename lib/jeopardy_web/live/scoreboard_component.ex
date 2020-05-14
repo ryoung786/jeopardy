@@ -6,4 +6,6 @@ defmodule JeopardyWeb.ScoreboardComponent do
   def render(assigns) do
     ScoreboardView.render("index.html", assigns)
   end
+
+  def update(assigns, socket), do: {:ok, assign(socket, assigns)}
 end

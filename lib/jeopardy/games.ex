@@ -5,6 +5,7 @@ defmodule Jeopardy.Games do
 
   import Ecto.Query, warn: false
 
+  require Logger
   alias Jeopardy.Games
   alias Jeopardy.Games.{Game, Player, Clue}
   alias Jeopardy.Repo
@@ -111,8 +112,7 @@ defmodule Jeopardy.Games do
     case Repo.update_all_ts(q, set: [buzzer_player: name, buzzer_lock_status: "player"]) do
       {0, _} -> {:failed, nil}
       {1, [id]} ->
-      # Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, {:buzz, name})
-      # reset clue timer
+        Jeopardy.Timer.stop(game.code)
         # start contestant timer
         {:ok, get_game!(id)}
     end
@@ -120,13 +120,12 @@ defmodule Jeopardy.Games do
   def clear_buzzer(%Game{} = game) do
     (from g in Game, where: g.id == ^game.id)
     |> Repo.update_all_ts(set: [buzzer_player: nil, buzzer_lock_status: "clear"])
-    Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, :clear)
+
     get_game!(game.id)
   end
   def lock_buzzer(%Game{} = game) do
     (from g in Game, where: g.id == ^game.id)
     |> Repo.update_all_ts(set: [buzzer_player: nil, buzzer_lock_status: "locked"])
-    Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, :locked)
     get_game!(game.id)
   end
 
@@ -186,7 +185,17 @@ defmodule Jeopardy.Games do
     game
   end
 
-
+  def no_answer(%Game{} = game) do
+    q = (from g in Game, where: g.id == ^game.id, where: g.buzzer_lock_status == "clear")
+    case q |> Repo.update_all_ts(set: [buzzer_player: nil, buzzer_lock_status: "locked"]) do
+      {1, _} ->
+        from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
+        |> Repo.update_all_ts(set: [asked_status: "asked"])
+        Jeopardy.GameState.update_round_status(game.code, "awaiting_buzzer", "revealing_answer")
+      response ->
+        Logger.error("Couldn't update no_answer, error: #{inspect response}")
+    end
+  end
 
   def correct_answer(%Game{} = game) do
     player_id = from(
