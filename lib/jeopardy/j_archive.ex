@@ -7,16 +7,18 @@ defmodule Jeopardy.JArchive do
   alias Jeopardy.Repo
   alias Jeopardy.Games.{Game, Clue}
 
-  @archive_dir Path.join(:code.priv_dir(:jeopardy), "jarchive")
-
   def random_game() do
-    Path.wildcard(Path.join(@archive_dir, "*.json"))
+    archive_dir = Path.join(:code.priv_dir(:jeopardy), "jarchive")
+    Path.wildcard(Path.join(archive_dir, "*.json"))
     |> Enum.random
     |> File.read!
     |> Jason.decode!
   end
 
-  def specific_game(id), do: Jason.decode!(File.read!(Path.join(@archive_dir, "#{id}.json")))
+  def specific_game(id) do
+    archive_dir = Path.join(:code.priv_dir(:jeopardy), "jarchive")
+    Jason.decode!(File.read!(Path.join(archive_dir, "#{id}.json")))
+  end
 
   def load_into_game(%Game{} = game) do
     jgame = random_game()
