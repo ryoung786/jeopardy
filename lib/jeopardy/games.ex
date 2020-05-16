@@ -238,6 +238,7 @@ defmodule Jeopardy.Games do
         true ->
           Games.clear_buzzer(game)
           GameState.update_round_status(game.code, "answering_clue", "awaiting_buzzer")
+          Jeopardy.Timer.start(game.code, 3)
         _ ->
           Games.lock_buzzer(game)
           GameState.update_round_status(game.code, "answering_clue", "revealing_answer")
