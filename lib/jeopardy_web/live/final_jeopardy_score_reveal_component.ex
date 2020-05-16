@@ -2,9 +2,6 @@ defmodule JeopardyWeb.FinalJeopardyScoreRevealComponent do
   use Phoenix.LiveComponent
   use Phoenix.HTML
   alias JeopardyWeb.FinalJeopardyScoreRevealView
-  alias Jeopardy.Games.Player
-  alias Jeopardy.Games
-  alias Jeopardy.Repo
   require Logger
 
   def render(assigns) do
