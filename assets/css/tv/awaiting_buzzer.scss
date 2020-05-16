@@ -1,0 +1,33 @@
+.tv.awaiting_buzzer {
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    grid-template-rows: 1fr 7px 200px;
+    gap: 10px;
+
+    .display {
+        display: grid;
+        background:blue;
+        color:white;
+        place-items:center;
+        h1 {
+            max-width: 700px;
+            padding: 100px;
+            font-family: Georgia;
+            text-shadow:2px 2px 5px black;
+            text-align: center;
+        }
+    }
+
+    .timer {
+        display: grid;
+        grid-template-columns: 10% repeat(5, 1fr) 10%;
+        gap: 5px;
+        .on {
+            background: #DAB777;
+        }
+        .first {
+            grid-column-start: 2;
+        }
+    }
+}
