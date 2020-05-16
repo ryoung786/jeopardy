@@ -20,7 +20,7 @@ defmodule Jeopardy.Repo.Migrations.CreatePlayableSchema do
       add :buzzer_player, :string
       add :buzzer_lock_status, :string, default: "locked"
 
-      add :jarchive_game_id, references(:games, prefix: "jarchive")
+      add :jarchive_game_id, :id
       add :jeopardy_round_categories, {:array, :string}, default: []
       add :double_jeopardy_round_categories, {:array, :string}, default: []
       add :final_jeopardy_category, :string
