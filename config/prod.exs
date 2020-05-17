@@ -19,7 +19,8 @@ config :jeopardy, JeopardyWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
   version: Mix.Project.config[:version], # To bust cache during hot upgrades
   check_origin: [
-    "https://jeopardy.ryoung.info"
+    "https://jeopardy.ryoung.info",
+    "https://jeopardytv.gigalixirapp.com"
   ]
 
 config :jeopardy, Jeopardy.Repo,
