@@ -32,54 +32,8 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
-  def handle_event("clear", _, socket) do
-    Games.clear_buzzer(game_from_socket(socket))
-    {:noreply, socket}
-  end
-
-  @impl true
   def handle_event("advance_to_round", _, socket) do
     GameState.update_game_status(socket.assigns.game.code, "pre_jeopardy", "jeopardy", "revealing_board")
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("advance_to_double_jeopardy", _, socket) do
-    GameState.update_game_status(socket.assigns.game.code, "jeopardy", "double_jeopardy", "revealing_board")
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("advance_to_final_jeopardy", _, socket) do
-    Games.set_up_final_jeopardy(game_from_socket(socket))
-    GameState.update_game_status(socket.assigns.game.code, "double_jeopardy", "final_jeopardy", "revealing_category")
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("finished_intro", _, socket) do
-    Games.assign_board_control(game_from_socket(socket), :random)
-    GameState.update_round_status(socket.assigns.game.code, "revealing_board", "selecting_clue")
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("click_clue", %{"clue_id" => id}, socket) do
-    {:ok, game} = Games.set_current_clue(game_from_socket(socket), String.to_integer(id))
-    clue = Game.current_clue(game)
-    if Clue.is_daily_double(clue) do
-      Games.daily_double_buzzer(game)
-      GameState.update_round_status(socket.assigns.game.code, "selecting_clue", "awaiting_daily_double_wager")
-    else
-      GameState.update_round_status(socket.assigns.game.code, "selecting_clue", "reading_clue")
-    end
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("start_daily_double_timer", _, socket) do
-    GameState.update_round_status(socket.assigns.game.code, "reading_daily_double", "answering_daily_double")
     {:noreply, socket}
   end
 
@@ -90,37 +44,12 @@ defmodule JeopardyWeb.TrebekLive do
     {:noreply, socket}
   end
 
-  @impl true
-  def handle_event("correct", _, socket) do
-    g = game_from_socket(socket)
-    {:ok, g} = Games.correct_answer(g)
-    |> Games.lock_buzzer()
-    |> Games.assign_board_control(g.buzzer_player)
-    GameState.to_selecting_clue(g)
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("incorrect", _, socket) do
-    Games.incorrect_answer(game_from_socket(socket))
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("revealed_answer", _, socket) do
-    GameState.to_selecting_clue(game_from_socket(socket))
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("start_clue_timer", _, socket) do
-    # dealing with timers later
-    game = game_from_socket(socket)
-    |> Games.clear_buzzer()
-    GameState.update_round_status(game.code, "reading_clue", "awaiting_buzzer")
-
-    Jeopardy.Timer.start(game.code, 3)
-
+  def handle_event(event, data, socket) do
+    game = socket.assigns.game
+    {a, b} = {Macro.camelize(game.status),
+              Macro.camelize(game.round_status)}
+    module = String.to_existing_atom("Elixir.Jeopardy.FSM.#{a}.#{b}")
+    module.handle(event, data, game)
     {:noreply, socket}
   end
 

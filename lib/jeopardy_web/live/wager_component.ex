@@ -45,17 +45,18 @@ defmodule JeopardyWeb.WagerComponent do
 
     case Wager.validate(params, min, max) do
       {:ok, wager} ->
-        if clue.round == "final_jeopardy" do
-          Player.changeset(player, %{final_jeopardy_wager: wager.amount}) |> Repo.update()
-          Phoenix.PubSub.broadcast(Jeopardy.PubSub, socket.assigns.game_code, :final_jeopardy_wager_submitted)
-        else
-          # store the wager amount in db
-          Clue.changeset(clue, %{wager: wager.amount}) |> Repo.update()
-          GameState.update_round_status(socket.assigns.game_code, "awaiting_daily_double_wager", "reading_daily_double")
-        end
+        data = %{clue: clue, player: player, wager: wager.amount}
+        handle(:wager_submitted, data, socket.assigns.game)
         {:noreply, socket}
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
     end
+  end
+
+  def handle(event, data, game) do
+    {a, b} = {Macro.camelize(game.status),
+              Macro.camelize(game.round_status)}
+    module = String.to_existing_atom("Elixir.Jeopardy.FSM.#{a}.#{b}")
+    module.handle(event, data, game)
   end
 end
