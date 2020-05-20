@@ -5,6 +5,7 @@ defmodule JeopardyWeb.TvLive do
   alias Jeopardy.Games.Game
   alias JeopardyWeb.Presence
   alias JeopardyWeb.TvView
+  import Jeopardy.FSM
 
   @impl true
   def mount(%{"code" => code}, _session, socket) do
@@ -27,21 +28,9 @@ defmodule JeopardyWeb.TvLive do
   end
 
   @impl true
-  def handle_event("start_game", _params, socket) do
-    Games.start(socket.assigns.game.code, socket.assigns.audience)
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("clear", _params, socket) do
-    Games.clear_buzzer(socket.assigns.game.code)
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("trebek_selection", %{"value" => name}, socket) do
-    socket.assigns.game
-    |> Games.assign_trebek(name)
+  def handle_event(event, data, socket) do
+    module = module_from_game(socket.assigns.game)
+    module.handle(event, data, socket.assigns)
     {:noreply, socket}
   end
 

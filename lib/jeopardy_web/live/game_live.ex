@@ -39,12 +39,6 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
-  def handle_event("volunteer_to_host", _, %{assigns: %{name: name}} = socket) do
-    socket.assigns.game
-    |> Games.assign_trebek(name)
-    {:noreply, socket}
-  end
-
   def handle_event(event, _, %{assigns: %{game: game, name: player_name}} = socket) do
     module = module_from_game(game)
     module.handle(event, player_name, game)

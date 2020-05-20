@@ -33,11 +33,6 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
-  def handle_event("advance_to_round", _, socket) do
-    GameState.update_game_status(socket.assigns.game.code, "pre_jeopardy", "jeopardy", "revealing_board")
-    {:noreply, socket}
-  end
-
   def handle_event(event, data, %{assigns: %{game: game}} = socket) do
     module = module_from_game(socket.assigns.game)
     module.handle(event, data, game)

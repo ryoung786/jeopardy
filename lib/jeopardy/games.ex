@@ -28,22 +28,6 @@ defmodule Jeopardy.Games do
     |> Repo.insert()
   end
 
-  def start(code, player_names) do
-    game = get_by_code(code) |> JArchive.load_into_game()
-    player_names |> Enum.each(fn name -> add_player(game, name) end)
-    GameState.update_round_status(code, "awaiting_start", "selecting_trebek")
-  end
-
-  def assign_trebek(%Game{code: code} = game, name) do
-    case (from g in Game, where: g.id == ^game.id and is_nil(g.trebek), select: g.id)
-    |> Repo.update_all_ts(set: [trebek: name]) do
-      {0, _} -> {:failed, nil}
-      {1, [_id]} ->
-        # Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:trebek_assigned, name})
-        GameState.update_round_status(code, "selecting_trebek", "introducing_roles")
-    end
-  end
-
   def assign_board_control(%Game{} = game, :random) do
     # in the jeopardy round, we pick who goes first randomly
     # in the double jeopardy round, it goes to the player with the lowest score
@@ -130,11 +114,6 @@ defmodule Jeopardy.Games do
   end
 
   def players(%Game{} = game), do: Repo.all Ecto.assoc(game, :players)
-
-  def add_player(%Game{} = game, name) do
-    Ecto.build_assoc(game, :players, %{name: name})
-    |> Repo.insert()
-  end
 
   def clues_by_category(%Game{} = game, round) when round in [:jeopardy, :double_jeopardy] do
     clues = from(c in Clue,
