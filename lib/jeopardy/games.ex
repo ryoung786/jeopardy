@@ -160,11 +160,19 @@ defmodule Jeopardy.Games do
 
     # increase score of buzzer player by current clue value
     amount = player.final_jeopardy_wager
-    from(p in Player, where: p.id == ^player.id)
+    {_, [new_score|_]} = from(p in Player, where: p.id == ^player.id, select: p.score)
     |> Repo.update_all_ts(
       inc: [score: amount],
-    push: [correct_answers: clue.id],
-    set: [final_jeopardy_score_updated: true])
+      push: [correct_answers: clue.id],
+      set: [final_jeopardy_score_updated: true])
+
+    data = {
+      :score_updated,
+      %{player_id: player.id,
+        player_name: player.name,
+        score: new_score }
+    }
+    Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, data)
 
     game
   end
@@ -176,11 +184,19 @@ defmodule Jeopardy.Games do
 
     # increase score of buzzer player by current clue value
     amount = player.final_jeopardy_wager
-    from(p in Player, where: p.id == ^player.id)
+    {_, [new_score|_]} = from(p in Player, where: p.id == ^player.id, select: p.score)
     |> Repo.update_all_ts(
       inc: [score: -1 * amount],
     push: [incorrect_answers: clue.id],
     set: [final_jeopardy_score_updated: true])
+
+    data = {
+      :score_updated,
+      %{player_id: player.id,
+        player_name: player.name,
+        score: new_score }
+    }
+    Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, data)
 
     game
   end
@@ -254,15 +270,6 @@ defmodule Jeopardy.Games do
     set_current_clue(game, final_jeopardy_clue_id)
 
     # TODO start wager timer
-  end
-
-  def all_final_jeopardy_wagers_submitted?(%Game{} = game) do
-    num_yet_to_submit = from(p in Player, select: count(1),
-      where: p.game_id == ^game.id,
-      where: p.name != ^game.trebek,
-      where: is_nil(p.final_jeopardy_wager)
-    ) |> Repo.one
-    num_yet_to_submit == 0
   end
 
   def contestants_yet_to_be_updated(%Game{} = game) do

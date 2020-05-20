@@ -2,9 +2,7 @@ defmodule JeopardyWeb.WagerComponent do
   use Phoenix.LiveComponent
   use Phoenix.HTML
   alias JeopardyWeb.WagerView
-  alias Jeopardy.GameState
-  alias Jeopardy.Games.{Wager, Player, Clue}
-  alias Jeopardy.Repo
+  alias Jeopardy.Games.{Wager, Player}
   require Logger
   import Jeopardy.FSM
 

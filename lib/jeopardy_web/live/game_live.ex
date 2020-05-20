@@ -3,7 +3,6 @@ defmodule JeopardyWeb.GameLive do
   require Logger
   alias Jeopardy.Games
   alias Jeopardy.Games.Game
-  alias Jeopardy.GameState
   alias JeopardyWeb.Presence
   alias JeopardyWeb.GameView
   import Jeopardy.FSM
