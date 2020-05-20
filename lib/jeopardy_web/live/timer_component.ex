@@ -5,11 +5,15 @@ defmodule JeopardyWeb.TimerComponent do
   def render(assigns) do
     ~L"""
     <div class="timer">
-      <div class="first <%= if @time_left >= 3, do: "on" %>"></div>
+      <div class="first <%= if @time_left >= 5, do: "on" %>"></div>
+      <div class="<%= if @time_left >= 4, do: "on" %>"></div>
+      <div class="<%= if @time_left >= 3, do: "on" %>"></div>
       <div class="<%= if @time_left >= 2, do: "on" %>"></div>
       <div class="<%= if @time_left >= 1, do: "on" %>"></div>
       <div class="<%= if @time_left >= 2, do: "on" %>"></div>
       <div class="<%= if @time_left >= 3, do: "on" %>"></div>
+      <div class="<%= if @time_left >= 4, do: "on" %>"></div>
+      <div class="<%= if @time_left >= 5, do: "on" %>"></div>
     </div>
     """
   end

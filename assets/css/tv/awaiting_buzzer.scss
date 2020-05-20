@@ -20,7 +20,7 @@
 
     .timer {
         display: grid;
-        grid-template-columns: 10% repeat(5, 1fr) 10%;
+        grid-template-columns: 10% repeat(9, 1fr) 10%;
         gap: 5px;
         .on {
             background: #DAB777;

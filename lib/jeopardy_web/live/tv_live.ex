@@ -48,16 +48,14 @@ defmodule JeopardyWeb.TvLive do
   end
 
   def handle_info(:timer_expired, socket) do
-    Games.no_answer(socket.assigns.game)
+    module = module_from_game(socket.assigns.game)
+    module.handle(:timer_expired, nil, socket.assigns.game)
     {:noreply, assign(socket, timer: :expired)}
   end
   def handle_info({:timer_start, time_left}, socket), do: {:noreply, assign(socket, timer: time_left)}
-  def handle_info({:timer_tick, time_left} = _event, socket) do
-    Logger.info("TV: time_left: #{inspect time_left}")
-    {:noreply, assign(socket, timer: time_left)}
-  end
+  def handle_info({:timer_tick, time_left}, socket), do: {:noreply, assign(socket, timer: time_left)}
   def handle_info(:start, socket) do
-    {:noreply, assign(socket, timer: 3)}
+    {:noreply, assign(socket, timer: 5)}
   end
 
   @impl true

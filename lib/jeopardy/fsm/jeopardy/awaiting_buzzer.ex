@@ -8,7 +8,7 @@ defmodule Jeopardy.FSM.Jeopardy.AwaitingBuzzer do
     buzz(g, player_name) # to: answering_clue
   end
 
-  def handle(:time_expired, _, %Game{} = g) do
+  def handle(:timer_expired, _, %Game{} = g) do
     no_answer(g) # to: revealing_answer
   end
 

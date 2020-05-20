@@ -1,7 +1,20 @@
 <%= if @game.buzzer_player == @name do %>
     <div class="game answering_clue">
-        <p>You buzzed in! Tell <%= @game.trebek %> your answer.</p>
+        <%= if Jeopardy.Games.Clue.is_daily_double(@current_clue) do %>
+            <p>Tell <%= @game.trebek %> your answer when you're ready.</p>
+        <% else %>
+            <p>You buzzed in! Tell <%= @game.trebek %> your answer.</p>
+        <% end %>
     </div>
 <% else %>
-    <%= live_component @socket, JeopardyWeb.BuzzComponent, can_buzz: @can_buzz, current_clue: @current_clue %>
+    <%= if Jeopardy.Games.Clue.is_daily_double(@current_clue) do %>
+        <div class="game answering_clue">
+            <p>
+                <%= @game.board_control %> hit the Daily Double! <br />
+                Waiting for them to make their wager.
+            </p>
+        </div>
+    <% else %>
+        <%= live_component @socket, JeopardyWeb.BuzzComponent, can_buzz: @can_buzz, current_clue: @current_clue %>
+    <% end %>
 <% end %>
