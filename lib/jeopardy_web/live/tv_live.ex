@@ -5,6 +5,7 @@ defmodule JeopardyWeb.TvLive do
   alias Jeopardy.Games.Game
   alias JeopardyWeb.Presence
   alias JeopardyWeb.TvView
+  import Jeopardy.FSM
 
   @impl true
   def mount(%{"code" => code}, _session, socket) do
@@ -27,21 +28,9 @@ defmodule JeopardyWeb.TvLive do
   end
 
   @impl true
-  def handle_event("start_game", _params, socket) do
-    Games.start(socket.assigns.game.code, socket.assigns.audience)
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("clear", _params, socket) do
-    Games.clear_buzzer(socket.assigns.game.code)
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("trebek_selection", %{"value" => name}, socket) do
-    socket.assigns.game
-    |> Games.assign_trebek(name)
+  def handle_event(event, data, socket) do
+    module = module_from_game(socket.assigns.game)
+    module.handle(event, data, socket.assigns)
     {:noreply, socket}
   end
 
@@ -59,16 +48,14 @@ defmodule JeopardyWeb.TvLive do
   end
 
   def handle_info(:timer_expired, socket) do
-    Games.no_answer(socket.assigns.game)
+    module = module_from_game(socket.assigns.game)
+    module.handle(:timer_expired, nil, socket.assigns.game)
     {:noreply, assign(socket, timer: :expired)}
   end
   def handle_info({:timer_start, time_left}, socket), do: {:noreply, assign(socket, timer: time_left)}
-  def handle_info({:timer_tick, time_left} = _event, socket) do
-    Logger.info("TV: time_left: #{inspect time_left}")
-    {:noreply, assign(socket, timer: time_left)}
-  end
+  def handle_info({:timer_tick, time_left}, socket), do: {:noreply, assign(socket, timer: time_left)}
   def handle_info(:start, socket) do
-    {:noreply, assign(socket, timer: 3)}
+    {:noreply, assign(socket, timer: 5)}
   end
 
   @impl true

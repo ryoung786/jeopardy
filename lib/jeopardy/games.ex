@@ -28,22 +28,6 @@ defmodule Jeopardy.Games do
     |> Repo.insert()
   end
 
-  def start(code, player_names) do
-    game = get_by_code(code) |> JArchive.load_into_game()
-    player_names |> Enum.each(fn name -> add_player(game, name) end)
-    GameState.update_round_status(code, "awaiting_start", "selecting_trebek")
-  end
-
-  def assign_trebek(%Game{code: code} = game, name) do
-    case (from g in Game, where: g.id == ^game.id and is_nil(g.trebek), select: g.id)
-    |> Repo.update_all_ts(set: [trebek: name]) do
-      {0, _} -> {:failed, nil}
-      {1, [_id]} ->
-        # Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:trebek_assigned, name})
-        GameState.update_round_status(code, "selecting_trebek", "introducing_roles")
-    end
-  end
-
   def assign_board_control(%Game{} = game, :random) do
     # in the jeopardy round, we pick who goes first randomly
     # in the double jeopardy round, it goes to the player with the lowest score
@@ -131,11 +115,6 @@ defmodule Jeopardy.Games do
 
   def players(%Game{} = game), do: Repo.all Ecto.assoc(game, :players)
 
-  def add_player(%Game{} = game, name) do
-    Ecto.build_assoc(game, :players, %{name: name})
-    |> Repo.insert()
-  end
-
   def clues_by_category(%Game{} = game, round) when round in [:jeopardy, :double_jeopardy] do
     clues = from(c in Clue,
       where: c.game_id == ^game.id,
@@ -160,11 +139,19 @@ defmodule Jeopardy.Games do
 
     # increase score of buzzer player by current clue value
     amount = player.final_jeopardy_wager
-    from(p in Player, where: p.id == ^player.id)
+    {_, [new_score|_]} = from(p in Player, where: p.id == ^player.id, select: p.score)
     |> Repo.update_all_ts(
       inc: [score: amount],
-    push: [correct_answers: clue.id],
-    set: [final_jeopardy_score_updated: true])
+      push: [correct_answers: clue.id],
+      set: [final_jeopardy_score_updated: true])
+
+    data = {
+      :score_updated,
+      %{player_id: player.id,
+        player_name: player.name,
+        score: new_score }
+    }
+    Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, data)
 
     game
   end
@@ -176,11 +163,19 @@ defmodule Jeopardy.Games do
 
     # increase score of buzzer player by current clue value
     amount = player.final_jeopardy_wager
-    from(p in Player, where: p.id == ^player.id)
+    {_, [new_score|_]} = from(p in Player, where: p.id == ^player.id, select: p.score)
     |> Repo.update_all_ts(
       inc: [score: -1 * amount],
     push: [incorrect_answers: clue.id],
     set: [final_jeopardy_score_updated: true])
+
+    data = {
+      :score_updated,
+      %{player_id: player.id,
+        player_name: player.name,
+        score: new_score }
+    }
+    Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, data)
 
     game
   end
@@ -232,13 +227,13 @@ defmodule Jeopardy.Games do
 
     if Clue.is_daily_double(clue) do
       Games.lock_buzzer(game)
-      GameState.update_round_status(game.code, "answering_daily_double", "revealing_answer")
+      GameState.update_round_status(game.code, "answering_clue", "revealing_answer")
     else
       case Clue.contestants_remaining?(clue) do
         true ->
           Games.clear_buzzer(game)
           GameState.update_round_status(game.code, "answering_clue", "awaiting_buzzer")
-          Jeopardy.Timer.start(game.code, 3)
+          Jeopardy.Timer.start(game.code, 5)
         _ ->
           Games.lock_buzzer(game)
           GameState.update_round_status(game.code, "answering_clue", "revealing_answer")
@@ -254,15 +249,6 @@ defmodule Jeopardy.Games do
     set_current_clue(game, final_jeopardy_clue_id)
 
     # TODO start wager timer
-  end
-
-  def all_final_jeopardy_wagers_submitted?(%Game{} = game) do
-    num_yet_to_submit = from(p in Player, select: count(1),
-      where: p.game_id == ^game.id,
-      where: p.name != ^game.trebek,
-      where: is_nil(p.final_jeopardy_wager)
-    ) |> Repo.one
-    num_yet_to_submit == 0
   end
 
   def contestants_yet_to_be_updated(%Game{} = game) do

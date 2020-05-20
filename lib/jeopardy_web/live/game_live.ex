@@ -3,9 +3,9 @@ defmodule JeopardyWeb.GameLive do
   require Logger
   alias Jeopardy.Games
   alias Jeopardy.Games.Game
-  alias Jeopardy.GameState
   alias JeopardyWeb.Presence
   alias JeopardyWeb.GameView
+  import Jeopardy.FSM
 
   @impl true
   def mount(%{"code" => code}, %{"name" => name}, socket) do
@@ -39,24 +39,9 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
-  def handle_event("buzz", _, %{assigns: %{name: name}} = socket) do
-    Logger.info("buzz attempt by #{name}")
-    with {:ok, game} <- Games.player_buzzer(game_from_socket(socket), name) do
-      GameState.update_round_status(game.code, "awaiting_buzzer", "answering_clue")
-    end
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("clear", _, %{assigns: %{game: %{code: code}}} = socket) do
-    Games.clear_buzzer(code)
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("volunteer_to_host", _, %{assigns: %{name: name}} = socket) do
-    socket.assigns.game
-    |> Games.assign_trebek(name)
+  def handle_event(event, _, %{assigns: %{game: game, name: player_name}} = socket) do
+    module = module_from_game(game)
+    module.handle(event, player_name, game)
     {:noreply, socket}
   end
 
