@@ -6,6 +6,7 @@ defmodule JeopardyWeb.TrebekLive do
   alias Jeopardy.GameState
   alias JeopardyWeb.Presence
   alias JeopardyWeb.TrebekView
+  import Jeopardy.FSM
 
   @impl true
   def mount(%{"code" => code}, %{"name" => name}, socket) do
@@ -44,11 +45,8 @@ defmodule JeopardyWeb.TrebekLive do
     {:noreply, socket}
   end
 
-  def handle_event(event, data, socket) do
-    game = socket.assigns.game
-    {a, b} = {Macro.camelize(game.status),
-              Macro.camelize(game.round_status)}
-    module = String.to_existing_atom("Elixir.Jeopardy.FSM.#{a}.#{b}")
+  def handle_event(event, data, %{assigns: %{game: game}} = socket) do
+    module = module_from_game(socket.assigns.game)
     module.handle(event, data, game)
     {:noreply, socket}
   end

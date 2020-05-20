@@ -6,6 +6,7 @@ defmodule JeopardyWeb.WagerComponent do
   alias Jeopardy.Games.{Wager, Player, Clue}
   alias Jeopardy.Repo
   require Logger
+  import Jeopardy.FSM
 
   def render(assigns) do
     # {min, max} = Player.min_max_wagers(assigns.player, assigns.clue)
@@ -28,7 +29,6 @@ defmodule JeopardyWeb.WagerComponent do
   end
 
   def handle_event("validate", %{"wager" => params}, socket) do
-    # {min, max} = Player.min_max_wagers(socket.assigns.player, socket.assigns.clue)
     {min, max} = {socket.assigns.min, socket.assigns.max}
     changeset =
       %Wager{}
@@ -38,7 +38,6 @@ defmodule JeopardyWeb.WagerComponent do
   end
 
   def handle_event("save", %{"wager" => params}, socket) do
-    # {min, max} = Player.min_max_wagers(socket.assigns.player, socket.assigns.clue)
     {min, max} = {socket.assigns.min, socket.assigns.max}
     clue = socket.assigns.clue
     player = socket.assigns.player
@@ -46,17 +45,16 @@ defmodule JeopardyWeb.WagerComponent do
     case Wager.validate(params, min, max) do
       {:ok, wager} ->
         data = %{clue: clue, player: player, wager: wager.amount}
-        handle(:wager_submitted, data, socket.assigns.game)
+        handle(:wager_submitted, data, socket.assigns.game_code)
         {:noreply, socket}
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
 
-  def handle(event, data, game) do
-    {a, b} = {Macro.camelize(game.status),
-              Macro.camelize(game.round_status)}
-    module = String.to_existing_atom("Elixir.Jeopardy.FSM.#{a}.#{b}")
+  def handle(event, data, game_code) do
+    game = Jeopardy.Games.get_by_code(game_code)
+    module = module_from_game(game)
     module.handle(event, data, game)
   end
 end

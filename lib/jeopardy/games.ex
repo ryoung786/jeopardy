@@ -232,7 +232,7 @@ defmodule Jeopardy.Games do
 
     if Clue.is_daily_double(clue) do
       Games.lock_buzzer(game)
-      GameState.update_round_status(game.code, "answering_daily_double", "revealing_answer")
+      GameState.update_round_status(game.code, "answering_clue", "revealing_answer")
     else
       case Clue.contestants_remaining?(clue) do
         true ->

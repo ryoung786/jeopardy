@@ -1,18 +1,21 @@
 defmodule Jeopardy.FSM.Jeopardy.AwaitingBuzzer do
   import Ecto.Query, warn: false
+  import Jeopardy.FSM
   alias Jeopardy.Games.{Game, Clue, Player}
   alias Jeopardy.Repo
 
-  def handle(:buzz, %{player_id: player_id}, %Game{} = g) do
-    buzz(g, player_id) # to: answering_clue
+  def handle("buzz", player_name, %Game{} = g) do
+    buzz(g, player_name) # to: answering_clue
   end
 
   def handle(:time_expired, _, %Game{} = g) do
     no_answer(g) # to: revealing_answer
   end
 
-  defp buzz(game, player_id) do
-    player = Repo.get!(Player, player_id)
+  defp buzz(game, player_name) do
+    # player = Repo.get!(Player, player_id)
+    player = Repo.one((from p in Player, select: p, where: p.game_id == ^game.id,
+      where: p.name == ^player_name))
     q = (from g in Game,
       where: g.id == ^game.id,
       where: g.buzzer_lock_status == "clear",
@@ -29,6 +32,7 @@ defmodule Jeopardy.FSM.Jeopardy.AwaitingBuzzer do
       {0, _} -> {:failed, nil}
       {1, _} ->
         Jeopardy.Timer.stop(game.code)
+        broadcast(game.code, :round_status_change)
         {:ok, nil}
     end
   end
@@ -45,5 +49,6 @@ defmodule Jeopardy.FSM.Jeopardy.AwaitingBuzzer do
                round_status: "revealing_answer"]
 
     Repo.update_all_ts(q, set: updates)
+    broadcast(game.code, :round_status_change)
   end
 end
