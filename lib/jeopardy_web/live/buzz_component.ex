@@ -8,7 +8,7 @@ defmodule JeopardyWeb.BuzzComponent do
       <%= if @can_buzz do %>
         <%= submit "Buzz", "phx-click": "buzz" %>
       <% else %>
-        <%= submit "Buzz", ["phx-click": "buzz", disabled: true] %>
+        <p>Buzzer is locked</>
       <% end %>
     </div>
     """
