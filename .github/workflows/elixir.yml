@@ -34,15 +34,3 @@ jobs:
           elixir-version: 1.9.4
       - run: mix deps.get
       - run: mix test
-
-      - run: mkdir /tmp/artifacts
-      - name: Run Lighthouse
-        uses: foo-software/lighthouse-check-action@master
-        with:
-          outputDirectory: /tmp/artifacts
-          urls: 'http://localhost'
-      - name: Upload artifacts
-        uses: actions/upload-artifact@master
-        with:
-          name: Lighthouse reports
-          path: /tmp/artifacts
