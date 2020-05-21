@@ -33,7 +33,7 @@ if Mix.env() != :prod do
     hooks: [
       pre_commit: [
         tasks: [
-          "mix format"
+          "mix format --check-formatted"
         ]
       ]
     ]
