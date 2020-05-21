@@ -14,6 +14,7 @@ defmodule JeopardyWeb.FinalJeopardySubmissionComponent do
     {:ok, player} =
       Player.changeset(socket.assigns.player, %{final_jeopardy_answer: answer})
       |> Repo.update()
+
     {:noreply, assign(socket, player: player)}
   end
 end

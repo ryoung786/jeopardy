@@ -16,7 +16,7 @@ defmodule Jeopardy.Application do
       # Start the Presence tracker
       JeopardyWeb.Presence,
       # Start the Endpoint (http/https)
-      JeopardyWeb.Endpoint,
+      JeopardyWeb.Endpoint
       # Start a worker by calling: Jeopardy.Worker.start_link(arg)
       # {Jeopardy.Worker, arg}
     ]

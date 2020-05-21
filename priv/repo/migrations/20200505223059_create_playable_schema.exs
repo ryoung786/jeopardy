@@ -37,9 +37,12 @@ defmodule Jeopardy.Repo.Migrations.CreatePlayableSchema do
       add :clue_text, :string, size: 1024
       add :answer_text, :string, size: 512
       add :value, :integer
-      add :round, :string # jeopardy, double_jeopardy, final_jeopardy
-      add :type, :string # standard, daily_double
-      add :asked_status, :string # unasked, asked
+      # jeopardy, double_jeopardy, final_jeopardy
+      add :round, :string
+      # standard, daily_double
+      add :type, :string
+      # unasked, asked
+      add :asked_status, :string
       add :wager, :integer
       add :incorrect_players, {:array, :id}
       add :correct_players, {:array, :id}

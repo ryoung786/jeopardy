@@ -24,6 +24,5 @@ defmodule Jeopardy.Trebek do
     else
       GameState.update_round_status(game.code, "selecting_clue", "reading_clue")
     end
-
   end
 end

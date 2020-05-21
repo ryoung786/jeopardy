@@ -17,6 +17,7 @@ defmodule JeopardyWeb.WagerComponent do
     {min, max} = Player.min_max_wagers(socket.assigns.player, socket.assigns.clue)
 
     cs = Wager.changeset(%Wager{}, %{}, min, max)
+
     socket =
       socket
       |> assign(socket, changeset: cs)
@@ -28,10 +29,12 @@ defmodule JeopardyWeb.WagerComponent do
 
   def handle_event("validate", %{"wager" => params}, socket) do
     {min, max} = {socket.assigns.min, socket.assigns.max}
+
     changeset =
       %Wager{}
       |> Wager.changeset(params, min, max)
       |> Map.put(:action, :insert)
+
     {:noreply, assign(socket, changeset: changeset)}
   end
 
@@ -45,6 +48,7 @@ defmodule JeopardyWeb.WagerComponent do
         data = %{clue: clue, player: player, wager: wager.amount}
         handle(:wager_submitted, data, socket.assigns.game_code)
         {:noreply, socket}
+
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
     end

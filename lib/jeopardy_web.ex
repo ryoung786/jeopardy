@@ -95,19 +95,29 @@ defmodule JeopardyWeb do
 
       def tpl_path(assigns), do: "#{assigns.game.status}/#{assigns.game.round_status}.html"
 
-      def should_display_clue(clue), do: not is_nil(clue) && not Jeopardy.Games.Clue.asked(clue) && not is_nil(clue.clue_text)
+      def should_display_clue(clue),
+        do: not is_nil(clue) && not Jeopardy.Games.Clue.asked(clue) && not is_nil(clue.clue_text)
 
       _ = """
       generate a num 1-9 based on the player name and game id, so we can give them a unique font
       """
+
       def font_from_name(name, game_id) do
-        x = :crypto.hash(:sha256, name) |> Base.encode16 |> Integer.parse(16) |> elem(0) |> (&(&1*game_id)).() |> rem(9)
+        x =
+          :crypto.hash(:sha256, name)
+          |> Base.encode16()
+          |> Integer.parse(16)
+          |> elem(0)
+          |> (&(&1 * game_id)).()
+          |> rem(9)
+
         "font_#{x}"
       end
 
       def score(score) when score < 0 do
         ~s(<span class="negative">-$#{abs(score)}</span>) |> raw
       end
+
       def score(score) do
         ~s(<span>$#{abs(score)}</span>) |> raw
       end

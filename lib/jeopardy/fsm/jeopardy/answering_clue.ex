@@ -4,9 +4,11 @@ defmodule Jeopardy.FSM.Jeopardy.AnsweringClue do
   alias Jeopardy.GameState
 
   def handle("correct", _, %Game{} = g) do
-    {:ok, g} = Games.correct_answer(g)
-    |> Games.lock_buzzer()
-    |> Games.assign_board_control(g.buzzer_player)
+    {:ok, g} =
+      Games.correct_answer(g)
+      |> Games.lock_buzzer()
+      |> Games.assign_board_control(g.buzzer_player)
+
     GameState.to_selecting_clue(g)
   end
 

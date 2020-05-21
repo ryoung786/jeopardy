@@ -18,10 +18,15 @@ defmodule Jeopardy.Games.Player do
   @doc false
   def changeset(player, attrs) do
     player
-    |> cast(attrs, [:name, :score, :final_jeopardy_wager,
-                   :final_jeopardy_answer,
-                   :final_jeopardy_score_updated,
-                   :correct_answers, :incorrect_answers])
+    |> cast(attrs, [
+      :name,
+      :score,
+      :final_jeopardy_wager,
+      :final_jeopardy_answer,
+      :final_jeopardy_score_updated,
+      :correct_answers,
+      :incorrect_answers
+    ])
     |> update_change(:name, &String.trim/1)
     |> validate_required([:name, :game_id])
     |> validate_length(:name, max: 25, message: "Keep it short! 25 letters is the max.")

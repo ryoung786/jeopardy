@@ -16,12 +16,16 @@ defmodule JeopardyWeb.TrebekLive do
     case game.trebek do
       ^name ->
         if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
-        socket = socket
-        |> assign(name: name)
-        |> assign(current_clue: Game.current_clue(game))
-        |> assign(audience: Presence.list_presences(code))
-        |> assigns(game)
+
+        socket =
+          socket
+          |> assign(name: name)
+          |> assign(current_clue: Game.current_clue(game))
+          |> assign(audience: Presence.list_presences(code))
+          |> assigns(game)
+
         {:ok, socket}
+
       _ ->
         {:ok, socket |> put_flash(:info, "Sorry, unauthorized") |> redirect(to: "/")}
     end
@@ -67,9 +71,13 @@ defmodule JeopardyWeb.TrebekLive do
     game = Games.get_by_code(socket.assigns.game.code)
     assigns(socket, game)
   end
+
   defp assigns(socket, %Game{} = game) do
-    clues = %{"jeopardy" => Games.clues_by_category(game, :jeopardy),
-              "double_jeopardy" => Games.clues_by_category(game, :double_jeopardy)}
+    clues = %{
+      "jeopardy" => Games.clues_by_category(game, :jeopardy),
+      "double_jeopardy" => Games.clues_by_category(game, :double_jeopardy)
+    }
+
     socket
     |> assign(game: game)
     |> assign(clues: clues)

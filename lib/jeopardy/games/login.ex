@@ -17,6 +17,7 @@ defmodule Jeopardy.Games.Login do
     |> validate_required([:name, :code])
     |> validate_length(:name, max: 25, message: "Keep it short! 25 letters is the max.")
     |> validate_length(:code, is: 4, message: "Codes are 4 letters long")
+
     # |> validate_format(:code, ~r/^[A-Z]{4}$/, message: "must be 4 uppercase letters")
   end
 

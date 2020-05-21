@@ -15,19 +15,23 @@ defmodule JeopardyWeb.GameLive do
     player = Games.get_player(game, name)
 
     case name do
-      "" -> {:ok, socket |> put_flash(:info, "Please enter a name") |> redirect(to: "/")}
+      "" ->
+        {:ok, socket |> put_flash(:info, "Please enter a name") |> redirect(to: "/")}
+
       ^trebek_name ->
         {:ok, redirect(socket, to: "/games/#{game.code}/trebek")}
+
       _ ->
         if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
 
-        socket = socket
-        |> assign(name: name)
-        |> assign(game: game)
-        |> assign(player: player)
-        |> assign(can_buzz: Games.can_buzz?(game, player))
-        |> assign(current_clue: Game.current_clue(game))
-        |> assign(audience: Presence.list_presences(code))
+        socket =
+          socket
+          |> assign(name: name)
+          |> assign(game: game)
+          |> assign(player: player)
+          |> assign(can_buzz: Games.can_buzz?(game, player))
+          |> assign(current_clue: Game.current_clue(game))
+          |> assign(audience: Presence.list_presences(code))
 
         {:ok, socket}
     end
@@ -57,15 +61,20 @@ defmodule JeopardyWeb.GameLive do
     game = game_from_socket(socket)
     name = socket.assigns.name
     player = Games.get_player(game, name)
+
     case game.trebek do
-      ^name -> {:noreply, redirect(socket, to: "/games/#{game.code}/trebek")}
+      ^name ->
+        {:noreply, redirect(socket, to: "/games/#{game.code}/trebek")}
+
       _ ->
-        socket = socket
-        |> assign(game: game)
-        |> assign(player: player)
-        |> assign(can_buzz: Games.can_buzz?(game, player))
-        |> assign(players: Games.get_just_contestants(game))
-        |> assign(current_clue: Game.current_clue(game))
+        socket =
+          socket
+          |> assign(game: game)
+          |> assign(player: player)
+          |> assign(can_buzz: Games.can_buzz?(game, player))
+          |> assign(players: Games.get_just_contestants(game))
+          |> assign(current_clue: Game.current_clue(game))
+
         {:noreply, socket}
     end
   end

@@ -39,6 +39,7 @@ defmodule JeopardyWeb.Router do
     case Games.get_by_code(conn.path_params["code"]) do
       nil ->
         conn |> put_flash(:info, "Game not found") |> redirect(to: "/") |> halt()
+
       game ->
         assign(conn, :game, game)
     end

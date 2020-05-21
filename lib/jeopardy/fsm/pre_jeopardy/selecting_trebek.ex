@@ -13,11 +13,15 @@ defmodule Jeopardy.FSM.PreJeopardy.SelectingTrebek do
   end
 
   defp assign_trebek(game, name) do
-    q = (from g in Game,
-      where: g.id == ^game.id and is_nil(g.trebek),
-      select: g.id)
+    q =
+      from g in Game,
+        where: g.id == ^game.id and is_nil(g.trebek),
+        select: g.id
+
     case q |> Repo.update_all_ts(set: [trebek: name]) do
-      {0, _} -> {:failed, nil}
+      {0, _} ->
+        {:failed, nil}
+
       {1, [_id]} ->
         GameState.update_round_status(game.code, "selecting_trebek", "introducing_roles")
     end

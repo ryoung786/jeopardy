@@ -6,11 +6,12 @@ defmodule Jeopardy.Timer do
     GenServer.start_link(__MODULE__, {code, time})
     Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{code}", :start)
   end
+
   def stop(code), do: Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{code}", :stop)
 
   def init({code, time}) do
-    Logger.warn "timer server started with id #{code}"
-    IO.puts "timer server started with id #{code}"
+    Logger.warn("timer server started with id #{code}")
+    IO.puts("timer server started with id #{code}")
 
     Phoenix.PubSub.subscribe(Jeopardy.PubSub, "timer:#{code}")
 
@@ -24,9 +25,9 @@ defmodule Jeopardy.Timer do
   end
 
   def handle_info(:update, %{timer: time, orig_time: orig, code: code}) do
-    IO.puts "tick. time left #{time}"
+    IO.puts("tick. time left #{time}")
     leftover = time - 1
-    timer_ref = schedule_timer 1_000
+    timer_ref = schedule_timer(1_000)
     Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{code}", {:timer_tick, time})
 
     Logger.info("broadcasted :timer_tick to timer:#{code}")
@@ -34,19 +35,22 @@ defmodule Jeopardy.Timer do
   end
 
   def handle_info(:start, state) do
-    timer_ref = schedule_timer 1_000
-    IO.puts "started timer, state: #{inspect state}"
-    IO.puts "started timer, time left #{state.timer}"
+    timer_ref = schedule_timer(1_000)
+    IO.puts("started timer, state: #{inspect(state)}")
+    IO.puts("started timer, time left #{state.timer}")
     {:noreply, %{state | timer: state.timer - 1, timer_ref: timer_ref}}
   end
+
   def handle_info(:reset, %{timer_ref: old_timer_ref, orig_time: orig, code: code}) do
     cancel_timer(old_timer_ref)
     {:noreply, %{timer_ref: nil, timer: orig, orig_time: orig, code: code}}
   end
+
   def handle_info(:pause, %{timer_ref: old_timer_ref, timer: timer, orig_time: orig, code: code}) do
     cancel_timer(old_timer_ref)
     {:noreply, %{timer_ref: nil, timer: timer, orig_time: orig, code: code}}
   end
+
   def handle_info(:stop, _state) do
     Logger.info("IN Timer, stop handled")
     {:stop, :normal, nil}
@@ -54,7 +58,7 @@ defmodule Jeopardy.Timer do
 
   def handle_info(_, state), do: {:noreply, state}
 
-  defp schedule_timer(interval), do: Process.send_after self(), :update, interval
+  defp schedule_timer(interval), do: Process.send_after(self(), :update, interval)
 
   defp cancel_timer(nil), do: :ok
   defp cancel_timer(ref), do: Process.cancel_timer(ref)

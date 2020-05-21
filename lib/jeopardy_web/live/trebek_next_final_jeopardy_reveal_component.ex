@@ -14,14 +14,19 @@ defmodule JeopardyWeb.TrebekNextFinalJeopardyRevealComponent do
   def update(assigns, socket) do
     socket = assign(socket, assigns)
     game = assigns.game
-    next_player = case Games.contestants_yet_to_be_updated(game) do
-      [next_player | _] -> next_player
-      _ -> %{name: "wtf"}
-    end
-    socket = socket
-    |> assign(contestant: socket.assigns[:contestant] || next_player)
-    |> assign(step: :name)
-    |> assign(cta: "Next")
+
+    next_player =
+      case Games.contestants_yet_to_be_updated(game) do
+        [next_player | _] -> next_player
+        _ -> %{name: "wtf"}
+      end
+
+    socket =
+      socket
+      |> assign(contestant: socket.assigns[:contestant] || next_player)
+      |> assign(step: :name)
+      |> assign(cta: "Next")
+
     {:ok, socket}
   end
 
@@ -30,6 +35,7 @@ defmodule JeopardyWeb.TrebekNextFinalJeopardyRevealComponent do
     player = socket.assigns.contestant
     game = socket.assigns.game
     cur_step = socket.assigns.step
+
     next_player =
       case cur_step do
         :next ->
@@ -38,26 +44,35 @@ defmodule JeopardyWeb.TrebekNextFinalJeopardyRevealComponent do
             :correct -> Games.final_jeopardy_correct_answer(game, player)
             :incorrect -> Games.final_jeopardy_incorrect_answer(game, player)
           end
+
           # update "revealed" on player
           # assign contestant to player with next lowest score
           case Games.contestants_yet_to_be_updated(game) do
             [next_player | _] -> next_player
             _ -> nil
           end
-        _ -> player
+
+        _ ->
+          player
       end
 
-    next_step = %{
-      name: :answer,
-      answer: :grade,
-      grade: :wager,
-      wager: :next,
-      next: :name
-    } |> Map.get(cur_step)
+    next_step =
+      %{
+        name: :answer,
+        answer: :grade,
+        grade: :wager,
+        wager: :next,
+        next: :name
+      }
+      |> Map.get(cur_step)
 
     if is_nil(next_player) do
       Jeopardy.GameState.update_round_status(
-        game.code, "revealing_final_scores", "game_over")
+        game.code,
+        "revealing_final_scores",
+        "game_over"
+      )
+
       {:noreply, socket}
     else
       Phoenix.PubSub.broadcast(
@@ -65,20 +80,23 @@ defmodule JeopardyWeb.TrebekNextFinalJeopardyRevealComponent do
         "#{game.code}-finaljeopardy",
         %{player: socket.assigns.contestant, step: cur_step}
       )
-      socket = socket
-      |> assign(step: next_step)
-      |> assign(contestant: next_player)
+
+      socket =
+        socket
+        |> assign(step: next_step)
+        |> assign(contestant: next_player)
+
       {:noreply, socket}
     end
   end
 
   @impl true
   def handle_event("correct", _, socket) do
-    {:noreply, assign(socket, [grade: :correct, step: :wager])}
+    {:noreply, assign(socket, grade: :correct, step: :wager)}
   end
 
   @impl true
   def handle_event("incorrect", _, socket) do
-    {:noreply, assign(socket, [grade: :incorrect, step: :wager])}
+    {:noreply, assign(socket, grade: :incorrect, step: :wager)}
   end
 end

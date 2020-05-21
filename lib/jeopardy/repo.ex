@@ -7,7 +7,7 @@ defmodule Jeopardy.Repo do
     update_all(
       queryable,
       Enum.map(updates, fn {a, b} = c ->
-        if a == :set, do: {:set, b ++ [updated_at: DateTime.utc_now]}, else: c
+        if a == :set, do: {:set, b ++ [updated_at: DateTime.utc_now()]}, else: c
       end),
       opts
     )
@@ -22,7 +22,7 @@ defmodule Jeopardy.Repo do
   end
 
   defp inject_timestamps(m) do
-    time = DateTime.utc_now |> DateTime.truncate(:second)
+    time = DateTime.utc_now() |> DateTime.truncate(:second)
     m |> Map.merge(%{inserted_at: time, updated_at: time})
-    end
+  end
 end

@@ -10,9 +10,12 @@ defmodule JeopardyWeb.FinalJeopardyScoreRevealComponent do
 
   def update(assigns, socket) do
     socket = assign(socket, assigns)
-    socket = socket
-    |> assign(player_id: socket.assigns[:player_id] || nil)
-    |> assign(step: socket.assigns[:step] || nil)
+
+    socket =
+      socket
+      |> assign(player_id: socket.assigns[:player_id] || nil)
+      |> assign(step: socket.assigns[:step] || nil)
+
     {:ok, socket}
   end
 end

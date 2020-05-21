@@ -11,5 +11,4 @@ defmodule Jeopardy.Engine do
   alias Jeopardy.Repo
   alias Jeopardy.JArchive
   alias Jeopardy.GameState
-
 end

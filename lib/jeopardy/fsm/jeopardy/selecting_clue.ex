@@ -19,19 +19,27 @@ defmodule Jeopardy.FSM.Jeopardy.SelectingClue do
   end
 
   defp set_clue_to_asked(clue_id) do
-    {1, [clue | _]} = (from c in Clue, select: c, where: c.id == ^clue_id)
-    |> Repo.update_all_ts(set: [asked_status: "asked"])
+    {1, [clue | _]} =
+      from(c in Clue, select: c, where: c.id == ^clue_id)
+      |> Repo.update_all_ts(set: [asked_status: "asked"])
+
     clue
   end
 
   defp daily_double(game) do
-    q = (from g in Game,
-      where: g.id == ^game.id,
-      where: g.round_status == "selecting_clue")
-    updates = [round_status: "awaiting_daily_double_wager",
-               buzzer_player: game.board_control]
+    q =
+      from g in Game,
+        where: g.id == ^game.id,
+        where: g.round_status == "selecting_clue"
+
+    updates = [round_status: "awaiting_daily_double_wager", buzzer_player: game.board_control]
     Repo.update_all_ts(q, set: updates)
-    Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, {:round_status_change, "awaiting_daily_double_wager"})
+
+    Phoenix.PubSub.broadcast(
+      Jeopardy.PubSub,
+      game.code,
+      {:round_status_change, "awaiting_daily_double_wager"}
+    )
   end
 
   defp normal(game) do

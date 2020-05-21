@@ -16,9 +16,11 @@ defmodule Jeopardy.GameState do
   # }
 
   def update_round_status(code, from, to) do
-    case (from g in Game, where: g.code == ^code and g.round_status == ^from, select: g.id)
-    |> Repo.update_all_ts(set: [round_status: to]) do
-      {0, _} -> {:failed, nil}
+    case from(g in Game, where: g.code == ^code and g.round_status == ^from, select: g.id)
+         |> Repo.update_all_ts(set: [round_status: to]) do
+      {0, _} ->
+        {:failed, nil}
+
       {1, [id]} ->
         Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:round_status_change, to})
         {:ok, G.get_game!(id)}
@@ -26,9 +28,11 @@ defmodule Jeopardy.GameState do
   end
 
   def update_game_status(code, from, to, new_round) do
-    case (from g in Game, where: g.code == ^code and g.status == ^from, select: g.id)
-    |> Repo.update_all_ts(set: [status: to, round_status: new_round]) do
-      {0, _} -> {:failed, nil}
+    case from(g in Game, where: g.code == ^code and g.status == ^from, select: g.id)
+         |> Repo.update_all_ts(set: [status: to, round_status: new_round]) do
+      {0, _} ->
+        {:failed, nil}
+
       {1, [id]} ->
         Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:game_status_change, to})
         {:ok, G.get_game!(id)}
@@ -40,6 +44,7 @@ defmodule Jeopardy.GameState do
       true -> update_round_status(g.code, g.round_status, "recapping_scores")
       _ -> update_round_status(g.code, g.round_status, "selecting_clue")
     end
+
     g
   end
 end

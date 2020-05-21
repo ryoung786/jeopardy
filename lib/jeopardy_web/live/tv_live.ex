@@ -16,9 +16,12 @@ defmodule JeopardyWeb.TvLive do
     end
 
     game = Games.get_by_code(code)
-    socket = socket
-    |> assigns(game)
-    |> assign(audience: Presence.list_presences(code))
+
+    socket =
+      socket
+      |> assigns(game)
+      |> assign(audience: Presence.list_presences(code))
+
     {:ok, socket}
   end
 
@@ -42,8 +45,11 @@ defmodule JeopardyWeb.TvLive do
   def handle_info(%{player: p, step: step}, socket) do
     send_update(
       JeopardyWeb.FinalJeopardyScoreRevealComponent,
-      id: 1, player_id: p.id, step: step
+      id: 1,
+      player_id: p.id,
+      step: step
     )
+
     {:noreply, socket}
   end
 
@@ -52,8 +58,13 @@ defmodule JeopardyWeb.TvLive do
     module.handle(:timer_expired, nil, socket.assigns.game)
     {:noreply, assign(socket, timer: :expired)}
   end
-  def handle_info({:timer_start, time_left}, socket), do: {:noreply, assign(socket, timer: time_left)}
-  def handle_info({:timer_tick, time_left}, socket), do: {:noreply, assign(socket, timer: time_left)}
+
+  def handle_info({:timer_start, time_left}, socket),
+    do: {:noreply, assign(socket, timer: time_left)}
+
+  def handle_info({:timer_tick, time_left}, socket),
+    do: {:noreply, assign(socket, timer: time_left)}
+
   def handle_info(:start, socket) do
     {:noreply, assign(socket, timer: 5)}
   end
@@ -67,8 +78,11 @@ defmodule JeopardyWeb.TvLive do
   end
 
   defp assigns(socket, game) do
-    clues = %{"jeopardy" => Games.clues_by_category(game, :jeopardy),
-              "double_jeopardy" => Games.clues_by_category(game, :double_jeopardy)}
+    clues = %{
+      "jeopardy" => Games.clues_by_category(game, :jeopardy),
+      "double_jeopardy" => Games.clues_by_category(game, :double_jeopardy)
+    }
+
     socket
     |> assign(game: game)
     |> assign(players: Games.get_just_contestants(game))

@@ -24,7 +24,9 @@ defmodule JeopardyWeb.PageController do
       |> put_session(:game_id, g.id)
       |> redirect(to: "/games/#{code}")
     else
-      {:error, changeset} -> conn |> render("index.html", changeset: changeset)
+      {:error, changeset} ->
+        conn |> render("index.html", changeset: changeset)
+
       nil ->
         conn
         |> put_flash(:info, "Sorry, that game doesn't exist")

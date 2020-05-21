@@ -4,7 +4,10 @@ defmodule Jeopardy.FSM.PreJeopardy.IntroducingRoles do
 
   def handle(_, _, %Game{} = game) do
     GameState.update_game_status(
-      game.code, "pre_jeopardy", "jeopardy", "revealing_board"
+      game.code,
+      "pre_jeopardy",
+      "jeopardy",
+      "revealing_board"
     )
   end
 end
