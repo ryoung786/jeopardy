@@ -7,8 +7,6 @@ defmodule JeopardyWeb.WagerComponent do
   import Jeopardy.FSM
 
   def render(assigns) do
-    # {min, max} = Player.min_max_wagers(assigns.player, assigns.clue)
-    # assigns = assigns |> Map.put(:min, min) |> Map.put(:max, max)
     WagerView.render("wager.html", assigns)
   end
 
