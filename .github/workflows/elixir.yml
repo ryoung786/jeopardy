@@ -50,6 +50,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
 
       - run: mix deps.get
+      - run: mix format --check-formatted
       - run: mix test
 
   deploy:
