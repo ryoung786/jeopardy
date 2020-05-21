@@ -3,7 +3,6 @@ defmodule JeopardyWeb.TrebekLive do
   require Logger
   alias Jeopardy.Games.Game
   alias Jeopardy.Games
-  alias Jeopardy.GameState
   alias JeopardyWeb.Presence
   alias JeopardyWeb.TrebekView
   import Jeopardy.FSM
@@ -47,15 +46,6 @@ defmodule JeopardyWeb.TrebekLive do
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
   end
-
-  # @impl true
-  # def handle_info(:final_jeopardy_wager_submitted, socket) do
-  #   game = game_from_socket(socket)
-  #   if Games.all_final_jeopardy_wagers_submitted?(game) do
-  #     GameState.update_round_status(game.code, "revealing_category", "reading_clue")
-  #   end
-  #   {:noreply, socket}
-  # end
 
   @impl true
   def handle_info(%{round_status_change: _}, socket), do: {:noreply, assigns(socket)}

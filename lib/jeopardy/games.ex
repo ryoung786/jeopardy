@@ -9,7 +9,6 @@ defmodule Jeopardy.Games do
   alias Jeopardy.Games
   alias Jeopardy.Games.{Game, Player, Clue}
   alias Jeopardy.Repo
-  alias Jeopardy.JArchive
   alias Jeopardy.GameState
 
   def get_game!(id), do: Repo.get!(Game |> preload([_], [:players]), id)
