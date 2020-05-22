@@ -49,13 +49,6 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
-  def handle_event(event, data, %{assigns: %{game: game}} = socket) do
-    module = module_from_game(socket.assigns.game)
-    module.handle(event, data, game)
-    {:noreply, socket}
-  end
-
-  @impl true
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
   end
@@ -83,6 +76,7 @@ defmodule JeopardyWeb.TrebekLive do
 
     socket
     |> assign(game: game)
+    |> assign(component: component_from_game(game))
     |> assign(clues: clues)
     |> assign(current_clue: Game.current_clue(game))
     |> assign(players: Games.get_just_contestants(game))

@@ -1,6 +1,16 @@
 <div class="trebek revealing_answer">
-    <p>
-        Once you've finished reading the answer, click below to move on
-    </p>
-    <%= submit "OK", "phx-click": "revealed_answer"%>
+    <div class="content">
+        <div class="answer">
+            <span><%= @current_clue.answer_text %></span>
+        </div>
+
+        <div class="instructions">
+            <p>
+                Once you've finished reading the answer, click below to move on
+            </p>
+        </div>
+    </div>
+    <div class="action-area">
+        <%= submit "Next", "phx-click": "revealed_answer", "phx-target": @myself %>
+    </div>
 </div>
