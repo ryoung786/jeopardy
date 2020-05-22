@@ -1,10 +1,17 @@
 <div class="trebek answering_clue">
-    <p>
-        <%= raw(@current_clue.answer_text) %>
-    </p>
+    <div class="content">
+        <div class="answer">
+            <span><%= raw(@current_clue.answer_text) %></span>
+        </div>
+        <div class="instructions">
+            <p>
+                <%= @game.buzzer_player %> buzzed in
+            </p>
+        </div>
+    </div>
 
-    <div class="button-group">
-        <%= submit "Correct", "phx-click": "correct", class: "correct" %>
-        <%= submit "Incorrect", "phx-click": "incorrect", class: "incorrect" %>
+    <div class="action-area">
+        <%= submit "Correct", "phx-click": "correct", "phx-target": @myself, class: "correct" %>
+        <%= submit "Incorrect", "phx-click": "incorrect", "phx-target": @myself, class: "incorrect" %>
     </div>
 </div>

@@ -3,19 +3,63 @@
     height: 100vh;
     align-items: center;
 
-    p { text-align: center; padding: 0px 10px; font-size: 4rem; }
-    button {margin: 0px;}
-    .button-group {
+    .content {
         display: flex;
-        justify-content: space-evenly;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+
+        .answer {
+            flex-grow: 1;
+            background: blue;
+            color: white;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            text-align: center;
+            font-size: 3rem;
+            font-family: Georgia;
+            text-shadow: 2px 2px 2px black;
+        }
+
+        .instructions {
+            padding: 10px;
+            // border: 3px dashed lightblue;
+            font-family: cursive;
+            background: aliceblue;
+            text-shadow: none;
+            color: black;
+            border-radius: 10px;
+            font-size: 1.6rem;
+            max-width: 500px;
+            min-width: 200px;
+            text-align: center;
+            margin: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            align-self: center;
+            p { margin: 0px; }
+        }
     }
-    button.correct {
-        background: #708E6B;
-        border-color: #708E6B;
-        margin-right: 20px;
-    }
-    button.incorrect {
-        background: #C8583E;
-        border-color: #C8583E;
+
+    .action-area {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        height: 100%;
+        button {
+            height: 100%;
+            width: 100%;
+            margin: 0px;
+            margin-bottom: 0px;
+        }
+        button.correct {
+            background: #708E6B;
+            border-color: #708E6B;
+        }
+        button.incorrect {
+            background: #C8583E;
+            border-color: #C8583E;
+        }
     }
 }

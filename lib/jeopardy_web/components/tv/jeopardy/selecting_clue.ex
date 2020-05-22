@@ -1,7 +1,4 @@
 defmodule JeopardyWeb.Components.TV.Jeopardy.SelectingClue do
-  use JeopardyWeb, :live_component
+  use JeopardyWeb.Components.Base, :tv
   require Logger
-
-  @impl true
-  def render(assigns), do: JeopardyWeb.TvView.render(tpl_path(assigns), assigns)
 end

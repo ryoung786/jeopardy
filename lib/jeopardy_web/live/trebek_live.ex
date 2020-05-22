@@ -4,7 +4,6 @@ defmodule JeopardyWeb.TrebekLive do
   alias Jeopardy.Games.Game
   alias Jeopardy.Games
   alias JeopardyWeb.Presence
-  import Jeopardy.FSM
 
   @impl true
   def mount(%{"code" => code}, %{"name" => name}, socket) do
@@ -32,13 +31,8 @@ defmodule JeopardyWeb.TrebekLive do
 
   @impl true
   def render(assigns) do
-    assigns =
-      assigns
-      |> Map.put(:id, Atom.to_string(assigns.component))
-      |> Map.delete(:flash)
-
     ~L"""
-       <%= live_component(@socket, @component, assigns) %>
+       <%= live_component(@socket, @component, render_assigns(assigns)) %>
     """
   end
 

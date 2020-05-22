@@ -40,7 +40,9 @@ defmodule JeopardyWeb.GameLive do
 
   @impl true
   def render(assigns) do
-    GameView.render(tpl_path(assigns), assigns)
+    ~L"""
+       <%= live_component(@socket, @component, render_assigns(assigns)) %>
+    """
   end
 
   @impl true

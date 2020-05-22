@@ -1,0 +1,9 @@
+<%= if @can_buzz do %>
+    <div class="game buzz">
+        <%= submit "Buzz", "phx-click": "buzz", "phx-target": @myself %>
+    </div>
+<% else %>
+    <div class="game single-instruction">
+        <p class="instruction">Buzzer is locked</p>
+    </div>
+<% end %>

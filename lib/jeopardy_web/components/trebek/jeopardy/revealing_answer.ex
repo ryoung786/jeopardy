@@ -1,9 +1,6 @@
 defmodule JeopardyWeb.Components.Trebek.Jeopardy.RevealingAnswer do
-  use JeopardyWeb, :live_component
+  use JeopardyWeb.Components.Base, :trebek
   require Logger
-
-  @impl true
-  def render(assigns), do: JeopardyWeb.TrebekView.render(tpl_path(assigns), assigns)
 
   @impl true
   def handle_event("revealed_answer", _params, socket) do
