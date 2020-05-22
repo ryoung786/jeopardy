@@ -1,0 +1,57 @@
+.trebek {
+    display: grid;
+    grid-template-rows: 1fr 15%;
+    height: 100vh;
+}
+
+.trebek.revealing_board {
+    .content {
+        display: grid;
+        place-items: center;
+        position: relative;
+        overflow: hidden;
+
+        .instruction {
+            padding: 20px;;
+            border: 3px dashed lightblue;
+            font-family: cursive;
+            background: aliceblue;
+            text-shadow: none;
+            color: black;
+            border-radius: 10px
+        }
+
+        p {
+            text-align: center;
+            padding: 50px;
+            position: absolute;
+            opacity: 0;
+            transform: translateX(100vw);
+            background: blue;
+            color: white;
+            min-height: 70px;
+            display: grid;
+            place-items: center;
+            text-shadow: 2px 2px 2px black;
+            font-family: "Georgia";
+        }
+
+        $speed: .75s;
+
+        .processed {
+            transform: translateX(-100vw);
+            transition: opacity $speed ease, transform $speed ease;
+        }
+
+        .active {
+            opacity: 1;
+            transform: translateX(0);
+            transition: opacity $speed ease, transform $speed ease;
+        }
+    }
+    .action-area button {
+        height: 100%;
+        width: 100%;
+        margin: 0px;
+    }
+}

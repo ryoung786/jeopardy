@@ -21,6 +21,7 @@ defmodule JeopardyWeb.TrebekLive do
           |> assign(name: name)
           |> assign(current_clue: Game.current_clue(game))
           |> assign(audience: Presence.list_presences(code))
+          |> assign(component: component_from_game(game))
           |> assigns(game)
 
         {:ok, socket}
@@ -32,7 +33,17 @@ defmodule JeopardyWeb.TrebekLive do
 
   @impl true
   def render(assigns) do
-    TrebekView.render(tpl_path(assigns), assigns)
+    assigns = Map.put(assigns, :id, Atom.to_string(assigns.component))
+
+    ~L"""
+       <%= live_component(@socket, @component, Map.delete(assigns, :flash)) %>
+    """
+  end
+
+  def component_from_game(%Jeopardy.Games.Game{} = game) do
+    {a, b} = {Macro.camelize(game.status), Macro.camelize(game.round_status)}
+    a = if game.status == "double_jeopardy", do: "Jeopardy", else: a
+    String.to_existing_atom("Elixir.JeopardyWeb.Components.Trebek.#{a}.#{b}")
   end
 
   @impl true
