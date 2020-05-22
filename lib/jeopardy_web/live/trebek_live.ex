@@ -42,12 +42,6 @@ defmodule JeopardyWeb.TrebekLive do
     """
   end
 
-  def component_from_game(%Jeopardy.Games.Game{} = game) do
-    {a, b} = {Macro.camelize(game.status), Macro.camelize(game.round_status)}
-    a = if game.status == "double_jeopardy", do: "Jeopardy", else: a
-    String.to_existing_atom("Elixir.JeopardyWeb.Components.Trebek.#{a}.#{b}")
-  end
-
   @impl true
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}

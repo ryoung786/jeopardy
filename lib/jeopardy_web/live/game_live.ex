@@ -29,6 +29,7 @@ defmodule JeopardyWeb.GameLive do
           |> assign(name: name)
           |> assign(game: game)
           |> assign(player: player)
+          |> assign(component: component_from_game(game))
           |> assign(can_buzz: Games.can_buzz?(game, player))
           |> assign(current_clue: Game.current_clue(game))
           |> assign(audience: Presence.list_presences(code))
@@ -71,6 +72,7 @@ defmodule JeopardyWeb.GameLive do
           socket
           |> assign(game: game)
           |> assign(player: player)
+          |> assign(component: component_from_game(game))
           |> assign(can_buzz: Games.can_buzz?(game, player))
           |> assign(players: Games.get_just_contestants(game))
           |> assign(current_clue: Game.current_clue(game))
