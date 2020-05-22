@@ -47,11 +47,11 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.RevealingBoard do
       Jeopardy.PubSub,
       socket.assigns.game.code,
       {:next_category,
-       [
+       %{
          active_category_num: active_category_num,
          status: socket.assigns.game.status,
          round_status: socket.assigns.game.round_status
-       ]}
+       }}
     )
   end
 end

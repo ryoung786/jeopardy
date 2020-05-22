@@ -21,13 +21,24 @@ defmodule JeopardyWeb.TvLive do
       socket
       |> assigns(game)
       |> assign(audience: Presence.list_presences(code))
+      |> assign(component: component_from_game(game))
 
     {:ok, socket}
   end
 
   @impl true
   def render(assigns) do
-    TvView.render(tpl_path(assigns), assigns)
+    assigns = Map.put(assigns, :id, Atom.to_string(assigns.component))
+
+    ~L"""
+       <%= live_component(@socket, @component, Map.delete(assigns, :flash)) %>
+    """
+  end
+
+  def component_from_game(%Jeopardy.Games.Game{} = game) do
+    {a, b} = {Macro.camelize(game.status), Macro.camelize(game.round_status)}
+    a = if game.status == "double_jeopardy", do: "Jeopardy", else: a
+    String.to_existing_atom("Elixir.JeopardyWeb.Components.TV.#{a}.#{b}")
   end
 
   @impl true
@@ -67,6 +78,19 @@ defmodule JeopardyWeb.TvLive do
 
   def handle_info(:start, socket) do
     {:noreply, assign(socket, timer: 5)}
+  end
+
+  def handle_info({:next_category, data}, socket) do
+    component = component_from_game(socket.assigns.game)
+
+    assigns =
+      socket.assigns
+      |> Map.delete(:flash)
+      |> Map.merge(data)
+      |> Map.put(:id, Atom.to_string(component))
+
+    send_update(component, assigns)
+    {:noreply, socket}
   end
 
   @impl true
