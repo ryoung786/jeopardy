@@ -1,16 +1,16 @@
 <div class="trebek reading_clue">
-    <div class="clue">
-        <span><%= @current_clue.clue_text %></span>
-    </div>
+    <div class="content">
+        <div class="clue">
+            <span><%= @current_clue.clue_text %></span>
+        </div>
 
-    <div class="instructions">
-        <ion-icon name="chatbubbles-outline"></ion-icon>
-        <p>
-            Once you've finished reading the clue, click "Start timer" to start the question timer and allow contestants to buzz in.
-        </p>
+        <div class="instructions">
+            <p>
+                Once you've finished reading the clue, click "Start timer" to start the question timer and allow contestants to buzz in.
+            </p>
+        </div>
     </div>
-
-    <div class="button-group">
+    <div class="action-area">
         <%= submit "Start timer", "phx-click": "start_clue_timer"%>
     </div>
 </div>

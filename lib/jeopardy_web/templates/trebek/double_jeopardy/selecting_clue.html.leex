@@ -1,1 +1,18 @@
-<%= live_component @socket, JeopardyWeb.BoardComponent, board: @clues[@game.status], view: "trebek" %>
+<div class="board">
+    <%= for [category: category, clues: clues] <- @clues[@game.status] do %>
+        <div class="category">
+            <div class="header">
+                <%= category %>
+            </div>
+            <%= for clue <- clues do %>
+                <%= if should_display_clue(clue) do %>
+                    <div class="clue clickable" phx-click="click_clue" phx-value-clue_id=<%= clue.id %> phx-target=<%= @myself %> >
+                        $<%= clue.value %>
+                    </div>
+                <% else %>
+                    <div class="clue"></div>
+                <% end %>
+            <% end %>
+        </div>
+    <% end %>
+</div>

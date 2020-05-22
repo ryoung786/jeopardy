@@ -1,6 +1,8 @@
 defmodule JeopardyWeb.Components.Trebek.Jeopardy.RevealingBoard do
   use JeopardyWeb, :live_component
   require Logger
+  alias Jeopardy.Games
+  alias Jeopardy.GameState
 
   @impl true
   def mount(socket), do: {:ok, assign(socket, active_category_num: 0)}
@@ -27,8 +29,8 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.RevealingBoard do
 
   @impl true
   def handle_event("finished_intro", _params, socket) do
-    # Games.assign_board_control(g, :random)
-    # GameState.update_round_status(g.code, "revealing_board", "selecting_clue")
+    Games.assign_board_control(socket.assigns.game, :random)
+    GameState.update_round_status(socket.assigns.game.code, "revealing_board", "selecting_clue")
     {:noreply, socket}
   end
 
