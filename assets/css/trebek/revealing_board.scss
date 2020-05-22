@@ -18,7 +18,10 @@
             background: aliceblue;
             text-shadow: none;
             color: black;
-            border-radius: 10px
+            border-radius: 10px;
+            font-size: 2rem;
+            min-height: 70px;
+            width: auto;
         }
 
         p {
@@ -29,11 +32,13 @@
             transform: translateX(100vw);
             background: blue;
             color: white;
-            min-height: 70px;
+            min-height: 50%;
+            width: 100%;
             display: grid;
             place-items: center;
-            text-shadow: 2px 2px 2px black;
+            text-shadow: 5px 5px 5px black;
             font-family: "Georgia";
+            font-size: 3.6rem;
         }
 
         $speed: .75s;
