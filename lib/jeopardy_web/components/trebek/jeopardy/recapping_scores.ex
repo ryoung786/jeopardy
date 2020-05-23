@@ -9,30 +9,24 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.RecappingScores do
   @impl true
   def handle_event("advance_to_double_jeopardy", _params, socket) do
     game = socket.assigns.game
-
-    case game.status do
-      "jeopardy" ->
-        GameState.update_game_status(game.code, "jeopardy", "double_jeopardy", "revealing_board")
-
-      "double_jeopardy" ->
-        set_final_jeopardy_clue(game)
-        zero_out_negative_scores(game)
-        # TODO start wager timer
-        GameState.update_game_status(
-          game.code,
-          "double_jeopardy",
-          "final_jeopardy",
-          "revealing_category"
-        )
-    end
-
+    GameState.update_game_status(game.code, "jeopardy", "double_jeopardy", "revealing_board")
     {:noreply, socket}
   end
 
   @impl true
-  def handle_event(e, params, socket) do
-    Logger.info("e: #{inspect(e)}")
-    Logger.info("p: #{inspect(params)}")
+  def handle_event("advance_to_final_jeopardy", _params, socket) do
+    game = socket.assigns.game
+    set_final_jeopardy_clue(game)
+    zero_out_negative_scores(game)
+    # TODO start wager timer
+    GameState.update_game_status(
+      game.code,
+      "double_jeopardy",
+      "final_jeopardy",
+      "revealing_category"
+    )
+
+    {:noreply, socket}
   end
 
   defp set_final_jeopardy_clue(game) do
