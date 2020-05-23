@@ -13,7 +13,7 @@
             Next</li>
     </ol>
     <%=  if @step == :grade do %>
-        <p class="answer"><%= @clue.answer_text %></p>
+        <p class="answer"><%= raw(@clue.answer_text) %></p>
         <div class="button-group">
             <%= submit "Correct", "phx-click": "correct", class: "correct", "phx-target": @id %>
             <%= submit "Incorrect", "phx-click": "incorrect", class: "incorrect", "phx-target": @id %>
