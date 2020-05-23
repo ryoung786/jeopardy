@@ -37,6 +37,12 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
+  def handle_event("advance_to_double_jeopardy", params, socket) do
+    Logger.info("whaaat #{inspect(params)}")
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
   end

@@ -1,7 +1,7 @@
-<div class="trebek revealing_answer">
+<div class="trebek revealing_answer reading_clue">
     <div class="content">
         <div class="answer">
-            <span><%= @current_clue.answer_text %></span>
+            <span><%= raw(@current_clue.answer_text) %></span>
         </div>
 
         <div class="instructions">

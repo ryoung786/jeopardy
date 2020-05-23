@@ -1,11 +1,15 @@
-<div class="trebek answering_clue">
+<div class="trebek answering_clue reading_clue">
     <div class="content">
         <div class="answer">
             <span><%= raw(@current_clue.answer_text) %></span>
         </div>
         <div class="instructions">
             <p>
-                <%= @game.buzzer_player %> buzzed in
+                <%= if Jeopardy.Games.Clue.is_daily_double(@current_clue) do %>
+                    <%= @game.buzzer_player %> has wagered $<%= @current_clue.wager %>.
+                <% else %>
+                    <%= @game.buzzer_player %> buzzed in.
+                <% end %>
             </p>
         </div>
     </div>

@@ -6,7 +6,7 @@
                 <%= raw(category) %>
             </p>
         <% end %>
-        <p class="instruction <%= revealing_board_class(7, @active_category_num) %>">Click below to begin the game</p>
+        <p class="instruction <%= revealing_board_class(7, @active_category_num) %>">Click below to begin the round</p>
     </div>
     <div class="action-area">
         <%= if @active_category_num == 7 do %>

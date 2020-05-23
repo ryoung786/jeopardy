@@ -1,12 +1,12 @@
 <div class="trebek reading_clue">
     <div class="content">
         <div class="clue">
-            <span><%= @current_clue.clue_text %></span>
+            <span><%= raw(@current_clue.clue_text) %></span>
         </div>
 
         <div class="instructions">
             <p>
-                Once you've finished reading the clue, click "Start timer" to start the question timer and allow contestants to buzz in.
+                Read the clue, then click below to allow players to buzz in.
             </p>
         </div>
     </div>

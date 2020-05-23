@@ -4,12 +4,7 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.RevealingAnswer do
 
   @impl true
   def handle_event("revealed_answer", _params, socket) do
-    Jeopardy.GameState.update_round_status(
-      socket.assigns.game.code,
-      "revealing_answer",
-      "selecting_clue"
-    )
-
+    Jeopardy.GameState.to_selecting_clue(socket.assigns.game)
     {:noreply, socket}
   end
 end

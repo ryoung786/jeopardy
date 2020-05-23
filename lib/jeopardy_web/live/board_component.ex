@@ -8,7 +8,7 @@ defmodule JeopardyWeb.BoardComponent do
     <%= for [category: category, clues: clues] <- @board do %>
         <div class="category">
             <div class="header">
-                <%= category %>
+                <%= raw(category) %>
             </div>
             <%= for clue <- clues do %>
                 <%= if should_display_clue(clue) do %>

@@ -4,8 +4,9 @@
         flex-direction: column;
         position: relative;
         overflow: hidden;
+        background: aliceblue;
 
-        .clue {
+        .clue, .answer {
             flex-grow: 1;
             background: blue;
             color: white;
@@ -20,12 +21,10 @@
 
         .instructions {
             padding: 20px;
-            // border: 3px dashed lightblue;
-            font-family: cursive;
-            background: aliceblue;
+            background: white;
             text-shadow: none;
             color: black;
-            border-radius: 10px;
+            border-radius: 5px;
             font-size: 1.6rem;
             min-height: 70px;
             max-width: 500px;
@@ -35,10 +34,5 @@
             align-self: center;
             p { margin: 0px; }
         }
-    }
-    .action-area button {
-        height: 100%;
-        width: 100%;
-        margin: 0px;
     }
 }

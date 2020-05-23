@@ -1,31 +1,18 @@
 defmodule JeopardyWeb.Components.TV.Jeopardy.AwaitingBuzzer do
-  use JeopardyWeb, :live_component
+  use JeopardyWeb.Components.Base, :tv
   require Logger
   alias Jeopardy.Games.Game
   alias Jeopardy.Repo
   import Ecto.Query
 
   @impl true
-  def render(assigns), do: JeopardyWeb.TvView.render(tpl_path(assigns), assigns)
-
-  @impl true
   def update(%{event: :timer_expired}, socket) do
-    Logger.info("Awaiting Buzzer TV update timer expired socket: #{inspect(socket.assigns)}")
     no_answer(socket.assigns.game)
     {:ok, socket}
   end
 
   @impl true
-  def update(%{event: :timer_start, time_left: time_left}, socket) do
-    Logger.info("Awaiting Buzzer TV update timer start socket: #{inspect(socket.assigns)}")
-    {:ok, assign(socket, timer: time_left)}
-  end
-
-  @impl true
-  def update(%{event: :timer_tick, time_left: time_left}, socket) do
-    Logger.info("Awaiting Buzzer TV update timer tick socket: #{inspect(socket.assigns)}")
-    {:ok, assign(socket, timer: time_left)}
-  end
+  def update(%{time_left: time_left}, socket), do: {:ok, assign(socket, timer: time_left)}
 
   @impl true
   def update(assigns, socket), do: {:ok, assign(socket, assigns)}

@@ -1,8 +1,8 @@
-<div class="game daily-double">
+<div class="game reading_daily_double single-instruction">
     <%= if @game.board_control == @player.name do %>
-        <p>Tell <%= @game.trebek %> your answer when you're ready.</p>
+        <p class="instruction">Tell <%= @game.trebek %> your answer when you're ready.</p>
     <% else %>
-        <p>
+        <p class="instruction">
             <%= @game.board_control %> hit the Daily Double! <br />
             Waiting for them to make their wager.
         </p>

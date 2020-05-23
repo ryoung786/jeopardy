@@ -1,8 +1,11 @@
-.game.single-instruction {
+.trebek.single-instruction { height: 100vh; }
+.trebek > .single-instruction { height: 100%; }
+
+.trebek.single-instruction,
+.trebek > .single-instruction {
     background: aliceblue;
     display: grid;
     place-items: center;
-    height: 100vh;
     grid-template-rows: 66% 1fr;
     .instruction {
         margin: 20px; padding: 20px; max-width: 500px; min-width: 200px;
@@ -10,5 +13,17 @@
         background: white;
         border-radius: 5px;
         text-align: center;
+    }
+}
+
+.trebek {
+    display: grid;
+    grid-template-rows: 1fr 15%;
+    height: 100vh;
+
+    .action-area button {
+        height: 100%;
+        width: 100%;
+        margin: 0px;
     }
 }

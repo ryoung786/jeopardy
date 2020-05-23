@@ -2,9 +2,9 @@ defmodule JeopardyWeb.WagerComponent do
   use Phoenix.LiveComponent
   use Phoenix.HTML
   alias JeopardyWeb.WagerView
-  alias Jeopardy.Games.{Wager, Player}
+  alias Jeopardy.Games.{Wager, Player, Clue}
+  alias Jeopardy.GameState
   require Logger
-  import Jeopardy.FSM
 
   def render(assigns) do
     WagerView.render("wager.html", assigns)
@@ -39,12 +39,10 @@ defmodule JeopardyWeb.WagerComponent do
   def handle_event("save", %{"wager" => params}, socket) do
     {min, max} = {socket.assigns.min, socket.assigns.max}
     clue = socket.assigns.clue
-    player = socket.assigns.player
 
     case Wager.validate(params, min, max) do
       {:ok, wager} ->
-        data = %{clue: clue, player: player, wager: wager.amount}
-        handle(:wager_submitted, data, socket.assigns.game_code)
+        save_and_broadcast(clue, wager.amount, socket.assigns.game_code)
         {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -52,9 +50,13 @@ defmodule JeopardyWeb.WagerComponent do
     end
   end
 
-  def handle(event, data, game_code) do
-    game = Jeopardy.Games.get_by_code(game_code)
-    module = module_from_game(game)
-    module.handle(event, data, game)
+  defp save_and_broadcast(clue, amount, game_code) do
+    Clue.changeset(clue, %{wager: amount}) |> Jeopardy.Repo.update()
+
+    GameState.update_round_status(
+      game_code,
+      "awaiting_daily_double_wager",
+      "reading_daily_double"
+    )
   end
 end
