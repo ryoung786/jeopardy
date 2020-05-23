@@ -1,17 +1,26 @@
-<h1>Share this on your TV</h1>
+<div class="tv homepage">
+    <div class="curved-div upper">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 20 800 55"><path fill="#CEE8FD" fill-opacity="1" d="M 0 50 C 352 0 500 100 800 50 L 800 75 L 0 75 Z"></path></svg>
+    </div>
+    <div class="curved-div">
+        <h3 class="share-prompt">Share this on your TV</h3>
+        <h1 class="room-code">Room Code: <%= @game.code %></h1>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 20 800 55"><path fill="#fff" fill-opacity="1" d="M 0 50 C 352 0 500 100 800 50 L 800 75 L 0 75 Z"></path></svg>
+    </div>
 
-<h2>Room Code: <%= @game.code %></h2>
-
-<%= if length(@audience) > 0 do %>
-    <h3>Today's contestants!</h3>
-    <ul>
-    <%= for name <- @audience do %>
-        <li><%= name %></li>
-    <% end %>
-    </ul>
-<% end %>
-<%= if length(@audience) >= 2 do %>
-    <%= submit "Start game", "phx-click": "start_game" %>
-<% else %>
-    <h3> Waiting on at least 2 players to join before we can start</h3>
-<% end %>
+    <div class="options">
+        <%= if length(@audience) > 0 do %>
+            <h3>Today's contestants!</h3>
+            <ul>
+                <%= for name <- @audience do %>
+                    <li><%= name %></li>
+                <% end %>
+            </ul>
+        <% end %>
+        <%= if length(@audience) >= 2 do %>
+            <%= submit "Start game", "phx-click": "start_game", "phx-target": @myself %>
+        <% else %>
+            <p> Waiting on at least 2 players to join before we can start</p>
+        <% end %>
+    </div>
+</div>
