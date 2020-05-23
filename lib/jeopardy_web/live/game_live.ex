@@ -45,7 +45,13 @@ defmodule JeopardyWeb.GameLive do
 
   @impl true
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
-    # {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
+    component = component_from_game(socket.assigns.game)
+
+    send_update(component, %{
+      id: Atom.to_string(component),
+      audience: Presence.list_presences(socket.assigns.game.code)
+    })
+
     {:noreply, socket}
   end
 
