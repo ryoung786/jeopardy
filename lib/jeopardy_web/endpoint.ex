@@ -24,7 +24,8 @@ defmodule JeopardyWeb.Endpoint do
     at: "/",
     from: :jeopardy,
     gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only:
+      ~w(css fonts images js favicon.ico apple-touch-icon.png favicon-32x32.png favicon-16x16.png android-chrome-512x512.png android-chrome-192x192.png site.webmanifest robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

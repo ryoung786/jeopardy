@@ -4,8 +4,6 @@ defmodule JeopardyWeb.GameLive do
   alias Jeopardy.Games
   alias Jeopardy.Games.Game
   alias JeopardyWeb.Presence
-  alias JeopardyWeb.GameView
-  import Jeopardy.FSM
 
   @impl true
   def mount(%{"code" => code}, %{"name" => name}, socket) do
@@ -29,6 +27,7 @@ defmodule JeopardyWeb.GameLive do
           |> assign(name: name)
           |> assign(game: game)
           |> assign(player: player)
+          |> assign(component: component_from_game(game))
           |> assign(can_buzz: Games.can_buzz?(game, player))
           |> assign(current_clue: Game.current_clue(game))
           |> assign(audience: Presence.list_presences(code))
@@ -39,19 +38,27 @@ defmodule JeopardyWeb.GameLive do
 
   @impl true
   def render(assigns) do
-    GameView.render(tpl_path(assigns), assigns)
-  end
-
-  @impl true
-  def handle_event(event, _, %{assigns: %{game: game, name: player_name}} = socket) do
-    module = module_from_game(game)
-    module.handle(event, player_name, game)
-    {:noreply, socket}
+    ~L"""
+       <%= live_component(@socket, @component, render_assigns(assigns)) %>
+    """
   end
 
   @impl true
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
-    {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
+    component = component_from_game(socket.assigns.game)
+
+    send_update(component, %{
+      id: Atom.to_string(component),
+      audience: Presence.list_presences(socket.assigns.game.code)
+    })
+
+    {:noreply, socket}
+  end
+
+  def handle_info(%{event: _} = data, socket) do
+    component = component_from_game(socket.assigns.game)
+    send_update(component, Map.put(data, :id, Atom.to_string(component)))
+    {:noreply, socket}
   end
 
   @impl true
@@ -71,6 +78,7 @@ defmodule JeopardyWeb.GameLive do
           socket
           |> assign(game: game)
           |> assign(player: player)
+          |> assign(component: component_from_game(game))
           |> assign(can_buzz: Games.can_buzz?(game, player))
           |> assign(players: Games.get_just_contestants(game))
           |> assign(current_clue: Game.current_clue(game))

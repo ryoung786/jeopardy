@@ -1,15 +1,17 @@
 <div class="trebek reading_clue">
-    <div class="clue">
-        <span><%= @current_clue.clue_text %></span>
+    <div class="content">
+        <div class="clue">
+            <span><%= raw(@current_clue.clue_text) %></span>
+        </div>
+
+        <div class="instructions">
+            <p>
+                Read the clue out loud, wait 30 seconds, then click below to review answers.
+            </p>
+        </div>
     </div>
 
-    <div class="instructions">
-        <p>
-            Read the clue out loud, wait 30 seconds, then click below to review answers.
-        </p>
-    </div>
-
-    <div class="button-group">
-        <%= submit "Time's up", "phx-click": "final_jeopardy_time_expired_click"%>
+    <div class="action-area">
+        <%= submit "Time's up", "phx-click": "final_jeopardy_time_expired_click", "phx-target": @myself %>
     </div>
 </div>

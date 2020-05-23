@@ -4,7 +4,8 @@
         id: "1", changeset: :wager, clue: @current_clue, game_code: @game.code %>
     <% else %>
         <p>
-            Thanks!  Waiting for all contestants to finish submitting their wagers.
+            You wagered $<%= @player.final_jeopardy_wager %><br />
+            Waiting for all contestants to finish submitting their wagers.
         </p>
     <% end %>
 </div>

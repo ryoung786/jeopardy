@@ -1,6 +1,6 @@
 <div id="<%= @id %>" class="score-reveal">
     <%= @contestant.name %>
-    <ul>
+    <ol>
         <li class="<%= if @step == :name, do: "active" %>">
             Show contestant name</li>
         <li class="<%= if @step == :answer, do: "active" %>">
@@ -11,7 +11,7 @@
             Reveal wager</li>
         <li class="<%= if @step == :next, do: "active" %>">
             Next</li>
-    </ul>
+    </ol>
     <%=  if @step == :grade do %>
         <p class="answer"><%= @clue.answer_text %></p>
         <div class="button-group">

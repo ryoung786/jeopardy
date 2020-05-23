@@ -27,6 +27,21 @@ defmodule Jeopardy.Games do
     |> Repo.insert()
   end
 
+  def assign_trebek(%Game{} = game, name) do
+    q =
+      from g in Game,
+        where: g.id == ^game.id and is_nil(g.trebek),
+        select: g.id
+
+    case q |> Repo.update_all_ts(set: [trebek: name]) do
+      {0, _} ->
+        {:failed, nil}
+
+      {1, [_id]} ->
+        GameState.update_round_status(game.code, "selecting_trebek", "introducing_roles")
+    end
+  end
+
   def assign_board_control(%Game{} = game, :random) do
     # in the jeopardy round, we pick who goes first randomly
     # in the double jeopardy round, it goes to the player with the lowest score
@@ -38,7 +53,7 @@ defmodule Jeopardy.Games do
           Enum.random(contestants) |> Map.get(:name)
 
         "double_jeopardy" ->
-          Enum.sort_by(contestants, & &1.score, :desc) |> Enum.map(& &1.name) |> List.first()
+          Enum.sort_by(contestants, & &1.score, :asc) |> Enum.map(& &1.name) |> List.first()
       end
 
     Game.changeset(game, %{board_control: player_name}) |> Repo.update()

@@ -3,6 +3,6 @@
     width: 100vw;
     display: grid;
     grid-template-rows: 1fr 200px;
-    // justify-content: center;
+    justify-content: stretch;
     gap: 20px;
 }

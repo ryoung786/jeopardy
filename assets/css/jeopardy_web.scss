@@ -4,14 +4,17 @@
 @import "trebek/reading_clue";
 @import "trebek/answering_clue";
 @import "trebek/awaiting_buzzer";
-@import "trebek/revealing_answer";
+@import "trebek/revealing_board";
+@import "trebek/trebek";
 @import "trebek/final_jeopardy_reveal";
 @import "game/buzzer";
+@import "game/game";
 @import "tv/displaying_clue";
 @import "tv/daily_double";
 @import "tv/reveal_final_jeopardy_scores";
 @import "tv/awaiting_buzzer";
-@import "game/awaiting_daily_double_wager";
+@import "tv/revealing_board";
+@import "tv/selecting_clue";
 
 
 .font_0 { font-family: "Vibur", cursive; font-size: 2.5rem; }
@@ -28,11 +31,4 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-}
-
-.tv.selecting_clue {
-    display: grid;
-    grid-template-rows: 1fr 200px;
-    justify-content: center;
-    gap: 20px;
 }

@@ -4,8 +4,6 @@ defmodule JeopardyWeb.TvLive do
   alias Jeopardy.Games
   alias Jeopardy.Games.Game
   alias JeopardyWeb.Presence
-  alias JeopardyWeb.TvView
-  import Jeopardy.FSM
 
   @impl true
   def mount(%{"code" => code}, _session, socket) do
@@ -21,20 +19,16 @@ defmodule JeopardyWeb.TvLive do
       socket
       |> assigns(game)
       |> assign(audience: Presence.list_presences(code))
+      |> assign(component: component_from_game(game))
 
     {:ok, socket}
   end
 
   @impl true
   def render(assigns) do
-    TvView.render(tpl_path(assigns), assigns)
-  end
-
-  @impl true
-  def handle_event(event, data, socket) do
-    module = module_from_game(socket.assigns.game)
-    module.handle(event, data, socket.assigns)
-    {:noreply, socket}
+    ~L"""
+       <%= live_component(@socket, @component, render_assigns(assigns)) %>
+    """
   end
 
   @impl true
@@ -53,20 +47,35 @@ defmodule JeopardyWeb.TvLive do
     {:noreply, socket}
   end
 
-  def handle_info(:timer_expired, socket) do
-    module = module_from_game(socket.assigns.game)
-    module.handle(:timer_expired, nil, socket.assigns.game)
-    {:noreply, assign(socket, timer: :expired)}
+  @impl true
+  def handle_info(%{round_status_change: _}, socket), do: {:noreply, assigns(socket)}
+  @impl true
+  def handle_info(%{game_status_change: _}, socket), do: {:noreply, assigns(socket)}
+
+  def handle_info(%{event: _} = data, socket) do
+    component = component_from_game(socket.assigns.game)
+
+    assigns =
+      socket.assigns
+      |> Map.delete(:flash)
+      |> Map.merge(data)
+      |> Map.put(:id, Atom.to_string(component))
+
+    send_update(component, assigns)
+    {:noreply, socket}
   end
 
-  def handle_info({:timer_start, time_left}, socket),
-    do: {:noreply, assign(socket, timer: time_left)}
+  def handle_info({:next_category, data}, socket) do
+    component = component_from_game(socket.assigns.game)
 
-  def handle_info({:timer_tick, time_left}, socket),
-    do: {:noreply, assign(socket, timer: time_left)}
+    assigns =
+      socket.assigns
+      |> Map.delete(:flash)
+      |> Map.merge(data)
+      |> Map.put(:id, Atom.to_string(component))
 
-  def handle_info(:start, socket) do
-    {:noreply, assign(socket, timer: 5)}
+    send_update(component, assigns)
+    {:noreply, socket}
   end
 
   @impl true
@@ -77,6 +86,11 @@ defmodule JeopardyWeb.TvLive do
     {:noreply, assigns(socket, game)}
   end
 
+  defp assigns(socket) do
+    game = Games.get_by_code(socket.assigns.game.code)
+    assigns(socket, game)
+  end
+
   defp assigns(socket, game) do
     clues = %{
       "jeopardy" => Games.clues_by_category(game, :jeopardy),
@@ -85,6 +99,7 @@ defmodule JeopardyWeb.TvLive do
 
     socket
     |> assign(game: game)
+    |> assign(component: component_from_game(game))
     |> assign(players: Games.get_just_contestants(game))
     |> assign(current_clue: Game.current_clue(game))
     |> assign(clues: clues)

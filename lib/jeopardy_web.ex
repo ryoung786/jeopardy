@@ -49,6 +49,25 @@ defmodule JeopardyWeb do
 
       defp game_from_socket(socket), do: Jeopardy.Games.get_by_code(socket.assigns.game.code)
 
+      defp component_from_game(%Jeopardy.Games.Game{} = game) do
+        view =
+          case String.split(Atom.to_string(__MODULE__), ".") |> List.last() do
+            "TvLive" -> "TV"
+            "GameLive" -> "Game"
+            "TrebekLive" -> "Trebek"
+          end
+
+        {a, b} = {Macro.camelize(game.status), Macro.camelize(game.round_status)}
+        a = if game.status == "double_jeopardy", do: "Jeopardy", else: a
+        String.to_existing_atom("Elixir.JeopardyWeb.Components.#{view}.#{a}.#{b}")
+      end
+
+      defp render_assigns(assigns) do
+        assigns
+        |> Map.put(:id, Atom.to_string(assigns.component))
+        |> Map.delete(:flash)
+      end
+
       unquote(view_helpers())
     end
   end

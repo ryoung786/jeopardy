@@ -4,8 +4,6 @@ defmodule JeopardyWeb.TrebekLive do
   alias Jeopardy.Games.Game
   alias Jeopardy.Games
   alias JeopardyWeb.Presence
-  alias JeopardyWeb.TrebekView
-  import Jeopardy.FSM
 
   @impl true
   def mount(%{"code" => code}, %{"name" => name}, socket) do
@@ -21,6 +19,7 @@ defmodule JeopardyWeb.TrebekLive do
           |> assign(name: name)
           |> assign(current_clue: Game.current_clue(game))
           |> assign(audience: Presence.list_presences(code))
+          |> assign(component: component_from_game(game))
           |> assigns(game)
 
         {:ok, socket}
@@ -32,13 +31,14 @@ defmodule JeopardyWeb.TrebekLive do
 
   @impl true
   def render(assigns) do
-    TrebekView.render(tpl_path(assigns), assigns)
+    ~L"""
+       <%= live_component(@socket, @component, render_assigns(assigns)) %>
+    """
   end
 
   @impl true
-  def handle_event(event, data, %{assigns: %{game: game}} = socket) do
-    module = module_from_game(socket.assigns.game)
-    module.handle(event, data, game)
+  def handle_event("advance_to_double_jeopardy", params, socket) do
+    Logger.info("whaaat #{inspect(params)}")
     {:noreply, socket}
   end
 
@@ -70,6 +70,7 @@ defmodule JeopardyWeb.TrebekLive do
 
     socket
     |> assign(game: game)
+    |> assign(component: component_from_game(game))
     |> assign(clues: clues)
     |> assign(current_clue: Game.current_clue(game))
     |> assign(players: Games.get_just_contestants(game))

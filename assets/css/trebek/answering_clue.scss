@@ -1,21 +1,23 @@
 .trebek.answering_clue {
-    display: grid;
-    height: 100vh;
-    align-items: center;
-
-    p { text-align: center; padding: 0px 10px; font-size: 4rem; }
-    button {margin: 0px;}
-    .button-group {
-        display: flex;
-        justify-content: space-evenly;
-    }
-    button.correct {
-        background: #708E6B;
-        border-color: #708E6B;
-        margin-right: 20px;
-    }
-    button.incorrect {
-        background: #C8583E;
-        border-color: #C8583E;
+    .action-area {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        height: 100%;
+        background: aliceblue;
+        button {
+            height: 100%;
+            width: 100%;
+            margin: 0px;
+            margin-bottom: 0px;
+        }
+        button.correct {
+            background: #708E6B;
+            border-color: #708E6B;
+        }
+        button.incorrect {
+            background: #C8583E;
+            border-color: #C8583E;
+        }
     }
 }
