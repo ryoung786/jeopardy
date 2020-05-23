@@ -77,8 +77,11 @@ defmodule JeopardyWeb.WagerComponent do
   defp save(player, amount, game, :final_jeopardy) do
     changeset = Player.changeset(player, %{final_jeopardy_wager: amount})
 
-    with {:ok, _} <- Repo.update(changeset) do
-      # broadcast(game.code, :final_jeopardy_wager)
+    with {:ok, player} <- Repo.update(changeset) do
+      Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, %{
+        event: :final_jeopardy_wager,
+        player: player
+      })
 
       if all_final_jeopardy_wagers_submitted?(game) do
         # start clue timer

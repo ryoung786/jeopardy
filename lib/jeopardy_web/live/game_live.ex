@@ -4,8 +4,6 @@ defmodule JeopardyWeb.GameLive do
   alias Jeopardy.Games
   alias Jeopardy.Games.Game
   alias JeopardyWeb.Presence
-  alias JeopardyWeb.GameView
-  import Jeopardy.FSM
 
   @impl true
   def mount(%{"code" => code}, %{"name" => name}, socket) do
@@ -46,15 +44,15 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
-  def handle_event(event, _, %{assigns: %{game: game, name: player_name}} = socket) do
-    module = module_from_game(game)
-    module.handle(event, player_name, game)
+  def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
+    # {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
     {:noreply, socket}
   end
 
-  @impl true
-  def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
-    {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
+  def handle_info(%{event: _} = data, socket) do
+    component = component_from_game(socket.assigns.game)
+    send_update(component, Map.put(data, :id, Atom.to_string(component)))
+    {:noreply, socket}
   end
 
   @impl true
