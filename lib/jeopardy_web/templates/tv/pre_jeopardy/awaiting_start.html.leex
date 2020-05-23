@@ -11,7 +11,7 @@
     </ul>
 <% end %>
 <%= if length(@audience) >= 2 do %>
-    <%= submit "Start game", "phx-click": "start_game", "phx-target": @myself %>
+    <%= submit "Start game", "phx-click": "start_game" %>
 <% else %>
     <h3> Waiting on at least 2 players to join before we can start</h3>
 <% end %>
