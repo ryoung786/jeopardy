@@ -8,5 +8,7 @@ defmodule JeopardyWeb.Components.Trebek.FinalJeopardy.ReadingClue do
       "reading_clue",
       "revealing_final_scores"
     )
+
+    {:ok, socket}
   end
 end
