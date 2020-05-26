@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Arizonia&family=Cedarville+Cursive&family=Coming+Soon&family=Crafty+Girls&family=Dawning+of+a+New+Day&family=Dokdo&family=Roboto+Slab&family=Bungee&family=Gloria+Hallelujah&family=Rock+Salt&family=Vibur&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arizonia&family=Cedarville+Cursive&family=Coming+Soon&family=Crafty+Girls&family=Dawning+of+a+New+Day&family=Dokdo&family=Roboto+Slab&family=Bungee&family=Gloria+Hallelujah&family=Rock+Salt&family=Vibur&family=Bungee&display=swap');
 @import "board";
 @import "scoreboard";
 @import "trebek/reading_clue";
@@ -16,6 +16,7 @@
 @import "tv/revealing_board";
 @import "tv/selecting_clue";
 @import "index";
+@import "theme";
 
 
 .font_0 { font-family: "Vibur", cursive; font-size: 2.5rem; }

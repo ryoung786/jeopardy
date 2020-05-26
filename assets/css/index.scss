@@ -1,7 +1,11 @@
+@import "theme";
+
 .homepage {
+    min-height: 100vh;
+    background: #F9F9F9;
     .curved-div {
         position: relative;
-        background: #CEE8FD;
+        background: $dark-shades;
         color: #FFF;
         text-align: center;
         overflow: hidden;
@@ -10,38 +14,41 @@
         display: block;
     }
     .curved-div.upper {
-        background: #fff;
+        background: #f9f9f9;
         transform: translateY(2px);
     }
     .curved-div h1 {
         font-size: 6rem;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         margin-top:0rem;
         text-shadow: 2px 2px 2px #666;
+        font-family: "Bungee", "Helvetica Neue", sans-serif;
     }
     .curved-div p {
         font-size: 1.6rem;
         margin:0 5rem 0rem 5rem;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        color: #333;
+        font-family: "Roboto Slab", "Helvetica Neue", sans-serif;
+        color: #fff;
     }
 
     .options {
+        color: #222;
         padding: 20px;
         margin: auto;
         max-width: 300px;
         form { margin: 0px; }
+        input { background: #fff; }
     }
 }
 
 .homepage.tv {
-    .share-prompt, .room-code {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    .share-prompt, .room-code-label {
+        font-family: "Roboto Slab", "Helvetica Neue", sans-serif;
         margin-top:0rem;
         text-shadow: 2px 2px 2px #666;
         padding: 0px 10px;
     }
     .room-code {
+        font-family: "Bungee", "Helvetica Neue", sans-serif;
         font-size: 6rem;
     }
     .options ul { list-style: inside; }

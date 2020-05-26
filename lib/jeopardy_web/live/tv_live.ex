@@ -47,11 +47,6 @@ defmodule JeopardyWeb.TvLive do
     {:noreply, socket}
   end
 
-  @impl true
-  def handle_info(%{round_status_change: _}, socket), do: {:noreply, assigns(socket)}
-  @impl true
-  def handle_info(%{game_status_change: _}, socket), do: {:noreply, assigns(socket)}
-
   def handle_info(%{event: _} = data, socket) do
     component = component_from_game(socket.assigns.game)
 
@@ -84,11 +79,6 @@ defmodule JeopardyWeb.TvLive do
   def handle_info(_, socket) do
     game = Games.get_by_code(socket.assigns.game.code)
     {:noreply, assigns(socket, game)}
-  end
-
-  defp assigns(socket) do
-    game = Games.get_by_code(socket.assigns.game.code)
-    assigns(socket, game)
   end
 
   defp assigns(socket, game) do

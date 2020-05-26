@@ -17,7 +17,6 @@ defmodule JeopardyWeb.TrebekLive do
         socket =
           socket
           |> assign(name: name)
-          |> assign(current_clue: Game.current_clue(game))
           |> assign(audience: Presence.list_presences(code))
           |> assign(component: component_from_game(game))
           |> assigns(game)
@@ -37,20 +36,9 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
-  def handle_event("advance_to_double_jeopardy", params, socket) do
-    Logger.info("whaaat #{inspect(params)}")
-    {:noreply, socket}
-  end
-
-  @impl true
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
   end
-
-  @impl true
-  def handle_info(%{round_status_change: _}, socket), do: {:noreply, assigns(socket)}
-  @impl true
-  def handle_info(%{game_status_change: _}, socket), do: {:noreply, assigns(socket)}
 
   @impl true
   # The db got updated, so let's query for the latest everything
