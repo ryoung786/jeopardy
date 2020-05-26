@@ -54,3 +54,8 @@
     }
     .options ul { list-style: inside; }
 }
+
+@media only screen and (max-width: 400px) {
+    .homepage .curved-div h1 { font-size: 4rem; }
+    .homepage .curved-div p { font-size: 1.4rem; }
+}
