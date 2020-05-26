@@ -16,6 +16,24 @@
             font-family: Georgia;
             text-shadow:2px 2px 5px black;
             text-align: center;
+
+            animation-duration: .5s;
+            animation-name: slidein;
+
+
+            @keyframes slidein {
+                from {
+                    transform: translateY(25%);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
         }
     }
 }
+
+.tv.clue-display.answering_clue .display h1 { animation: none; }
