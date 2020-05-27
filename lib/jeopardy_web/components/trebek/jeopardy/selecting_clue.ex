@@ -9,17 +9,16 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.SelectingClue do
   @impl true
   def render(assigns), do: JeopardyWeb.TrebekView.render(tpl_path(assigns), assigns)
 
-  # @impl true
-  # def update(assigns, socket) do
-  #   socket =
-  #     socket
-  #     |> assign(assigns)
-
-  #   {:ok, socket}
-  # end
+  @impl true
+  def update(assigns, socket),
+    do: {:ok, assign(socket, assigns) |> assign(selected_category: nil)}
 
   @impl true
-  def handle_event("click_clue", %{"clue_id" => clue_id}, socket) do
+  def handle_event("select_category", %{"category" => category_name}, socket),
+    do: {:noreply, assign(socket, selected_category: category_name)}
+
+  @impl true
+  def handle_event("select_clue", %{"clue_id" => clue_id}, socket) do
     game = socket.assigns.game
     set_current_clue(game, clue_id)
     clue = set_clue_to_asked(clue_id)
@@ -32,9 +31,12 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.SelectingClue do
     {:noreply, socket}
   end
 
-  defp set_current_clue(game, clue_id) do
-    Game.changeset(game, %{current_clue_id: clue_id}) |> Repo.update()
-  end
+  @impl true
+  def handle_event("back", _params, socket),
+    do: {:noreply, assign(socket, selected_category: nil)}
+
+  defp set_current_clue(game, clue_id),
+    do: Game.changeset(game, %{current_clue_id: clue_id}) |> Repo.update()
 
   defp set_clue_to_asked(clue_id) do
     {1, [clue | _]} =

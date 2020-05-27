@@ -51,14 +51,25 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   defp assigns(socket, %Game{} = game) do
-    clues = %{
-      "jeopardy" => Games.clues_by_category(game, :jeopardy),
-      "double_jeopardy" => Games.clues_by_category(game, :double_jeopardy)
-    }
+    categories =
+      if game.status == "jeopardy",
+        do: game.jeopardy_round_categories,
+        else: game.double_jeopardy_round_categories
+
+    clues =
+      if game.status == "jeopardy",
+        do: Games.clues_by_category(game, :jeopardy),
+        else: Games.clues_by_category(game, :double_jeopardy)
+
+    clues =
+      Enum.reduce(clues, %{}, fn [category: category, clues: clues], acc ->
+        Map.put(acc, category, clues)
+      end)
 
     socket
     |> assign(game: game)
     |> assign(component: component_from_game(game))
+    |> assign(categories: categories)
     |> assign(clues: clues)
     |> assign(current_clue: Game.current_clue(game))
     |> assign(players: Games.get_just_contestants(game))

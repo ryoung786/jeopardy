@@ -1,18 +1,20 @@
 <div class="board">
-    <%= for [category: category, clues: clues] <- @clues[@game.status] do %>
-        <div class="category">
-            <div class="header">
-                <%= raw(category) %>
+    <%= if is_nil @selected_category do %>
+        <%= for category <- @categories do %>
+            <div class="category" phx-click="select_category" phx-value-category="<%= category %>" phx-target=<%= @myself %> >
+                <%= category %>
             </div>
-            <%= for clue <- clues do %>
-                <%= if should_display_clue(clue) do %>
-                    <div class="clue clickable" phx-click="click_clue" phx-value-clue_id=<%= clue.id %> phx-target=<%= @myself %> >
-                        $<%= clue.value %>
-                    </div>
-                <% else %>
-                    <div class="clue"></div>
-                <% end %>
+        <% end %>
+    <% else %>
+        <%= for clue <- @clues[@selected_category] do %>
+            <%= if should_display_clue(clue) do %>
+                <div class="clue clickable" phx-click="select_clue" phx-value-clue_id=<%= clue.id %> phx-target=<%= @myself %> >
+                    $<%= clue.value %>
+                </div>
+            <% else %>
+                <div class="clue"></div>
             <% end %>
-        </div>
+        <% end %>
+        <button class="button" phx-click="back" phx-target=<%= @myself %>>Back</button>
     <% end %>
 </div>
