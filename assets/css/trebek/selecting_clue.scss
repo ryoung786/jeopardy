@@ -1,0 +1,40 @@
+.trebek.selecting_clue {
+    height: 100vh;
+    background: aliceblue;
+
+    .category, .clue {
+        display: grid;
+        place-items: center;
+        text-align: center;
+        width: 100%;
+        height: 100%;
+        background: blue;
+        padding: 10px;
+        text-shadow: 2px 2px 2px black;
+    }
+    .categories {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-content: center;
+        gap: 10px;
+        border: 10px solid aliceblue;
+        grid-template-rows: 1fr 1fr 1fr;
+        height: 100%;
+
+        .category {
+            color:white;
+            font-size: 4rem;
+            font-family: "Georgia";
+        }
+    }
+
+    .category-selected {
+        .clue {
+            color:#DDA95E;
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: "Helvetica"
+        }
+        .clue.clickable { cursor: pointer; }
+    }
+}

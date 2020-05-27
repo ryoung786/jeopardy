@@ -1,20 +1,29 @@
-<div class="board">
+<div class="trebek selecting_clue">
     <%= if is_nil @selected_category do %>
+        <div class="categories">
         <%= for category <- @categories do %>
-            <div class="category" phx-click="select_category" phx-value-category="<%= category %>" phx-target=<%= @myself %> >
-                <%= category %>
+            <div class="category" phx-click="select_category"
+                 phx-value-category="<%= category %>" phx-target=<%= @myself %> >
+                <%= raw(category) %>
             </div>
         <% end %>
+        </div>
     <% else %>
-        <%= for clue <- @clues[@selected_category] do %>
-            <%= if should_display_clue(clue) do %>
-                <div class="clue clickable" phx-click="select_clue" phx-value-clue_id=<%= clue.id %> phx-target=<%= @myself %> >
-                    $<%= clue.value %>
-                </div>
-            <% else %>
-                <div class="clue"></div>
-            <% end %>
-        <% end %>
+        <div class="category-selected">
+            <h1 class="category-name"><%= raw(@selected_category) %></h1>
+            <div class="clues">
+                <%= for clue <- @clues[@selected_category] do %>
+                    <%= if should_display_clue(clue) do %>
+                        <div class="clue clickable" phx-click="select_clue"
+                             phx-value-clue_id=<%= clue.id %> phx-target=<%= @myself %> >
+                            $<%= clue.value %>
+                        </div>
+                    <% else %>
+                        <div class="clue"></div>
+                    <% end %>
+                <% end %>
+            </div>
+        </div>
         <button class="button" phx-click="back" phx-target=<%= @myself %>>Back</button>
     <% end %>
 </div>
