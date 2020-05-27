@@ -16,14 +16,16 @@
                     <%= if should_display_clue(clue) do %>
                         <div class="clue clickable" phx-click="select_clue"
                              phx-value-clue_id=<%= clue.id %> phx-target=<%= @myself %> >
-                            $<%= clue.value %>
+                            <span class="value">$<%= clue.value %></span>
                         </div>
                     <% else %>
-                        <div class="clue"></div>
+                        <div class="clue">&nbsp;</div>
                     <% end %>
                 <% end %>
             </div>
+            <div class="footer">
+                <button class="button" phx-click="back" phx-target=<%= @myself %>>Back</button>
+            </div>
         </div>
-        <button class="button" phx-click="back" phx-target=<%= @myself %>>Back</button>
     <% end %>
 </div>

@@ -15,16 +15,6 @@
         position: absolute;
         opacity: 0;
 
-
-        animation-duration: .3s;
-        animation-name: slideout;
-        @keyframes slideout {
-            from {
-                opacity: 1;
-            }
-            to {
-                opacity: 0;
-            }
-        }
+        animation: fadeout .3s;
     }
 }

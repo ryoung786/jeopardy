@@ -18,17 +18,7 @@
             text-align: center;
             color: #fff;
             text-shadow: 20px 20px 25px black;
-            animation-duration: 1s;
-            animation-name: daily-double;
-
-
-            @keyframes daily-double {
-                0%   { transform: scale(0)   rotate(40deg); }
-                60%  { transform: scale(1.8) rotate(-25deg); }
-                85%  { transform: scale(.5)  rotate(15deg); }
-                95%  { transform: scale(1.2) rotate(-5deg); }
-                100% { transform: scale(1)   rotate(0); }
-            }
+            animation: daily-double 1s;
         }
     }
 }

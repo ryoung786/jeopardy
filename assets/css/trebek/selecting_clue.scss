@@ -1,6 +1,8 @@
 .trebek.selecting_clue {
     height: 100vh;
     background: aliceblue;
+    display: block;
+    animation: fadein .3s;
 
     .category, .clue {
         display: grid;
@@ -23,18 +25,48 @@
 
         .category {
             color:white;
-            font-size: 4rem;
+            font-size: 1.6rem;
             font-family: "Georgia";
         }
     }
 
     .category-selected {
-        .clue {
-            color:#DDA95E;
-            font-size: 3rem;
-            font-weight: bold;
-            font-family: "Helvetica"
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        height: 100%;
+        h1 {
+            font-size: 2rem;
+            font-family: "Georgia";
+            text-shadow: 2px 2px 2px black;
+            background: blue;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            margin: 0;
         }
-        .clue.clickable { cursor: pointer; }
+        .clues {
+            display: grid;
+            gap: 10px;
+            margin: 10px;
+            margin-bottom: 0;
+            .clue {
+                color:#DDA95E;
+                font-size: 3rem;
+                font-weight: bold;
+                font-family: "Helvetica";
+                .value { animation: slidein .2s; }
+            }
+            .clue.clickable { cursor: pointer; }
+        }
+        .footer {
+            padding: 10px;
+            display: grid;
+            justify-content: flex-start;
+            align-content: center;
+            button { margin: 0; }
+        }
     }
 }
