@@ -44,10 +44,11 @@
 .homepage.tv {
     .share-prompt, .room-code-label {
         font-family: "Roboto Slab", "Helvetica Neue", sans-serif;
-        margin-top:0rem;
         text-shadow: 2px 2px 2px #666;
         padding: 0px 10px;
     }
+    .share-prompt { margin-top: 20px; margin-bottom: 0px; }
+    .room-code-label { margin-top: 0px; }
     .room-code {
         font-family: "Bungee", "Helvetica Neue", sans-serif;
         font-size: 6rem;
