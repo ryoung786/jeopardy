@@ -20,7 +20,9 @@ import {LiveSocket} from "phoenix_live_view"
 let Hooks = {}
 Hooks.vibratePhone = {
     mounted() {
-        window.navigator.vibrate([200, 30, 200]);
+        if ("vibrate" in navigator) {
+            window.navigator.vibrate([200, 30, 200]);
+        }
     }
 }
 
