@@ -1,9 +1,9 @@
 <%= if @game.buzzer_player == @name do %>
-    <div class="game answering_clue single-instruction" phx-hook="vibratePhone">
+    <div class="game answering_clue single-instruction">
         <%= if Jeopardy.Games.Clue.is_daily_double(@current_clue) do %>
             <p class="instruction">Tell <%= @game.trebek %> your answer when you're ready.</p>
         <% else %>
-            <p class="instruction">You buzzed in! Tell <%= @game.trebek %> your answer.</p>
+            <p class="instruction" phx-hook="vibratePhone">You buzzed in! Tell <%= @game.trebek %> your answer.</p>
         <% end %>
     </div>
 <% else %>
