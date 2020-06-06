@@ -19,19 +19,6 @@
 
             animation-duration: .5s;
             animation-name: slidein;
-
-
-            @keyframes slidein {
-                from {
-                    transform: translateY(25%);
-                    opacity: 0;
-                }
-
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
-            }
         }
     }
 }

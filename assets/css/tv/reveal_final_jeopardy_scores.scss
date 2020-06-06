@@ -10,10 +10,17 @@
     }
     .details.active {
         display: block;
-        opacity: 100;
+        .name {
+            animation: slidein .5s forwards;
+        }
 
-        .revealed {
-            opacity: 100;
+        .answer {
+            animation: slidein .5s forwards;
+            animation-delay: 2s;
+        }
+        .wager {
+            animation: slidein .5s forwards;
+            animation-delay: 4s;
         }
     }
 }
