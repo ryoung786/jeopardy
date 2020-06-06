@@ -1,4 +1,4 @@
-<div class="tv clue-display final-jeopardy revealing_final_scores">
+<div class="tv clue-display final-jeopardy revealing_final_scores" phx-hook="FinalJeopardyReveal">
     <div class="display">
         <%= for {contestant, i} <- Enum.with_index(order_by_pre_fj_score(@players, @game)) do %>
                 <div class="details

@@ -25,6 +25,46 @@ Hooks.vibratePhone = {
         }
     }
 }
+Hooks.FinalJeopardyReveal = {
+    updateScoreboard(player_id) {
+        let podium = document.querySelector('.scoreboard .podium[data-player_id="'+player_id+'"]');
+        podium.querySelector('.score').classList.add('revealed');
+    },
+    fun (current, next) {
+        if (next) {
+            current.classList.remove('active');
+            next.classList.add('active');
+        } else {
+            // we're done, time to tell the backend to advance to game over
+            console.log("done");
+            this.pushEvent("next", {})
+            console.log("pushed event");
+        }
+    },
+    mounted() {
+        console.log("mounted():", this);
+        document.addEventListener('animationend', e => {
+            console.log("animationend triggered:", this);
+            if (e.target.closest('.tv.final-jeopardy .wager')) {
+                let player_id = e.target.closest('.details.active').dataset['player_id'];
+                let current = e.target.closest('.details.active');
+                let next = current.nextElementSibling;
+                let self = this;
+                window.setTimeout(
+                    function() {
+                        console.log("updatescoreboard settimeout:", self);
+                        self.updateScoreboard(player_id); },
+                    500
+                );
+                window.setTimeout(
+                    function() { self.fun(current, next); },
+                    4000
+                );
+            }
+        })
+    }
+}
+
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {hooks: Hooks, params: {_csrf_token: csrfToken}})
@@ -40,33 +80,3 @@ liveSocket.connect()
 // >> liveSocket.enableDebug()
 // >> liveSocket.enableLatencySim(1000)
 window.liveSocket = liveSocket
-
-document.addEventListener('animationend', e => {
-    if (e.target.closest('.tv.final-jeopardy .wager')) {
-        let player_id = e.target.closest('.details.active').dataset['player_id'];
-        let current = e.target.closest('.details.active');
-        let next = current.nextElementSibling;
-        window.setTimeout(
-            function() { updateScoreboard(player_id); },
-            500
-        );
-        window.setTimeout(
-            function() { fun(current, next); },
-            4000
-        );
-    }
-})
-// document.addEventListener('click', e => {
-//     updateScoreboard(53);
-// });
-
-function updateScoreboard(player_id) {
-    let podium = document.querySelector('.scoreboard .podium[data-player_id="'+player_id+'"]');
-    podium.querySelector('.score').classList.add('revealed');
-}
-function fun(current, next) {
-    if (next) {
-        current.classList.remove('active');
-        next.classList.add('active');
-    }
-}

@@ -18,12 +18,16 @@ defmodule JeopardyWeb.TvView do
   end
 
   def order_by_pre_fj_score(contestants, %Jeopardy.Games.Game{} = game) do
-    Enum.sort_by(contestants, fn contestant -> pre_score(contestant, game.current_clue_id) end)
+    Enum.sort_by(contestants, fn contestant -> pre_score(contestant, game) end)
   end
 
-  def pre_score(%Jeopardy.Games.Player{} = p, fj_clue_id) do
-    if fj_clue_id in p.correct_answers,
-      do: p.score - p.final_jeopardy_wager,
-      else: p.score + p.final_jeopardy_wager
+  def pre_score(%Jeopardy.Games.Player{} = p, %Jeopardy.Games.Game{} = g) do
+    if g.status == "final_jeopardy" && g.round_status == "revealing_final_scores" do
+      if g.current_clue_id in p.correct_answers,
+        do: p.score - p.final_jeopardy_wager,
+        else: p.score + p.final_jeopardy_wager
+    else
+      p.score
+    end
   end
 end

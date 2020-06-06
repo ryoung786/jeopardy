@@ -10,9 +10,9 @@
     </div>
     <%= for c <- @contestants do %>
         <% buzz_class = if c.name == @buzzer.player_name, do: "buzz", else: "" %>
-        <% prev_score = pre_score(c, @game.current_clue_id) %>
+        <% prev_score = pre_score(c, @game) %>
         <div class="podium <%= buzz_class %>" data-player_id="<%= c.id %>">
-            <div class="score <%= if prev_score < c.score, do: "correct", else: "incorrect" %>">
+            <div class="score <%= if correct_final_jeopardy_answer?(c, @game), do: "correct", else: "incorrect" %>">
                 <div class="pre-fj-wager">
                     <%= score(prev_score) %>
                 </div>

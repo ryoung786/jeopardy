@@ -32,6 +32,17 @@ defmodule JeopardyWeb.TvLive do
   end
 
   @impl true
+  def handle_event("next", _params, socket) do
+    Jeopardy.GameState.update_round_status(
+      socket.assigns.game.code,
+      "revealing_final_scores",
+      "game_over"
+    )
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
   end
