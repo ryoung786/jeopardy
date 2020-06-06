@@ -56,11 +56,13 @@ document.addEventListener('animationend', e => {
         );
     }
 })
+// document.addEventListener('click', e => {
+//     updateScoreboard(53);
+// });
 
 function updateScoreboard(player_id) {
     let podium = document.querySelector('.scoreboard .podium[data-player_id="'+player_id+'"]');
-    podium.querySelector('.pre-fj-wager').classList.remove('active');
-    podium.querySelector('.final-score').classList.add('active');
+    podium.querySelector('.score').classList.add('revealed');
 }
 function fun(current, next) {
     if (next) {

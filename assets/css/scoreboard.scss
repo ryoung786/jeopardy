@@ -63,10 +63,13 @@
     color: #E94860;
 }
 
-.podium > .score > span {
+.podium > .score > div {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    width: 100%;
+    height: 100%;
+    transform: translateY(0);
+    display: grid;
+    place-items: center;
 }
 .podium > .score .pre-fj-wager {
     opacity: 0;

@@ -23,11 +23,42 @@
             animation-delay: 4s;
         }
     }
-    .podium > .score > .active {
-        opacity: 1;
-    }
-    .podium > .score > span {
-        opacity: 0;
-        transition: opacity .5s ease-in-out;
+    .podium {
+        .score {
+            div {
+                opacity: 1;
+                transition: transform .5s cubic-bezier(.54,1.85,.5,1),
+                            background 1.5s cubic-bezier(.54,1.85,.5,1);
+                transition-delay: 0s, 2.5s;
+                transition-property: transform, background;
+            }
+            .pre-fj-wager {
+                transform: translateY(0);
+            }
+        }
+        .score.incorrect {
+            .final-score {
+                transform: translateY(-100%);
+                background: #E94860;
+            }
+        }
+        .score.correct {
+            .final-score {
+                transform: translateY(100%);
+                background: #00e359;
+            }
+        }
+        .score.revealed {
+            .final-score {
+                transform: translateY(0);
+                background: #0015BE;
+            }
+        }
+        .score.revealed.incorrect {
+            .pre-fj-wager { transform: translateY(100%); }
+        }
+        .score.revealed.correct {
+            .pre-fj-wager { transform: translateY(-100%); }
+        }
     }
 }
