@@ -40,3 +40,31 @@ liveSocket.connect()
 // >> liveSocket.enableDebug()
 // >> liveSocket.enableLatencySim(1000)
 window.liveSocket = liveSocket
+
+document.addEventListener('animationend', e => {
+    if (e.target.closest('.tv.final-jeopardy .wager')) {
+        let player_id = e.target.closest('.details.active').dataset['player_id'];
+        let current = e.target.closest('.details.active');
+        let next = current.nextElementSibling;
+        window.setTimeout(
+            function() { updateScoreboard(player_id); },
+            500
+        );
+        window.setTimeout(
+            function() { fun(current, next); },
+            4000
+        );
+    }
+})
+
+function updateScoreboard(player_id) {
+    let podium = document.querySelector('.scoreboard .podium[data-player_id="'+player_id+'"]');
+    podium.querySelector('.pre-fj-wager').classList.remove('active');
+    podium.querySelector('.final-score').classList.add('active');
+}
+function fun(current, next) {
+    if (next) {
+        current.classList.remove('active');
+        next.classList.add('active');
+    }
+}

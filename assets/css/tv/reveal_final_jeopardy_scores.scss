@@ -1,11 +1,11 @@
-.tv.final-jeopardy .score-reveal {
+.tv.final-jeopardy.revealing_final_scores {
     .details {
         display: none;
         font-size: 5rem;
+        text-align: center;
 
         .name, .answer, .wager {
             opacity: 0;
-            transition: opacity .25s ease-in-out;
         }
     }
     .details.active {
@@ -22,5 +22,12 @@
             animation: slidein .5s forwards;
             animation-delay: 4s;
         }
+    }
+    .podium > .score > .active {
+        opacity: 1;
+    }
+    .podium > .score > span {
+        opacity: 0;
+        transition: opacity .5s ease-in-out;
     }
 }

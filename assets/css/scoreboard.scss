@@ -56,8 +56,18 @@
     color: white;
     font-weight: bold;
     font-size: 2.5rem;
+    overflow: hidden;
+    position: relative;
 }
-.podium > .score.negative {
-    background: #0015BE;
+.podium > .score .negative {
     color: #E94860;
+}
+
+.podium > .score > span {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.podium > .score .pre-fj-wager {
+    opacity: 0;
 }
