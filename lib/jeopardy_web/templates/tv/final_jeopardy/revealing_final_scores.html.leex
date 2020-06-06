@@ -1,7 +1,21 @@
 <div class="tv clue-display final-jeopardy">
     <div class="display">
-        <%= live_component @socket, JeopardyWeb.FinalJeopardyScoreRevealComponent, id: 1,
-        contestants: @players, game: @game %>
+        <%= for contestant <- order_by_pre_fj_score(@players, @game) do %>
+            <div class="score-reveal <%= font_from_name(contestant.name, @game.id) %>">
+                <div class="details">
+                    <div class="name">
+                        <p><%= contestant.name %></p>
+                    </div>
+                    <div class="answer">
+                        <p><%= contestant.final_jeopardy_answer %></p>
+                    </div>
+                    <div class="wager">
+                        <p><%= score(contestant.final_jeopardy_wager) %></p>
+                    </div>
+                </div>
+            </div>
+        <% end %>
+
     </div>
     <%= live_component @socket, JeopardyWeb.ScoreboardComponent,
     contestants: @players, game_id: @game.id,
