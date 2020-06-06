@@ -6,9 +6,9 @@ defmodule JeopardyWeb.Components.Trebek.FinalJeopardy.ReadingClue do
     Jeopardy.GameState.update_round_status(
       socket.assigns.game.code,
       "reading_clue",
-      "revealing_final_scores"
+      "grading_answers"
     )
 
-    {:ok, socket}
+    {:noreply, socket}
   end
 end
