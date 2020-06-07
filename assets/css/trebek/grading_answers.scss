@@ -1,0 +1,29 @@
+.trebek.grading_answers {
+    display: grid;
+    grid-template-rows: auto 1fr;
+
+    >.correct-answer {
+        font-size: 2rem;
+        font-family: "Roboto Slab", "Helvetica Neue", sans-serif;
+        text-align: center;
+        padding: 10px 20px;
+        background: aliceblue;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        margin: 0;
+    }
+
+    >.main {
+        padding: 20px;
+
+        .labelrow {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0;
+            margin-bottom: 30px;
+            font-weight: unset;
+        }
+        .submit { float: right; margin: 20px 0 0 0; }
+    }
+}

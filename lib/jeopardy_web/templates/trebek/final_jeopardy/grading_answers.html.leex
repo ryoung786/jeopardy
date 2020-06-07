@@ -1,15 +1,20 @@
 <div class="trebek grading_answers">
-    <h1>
-        Correct answer: <%= @current_clue.answer_text %>
+    <h1 class="correct-answer">
+        Correct answer: <br /> <%= raw(@current_clue.answer_text) %>
     </h1>
-    <form action="#" phx-submit="submit" phx-target="<%= @myself %>">
-        <%= for c <- Enum.shuffle(@players) do %>
-            <label>
-                <%= c.final_jeopardy_answer %>
-                <input name="grades[<%= c.id %>]" type="hidden" value="false">
-                <input class="tinyswitch toggle green" name="grades[<%= c.id %>]" type="checkbox" value="true" /><div><div></div></div>
-            </label>
-        <% end %>
-        <%= submit "Submit" %>
-    </form>
+    <div class="main">
+        <form action="#" phx-submit="submit" phx-target="<%= @myself %>">
+            <%= for c <- Enum.shuffle(@players) do %>
+                <label class="labelrow">
+                    <span class="answer"><%= c.final_jeopardy_answer %></span>
+
+                    <input name="grades[<%= c.id %>]" type="hidden" value="false">
+                    <input class="tinyswitch toggle green" name="grades[<%= c.id %>]" type="checkbox" value="true" />
+                    <div><div></div></div>
+
+                </label>
+            <% end %>
+            <%= submit "Submit", class: "submit" %>
+        </form>
+    </div>
 </div>
