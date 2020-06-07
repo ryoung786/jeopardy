@@ -15,3 +15,15 @@
     95%  { transform: scale(1.2) rotate(-5deg); }
     100% { transform: scale(1)   rotate(0); }
 }
+
+@keyframes slidein {
+    from {
+        transform: translateY(25%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

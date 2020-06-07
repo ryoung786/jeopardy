@@ -8,8 +8,8 @@ defmodule Jeopardy.Games.Player do
     field :final_jeopardy_wager, :integer
     field :final_jeopardy_answer, :string, size: 512
     field :final_jeopardy_score_updated, :boolean, default: false
-    field :correct_answers, {:array, :id}
-    field :incorrect_answers, {:array, :id}
+    field :correct_answers, {:array, :id}, default: []
+    field :incorrect_answers, {:array, :id}, default: []
     belongs_to :game, Jeopardy.Games.Game
 
     timestamps()
