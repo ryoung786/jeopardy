@@ -135,6 +135,7 @@ defmodule Jeopardy.Games do
         {:failed, nil}
 
       {1, [id]} ->
+        :telemetry.execute([:j, :buzz], %{c: 1, game_code: game.code, player_name: name})
         Jeopardy.Timer.stop(game.code)
         # start contestant timer
         {:ok, get_game!(id)}
@@ -271,6 +272,12 @@ defmodule Jeopardy.Games do
     from(p in Player, select: p, where: p.id == ^player_id)
     |> Repo.update_all_ts(inc: [score: amount], push: [correct_answers: clue.id])
 
+    :telemetry.execute([:j, :anwers], %{
+      game_code: game.code,
+      correct: 1,
+      player_name: game.buzzer_player
+    })
+
     game
   end
 
@@ -310,6 +317,12 @@ defmodule Jeopardy.Games do
           GameState.update_round_status(game.code, "answering_clue", "revealing_answer")
       end
     end
+
+    :telemetry.execute([:j, :anwers], %{
+      game_code: game.code,
+      incorrect: 1,
+      player_name: game.buzzer_player
+    })
 
     game
   end

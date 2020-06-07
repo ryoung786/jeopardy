@@ -6,6 +6,8 @@ defmodule JeopardyWeb.GameController do
   def create(conn, _params) do
     case Games.create() do
       {:ok, game} ->
+        :telemetry.execute([:j, :games, :created], %{c: 1})
+
         conn
         |> put_session(:code, game.code)
         # |> configure_session(renew: true)

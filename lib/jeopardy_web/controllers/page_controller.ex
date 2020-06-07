@@ -6,6 +6,15 @@ defmodule JeopardyWeb.PageController do
   require Logger
 
   def index(conn, _params) do
+    :telemetry.execute([:metrics_demo, :render], %{
+      c: 1,
+      controller: "PageController",
+      action: "index"
+    })
+
+    :telemetry.execute([:metrics_demo, :foo], %{baz: 3, bar: 1})
+    :telemetry.execute([:metrics_demo, :test], %{bar: "hello"})
+
     conn
     # |> clear_session
     # |> configure_session(drop: true)

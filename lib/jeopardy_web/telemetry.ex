@@ -14,7 +14,30 @@ defmodule JeopardyWeb.Telemetry do
       # {Telemetry.Metrics.ConsoleReporter, metrics: metrics()}
     ]
 
+    setup_influx()
     Supervisor.init(children, strategy: :one_for_one)
+  end
+
+  defp setup_influx() do
+    TelemetryInfluxDB.start_link(
+      events: [
+        %{name: [:metrics_demo, :foo]},
+        %{name: [:j, :buzz], metadata_tag_keys: [:game_code, :player_name]},
+        %{name: [:j, :games, :created]},
+        %{name: [:j, :answers, :correct]},
+        %{name: [:j, :answers, :incorrect]}
+      ],
+      version: :v2,
+      port: 443,
+      protocol: :http,
+      org: "ryoung786@gmail.com",
+      host: "https://us-central1-1.gcp.cloud2.influxdata.com",
+      bucket: "jeopardy",
+      token:
+        "JR16emjVVZipHB7uhOFhWiJFUKueDt9wXurn4TBHwVyVy8dLqA1EGWWMomdp_rA3mrrS1twvRYBIFVgT5nYZfQ=="
+    )
+
+    nil
   end
 
   def metrics do
@@ -27,6 +50,9 @@ defmodule JeopardyWeb.Telemetry do
         tags: [:route],
         unit: {:native, :millisecond}
       ),
+
+      # App Metrics
+      counter("metrics_demo.render.controller"),
 
       # Database Metrics
       summary("jeopardy.repo.query.total_time", unit: {:native, :millisecond}),
