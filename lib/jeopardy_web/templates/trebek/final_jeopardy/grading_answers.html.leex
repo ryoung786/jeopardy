@@ -4,6 +4,8 @@
     </h1>
     <div class="main">
         <form action="#" phx-submit="submit" phx-target="<%= @myself %>">
+            <div class="holder">
+                <div class="answers">
             <%= for c <- Enum.shuffle(@players) do %>
                 <label class="labelrow">
                     <span class="answer"><%= c.final_jeopardy_answer %></span>
@@ -14,7 +16,9 @@
 
                 </label>
             <% end %>
-            <%= submit "Submit", class: "submit" %>
+                </div>
+                <%= submit "Submit", class: "submit" %>
+            </div>
         </form>
     </div>
 </div>
