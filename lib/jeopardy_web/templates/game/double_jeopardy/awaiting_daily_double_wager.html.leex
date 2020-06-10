@@ -1,7 +1,9 @@
 <%= if @game.board_control == @player.name do %>
-    <div class="game daily-double">
-        <%= live_component @socket, JeopardyWeb.WagerComponent, player: @player,
-        id: "1", changeset: :wager, clue: @current_clue, game_code: @game.code %>
+    <div class="game daily-double single-instruction">
+        <p class="instruction">
+            <strong>You hit the Daily Double!</strong> <br />
+            Please tell <%= @game.trebek %> your wager.
+        </p>
     </div>
 <% else %>
     <div class="game daily-double single-instruction"

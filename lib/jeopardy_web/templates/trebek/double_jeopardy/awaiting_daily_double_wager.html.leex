@@ -1,5 +1,5 @@
-<div class="trebek awaiting_buzzer single-instruction">
-    <p class="instruction">
-        Ask <%= @game.buzzer_player %> to submit their wager (by entering it into their device)
-    </p>
+<div class="game daily-double">
+
+    <%= live_component @socket, JeopardyWeb.WagerComponent, player: contestant_from_name(@players, @game.board_control),
+    id: "1", changeset: :wager, clue: @current_clue, game_code: @game.code, perspective: :trebek %>
 </div>

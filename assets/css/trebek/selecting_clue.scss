@@ -34,6 +34,7 @@
         display: grid;
         grid-template-rows: auto 1fr auto;
         height: 100%;
+        justify-items: center;
         h1 {
             font-size: 2rem;
             font-family: "Georgia";
@@ -43,6 +44,7 @@
             text-align: center;
             padding: 10px;
             height: 100%;
+            width: 100%;
             display: grid;
             place-items: center;
             margin: 0;
@@ -50,8 +52,10 @@
         .clues {
             display: grid;
             gap: 10px;
-            margin: 10px;
             margin-bottom: 0;
+            padding: 10px;
+            width: 100%;
+            max-width: 500px;
             .clue {
                 color:#DDA95E;
                 font-size: 3rem;
@@ -63,10 +67,11 @@
         }
         .footer {
             padding: 10px;
+            padding-top: 0px;
             display: grid;
-            justify-content: flex-start;
-            align-content: center;
-            button { margin: 0; }
+            max-width: 500px;
+            width: 100%;
+            button { margin: 0; width: fit-content; }
         }
     }
 }

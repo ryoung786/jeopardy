@@ -51,14 +51,12 @@ Hooks.FinalJeopardyReveal = {
                 let next = current.nextElementSibling;
                 let self = this;
                 window.setTimeout(
-                    function() {
-                        console.log("updatescoreboard settimeout:", self);
-                        self.updateScoreboard(player_id); },
-                    500
+                    function() { self.updateScoreboard(player_id); },
+                    1000
                 );
                 window.setTimeout(
                     function() { self.fun(current, next); },
-                    8000
+                    5000
                 );
             }
         })

@@ -26,7 +26,6 @@
             text-align: center;
             padding: 50px;
             position: absolute;
-            opacity: 0;
             transform: translateX(100vw);
             background: blue;
             color: white;
@@ -43,13 +42,12 @@
 
         .processed {
             transform: translateX(-100vw);
-            transition: opacity $speed ease, transform $speed ease;
+            transition: transform $speed ease;
         }
 
         .active {
-            opacity: 1;
             transform: translateX(0);
-            transition: opacity $speed ease, transform $speed ease;
+            transition: transform $speed ease;
         }
     }
     .action-area button {

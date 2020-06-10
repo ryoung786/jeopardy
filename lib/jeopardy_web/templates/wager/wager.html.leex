@@ -5,6 +5,10 @@
         <%= submit "Submit Wager" %>
     <% end %>
     <p class="instructions">
-        Please make a wager between <%= score(@min) %> and <%= score(@max) %>.
+        <%= if assigns[:perspective] == :trebek do %>
+            Ask <%= @player.name %> to make a wager between <%= score(@min) %> and <%= score(@max) %>.
+        <% else %>
+            Please make a wager between <%= score(@min) %> and <%= score(@max) %>.
+        <% end %>
     </p>
 </div>

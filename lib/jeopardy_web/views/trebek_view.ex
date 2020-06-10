@@ -8,4 +8,8 @@ defmodule JeopardyWeb.TrebekView do
       _ -> "unprocessed"
     end
   end
+
+  def contestant_from_name(contestants, name) do
+    Enum.find(contestants, &(&1.name == name))
+  end
 end
