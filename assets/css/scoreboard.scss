@@ -50,7 +50,15 @@
 .podium > .bg {
     background: #000B6E;
 }
-.podium.buzz > .bg {background: #DAB777;}
+.podium.buzz > .bg {
+    background: #e4e2c0;
+    box-shadow: inset -4px -4px 4px 0px rgba(255,255,255,0.3), 0px 0px 30px 6px rgba(255,255,255,.5);
+    animation: buzz-in .15s;
+    @keyframes buzz-in {
+    from { background: #000B6E; }
+    to { background: #e4e2c0; }
+}
+}
 .podium > .score {
     background: #0015BE;
     color: white;

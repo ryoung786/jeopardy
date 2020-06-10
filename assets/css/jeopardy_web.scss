@@ -33,7 +33,18 @@
 .font_8 { font-family: "Rock Salt", cursive; }
 
 *{
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+button:focus {
+    background-color: #0069d9;
+    border: 0.1rem solid #0069d9;
+}
+button:hover {
+    background-color:#606c76;
+    border-color:#606c76;
+    color:#fff;
+    outline:0
 }

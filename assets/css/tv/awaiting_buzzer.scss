@@ -2,14 +2,15 @@
     height: 100vh;
     width: 100vw;
     display: grid;
-    grid-template-rows: 1fr 7px 200px;
-    gap: 10px;
+    grid-template-rows: 1fr 200px;
+    gap: 20px;
 
     .display {
         display: grid;
         background:blue;
         color:white;
         place-items:center;
+        position: relative;
         h1 {
             max-width: 700px;
             font-family: Georgia;
@@ -22,11 +23,22 @@
         display: grid;
         grid-template-columns: 10% repeat(9, 1fr) 10%;
         gap: 5px;
+        width: 100%;
+        height: 15px;
+        position: absolute;
+        bottom: 10px;
         .on {
-            background: #DAB777;
+            background: linear-gradient(#e4e2c0, #cec429);
+            box-shadow: inset -4px -4px 4px 0px rgba(255,255,255,0.3), 0px 0px 30px 5px rgba(255,255,255,.5);
         }
         .first {
             grid-column-start: 2;
+        }
+        .on:first-child {
+            border-radius: 10px 0px 0px 10px;
+        }
+        .on:last-child {
+            border-radius: 0px 10px 10px 0px;
         }
     }
 }
