@@ -58,13 +58,12 @@ Hooks.FinalJeopardyReveal = {
                 );
                 window.setTimeout(
                     function() { self.fun(current, next); },
-                    4000
+                    8000
                 );
             }
         })
     }
 }
-
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {hooks: Hooks, params: {_csrf_token: csrfToken}})
