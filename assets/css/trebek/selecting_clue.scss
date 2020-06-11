@@ -1,3 +1,8 @@
+.trebek.selecting_clue.show-board-control {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding: 10px;
+}
 .trebek.selecting_clue {
     height: 100vh;
     background: aliceblue;
@@ -19,7 +24,6 @@
         grid-template-columns: 1fr 1fr;
         justify-content: center;
         gap: 10px;
-        border: 10px solid aliceblue;
         grid-template-rows: 1fr 1fr 1fr;
         height: 100%;
 
@@ -28,6 +32,24 @@
             font-size: 1.6rem;
             font-family: "Georgia";
         }
+    }
+
+    .instruction {
+        place-self: center;
+        margin: 0;
+        place-self: center;
+        margin: 0;
+        padding: 10px 20px;
+        background: white;
+        text-shadow: none;
+        color: black;
+        border-radius: 5px;
+        font-size: 1.6rem;
+        max-width: 500px;
+        text-align: center;
+        margin: 10px 20px 0px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        align-self: center;
     }
 
     .category-selected {

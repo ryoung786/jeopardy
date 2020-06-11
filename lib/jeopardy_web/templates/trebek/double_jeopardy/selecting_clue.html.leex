@@ -1,4 +1,4 @@
-<div class="trebek selecting_clue">
+<div class="trebek selecting_clue <%= if is_nil @selected_category do %>show-board-control<% end %>">
     <%= if is_nil @selected_category do %>
         <div class="categories">
         <%= for category <- @categories do %>
@@ -7,6 +7,9 @@
                 <%= raw(category) %>
             </div>
         <% end %>
+        </div>
+        <div class="instruction">
+            Ask <%= @game.board_control %> to choose a clue.
         </div>
     <% else %>
         <div class="category-selected">
