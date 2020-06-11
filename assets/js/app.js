@@ -36,16 +36,12 @@ Hooks.FinalJeopardyReveal = {
             next.classList.add('active');
         } else {
             // we're done, time to tell the backend to advance to game over
-            console.log("done");
             this.pushEvent("next", {})
-            console.log("pushed event");
         }
     },
     mounted() {
-        console.log("mounted():", this);
         document.addEventListener('animationend', e => {
-            console.log("animationend triggered:", this);
-            if (e.target.closest('.tv.final-jeopardy .wager')) {
+            if (e.target.closest('.tv.final-jeopardy .details .wager')) {
                 let player_id = e.target.closest('.details.active').dataset['player_id'];
                 let current = e.target.closest('.details.active');
                 let next = current.nextElementSibling;
@@ -56,7 +52,7 @@ Hooks.FinalJeopardyReveal = {
                 );
                 window.setTimeout(
                     function() { self.fun(current, next); },
-                    5000
+                    4000
                 );
             }
         })

@@ -27,24 +27,26 @@
         .score {
             div {
                 opacity: 1;
-                transition: transform .5s cubic-bezier(.54,1.85,.5,1),
-                            background 1.5s cubic-bezier(.54,1.85,.5,1);
-                transition-delay: 0s, 2.5s;
-                transition-property: transform, background;
+                transition: transform .5s cubic-bezier(.54,1.85,.5,1);
+                transition-property: transform;
             }
             .pre-fj-wager {
                 transform: translateY(0);
             }
         }
         .score.incorrect {
-            .final-score {
+            .final-score, .wager {
                 transform: translateY(-100%);
+            }
+            .wager {
                 background: #E94860;
             }
         }
         .score.correct {
-            .final-score {
+            .final-score, .wager {
                 transform: translateY(100%);
+            }
+            .wager {
                 background: #00e359;
             }
         }
@@ -56,9 +58,28 @@
         }
         .score.revealed.incorrect {
             .pre-fj-wager { transform: translateY(100%); }
+            .wager {
+                animation: score-reveal-incorrect 3s;
+            }
         }
         .score.revealed.correct {
             .pre-fj-wager { transform: translateY(-100%); }
+            .wager {
+                animation: score-reveal-correct 3s;
+            }
+        }
+
+        @keyframes score-reveal-incorrect {
+            0%   { transform: translateY(-100%); animation-timing-function: cubic-bezier(.54,1.85,.5,1); }
+            16%  { transform: translateY(0); }
+            84%  { transform: translateY(0); animation-timing-function: cubic-bezier(.54,1.85,.5,1); }
+            100% { transform: translateY(100%); }
+        }
+        @keyframes score-reveal-correct {
+            0%   { transform: translateY(100%); animation-timing-function: cubic-bezier(.54,1.85,.5,1); }
+            16%  { transform: translateY(0); }
+            84%  { transform: translateY(0); animation-timing-function: cubic-bezier(.54,1.85,.5,1); }
+            100% { transform: translateY(-100%); }
         }
     }
 }

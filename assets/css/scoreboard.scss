@@ -79,6 +79,7 @@
     display: grid;
     place-items: center;
 }
-.podium > .score .pre-fj-wager {
+.podium > .score .pre-fj-wager,
+.podium > .score .wager, {
     opacity: 0;
 }
