@@ -24,9 +24,9 @@
         grid-template-columns: 10% repeat(9, 1fr) 10%;
         gap: 5px;
         width: 100%;
-        height: 15px;
+        height: 10px;
         position: absolute;
-        bottom: 10px;
+        bottom: 15px;
         .on {
             background: linear-gradient(#e4e2c0, #cec429);
             box-shadow: inset -4px -4px 4px 0px rgba(255,255,255,0.3), 0px 0px 30px 5px rgba(255,255,255,.5);

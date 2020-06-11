@@ -52,7 +52,7 @@ Hooks.FinalJeopardyReveal = {
                 );
                 window.setTimeout(
                     function() { self.fun(current, next); },
-                    4000
+                    5000
                 );
             }
         })
