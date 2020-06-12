@@ -10,6 +10,7 @@ defmodule JeopardyWeb.Components.Trebek.PreJeopardy.IntroducingRoles do
       "revealing_board"
     )
 
+    Jeopardy.Stats.create(socket.assigns.game)
     {:noreply, socket}
   end
 end

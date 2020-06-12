@@ -1,40 +1,44 @@
 defmodule JeopardyWeb.StatsLive do
   use JeopardyWeb, :live_view
-  require Logger
   alias Jeopardy.Games
-  alias Jeopardy.Games.Game
+  require Logger
 
   @impl true
   def mount(%{"code" => code}, _session, socket) do
+    if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
+
     game = Games.get_by_code(code)
-    players = Games.get_just_contestants(game) |> Enum.sort_by(& &1.score, :desc)
+    stats = Cachex.get!(:stats, "game:#{game.id}")
 
     socket =
       assign(socket, game: game)
-      |> assign(players: players)
+      |> assign(stats: stats)
 
     {:ok, socket}
   end
 
   @impl true
   def render(assigns) do
-    stats = Cachex.get!(:stats, "game:#{assigns.game.id}") |> Jason.encode!()
-
-    player_ids_to_names =
-      Enum.reduce(assigns.players, %{}, fn p, acc ->
-        Map.put(acc, Integer.to_string(p.id), p.name)
-      end)
-      |> Jason.encode!()
-
     ~L"""
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3"></script>
-    <div style="position: relative" phx-hook="stats">
-        <canvas id="stats"></canvas>
+    <div phx-hook="stats">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3"></script>
+        <div id="canvas-holder-score-over-time" style="position: relative" phx-update="ignore">
+            <canvas id="stats"></canvas>
+        </div>
+        <script language="JavaScript" id="js-stats-data"
+                data-stats="<%= Jason.encode!(@stats) %>">
+        </script>
     </div>
-    <script language="JavaScript">
-        const stats = <%= raw(stats) %>;
-        const player_ids_to_names = <%= raw(player_ids_to_names) %>;
-    --></script>
     """
   end
+
+  @impl true
+  def handle_info(%{event: :stats_update, payload: payload}, socket) do
+    stats = Cachex.get!(:stats, "game:#{payload.game_id}")
+
+    {:noreply, assign(socket, stats: stats)}
+  end
+
+  @impl true
+  def handle_info(_, socket), do: {:noreply, socket}
 end

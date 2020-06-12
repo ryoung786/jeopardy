@@ -22,13 +22,9 @@ defmodule Jeopardy.Games do
   end
 
   def create() do
-    {:ok, game} =
-      %Game{}
-      |> Game.changeset(%{code: generate_game_code()})
-      |> Repo.insert()
-
-    Jeopardy.Stats.create(game)
-    {:ok, game}
+    %Game{}
+    |> Game.changeset(%{code: generate_game_code()})
+    |> Repo.insert()
   end
 
   def assign_trebek(%Game{} = game, name) do

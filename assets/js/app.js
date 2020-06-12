@@ -73,37 +73,60 @@ Hooks.stats = {
             Object.keys(this.chartColors)[i % Object.keys(this.chartColors).length]
         ]
     },
+    getDataForChart() {
+        const el = document.getElementById("js-stats-data")
+        const stats = JSON.parse(el.dataset.stats)
+        const datasets = (stats === null)
+              ? []
+              : Object.keys(stats).map((player_id, i) => {
+                  return {
+                      label: stats[player_id].name,
+                      data: stats[player_id].scores,
+                      borderColor: this.getColor(i),
+                      fill: false,
+                      // lineTension: 0
+                  }
+              })
+        return {
+            labels: [...Array(62).keys()],
+            datasets: datasets
+        }
+    },
     mounted() {
         var ctx = document.getElementById("stats").getContext("2d")
-        const datasets = Object.keys(stats).map((player_id, i) => {
-            return {
-                label: player_ids_to_names[player_id],
-                data: stats[player_id],
-                borderColor: this.getColor(i),
-                fill: false,
-                // lineTension: 0
-            }
-        })
-        const allscores = Object.keys(stats).reduce(((acc, id) => acc.concat(stats[id])), [])
+        const stats = JSON.parse(document.getElementById("js-stats-data").dataset.stats)
+        const allscores = (stats == null)
+              ? []
+              : Object.keys(stats).reduce(((acc, id) => acc.concat(stats[id])), [])
 
         window.lineChart = new Chart(ctx, {
             type: 'line',
-            data: {
-                labels: [...datasets[0].data.keys()],
-                datasets: datasets
-            },
+            data: this.getDataForChart(),
             options: {
                 tooltips: { mode: 'x', position: 'nearest' },
                 scales: {
+                    xAxes: [{
+                        ticks: {
+                            display: false
+                        }
+                    }],
                     yAxes: [{
                         ticks: {
+                            precision: 0,
                             suggestedMin: Math.min(...allscores) - 500,
                             suggestedMax: Math.max(...allscores) + 500,
+                            callback: (value, index, values) => {
+                                return '$' + value;
+                            }
                         }
                     }],
                 }
             }
         });
+    },
+    updated() {
+        window.lineChart.data = this.getDataForChart();
+        window.lineChart.update(0);
     }
 }
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
