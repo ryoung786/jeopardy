@@ -15,6 +15,8 @@ defmodule Jeopardy.Application do
       {Phoenix.PubSub, name: Jeopardy.PubSub},
       # Start the Presence tracker
       JeopardyWeb.Presence,
+      # Start cachex
+      {Cachex, :stats},
       # Start the Endpoint (http/https)
       JeopardyWeb.Endpoint
       # Start a worker by calling: Jeopardy.Worker.start_link(arg)

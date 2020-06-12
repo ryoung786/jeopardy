@@ -28,6 +28,7 @@ defmodule JeopardyWeb.Router do
       live "/", GameLive
       live "/tv", TvLive
       live "/trebek", TrebekLive
+      live "/stats", StatsLive
     end
   end
 

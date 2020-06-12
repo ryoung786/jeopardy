@@ -39,6 +39,8 @@ defmodule JeopardyWeb.TvLive do
       "game_over"
     )
 
+    Jeopardy.Stats.update(socket.assigns.game)
+
     {:noreply, socket}
   end
 
