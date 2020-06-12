@@ -58,7 +58,54 @@ Hooks.FinalJeopardyReveal = {
         })
     }
 }
+Hooks.stats = {
+    chartColors: {
+        green: 'rgb(75, 192, 192)',
+        orange: 'rgb(255, 159, 64)',
+        blue: 'rgb(54, 162, 235)',
+        red: 'rgb(255, 99, 132)',
+        yellow: 'rgb(255, 205, 86)',
+        grey: 'rgb(201, 203, 207)',
+        purple: 'rgb(153, 102, 255)',
+    },
+    getColor(i) {
+        return this.chartColors[
+            Object.keys(this.chartColors)[i % Object.keys(this.chartColors).length]
+        ]
+    },
+    mounted() {
+        var ctx = document.getElementById("stats").getContext("2d")
+        const datasets = Object.keys(stats).map((player_id, i) => {
+            return {
+                label: player_ids_to_names[player_id],
+                data: stats[player_id],
+                borderColor: this.getColor(i),
+                fill: false,
+                // lineTension: 0
+            }
+        })
+        const allscores = Object.keys(stats).reduce(((acc, id) => acc.concat(stats[id])), [])
 
+        window.lineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [...datasets[0].data.keys()],
+                datasets: datasets
+            },
+            options: {
+                tooltips: { mode: 'x', position: 'nearest' },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            suggestedMin: Math.min(...allscores) - 500,
+                            suggestedMax: Math.max(...allscores) + 500,
+                        }
+                    }],
+                }
+            }
+        });
+    }
+}
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {hooks: Hooks, params: {_csrf_token: csrfToken}})
 
