@@ -79,7 +79,7 @@ defmodule JeopardyWeb.WagerComponent do
     with {:ok, player} <- Repo.update(changeset) do
       Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, %{
         event: :final_jeopardy_wager,
-        player: player
+        player_wagered: player
       })
     end
   end

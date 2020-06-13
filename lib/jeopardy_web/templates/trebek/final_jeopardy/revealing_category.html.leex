@@ -8,8 +8,8 @@
     </p>
 
     <ul>
-        <%= for player_name <- @players_submitted do %>
-            <li><%= player_name %></li>
+        <%= for p <- @player_submit_status do %>
+            <li><%= p.name %>: <%= if p.submitted, do: "submitted", else: "waiting" %></li>
         <% end %>
     </ul>
 

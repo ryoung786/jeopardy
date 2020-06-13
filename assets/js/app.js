@@ -63,8 +63,8 @@ Hooks.FinalJeopardyAwaitingAnswer = {
         // push a time expired event to server after 60 seconds
         let self = this;
         window.setTimeout(
-            function() { self.pushEventTo(0, "time_expired", {}); },
-            5000
+            function() { self.pushEventTo("#trebek-fj-awaiting-answers", "time_expired", {}); },
+            60000
         );
     }
 }
