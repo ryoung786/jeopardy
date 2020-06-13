@@ -35,6 +35,12 @@ defmodule JeopardyWeb.TrebekLive do
     """
   end
 
+  # @impl true
+  # def handle_event("final_jeopardy_awaiting_answer_time_expired", _params, socket) do
+  #   next_round(socket.assigns.game.code)
+  #   {:noreply, socket}
+  # end
+
   @impl true
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}

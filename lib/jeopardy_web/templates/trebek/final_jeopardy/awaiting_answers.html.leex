@@ -1,6 +1,16 @@
-<div class="trebek single-instruction" >
+<div class="trebek final_jeopardy awaiting_answers" phx-hook="FinalJeopardyAwaitingAnswer" phx-target="<%= @myself %>">
+    <div class="pie-timer wrapper">
+        <div class="pie spinner"></div>
+        <div class="pie filler"></div>
+        <div class="mask"></div>
+    </div>
     <p class="instruction">
         Waiting on submissions.
     </p>
-    <div class="pie-timer"></div>
+
+    <ul>
+        <%= for p <- @player_submit_status do %>
+            <li><%= p.name %>: <%= if p.submitted, do: "submitted", else: "waiting" %></li>
+        <% end %>
+    </ul>
 </div>

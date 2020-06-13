@@ -58,6 +58,16 @@ Hooks.FinalJeopardyReveal = {
         })
     }
 }
+Hooks.FinalJeopardyAwaitingAnswer = {
+    mounted() {
+        // push a time expired event to server after 60 seconds
+        let self = this;
+        window.setTimeout(
+            function() { self.pushEventTo(0, "time_expired", {}); },
+            5000
+        );
+    }
+}
 Hooks.stats = {
     chartColors: {
         green: 'rgb(75, 192, 192)',
