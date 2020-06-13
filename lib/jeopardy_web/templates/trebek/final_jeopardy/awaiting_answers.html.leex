@@ -2,18 +2,33 @@
      class="trebek final_jeopardy awaiting_answers"
      phx-hook="FinalJeopardyAwaitingAnswer"
      phx-target="<%= @myself %>">
+
+    <p class="instruction">
+        Waiting on submissions.
+    </p>
+
     <div class="pie-timer wrapper">
         <div class="pie spinner"></div>
         <div class="pie filler"></div>
         <div class="mask"></div>
     </div>
-    <p class="instruction">
-        Waiting on submissions.
-    </p>
 
-    <ul>
+    <ul class="answer-statuses">
         <%= for p <- @player_submit_status do %>
-            <li><%= p.name %>: <%= if p.submitted, do: "submitted", else: "waiting" %></li>
+            <li class="<%= if p.submitted, do: "submitted", else: "waiting" %>">
+                <span class="name"><%= p.name %></span>
+                <span class="status">
+                    <%= if p.submitted do %>
+                        <svg  class="checkmark" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                            <polyline class="path check" fill="none" stroke="#73AF55"
+                                      stroke-width="20" stroke-linecap="round" stroke-miterlimit="10"
+                                      points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+                        </svg>
+                    <% else %>
+                        &nbsp
+                    <% end %>
+                </span>
+            </li>
         <% end %>
     </ul>
 </div>
