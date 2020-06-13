@@ -116,6 +116,7 @@ Hooks.stats = {
                 tooltips: { mode: 'x', position: 'nearest' },
                 scales: {
                     xAxes: [{
+                        gridLines: { display: false },
                         ticks: {
                             display: false
                         }
@@ -126,7 +127,7 @@ Hooks.stats = {
                             suggestedMin: Math.min(...allscores) - 500,
                             suggestedMax: Math.max(...allscores) + 500,
                             callback: (value, index, values) => {
-                                return '$' + value;
+                                return (value < 0 ? '-' : '') + '$' + Math.abs(value);
                             }
                         }
                     }],
