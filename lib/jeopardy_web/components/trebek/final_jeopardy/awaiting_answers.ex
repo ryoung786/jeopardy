@@ -1,4 +1,4 @@
-defmodule JeopardyWeb.Components.Trebek.FinalJeopardy.ReadingClue do
+defmodule JeopardyWeb.Components.Trebek.FinalJeopardy.AwaitingAnswers do
   use JeopardyWeb.Components.Base, :trebek
 
   @impl true
