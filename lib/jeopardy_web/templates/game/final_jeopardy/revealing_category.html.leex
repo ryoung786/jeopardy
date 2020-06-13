@@ -1,11 +1,17 @@
 <div class="game daily-double">
-    <%= if is_nil(@player.final_jeopardy_wager) do %>
-        <%= live_component @socket, JeopardyWeb.WagerComponent, player: @player,
-        id: "1", changeset: :wager, clue: @current_clue, game_code: @game.code %>
-    <% else %>
-        <p>
-            You wagered $<%= @player.final_jeopardy_wager %><br />
-            Waiting for all contestants to finish submitting their wagers.
-        </p>
+    <%= cond do %>
+        <% is_nil(@player.final_jeopardy_wager) -> %>
+            <%= live_component @socket, JeopardyWeb.WagerComponent, player: @player,
+            id: "1", changeset: :wager, clue: @current_clue, game_code: @game.code %>
+         <% @player.score == 0 -> %>
+             <p>
+                 Waiting for all other contestants to finish submitting their wagers. <br /><br />
+                 Unfortunately, you don't have any money to wager in final jeopardy.
+             </p>
+          <% true -> %>
+              <p>
+                  You wagered $<%= @player.final_jeopardy_wager %><br />
+                  Waiting for all contestants to finish submitting their wagers.
+              </p>
     <% end %>
 </div>

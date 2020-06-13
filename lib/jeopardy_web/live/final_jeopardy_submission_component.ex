@@ -11,10 +11,17 @@ defmodule JeopardyWeb.FinalJeopardySubmissionComponent do
   end
 
   def handle_event("save", %{"submission" => %{"answer" => answer}}, socket) do
-    {:ok, player} =
-      Player.changeset(socket.assigns.player, %{final_jeopardy_answer: answer})
-      |> Repo.update()
+    changeset = Player.changeset(socket.assigns.player, %{final_jeopardy_answer: answer})
 
-    {:noreply, assign(socket, player: player)}
+    with {:ok, player} <- Repo.update(changeset) do
+      Phoenix.PubSub.broadcast(Jeopardy.PubSub, socket.assigns.game.code, %{
+        event: :final_jeopardy_answer_submitted,
+        player_that_submitted: player
+      })
+
+      {:noreply, assign(socket, player: player)}
+    else
+      _ -> {:noreply, socket}
+    end
   end
 end

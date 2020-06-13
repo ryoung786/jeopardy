@@ -8,7 +8,10 @@
                 <div class="answers">
             <%= for c <- Enum.shuffle(@players) do %>
                 <label class="labelrow">
-                    <span class="answer"><%= c.final_jeopardy_answer %></span>
+                    <% answer = case c.final_jeopardy_answer do
+                    x when x in ["", nil] -> "(no answer)"
+                    _ -> c.final_jeopardy_answer end %>
+                    <span class="answer"><%= answer %></span>
 
                     <input name="grades[<%= c.id %>]" type="hidden" value="false">
                     <input class="tinyswitch toggle green" name="grades[<%= c.id %>]" type="checkbox" value="true" />

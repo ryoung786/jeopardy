@@ -45,8 +45,8 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.RecappingScores do
     from(p in Player,
       where: p.game_id == ^game.id,
       where: p.name != ^game.trebek,
-      where: p.score < 0
+      where: p.score <= 0
     )
-    |> Repo.update_all_ts(set: [score: 0])
+    |> Repo.update_all_ts(set: [score: 0, final_jeopardy_wager: 0])
   end
 end

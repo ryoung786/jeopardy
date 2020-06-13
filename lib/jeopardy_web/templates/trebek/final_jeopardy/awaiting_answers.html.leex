@@ -1,13 +1,13 @@
-<div class="trebek revealing_category" >
+<div class="trebek final_jeopardy awaiting_answers">
     <p class="instruction">
-        <%= if @all_submitted? do %>
-            All wagers are in!  Click below to read the clue.
-        <% else %>
-            Waiting for all contestants to submit their wagers
-        <% end %>
+        Waiting on submissions.
     </p>
 
-    <ul class="wager-statuses">
+    <div class="circle">
+	<div class="second"></div>
+    </div>
+
+    <ul class="answer-statuses">
         <%= for p <- @player_submit_status do %>
             <li class="<%= if p.submitted, do: "submitted", else: "waiting" %>">
                 <span class="name"><%= p.name %></span>
@@ -25,8 +25,4 @@
             </li>
         <% end %>
     </ul>
-
-    <div class="action-area">
-        <%= submit "Read clue", disabled: !@all_submitted?, "phx-click": "read_clue", "phx-target": @myself %>
-    </div>
 </div>

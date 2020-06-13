@@ -6,12 +6,12 @@
 
         <div class="instructions">
             <p>
-                Read the clue out loud, wait 30 seconds, then click below to review answers.
+                Read the clue out loud, then click below to start the timer.
             </p>
         </div>
     </div>
 
     <div class="action-area">
-        <%= submit "Time's up", "phx-click": "final_jeopardy_time_expired_click", "phx-target": @myself %>
+        <%= submit "Start timer", "phx-click": "start_timer_click", "phx-target": @myself %>
     </div>
 </div>

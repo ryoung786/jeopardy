@@ -3,7 +3,7 @@ defmodule JeopardyWeb.Components.Game.FinalJeopardy.RevealingCategory do
   require Logger
 
   @impl true
-  def update(%{event: :final_jeopardy_wager, player: player}, socket) do
+  def update(%{event: :final_jeopardy_wager, player_wagered: player}, socket) do
     if player.id == socket.assigns.player.id,
       do: {:ok, assign(socket, player: player)},
       else: {:ok, socket}

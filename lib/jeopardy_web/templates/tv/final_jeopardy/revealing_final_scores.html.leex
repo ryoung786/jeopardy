@@ -1,18 +1,21 @@
 <div class="tv clue-display final-jeopardy revealing_final_scores" phx-hook="FinalJeopardyReveal">
     <div class="display">
         <%= for {contestant, i} <- Enum.with_index(order_by_pre_fj_score(@players, @game)) do %>
-                <div class="details
-                            <%= if i==0, do: "active" %>
-                            <%= font_from_name(contestant.name, @game.id) %>"
-                     data-player_id="<%= contestant.id %>">
-                    <div class="name">
-                        <p><%= contestant.name %></p>
-                    </div>
-                    <div class="answer">
-                        <p><%= contestant.final_jeopardy_answer %></p>
-                    </div>
-                    <div class="wager">
-                        <p><%= score(contestant.final_jeopardy_wager) %></p>
+            <div class="details
+                        <%= if i==0, do: "active" %>
+                        <%= font_from_name(contestant.name, @game.id) %>"
+                 data-player_id="<%= contestant.id %>">
+                <div class="name">
+                    <p><%= contestant.name %></p>
+                </div>
+                <div class="answer">
+                    <% answer = case contestant.final_jeopardy_answer do
+                    x when x in ["", nil] -> "(no answer)"
+                    _ -> contestant.final_jeopardy_answer end %>
+                    <p><%= answer %></p>
+                </div>
+                <div class="wager">
+                    <p><%= score(contestant.final_jeopardy_wager) %></p>
                     </div>
                 </div>
         <% end %>
