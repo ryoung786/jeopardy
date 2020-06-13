@@ -42,7 +42,10 @@ defmodule JeopardyWeb.Components.Trebek.FinalJeopardy.AwaitingAnswers do
 
   defp next_round_if_all_players_submitted(statuses, code) do
     if Enum.count(statuses, fn s -> not s.submitted end) == 0 do
-      next_round(code)
+      Task.start(fn ->
+        Process.sleep(1200)
+        next_round(code)
+      end)
     end
   end
 
