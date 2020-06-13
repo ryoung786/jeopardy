@@ -97,7 +97,7 @@ Hooks.stats = {
         const stats = JSON.parse(document.getElementById("js-stats-data").dataset.stats)
         const allscores = (stats == null)
               ? []
-              : Object.keys(stats).reduce(((acc, id) => acc.concat(stats[id])), [])
+              : Object.keys(stats).reduce(((acc, id) => acc.concat(stats[id].scores)), [])
 
         window.lineChart = new Chart(ctx, {
             type: 'line',
