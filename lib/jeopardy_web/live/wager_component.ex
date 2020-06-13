@@ -2,10 +2,9 @@ defmodule JeopardyWeb.WagerComponent do
   use Phoenix.LiveComponent
   use Phoenix.HTML
   alias JeopardyWeb.WagerView
-  alias Jeopardy.Games.{Wager, Player, Clue, Game}
+  alias Jeopardy.Games.{Wager, Player, Clue}
   alias Jeopardy.GameState
   alias Jeopardy.Repo
-  import Ecto.Query
   require Logger
 
   def render(assigns) do
@@ -82,24 +81,6 @@ defmodule JeopardyWeb.WagerComponent do
         event: :final_jeopardy_wager,
         player: player
       })
-
-      if all_final_jeopardy_wagers_submitted?(game) do
-        # start clue timer
-        GameState.update_round_status(game.code, "revealing_category", "reading_clue")
-      end
     end
-  end
-
-  defp all_final_jeopardy_wagers_submitted?(%Game{} = game) do
-    num_yet_to_submit =
-      from(p in Player,
-        select: count(1),
-        where: p.game_id == ^game.id,
-        where: p.name != ^game.trebek,
-        where: is_nil(p.final_jeopardy_wager)
-      )
-      |> Repo.one()
-
-    num_yet_to_submit == 0
   end
 end

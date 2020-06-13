@@ -1,5 +1,19 @@
 <div class="trebek revealing_category single-instruction" >
     <p class="instruction">
-        Waiting for all contestants to submit their wagers
+        <%= if @all_submitted? do %>
+            All wagers are in!  Click below to read the clue.
+        <% else %>
+            Waiting for all contestants to submit their wagers
+        <% end %>
     </p>
+
+    <ul>
+        <%= for player_name <- @players_submitted do %>
+            <li><%= player_name %></li>
+        <% end %>
+    </ul>
+
+    <div class="action-area">
+        <%= submit "Read clue", disabled: !@all_submitted?, "phx-click": "read_clue", "phx-target": @myself %>
+    </div>
 </div>

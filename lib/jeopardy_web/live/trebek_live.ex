@@ -41,6 +41,13 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
+  def handle_info(%{event: _} = data, socket) do
+    component = component_from_game(socket.assigns.game)
+    send_update(component, Map.put(data, :id, Atom.to_string(component)))
+    {:noreply, socket}
+  end
+
+  @impl true
   # The db got updated, so let's query for the latest everything
   # and update our assigns
   def handle_info(_, socket), do: {:noreply, assigns(socket)}
