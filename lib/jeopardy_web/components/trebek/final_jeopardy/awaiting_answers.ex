@@ -3,12 +3,6 @@ defmodule JeopardyWeb.Components.Trebek.FinalJeopardy.AwaitingAnswers do
   require Logger
 
   @impl true
-  def handle_event("time_expired", _params, socket) do
-    next_round(socket.assigns.game.code)
-    {:noreply, socket}
-  end
-
-  @impl true
   def update(%{event: :final_jeopardy_answer_submitted, player_that_submitted: player}, socket) do
     statuses =
       Enum.map(socket.assigns.player_submit_status, fn p ->
@@ -28,6 +22,7 @@ defmodule JeopardyWeb.Components.Trebek.FinalJeopardy.AwaitingAnswers do
       assign(socket, assigns)
       |> assign(player_submit_status: statuses)
 
+    startQuestionTimer(socket.assigns.game.code)
     {:ok, socket}
   end
 
@@ -43,6 +38,7 @@ defmodule JeopardyWeb.Components.Trebek.FinalJeopardy.AwaitingAnswers do
   defp next_round_if_all_players_submitted(statuses, code) do
     if Enum.count(statuses, fn s -> not s.submitted end) == 0 do
       Task.start(fn ->
+        # gives time to draw checkmarks and give visual feedback
         Process.sleep(1200)
         next_round(code)
       end)
@@ -55,5 +51,13 @@ defmodule JeopardyWeb.Components.Trebek.FinalJeopardy.AwaitingAnswers do
       "awaiting_answers",
       "grading_answers"
     )
+  end
+
+  defp startQuestionTimer(code) do
+    # 60.5 second timer (.5s is for leniency)
+    Task.start(fn ->
+      Process.sleep(60500)
+      next_round(code)
+    end)
   end
 end
