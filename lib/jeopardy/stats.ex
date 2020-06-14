@@ -26,7 +26,7 @@ defmodule Jeopardy.Stats do
     end
   end
 
-  defp key(game), do: "game:#{game.id}"
+  def key(%Game{} = game), do: "game:#{game.id}"
 
   defp broadcast(%Game{} = game) do
     Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, %{

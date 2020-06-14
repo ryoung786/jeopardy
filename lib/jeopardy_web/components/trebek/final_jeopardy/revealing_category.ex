@@ -1,8 +1,5 @@
 defmodule JeopardyWeb.Components.Trebek.FinalJeopardy.RevealingCategory do
   use JeopardyWeb.Components.Base, :trebek
-  alias Jeopardy.Games.{Game, Player}
-  alias Jeopardy.Repo
-  import Ecto.Query
   require Logger
 
   # @impl true

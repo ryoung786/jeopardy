@@ -104,6 +104,7 @@ Hooks.stats = {
             data: this.getDataForChart(),
             options: {
                 tooltips: { mode: 'x', position: 'nearest' },
+                elements: { point: { radius: 0 }},
                 scales: {
                     xAxes: [{
                         gridLines: { display: false },

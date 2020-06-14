@@ -1,6 +1,19 @@
-<div class="tv clue-display">
+<div class="tv clue-display with-stats-modal" phx-target="<%= @myself %>" phx-click="dismiss-modal">
     <div class="display">
-        <h1>That's the end of the Jeopardy round! <br /> <br />Take a look at the scores, and once everyone's ready it's on to Double Jeopardy!</h1>
+        <div class="stats-button" phx-click="toggle-stats" phx-target="<%= @myself %>">
+            <%= if @show_stats do %>
+                <i class="fas fa-times"></i>
+            <% else %>
+                <i class="fas fa-chart-line"></i>
+            <% end %>
+        </div>
+        <div class="modal <%= if @show_stats, do: "active" %>">
+            <%= live_component @socket, JeopardyWeb.General.StatsComponent,
+            id: :General_StatsComponent, game: @game %>
+        </div>
+        <div class="content <%= unless @show_stats, do: "active" %>">
+            <h1>That's the end of the Jeopardy round! <br /> <br />Take a look at the scores, and once everyone's ready it's on to Double Jeopardy!</h1>
+        </div>
     </div>
     <%= live_component @socket, JeopardyWeb.ScoreboardComponent,
     contestants: @players, game_id: @game.id, game: @game,
