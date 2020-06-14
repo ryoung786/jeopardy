@@ -35,6 +35,50 @@
     padding: 5px 5px;
     min-width: 70px;
     gap: 5px;
+    position: relative;
+
+    .stats {
+        position: absolute;
+        margin: 0 50%;
+        display: flex;
+        background: white;
+        padding: 10px;
+        transform: translate(-50%, -70px);
+        opacity: 0;
+        border-radius: 5px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        width: 90%;
+        justify-content: center;
+        height: 70px;
+        align-items: flex-end;
+        transition: .25s transform ,
+                    .25s opacity ;
+        &.active {
+            opacity: 1;
+            transform: translate(-50%, -100px);
+        }
+        .count {
+            font-size: 1.3rem;
+            text-shadow: none;
+            margin: 0 10px -5px 10px;
+            &.correct { color: #0b5050; }
+            &.incorrect { color: #a02942; }
+        }
+        .bar {
+            width: 5px;
+            // border: 1px solid;
+            border-bottom: none;
+            height: 50px;
+
+            &.correct {
+                background: rgb(75, 192, 192);
+            }
+            &.incorrect {
+                background: rgb(255, 99, 132);
+                height: 20px;
+            }
+        }
+    }
 }
 .podium > .name, .podium > .score {
     display: grid;

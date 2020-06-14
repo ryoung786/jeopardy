@@ -108,12 +108,12 @@ Hooks.stats = {
                 scales: {
                     xAxes: [{
                         gridLines: { display: false },
-                        ticks: {
-                            display: false
-                        }
+                        ticks: { display: false }
                     }],
                     yAxes: [{
+                        gridLines: { drawTicks: false },
                         ticks: {
+                            padding: 15,
                             precision: 0,
                             suggestedMin: Math.min(...allscores) - 500,
                             suggestedMax: Math.max(...allscores) + 500,
