@@ -1,4 +1,4 @@
-<div class="tv clue-display with-stats-modal">
+<div class="tv clue-display with-stats-modal" phx-target="<%= @myself %>" phx-click="dismiss-modal">
     <div class="display">
         <div class="stats-button" phx-click="toggle-stats" phx-target="<%= @myself %>">
             <%= if @show_stats do %>
@@ -16,6 +16,6 @@
         </div>
     </div>
     <%= live_component @socket, JeopardyWeb.ScoreboardComponent,
-    contestants: @players, game_id: @game.id, game: @game,
+    contestants: @players, game_id: @game.id, game: @game, show_stats: @show_stats,
     buzzer: %{lock_status: @game.buzzer_lock_status, player_name: @game.buzzer_player} %>
 </div>
