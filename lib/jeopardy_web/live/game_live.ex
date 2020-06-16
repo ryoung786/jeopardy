@@ -28,7 +28,6 @@ defmodule JeopardyWeb.GameLive do
           |> assign(component: component_from_game(game))
           |> assign(can_buzz: Games.can_buzz?(game, player))
           |> assign(current_clue: Game.current_clue(game))
-          |> assign(audience: Games.get_all_players(game) |> Enum.map(& &1.name))
 
         {:ok, socket}
     end

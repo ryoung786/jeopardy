@@ -13,14 +13,7 @@ defmodule JeopardyWeb.TvLive do
     end
 
     game = Games.get_by_code(code)
-
-    socket =
-      socket
-      |> assigns(game)
-      |> assign(audience: Games.get_all_players(game) |> Enum.map(& &1.name))
-      |> assign(component: component_from_game(game))
-
-    {:ok, socket}
+    {:ok, assigns(socket, game)}
   end
 
   @impl true
