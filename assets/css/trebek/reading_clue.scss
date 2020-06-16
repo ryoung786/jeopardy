@@ -1,13 +1,12 @@
 .trebek.reading_clue {
     .content {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-rows: 1fr auto;
         position: relative;
         overflow: hidden;
         background: aliceblue;
 
         .clue, .answer {
-            flex-grow: 1;
             background: blue;
             color: white;
             display: grid;
