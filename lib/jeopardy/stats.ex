@@ -13,8 +13,6 @@ defmodule Jeopardy.Stats do
       new_stats =
         Games.get_just_contestants(game)
         |> Enum.reduce(%{}, fn c, acc ->
-          Logger.info("scores: #{inspect((get_in(stats, [c.id, :scores]) || []) ++ [c.score])}")
-
           Map.put(acc, c.id, %{
             name: c.name,
             scores: (get_in(stats, [c.id, :scores]) || []) ++ [c.score]
