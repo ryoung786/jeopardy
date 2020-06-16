@@ -9,10 +9,12 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.RevealingBoard do
 
   @impl true
   def update(assigns, socket) do
+    game = assigns[:game] || socket.assigns[:game]
+
     socket =
       socket
       |> assign(assigns)
-      |> assign(categories: get_zipped_categories(assigns))
+      |> assign(categories: get_zipped_categories(game))
 
     {:ok, socket}
   end
@@ -31,11 +33,11 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.RevealingBoard do
     {:noreply, socket}
   end
 
-  defp get_zipped_categories(assigns) do
+  defp get_zipped_categories(%Jeopardy.Games.Game{} = game) do
     categories =
-      case assigns.game.status do
-        "jeopardy" -> assigns.game.jeopardy_round_categories
-        _ -> assigns.game.double_jeopardy_round_categories
+      case game.status do
+        "jeopardy" -> game.jeopardy_round_categories
+        _ -> game.double_jeopardy_round_categories
       end
 
     Enum.zip(1..6, categories)
@@ -45,12 +47,12 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.RevealingBoard do
     Phoenix.PubSub.broadcast(
       Jeopardy.PubSub,
       socket.assigns.game.code,
-      {:next_category,
-       %{
-         active_category_num: active_category_num,
-         status: socket.assigns.game.status,
-         round_status: socket.assigns.game.round_status
-       }}
+      %{
+        event: :next_category,
+        active_category_num: active_category_num,
+        status: socket.assigns.game.status,
+        round_status: socket.assigns.game.round_status
+      }
     )
   end
 end

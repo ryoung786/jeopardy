@@ -36,7 +36,7 @@ Hooks.FinalJeopardyReveal = {
             next.classList.add('active');
         } else {
             // we're done, time to tell the backend to advance to game over
-            this.pushEvent("next", {})
+            this.pushEventTo('.tv.revealing_final_scores', "game_over", {})
         }
     },
     mounted() {

@@ -23,19 +23,6 @@ defmodule JeopardyWeb.TvLive do
     """
   end
 
-  @impl true
-  def handle_event("next", _params, socket) do
-    Jeopardy.GameState.update_round_status(
-      socket.assigns.game.code,
-      "revealing_final_scores",
-      "game_over"
-    )
-
-    Jeopardy.Stats.update(socket.assigns.game)
-
-    {:noreply, socket}
-  end
-
   def handle_info(%{event: _} = data, socket) do
     component = component_from_game(socket.assigns.game)
 
@@ -49,18 +36,18 @@ defmodule JeopardyWeb.TvLive do
     {:noreply, socket}
   end
 
-  def handle_info({:next_category, data}, socket) do
-    component = component_from_game(socket.assigns.game)
+  # def handle_info({:next_category, data}, socket) do
+  #   component = component_from_game(socket.assigns.game)
 
-    assigns =
-      socket.assigns
-      |> Map.delete(:flash)
-      |> Map.merge(data)
-      |> Map.put(:id, Atom.to_string(component))
+  #   assigns =
+  #     socket.assigns
+  #     |> Map.delete(:flash)
+  #     |> Map.merge(data)
+  #     |> Map.put(:id, Atom.to_string(component))
 
-    send_update(component, assigns)
-    {:noreply, socket}
-  end
+  #   send_update(component, assigns)
+  #   {:noreply, socket}
+  # end
 
   @impl true
   # The db got updated, so let's query for the latest everything
