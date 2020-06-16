@@ -4,17 +4,6 @@ defmodule Jeopardy.GameState do
   alias Jeopardy.Games.{Game}
   alias Jeopardy.Repo
 
-  # @states %{
-  #   pre_jeopardy: ~w(awaiting_start selecting_trebek introducing_roles),
-  #   jeopardy: ~w(revealing_board selecting_clue reading_clue awaiting_buzzer
-  #     answering_clue awaiting_daily_double_wager reading_daily_double answering_daily_double
-  #     revealing_answer recapping_scores),
-  #   double_jeopardy: ~w(revealing_board selecting_clue reading_clue awaiting_buzzer
-  #     answering_clue awaiting_daily_double_wager reading_daily_double answering_daily_double
-  #     revealing_answer recapping_scores),
-  #   final_jeopardy: ~w(revealing_category reading_clue revealing_final_scores)
-  # }
-
   def update_round_status(code, from, to) do
     case from(g in Game, where: g.code == ^code and g.round_status == ^from, select: g.id)
          |> Repo.update_all_ts(set: [round_status: to]) do
