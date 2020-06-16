@@ -3,13 +3,11 @@ defmodule JeopardyWeb.GameLive do
   require Logger
   alias Jeopardy.Games
   alias Jeopardy.Games.Game
-  alias JeopardyWeb.Presence
 
   @impl true
   def mount(%{"code" => code}, %{"name" => name}, socket) do
     game = Games.get_by_code(code)
     trebek_name = game.trebek
-    Presence.track(self(), code, name, %{name: name})
     player = Games.get_player(game, name)
 
     case name do
@@ -30,7 +28,7 @@ defmodule JeopardyWeb.GameLive do
           |> assign(component: component_from_game(game))
           |> assign(can_buzz: Games.can_buzz?(game, player))
           |> assign(current_clue: Game.current_clue(game))
-          |> assign(audience: Presence.list_presences(code))
+          |> assign(audience: Games.get_all_players(game) |> Enum.map(& &1.name))
 
         {:ok, socket}
     end
@@ -41,18 +39,6 @@ defmodule JeopardyWeb.GameLive do
     ~L"""
        <%= live_component(@socket, @component, render_assigns(assigns)) %>
     """
-  end
-
-  @impl true
-  def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
-    component = component_from_game(socket.assigns.game)
-
-    send_update(component, %{
-      id: Atom.to_string(component),
-      audience: Presence.list_presences(socket.assigns.game.code)
-    })
-
-    {:noreply, socket}
   end
 
   def handle_info(%{event: _} = data, socket) do

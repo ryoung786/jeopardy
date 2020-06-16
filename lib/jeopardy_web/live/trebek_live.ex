@@ -3,12 +3,10 @@ defmodule JeopardyWeb.TrebekLive do
   require Logger
   alias Jeopardy.Games.Game
   alias Jeopardy.Games
-  alias JeopardyWeb.Presence
 
   @impl true
   def mount(%{"code" => code}, %{"name" => name}, socket) do
     game = Games.get_by_code(code)
-    Presence.track(self(), code, name, %{name: name})
 
     case game.trebek do
       ^name ->
@@ -17,7 +15,6 @@ defmodule JeopardyWeb.TrebekLive do
         socket =
           socket
           |> assign(name: name)
-          |> assign(audience: Presence.list_presences(code))
           |> assign(component: component_from_game(game))
           |> assigns(game)
 
@@ -33,17 +30,6 @@ defmodule JeopardyWeb.TrebekLive do
     ~L"""
        <%= live_component(@socket, @component, render_assigns(assigns)) %>
     """
-  end
-
-  # @impl true
-  # def handle_event("final_jeopardy_awaiting_answer_time_expired", _params, socket) do
-  #   next_round(socket.assigns.game.code)
-  #   {:noreply, socket}
-  # end
-
-  @impl true
-  def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
-    {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
   end
 
   @impl true

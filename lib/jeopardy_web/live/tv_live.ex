@@ -3,7 +3,6 @@ defmodule JeopardyWeb.TvLive do
   require Logger
   alias Jeopardy.Games
   alias Jeopardy.Games.Game
-  alias JeopardyWeb.Presence
 
   @impl true
   def mount(%{"code" => code}, _session, socket) do
@@ -18,7 +17,7 @@ defmodule JeopardyWeb.TvLive do
     socket =
       socket
       |> assigns(game)
-      |> assign(audience: Presence.list_presences(code))
+      |> assign(audience: Games.get_all_players(game) |> Enum.map(& &1.name))
       |> assign(component: component_from_game(game))
 
     {:ok, socket}
@@ -42,11 +41,6 @@ defmodule JeopardyWeb.TvLive do
     Jeopardy.Stats.update(socket.assigns.game)
 
     {:noreply, socket}
-  end
-
-  @impl true
-  def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
-    {:noreply, assign(socket, audience: Presence.list_presences(socket.assigns.game.code))}
   end
 
   def handle_info(%{player: p, step: step}, socket) do

@@ -71,6 +71,11 @@ defmodule Jeopardy.Games do
     |> Repo.all()
   end
 
+  def get_all_players(%Game{} = game) do
+    from(p in Player, where: p.game_id == ^game.id)
+    |> Repo.all()
+  end
+
   def get_player(%Game{} = game, name) do
     from(p in Player, where: p.game_id == ^game.id and p.name == ^name) |> Repo.one()
   end
