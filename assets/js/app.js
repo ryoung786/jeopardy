@@ -46,10 +46,13 @@ Hooks.FinalJeopardyReveal = {
                 let current = e.target.closest('.details.active');
                 let next = current.nextElementSibling;
                 let self = this;
+                // One second after we reveal the player's wager, update their podium score
                 window.setTimeout(
                     function() { self.updateScoreboard(player_id); },
                     1000
                 );
+                // Five seconds after we reveal the player's wager,
+                // start animating the next player
                 window.setTimeout(
                     function() { self.fun(current, next); },
                     5000

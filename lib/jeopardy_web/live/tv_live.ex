@@ -36,17 +36,6 @@ defmodule JeopardyWeb.TvLive do
     {:noreply, socket}
   end
 
-  def handle_info(%{player: p, step: step}, socket) do
-    send_update(
-      JeopardyWeb.FinalJeopardyScoreRevealComponent,
-      id: 1,
-      player_id: p.id,
-      step: step
-    )
-
-    {:noreply, socket}
-  end
-
   def handle_info(%{event: _} = data, socket) do
     component = component_from_game(socket.assigns.game)
 
