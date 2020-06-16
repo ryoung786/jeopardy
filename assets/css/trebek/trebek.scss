@@ -1,4 +1,4 @@
-.trebek.single-instruction { height: 100vh; }
+// .trebek.single-instruction { height: 100vh; }
 .trebek > .single-instruction { height: 100%; }
 
 .trebek.single-instruction,
@@ -19,7 +19,8 @@
 .trebek {
     display: grid;
     grid-template-rows: 1fr 15%;
-    height: 100vh;
+    // height: 100vh;
+    height: 100%;
 
     .action-area button {
         height: 100%;
