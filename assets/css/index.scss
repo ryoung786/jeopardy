@@ -1,8 +1,9 @@
 @import "theme";
 
 .homepage {
-    min-height: 100vh;
+    min-height: 100%;
     background: #F9F9F9;
+    overscroll-behavior-y: contain;
     .curved-div {
         position: relative;
         background: $dark-shades;
