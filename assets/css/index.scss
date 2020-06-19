@@ -1,7 +1,9 @@
 @import "theme";
 
+.onclick-void-holder > main { height: 100%; }
+
 .homepage {
-    min-height: 100vh;
+    min-height: 100%;
     background: #F9F9F9;
     .curved-div {
         position: relative;
@@ -62,6 +64,6 @@
 }
 
 @media only screen and (max-width: 400px) {
-    .homepage .curved-div h1 { font-size: 4rem; }
+    .homepage .curved-div h1, .homepage .curved-div .this-is-jeopardy { font-size: 4rem; }
     .homepage .curved-div p { font-size: 1.4rem; }
 }
