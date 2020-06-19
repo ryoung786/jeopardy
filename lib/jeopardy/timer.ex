@@ -14,8 +14,6 @@ defmodule Jeopardy.Timer do
   def stop(code), do: Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{code}", :stop)
 
   def init({code, time}) do
-    IO.puts("timer server started with id #{code}")
-
     Phoenix.PubSub.subscribe(Jeopardy.PubSub, "timer:#{code}")
 
     state = %{timer_ref: nil, timer: time, orig_time: time, code: code}
@@ -28,7 +26,6 @@ defmodule Jeopardy.Timer do
   end
 
   def handle_info(:update, %{timer: time, orig_time: orig, code: code}) do
-    IO.puts("tick. time left #{time}")
     leftover = time - 1
     timer_ref = schedule_timer(1_000)
 
@@ -42,8 +39,6 @@ defmodule Jeopardy.Timer do
 
   def handle_info(%{event: :timer_start}, state) do
     timer_ref = schedule_timer(1_000)
-    IO.puts("started timer, state: #{inspect(state)}")
-    IO.puts("started timer, time left #{state.timer}")
     {:noreply, %{state | timer: state.timer - 1, timer_ref: timer_ref}}
   end
 

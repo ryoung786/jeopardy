@@ -36,19 +36,6 @@ defmodule JeopardyWeb.TvLive do
     {:noreply, socket}
   end
 
-  # def handle_info({:next_category, data}, socket) do
-  #   component = component_from_game(socket.assigns.game)
-
-  #   assigns =
-  #     socket.assigns
-  #     |> Map.delete(:flash)
-  #     |> Map.merge(data)
-  #     |> Map.put(:id, Atom.to_string(component))
-
-  #   send_update(component, assigns)
-  #   {:noreply, socket}
-  # end
-
   @impl true
   # The db got updated, so let's query for the latest everything
   # and update our assigns

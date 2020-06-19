@@ -1,4 +1,4 @@
-<div class="tv homepage">
+<div class="tv homepage awaiting_start" phx-hook="DrawName">
     <div class="curved-div upper">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 20 800 55"><path fill="#260894" fill-opacity="1" d="M 0 50 C 352 0 500 100 800 50 L 800 75 L 0 75 Z"></path></svg>
     </div>
@@ -7,12 +7,48 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 20 800 55"><path fill="#f9f9f9" fill-opacity="1" d="M 0 50 C 352 0 500 100 800 50 L 800 75 L 0 75 Z"></path></svg>
     </div>
 
-    <div class="options">
-        <h3>Today's contestants!</h3>
-        <ul>
-        <%= for name <- @audience do %>
-            <li><%= name %></li>
+    <% display_canvas = (assigns[:editing] || !assigns[:signature]) %>
+
+    <div class="content">
+        <%= if !assigns[:editing] do %>
+            <%= if !assigns[:signature] do %>
+                <div class="options">
+                    <p>While we're waiting for the game to start,<br /> please sign your name on the podium below.</p>
+                </div>
+            <% else %>
+                <div class="options">
+                    <p>Thanks!  Hang tight while we wait for everyone to join.</p>
+                </div>
+
+                <div class="podium-holder">
+                    <div class="podium">
+                        <div class="score ">
+                            <div class="final-score">$500</div>
+                        </div>
+
+                        <div class="bg"></div>
+                        <div class="name"><div class="image" style='background-image: url("<%= assigns[:signature] %>")'></div></div>
+                        <div class="bg"></div>
+                    </div>
+
+                    <button class="button" id="edit" phx-click="edit-signature" phx-target="<%= @myself %>">
+                        Edit
+                    </button>
+                </div>
+            <% end %>
+        <% else %>
+            <div class="options">
+                <p>Edit your signature below.</p>
+            </div>
         <% end %>
-        </ul>
+
+        <div id="draw-name-holder-id"
+             class="draw-name <%= if !display_canvas, do: "hide", else: "" %>" phx-update="ignore">
+            <canvas id="canvas" phx-update="ignore"></canvas>
+            <div class="buttons">
+                <button class="button" id="clear">Clear</button>
+                <button class="button" id="screenshot">OK</button>
+            </div>
+        </div>
     </div>
 </div>
