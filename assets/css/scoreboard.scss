@@ -90,6 +90,14 @@
 .podium > .name {
     background: #0936B9;
     color: white;
+    // padding: 5px;
+    .image {
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+        width: 90px;
+        height: 60px;
+    }
 }
 .podium > .bg {
     background: #000B6E;

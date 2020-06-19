@@ -28,7 +28,11 @@
             </div>
 
             <div class="bg"></div>
-            <div class="name <%= font_from_name(c.name, @game_id) %>"><%= c.name %></div>
+            <%= if @signatures[c.id] do %>
+                <div class="name"><div class="image" style='background-image: url("<%= @signatures[c.id] %>")'></div></div>
+            <% else %>
+                <div class="name <%= font_from_name(c.name, @game_id) %>"><%= c.name %></div>
+            <% end %>
             <div class="bg"></div>
         </div>
     <% end %>

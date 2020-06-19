@@ -188,6 +188,11 @@ Hooks.DrawName = {
       return;
     }
 
+    self.ctx.strokeStyle = "#fff";
+    self.ctx.lineJoint = "round";
+    self.ctx.lineCap = "round";
+    self.ctx.lineWidth = 3;
+
     // draw the additional points
     var point = self.points[self.lastLength];
     self.ctx.beginPath();
@@ -207,15 +212,14 @@ Hooks.DrawName = {
       self.draw(self);
     });
   },
-
   mounted() {
     // canvas variables
     let self = this;
     this.painting = false;
     this.canvas = document.getElementById("canvas");
     this.ctx = canvas.getContext("2d");
-    this.cw = canvas.width;
-    this.ch = canvas.height;
+    this.canvas.width = parseInt(getComputedStyle(this.canvas).width);
+    this.canvas.height = parseInt(getComputedStyle(this.canvas).height);
 
     this.offsetX;
     this.offsetY;
@@ -224,26 +228,25 @@ Hooks.DrawName = {
     this.lastLength = 0;
 
     // set canvas styling
-    this.ctx.strokeStyle = "skyblue";
-    this.ctx.lineJoint = "round";
-    this.ctx.lineCap = "round";
-    this.ctx.lineWidth = 6;
 
     this.reOffset(self);
     window.onscroll = function (e) {
       self.reOffset(self);
     };
     window.onresize = function (e) {
+      self.canvas.width = parseInt(getComputedStyle(self.canvas).width);
+      self.canvas.height = parseInt(getComputedStyle(self.canvas).height);
       self.reOffset(self);
     };
 
     // start the  animation loop
     requestAnimationFrame(() => {
-      this.draw(self);
+      self.draw(self);
     });
 
     canvas.onmousedown = (e) => {
       self.painting = true;
+      self.reOffset(self);
       // get the mouse position
       let mouseX = parseInt(e.clientX - self.offsetX);
       let mouseY = parseInt(e.clientY - self.offsetY);
@@ -256,13 +259,16 @@ Hooks.DrawName = {
     };
     canvas.onmouseup = (e) => {
       self.painting = false;
+      return false;
     };
     canvas.onmouseleave = (e) => {
       self.painting = false;
+      return false;
     };
 
     canvas.onmousemove = function (e) {
       self.handleMouseMove(e, self);
+      return false;
     };
 
     // Set up touch events for mobile, etc
@@ -276,16 +282,20 @@ Hooks.DrawName = {
           clientY: touch.clientY,
         });
         self.canvas.dispatchEvent(mouseEvent);
+        e.preventDefault();
+        return false;
       },
-      false
+      { passive: false }
     );
     canvas.addEventListener(
       "touchend",
       function (e) {
         var mouseEvent = new MouseEvent("mouseup", {});
         self.canvas.dispatchEvent(mouseEvent);
+        e.preventDefault();
+        return false;
       },
-      false
+      { passive: false }
     );
     canvas.addEventListener(
       "touchmove",
@@ -296,33 +306,44 @@ Hooks.DrawName = {
           clientY: touch.clientY,
         });
         self.canvas.dispatchEvent(mouseEvent);
+        e.preventDefault();
+        return false;
       },
-      false
+      { passive: false }
     );
 
     // Prevent scrolling when touching the canvas
-    document.body.addEventListener(
-      "touchstart",
-      function (e) {
-        if (e.target == self.canvas) {
-          e.preventDefault();
-        }
-      },
-      false
-    );
-    document.body.addEventListener(
-      "touchend",
-      function (e) {
-        if (e.target == self.canvas) {
-          e.preventDefault();
-        }
-      },
-      false
-    );
+    document.body.addEventListener("touchstart", (e) => {}, { passive: false });
+    document.body.addEventListener("touchend", (e) => {}, { passive: false });
     document.body.addEventListener("touchmove", (e) => {}, { passive: false });
 
     document.getElementById("screenshot").addEventListener("click", (e) => {
-      console.log(self.canvas.toDataURL());
+      // find the bounding box and create an image from just that
+      // otherwise the signature looks too small in the smaller podium area in game
+      let xs = self.points.map((p) => p.x);
+      let ys = self.points.map((p) => p.y);
+      let min_x = Math.max(0, Math.min(...xs) - 2);
+      let max_x = Math.min(self.canvas.width, Math.max(...xs) + 2);
+      let min_y = Math.max(0, Math.min(...ys) - 2);
+      let max_y = Math.min(self.canvas.width, Math.max(...ys) + 2);
+
+      let imgdata = self.ctx.getImageData(
+        min_x,
+        min_y,
+        max_x - min_x,
+        max_y - min_y
+      );
+      let canvas_copy = document.createElement("canvas");
+      canvas_copy.width = imgdata.width;
+      canvas_copy.height = imgdata.height;
+      canvas_copy.getContext("2d").putImageData(imgdata, 0, 0);
+      let data_url = canvas_copy.toDataURL();
+
+      console.log(data_url);
+
+      this.pushEventTo(".awaiting_start", "signed-podium", {
+        url: data_url,
+      });
     });
     document.getElementById("clear").addEventListener("click", (e) => {
       self.ctx.clearRect(0, 0, self.ctx.canvas.width, self.ctx.canvas.height);
