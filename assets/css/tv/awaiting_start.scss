@@ -1,4 +1,5 @@
 .tv.homepage.awaiting_start {
+    padding-bottom: 40px;
     .options {
         display: grid;
         place-items: center;
@@ -11,7 +12,9 @@
     .draw-name {
         &.hide {
             opacity: 0;
-            transform: translateY(-100vh);
+            transform: translateY(-100%);
+            position: absolute;
+            top: 0;
         }
         width: 95vw;
         padding: 0 20px;
