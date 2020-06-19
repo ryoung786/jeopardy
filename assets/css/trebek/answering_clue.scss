@@ -1,4 +1,9 @@
 .trebek.answering_clue {
+    .content .instructions {
+        justify-self: center;
+        display: grid;
+        place-items: center;
+    }
     .action-area {
         display: grid;
         grid-template-columns: 1fr 1fr;
