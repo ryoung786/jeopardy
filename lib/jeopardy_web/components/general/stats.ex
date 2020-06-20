@@ -1,6 +1,6 @@
 defmodule JeopardyWeb.General.StatsComponent do
   use Phoenix.LiveComponent
-  alias Jeopardy.{Games, Stats}
+  alias Jeopardy.Stats
   require Logger
 
   @impl true

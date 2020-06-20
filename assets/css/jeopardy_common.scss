@@ -1,0 +1,31 @@
+@import "phoenix-boilerplate";
+@import url('https://fonts.googleapis.com/css2?family=Arizonia&family=Cedarville+Cursive&family=Coming+Soon&family=Crafty+Girls&family=Dawning+of+a+New+Day&family=Dokdo&family=Roboto+Slab&family=Bungee&family=Gloria+Hallelujah&family=Rock+Salt&family=Vibur&display=swap');
+
+.font_0 { font-family: "Vibur", cursive; font-size: 2.5rem; }
+.font_1 { font-family: "Arizonia", cursive; }
+.font_2 { font-family: "Cedarville Cursive", cursive; }
+.font_3 { font-family: "Coming Soon", cursive; }
+.font_4 { font-family: "Crafty Girls", cursive; }
+.font_5 { font-family: "Dawning of a New Day", cursive; }
+.font_6 { font-family: "Dokdo", cursive; font-size: 2.5rem; }
+.font_7 { font-family: "Gloria Hallelujah", cursive; }
+.font_8 { font-family: "Rock Salt", cursive; }
+
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+button:focus {
+    background-color: #0069d9;
+    border: 0.1rem solid #0069d9;
+}
+button:hover {
+    background-color:#606c76;
+    border-color:#606c76;
+    color:#fff;
+    outline:0
+}
+
+html, body, .onclick-void-holder, .onclick-void-holder>div { height: 100%; }
