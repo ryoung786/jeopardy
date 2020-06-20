@@ -25,7 +25,7 @@ defmodule JeopardyWeb.Router do
 
     scope "/games/:code" do
       pipe_through :games
-      live "/", GameLive
+      live "/", GameLive, layout: {JeopardyWeb.LayoutView, :contestant}
       live "/tv", TvLive, layout: {JeopardyWeb.LayoutView, :tv}
       live "/trebek", TrebekLive
       live "/stats", StatsLive
