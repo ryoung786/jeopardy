@@ -28,7 +28,7 @@ defmodule JeopardyWeb.Router do
       live "/", GameLive, layout: {JeopardyWeb.LayoutView, :contestant}
       live "/tv", TvLive, layout: {JeopardyWeb.LayoutView, :tv}
       live "/trebek", TrebekLive
-      live "/stats", StatsLive
+      live "/stats", StatsLive, layout: {JeopardyWeb.LayoutView, :stats}
     end
   end
 
