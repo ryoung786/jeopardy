@@ -1,5 +1,6 @@
 defmodule JeopardyWeb.Router do
   use JeopardyWeb, :router
+  import Phoenix.LiveDashboard.Router
   require Logger
   alias Jeopardy.Games
 
@@ -12,9 +13,9 @@ defmodule JeopardyWeb.Router do
     plug :put_secure_browser_headers
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
+  pipeline :api, do: plug(:accepts, ["json"])
+  pipeline :admin, do: plug(:ensure_admin)
+  pipeline :games, do: plug(:ensure_game_exists)
 
   scope "/", JeopardyWeb do
     pipe_through :browser
@@ -22,6 +23,7 @@ defmodule JeopardyWeb.Router do
     get "/", PageController, :index
     post "/", PageController, :join
     post "/games", GameController, :create
+    get "/auth/google/callback", GoogleAuthController, :index
 
     scope "/games/:code" do
       pipe_through :games
@@ -32,8 +34,11 @@ defmodule JeopardyWeb.Router do
     end
   end
 
-  pipeline :games do
-    plug :ensure_game_exists
+  scope "/admin", JeopardyWeb do
+    pipe_through [:browser, :admin]
+
+    get "/", AdminController, :index
+    live_dashboard "/dashboard", metrics: JeopardyWeb.Telemetry
   end
 
   def ensure_game_exists(conn, _opts) do
@@ -46,24 +51,15 @@ defmodule JeopardyWeb.Router do
     end
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", JeopardyWeb do
-  #   pipe_through :api
-  # end
+  defp ensure_admin(conn, _opts) do
+    case get_session(conn, :admin) do
+      true ->
+        conn
 
-  # Enables LiveDashboard only for development
-  #
-  # If you want to use the LiveDashboard in production, you should put
-  # it behind authentication and allow only admins to access it.
-  # If your application does not have an admins-only section yet,
-  # you can use Plug.BasicAuth to set up some basic authentication
-  # as long as you are also using SSL (which you should anyway).
-  if Mix.env() in [:dev, :test] do
-    import Phoenix.LiveDashboard.Router
-
-    scope "/" do
-      pipe_through :browser
-      live_dashboard "/dashboard", metrics: JeopardyWeb.Telemetry
+      _ ->
+        conn
+        |> redirect(external: ElixirAuthGoogle.generate_oauth_url(conn) <> "&prompt=consent")
+        |> halt()
     end
   end
 end

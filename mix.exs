@@ -51,7 +51,8 @@ defmodule Jeopardy.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:calendar, "~> 1.0.0"},
       {:cachex, "~> 3.2"},
-      {:distillery, "~> 2.1"}
+      {:distillery, "~> 2.1"},
+      {:elixir_auth_google, "~> 1.1.0"}
     ]
   end
 
