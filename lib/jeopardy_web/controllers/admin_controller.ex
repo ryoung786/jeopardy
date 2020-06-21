@@ -1,9 +1,11 @@
 defmodule JeopardyWeb.AdminController do
   use JeopardyWeb, :controller
+  alias Jeopardy.Admin
   require Logger
 
   def index(conn, _params) do
     conn
-    |> text("hi this is the admin view")
+    |> assign(:games, Admin.all_games())
+    |> render(:index)
   end
 end

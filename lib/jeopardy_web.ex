@@ -140,6 +140,52 @@ defmodule JeopardyWeb do
       def score(score) do
         ~s(<span>$#{abs(score)}</span>) |> raw
       end
+
+      def field_display(model, obj, field_name) do
+        val = Map.get(obj, field_name)
+
+        case field_name do
+          f when f in ~w(correct_answers incorrect_answers)a ->
+            x =
+              Enum.map(val || [], fn clue_id ->
+                ~s(<a href="/admin/clues/#{clue_id}">#{clue_id}</a>)
+              end)
+              |> Enum.join(", ")
+
+            "[#{x}]"
+
+          f when f in ~w(correct_players incorrect_players)a ->
+            x =
+              Enum.map(val || [], fn p_id -> ~s(<a href="/admin/players/#{p_id}">#{p_id}</a>) end)
+              |> Enum.join(", ")
+
+            "[#{x}]"
+
+          f when f in ~w(air_date inserted_at updated_at)a ->
+            if val == nil, do: "nil", else: Date.to_string(val)
+
+          :id when model == Jeopardy.Games.Game ->
+            ~s(<a href="/admin/games/#{val}">#{val}</a>)
+
+          :id when model == Jeopardy.Games.Player ->
+            ~s(<a href="/admin/players/#{val}">#{val}</a>)
+
+          :id when model == Jeopardy.Games.Clue ->
+            ~s(<a href="/admin/clues/#{val}">#{val}</a>)
+
+          :game_id ->
+            ~s(<a href="/admin/games/#{val}">#{val}</a>)
+
+          :player_id ->
+            ~s(<a href="/admin/players/#{val}">#{val}</a>)
+
+          :current_clue_id ->
+            ~s(<a href="/admin/clues/#{val}">#{val}</a>)
+
+          _ ->
+            if val == nil, do: "nil", else: inspect(val)
+        end
+      end
     end
   end
 

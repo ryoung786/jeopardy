@@ -14,8 +14,12 @@ defmodule JeopardyWeb.Router do
   end
 
   pipeline :api, do: plug(:accepts, ["json"])
-  pipeline :admin, do: plug(:ensure_admin)
   pipeline :games, do: plug(:ensure_game_exists)
+
+  pipeline :admin do
+    plug(:ensure_admin)
+    plug :put_root_layout, {JeopardyWeb.LayoutView, :admin}
+  end
 
   scope "/", JeopardyWeb do
     pipe_through :browser
@@ -34,11 +38,14 @@ defmodule JeopardyWeb.Router do
     end
   end
 
-  scope "/admin", JeopardyWeb do
+  scope "/admin", JeopardyWeb.Admin do
     pipe_through [:browser, :admin]
 
-    get "/", AdminController, :index
+    get "/", GameController, :index
     live_dashboard "/dashboard", metrics: JeopardyWeb.Telemetry
+    resources "/games", GameController, only: [:index, :show]
+    resources "/players", PlayerController, only: [:show]
+    resources "/clues", ClueController, only: [:show]
   end
 
   def ensure_game_exists(conn, _opts) do
