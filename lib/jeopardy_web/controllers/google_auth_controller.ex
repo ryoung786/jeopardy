@@ -6,24 +6,17 @@ defmodule JeopardyWeb.GoogleAuthController do
   `index/2` handles the callback from Google Auth API redirect.
   """
   def index(conn, %{"code" => code}) do
+    admin_user = Application.fetch_env!(:jeopardy, :admin)[:ADMIN_USER]
+
     {:ok, token} = ElixirAuthGoogle.get_token(code, conn)
-    Logger.warn("[xxx] Got token back from google: #{inspect(token)}")
 
-    {:ok, profile} = ElixirAuthGoogle.get_user_profile(token.access_token)
-
-    Logger.warn("[xxx] Got profile back from google: #{inspect(profile)}")
-
-    with {:ok, %{email: "ryoung786@gmail.com"}} <-
+    with {:ok, %{email: ^admin_user}} <-
            ElixirAuthGoogle.get_user_profile(token.access_token) do
       conn
       |> put_session(:admin, true)
       |> redirect(to: "/admin")
     else
-      resp ->
-        Logger.warn("[xxx] OAUTH got back #{inspect(resp)}")
-
-        conn
-        |> send_resp(403, "Forbidden")
+      _ -> send_resp(conn, 403, "Forbidden")
     end
   end
 end
