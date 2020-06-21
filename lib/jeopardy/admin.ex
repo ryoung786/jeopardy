@@ -3,7 +3,7 @@ defmodule Jeopardy.Admin do
   alias Jeopardy.Games.{Game, Player, Clue}
   import Ecto.{Query}
 
-  def all_games(), do: Repo.all(Game)
+  def all_games(), do: Game |> order_by(desc: :inserted_at) |> Repo.all()
 
   def get_player(id), do: Repo.get!(Player |> preload([_], [:game]), id)
 

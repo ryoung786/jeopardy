@@ -180,7 +180,7 @@ defmodule JeopardyWeb do
             ~s(<a href="/admin/players/#{val}">#{val}</a>)
 
           :current_clue_id ->
-            ~s(<a href="/admin/clues/#{val}">#{val}</a>)
+            if val == nil, do: "nil", else: ~s(<a href="/admin/clues/#{val}">#{val}</a>)
 
           _ ->
             if val == nil, do: "nil", else: inspect(val)
