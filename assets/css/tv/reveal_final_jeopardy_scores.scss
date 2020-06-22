@@ -12,6 +12,14 @@
         display: block;
         .name {
             animation: slidein .5s forwards;
+
+            .signature {
+                background-repeat: no-repeat;
+                background-size: contain;
+                background-position: center;
+                width: 180px;
+                height: 120px;
+            }
         }
 
         .answer {

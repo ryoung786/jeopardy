@@ -6,7 +6,13 @@
                         <%= font_from_name(contestant.name, @game.id) %>"
                  data-player_id="<%= contestant.id %>">
                 <div class="name">
-                    <p><%= contestant.name %></p>
+                    <%= if @signatures[contestant.id] do %>
+                        <div class="signature"
+                             style='background-image: url("<%= @signatures[contestant.id] %>")'>
+                        </div>
+                    <% else %>
+                        <p><%= contestant.name %></p>
+                    <% end %>
                 </div>
                 <div class="answer">
                     <% answer = case contestant.final_jeopardy_answer do
