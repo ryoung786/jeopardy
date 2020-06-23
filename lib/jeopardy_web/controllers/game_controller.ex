@@ -8,6 +8,9 @@ defmodule JeopardyWeb.GameController do
       {:ok, game} ->
         :telemetry.execute([:j, :games, :created], %{c: 1})
 
+        Jeopardy.Email.notify_new_game(game)
+        |> Jeopardy.Mailer.deliver_later()
+
         conn
         |> put_session(:code, game.code)
         # |> configure_session(renew: true)

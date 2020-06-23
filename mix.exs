@@ -20,7 +20,7 @@ defmodule Jeopardy.MixProject do
   def application do
     [
       mod: {Jeopardy.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :bamboo, :bamboo_smtp]
     ]
   end
 
@@ -52,7 +52,9 @@ defmodule Jeopardy.MixProject do
       {:calendar, "~> 1.0.0"},
       {:cachex, "~> 3.2"},
       {:distillery, "~> 2.1"},
-      {:elixir_auth_google, "~> 1.1.0"}
+      {:elixir_auth_google, "~> 1.1.0"},
+      {:bamboo, "~> 1.5"},
+      {:bamboo_smtp, "~> 2.1.0"}
     ]
   end
 

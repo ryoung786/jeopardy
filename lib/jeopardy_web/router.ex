@@ -69,4 +69,6 @@ defmodule JeopardyWeb.Router do
         |> halt()
     end
   end
+
+  if Mix.env() == :dev, do: forward("/sent_emails", Bamboo.SentEmailViewerPlug)
 end

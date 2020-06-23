@@ -26,6 +26,20 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :jeopardy, Jeopardy.Mailer,
+  adapter: Bamboo.SendGridAdapter,
+  server: "smtp.domain",
+  hostname: "ryoung.info",
+  port: 1025,
+  api_key: System.get_env("SMTP_API_KEY"),
+  email_recipient: System.get_env("EMAIL_NOTIFICATION_RECIPIENT"),
+  tls: :if_available,
+  allowed_tls_versions: [:tlsv1, :"tlsv1.1", :"tlsv1.2"],
+  ssl: false,
+  retries: 1,
+  no_mx_lookups: false,
+  auth: :if_available
+
 if Mix.env() != :prod do
   config :git_hooks,
     auto_install: true,

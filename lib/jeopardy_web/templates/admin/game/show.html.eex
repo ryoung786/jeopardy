@@ -10,31 +10,40 @@
 </table>
 
 <h1>Players</h1>
-<table>
-    <% fields = Jeopardy.Games.Player.__schema__(:fields) %>
-    <thead>
-        <tr>
-            <%= for field <- fields do %>
-                <th><%= field %></th>
-            <% end %>
-        </tr>
-    </thead>
-    <%= for player <- @players do %>
-        <tr>
-            <%= for field <- fields do %>
-                <td><%= raw(field_display(Jeopardy.Games.Player, player, field)) %></td>
-            <% end %>
-        </tr>
-    <% end %>
-</table>
+<%= if Enum.count(@players) > 0 do %>
+    <table>
+        <% fields = Jeopardy.Games.Player.__schema__(:fields) %>
+        <thead>
+            <tr>
+                <%= for field <- fields do %>
+                    <th><%= field %></th>
+                <% end %>
+            </tr>
+        </thead>
+        <%= for player <- @players do %>
+            <tr>
+                <%= for field <- fields do %>
+                    <td><%= raw(field_display(Jeopardy.Games.Player, player, field)) %></td>
+                <% end %>
+            </tr>
+        <% end %>
+    </table>
+<% else %>
+    <p>N/A</p>
+<% end %>
+
 
 <h1> Current Clue</h1>
-<table>
-    <% fields = Jeopardy.Games.Clue.__schema__(:fields) %>
-    <%= for field <- fields do %>
-        <tr>
-            <td><%= field %></td>
-            <td><%= raw(field_display(Jeopardy.Games.Clue, @clue, field)) %></td>
-        </tr>
-    <% end %>
-</table>
+<%= if @clue do %>
+    <table>
+        <% fields = Jeopardy.Games.Clue.__schema__(:fields) %>
+        <%= for field <- fields do %>
+            <tr>
+                <td><%= field %></td>
+                <td><%= raw(field_display(Jeopardy.Games.Clue, @clue, field)) %></td>
+            </tr>
+        <% end %>
+    </table>
+<% else %>
+    <p>N/A</p>
+<% end %>
