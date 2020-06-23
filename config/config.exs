@@ -10,6 +10,8 @@ use Mix.Config
 config :jeopardy,
   ecto_repos: [Jeopardy.Repo]
 
+config :jeopardy, env: Mix.env()
+
 # Configures the endpoint
 config :jeopardy, JeopardyWeb.Endpoint,
   url: [host: "localhost"],

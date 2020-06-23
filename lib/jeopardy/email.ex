@@ -5,9 +5,9 @@ defmodule Jeopardy.Email do
     recipient = Application.fetch_env!(:jeopardy, Jeopardy.Mailer)[:email_recipient]
 
     url =
-      case Mix.env() do
-        :dev -> "http://localhost:4000/admin/games/#{game.id}"
-        _ -> "https://jeopardy.ryoung.info/admin/games/#{game.id}"
+      case Application.get_env(:jeopardy, :env) do
+        :prod -> "https://jeopardy.ryoung.info/admin/games/#{game.id}"
+        _ -> "http://localhost:4000/admin/games/#{game.id}"
       end
 
     new_email()
