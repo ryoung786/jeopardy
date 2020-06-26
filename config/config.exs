@@ -42,6 +42,8 @@ config :jeopardy, Jeopardy.Mailer,
   no_mx_lookups: false,
   auth: :if_available
 
+config :goth, json: {:system, "GCP_CREDENTIALS"}
+
 if Mix.env() != :prod do
   config :git_hooks,
     auto_install: true,

@@ -22,6 +22,7 @@ defmodule Jeopardy.Games.Game do
     field :double_jeopardy_round_categories, {:array, :string}, default: []
     field :final_jeopardy_category, :string
     field :air_date, :date
+    field :replicated_at, :utc_datetime
 
     has_many :players, Jeopardy.Games.Player
     has_many :clues, Jeopardy.Games.Clue
@@ -46,7 +47,8 @@ defmodule Jeopardy.Games.Game do
       :buzzer_lock_status,
       :current_clue_id,
       :final_jeopardy_category,
-      :board_control
+      :board_control,
+      :replicated_at
     ])
     |> update_change(:code, &String.upcase/1)
     |> validate_required([:code, :status, :is_active])
