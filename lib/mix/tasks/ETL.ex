@@ -18,7 +18,7 @@ defmodule Mix.Tasks.Etl do
     {:ok, %{num_rows: num_rows}} =
       Ecto.Adapters.SQL.query(
         Jeopardy.Repo,
-        "COPY (UPDATE #{table} SET replicated_at = now() WHERE updated_at > replicated_at RETURNING *) to '#{
+        "COPY (UPDATE #{table} SET replicated_at = (CURRENT_TIMESTAMP AT TIME ZONE 'UTC') WHERE updated_at > replicated_at RETURNING *) to '#{
           file_path
         }' WITH (FORMAT CSV, HEADER)"
       )
