@@ -190,7 +190,7 @@ defmodule Jeopardy.Games do
     # record player correctly answered clue and update clue's status
     {_, [clue | _]} =
       from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
-      |> Repo.update_all_ts(push: [correct_players: player.id])
+      |> Repo.update_all_ts(push: [correct_players: player.id], set: [id: game.current_clue_id])
 
     # increase score of buzzer player by current clue value
     amount = player.final_jeopardy_wager
@@ -217,7 +217,7 @@ defmodule Jeopardy.Games do
     # record player correctly answered clue and update clue's status
     {_, [clue | _]} =
       from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
-      |> Repo.update_all_ts(push: [incorrect_players: player.id])
+      |> Repo.update_all_ts(push: [incorrect_players: player.id], set: [id: game.current_clue_id])
 
     # increase score of buzzer player by current clue value
     amount = player.final_jeopardy_wager
@@ -275,7 +275,11 @@ defmodule Jeopardy.Games do
     amount = if Clue.is_daily_double(clue), do: clue.wager, else: clue.value
 
     from(p in Player, select: p, where: p.id == ^player_id)
-    |> Repo.update_all_ts(inc: [score: amount], push: [correct_answers: clue.id])
+    |> Repo.update_all_ts(
+      inc: [score: amount],
+      push: [correct_answers: clue.id],
+      set: [id: player_id]
+    )
 
     :telemetry.execute([:j, :anwers], %{
       game_code: game.code,
@@ -307,7 +311,11 @@ defmodule Jeopardy.Games do
     amount = if Clue.is_daily_double(clue), do: clue.wager, else: clue.value
 
     from(p in Player, select: p, where: p.id == ^player_id)
-    |> Repo.update_all_ts(inc: [score: -1 * amount], push: [incorrect_answers: clue.id])
+    |> Repo.update_all_ts(
+      inc: [score: -1 * amount],
+      push: [incorrect_answers: clue.id],
+      set: [id: player_id]
+    )
 
     if Clue.is_daily_double(clue) do
       Games.lock_buzzer(game)
