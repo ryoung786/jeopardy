@@ -66,6 +66,8 @@ config :jeopardy, JeopardyWeb.Endpoint,
     ]
   ]
 
+config :goth, json: {:system, "GCP_CREDENTIALS"}
+
 config :jeopardy, Jeopardy.BIReplication,
   # every 10 minutes
   frequency: 10 * 1000,

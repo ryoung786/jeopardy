@@ -42,8 +42,6 @@ config :jeopardy, Jeopardy.Mailer,
   no_mx_lookups: false,
   auth: :if_available
 
-config :goth, json: {:system, "GCP_CREDENTIALS"}
-
 config :jeopardy, Jeopardy.BIReplication,
   # 1 hour
   frequency: 1 * 60 * 60 * 1000,
