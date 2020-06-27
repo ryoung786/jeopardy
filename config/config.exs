@@ -44,6 +44,11 @@ config :jeopardy, Jeopardy.Mailer,
 
 config :goth, json: {:system, "GCP_CREDENTIALS"}
 
+config :jeopardy, Jeopardy.BIReplication,
+  # 1 hour
+  frequency: 1 * 60 * 60 * 1000,
+  bucket: "jeopardy_ryoung_test"
+
 if Mix.env() != :prod do
   config :git_hooks,
     auto_install: true,
