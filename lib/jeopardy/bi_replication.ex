@@ -1,5 +1,6 @@
 defmodule Jeopardy.BIReplication do
   use GenServer
+  import Ecto.Query
   require Logger
 
   @moduledoc "Every <config frequency>, replicate our DB updates into Google Cloud Storage"
@@ -22,8 +23,6 @@ defmodule Jeopardy.BIReplication do
     {:noreply, state}
   end
 
-  # In 1 hour
-  # 1 * 60 * 60 * 1000)
   defp schedule_work() do
     frequency = Application.fetch_env!(:jeopardy, Jeopardy.BIReplication)[:frequency]
     Process.send_after(self(), :work, frequency)
@@ -36,7 +35,14 @@ defmodule Jeopardy.BIReplication do
 
   defp incremental_updates(table) do
     timestamp = DateTime.to_string(DateTime.utc_now())
-    file_path = "/tmp/incremental_#{table}_#{timestamp}"
+    file_name = "incremental_#{table}_#{timestamp}"
+
+    module =
+      case table do
+        "games" -> Jeopardy.Games.Game
+        "players" -> Jeopardy.Games.Player
+        "clues" -> Jeopardy.Games.Clue
+      end
 
     # NOTE: gigalixir uses Postgres 9.5.19, which does not support COPY(UPDATE ...) syntax
     # As a result we do this in 2 steps, realizing that a record could be updated in between
@@ -51,38 +57,32 @@ defmodule Jeopardy.BIReplication do
     #     }' WITH (FORMAT CSV, HEADER)"
     #   )
 
-    # do copy first
-    {:ok, %{num_rows: num_rows}} =
-      Ecto.Adapters.SQL.query(
+    # 1. Get Data
+    stream =
+      Ecto.Adapters.SQL.stream(
         Jeopardy.Repo,
-        "COPY (SELECT * FROM #{table} WHERE updated_at > replicated_at) to '#{file_path}' WITH (FORMAT CSV, HEADER)"
+        "COPY (SELECT * FROM #{table} WHERE updated_at > replicated_at) to STDOUT WITH (FORMAT CSV, HEADER)"
       )
 
-    # update the replicated records second
-    Ecto.Adapters.SQL.query(
-      Jeopardy.Repo,
-      "UPDATE #{table} SET replicated_at = (CURRENT_TIMESTAMP AT TIME ZONE 'UTC') WHERE updated_at > replicated_at"
-    )
+    # 2. Write csv data to file
+    Jeopardy.Repo.transaction(fn ->
+      stream
+      |> Enum.map(& &1.rows)
+      |> Stream.into(File.stream!(file_name))
+      |> Stream.run()
+    end)
 
-    # don't bother uploading if there was nothing to replicate
+    # 3. Update the replicated_at field for all those affected
+    {num_rows, _} =
+      from(x in module, where: x.updated_at > x.replicated_at)
+      |> Jeopardy.Repo.update_all(set: [replicated_at: DateTime.utc_now()])
+
+    # 4. Upload the file to GCS if we found any records
     bucket = Application.fetch_env!(:jeopardy, Jeopardy.BIReplication)[:bucket]
-    if num_rows > 0, do: upload_file(bucket, file_path)
-    File.rm(file_path)
-  end
+    if num_rows > 0, do: upload_file(bucket, file_name)
 
-  def full_snapshot(),
-    do:
-      ~w(games players clues)
-      |> Enum.each(&full_snapshot/1)
-
-  defp full_snapshot(table) do
-    Ecto.Adapters.SQL.query(
-      Jeopardy.Repo,
-      "COPY (SELECT * FROM #{table}) to '/tmp/#{table}' WITH (FORMAT CSV, HEADER)"
-    )
-
-    upload_file("jeopardy_ryoung_test", "/tmp/#{table}")
-    File.rm("/tmp/#{table}")
+    # 5. Delete the temporary file
+    File.rm(file_name)
   end
 
   defp upload_file(bucket_id, file_path) do
