@@ -38,13 +38,31 @@ defmodule Jeopardy.BIReplication do
     timestamp = DateTime.to_string(DateTime.utc_now())
     file_path = "/tmp/incremental_#{table}_#{timestamp}"
 
+    # NOTE: gigalixir uses Postgres 9.5.19, which does not support COPY(UPDATE ...) syntax
+    # As a result we do this in 2 steps, realizing that a record could be updated in between
+    # and as a result not be replicated
+    #
+    # For when the gigalixir postgres version is updated:
+    # {:ok, %{num_rows: num_rows}} =
+    #   Ecto.Adapters.SQL.query(
+    #     Jeopardy.Repo,
+    #     "COPY (UPDATE #{table} SET replicated_at = (CURRENT_TIMESTAMP AT TIME ZONE 'UTC') WHERE updated_at > replicated_at RETURNING *) to '#{
+    #       file_path
+    #     }' WITH (FORMAT CSV, HEADER)"
+    #   )
+
+    # do copy first
     {:ok, %{num_rows: num_rows}} =
       Ecto.Adapters.SQL.query(
         Jeopardy.Repo,
-        "COPY (UPDATE #{table} SET replicated_at = (CURRENT_TIMESTAMP AT TIME ZONE 'UTC') WHERE updated_at > replicated_at RETURNING *) to '#{
-          file_path
-        }' WITH (FORMAT CSV, HEADER)"
+        "COPY (SELECT * FROM #{table} WHERE updated_at > replicated_at) to '#{file_path}' WITH (FORMAT CSV, HEADER)"
       )
+
+    # update the replicated records second
+    Ecto.Adapters.SQL.query(
+      Jeopardy.Repo,
+      "UPDATE #{table} SET replicated_at = (CURRENT_TIMESTAMP AT TIME ZONE 'UTC') WHERE updated_at > replicated_at"
+    )
 
     # don't bother uploading if there was nothing to replicate
     bucket = Application.fetch_env!(:jeopardy, Jeopardy.BIReplication)[:bucket]
