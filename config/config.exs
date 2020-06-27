@@ -42,6 +42,11 @@ config :jeopardy, Jeopardy.Mailer,
   no_mx_lookups: false,
   auth: :if_available
 
+config :jeopardy, Jeopardy.BIReplication,
+  # 1 hour
+  frequency: 1 * 60 * 60 * 1000,
+  bucket: "jeopardy_ryoung_test"
+
 if Mix.env() != :prod do
   config :git_hooks,
     auto_install: true,

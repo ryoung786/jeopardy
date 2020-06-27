@@ -66,6 +66,13 @@ config :jeopardy, JeopardyWeb.Endpoint,
     ]
   ]
 
+config :goth, json: {:system, "GCP_CREDENTIALS"}
+
+config :jeopardy, Jeopardy.BIReplication,
+  # every 10 minutes
+  frequency: 10 * 1000,
+  bucket: "jeopardy_ryoung_test"
+
 # Do not include metadata nor timestamps in development logs
 # , level: :info
 config :logger, :console, format: "[$level] $message\n", level: :info

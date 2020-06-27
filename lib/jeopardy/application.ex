@@ -18,9 +18,10 @@ defmodule Jeopardy.Application do
       # Start cachex
       {Cachex, :stats},
       # Start the Endpoint (http/https)
-      JeopardyWeb.Endpoint
+      JeopardyWeb.Endpoint,
       # Start a worker by calling: Jeopardy.Worker.start_link(arg)
       # {Jeopardy.Worker, arg}
+      Jeopardy.BIReplication
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

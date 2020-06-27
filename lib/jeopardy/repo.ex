@@ -7,6 +7,7 @@ defmodule Jeopardy.Repo do
     update_all(
       queryable,
       Enum.map(updates, fn {a, b} = c ->
+        # this is a bug.  It doesn't currently account for just an :inc or :push
         if a == :set, do: {:set, b ++ [updated_at: DateTime.utc_now()]}, else: c
       end),
       opts

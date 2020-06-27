@@ -10,6 +10,7 @@ defmodule Jeopardy.Games.Player do
     field :final_jeopardy_score_updated, :boolean, default: false
     field :correct_answers, {:array, :id}, default: []
     field :incorrect_answers, {:array, :id}, default: []
+    field :replicated_at, :utc_datetime
     belongs_to :game, Jeopardy.Games.Game
 
     timestamps()

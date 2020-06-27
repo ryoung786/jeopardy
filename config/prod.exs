@@ -39,6 +39,13 @@ config :jeopardy, Jeopardy.Repo,
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :goth, json: {:system, "GCP_CREDENTIALS"}
+
+config :jeopardy, Jeopardy.BIReplication,
+  # 1 hour (1 mins for now, as a test)
+  frequency: 1 * 60 * 1000,
+  bucket: "jeopardy_ryoung"
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

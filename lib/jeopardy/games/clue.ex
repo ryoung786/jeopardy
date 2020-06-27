@@ -16,6 +16,7 @@ defmodule Jeopardy.Games.Clue do
     field :wager, :integer
     field :incorrect_players, {:array, :id}, default: []
     field :correct_players, {:array, :id}, default: []
+    field :replicated_at, :utc_datetime
     belongs_to :game, Jeopardy.Games.Game
 
     timestamps()
