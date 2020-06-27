@@ -29,7 +29,7 @@ defmodule Jeopardy.BIReplication do
     Process.send_after(self(), :work, frequency)
   end
 
-  defp incremental_updates(),
+  def incremental_updates(),
     do:
       ~w(games players clues)
       |> Enum.each(&incremental_updates/1)
@@ -52,7 +52,7 @@ defmodule Jeopardy.BIReplication do
     File.rm(file_path)
   end
 
-  defp full_snapshot(),
+  def full_snapshot(),
     do:
       ~w(games players clues)
       |> Enum.each(&full_snapshot/1)
@@ -83,6 +83,6 @@ defmodule Jeopardy.BIReplication do
       )
 
     # Print the object.
-    IO.puts("Uploaded #{object.name} to #{object.selfLink}")
+    Logger.warn("Uploaded #{object.name} to #{object.selfLink}")
   end
 end
