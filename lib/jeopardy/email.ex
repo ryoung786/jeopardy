@@ -12,7 +12,7 @@ defmodule Jeopardy.Email do
 
     new_email()
     |> to(recipient)
-    |> from("ryoung786@gmail.com")
+    |> from("notifications@ryoung.info")
     |> subject("[Jeopardy] New Game: " <> game.code)
     |> text_body("New game: " <> url)
     |> html_body("New game: <a href=\"#{url}\">#{url}</a>")
