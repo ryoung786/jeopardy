@@ -61,7 +61,7 @@ defmodule Jeopardy.BIReplication do
     stream =
       Ecto.Adapters.SQL.stream(
         Jeopardy.Repo,
-        "COPY (SELECT * FROM #{table} WHERE updated_at > replicated_at) to STDOUT WITH (FORMAT CSV, HEADER)"
+        "COPY (SELECT * FROM #{table} WHERE updated_at > replicated_at OR replicated_at is NULL) to STDOUT WITH (FORMAT CSV, HEADER)"
       )
 
     # 2. Write csv data to file
@@ -74,7 +74,9 @@ defmodule Jeopardy.BIReplication do
 
     # 3. Update the replicated_at field for all those affected
     {num_rows, _} =
-      from(x in module, where: x.updated_at > x.replicated_at)
+      from(x in module,
+        where: x.updated_at > x.replicated_at or is_nil(x.replicated_at)
+      )
       |> Jeopardy.Repo.update_all(set: [replicated_at: DateTime.utc_now()])
 
     # 4. Upload the file to GCS if we found any records
