@@ -45,7 +45,6 @@ defmodule JeopardyWeb.Components.Game.Jeopardy.AwaitingBuzzer do
     end
   end
 
-  defp broadcast(code) do
-    Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:round_status_change, "answering_clue"})
-  end
+  defp broadcast(code),
+    do: Phoenix.PubSub.broadcast(Jeopardy.PubSub, code, {:round_status_change, "answering_clue"})
 end
