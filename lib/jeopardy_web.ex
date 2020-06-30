@@ -141,6 +141,26 @@ defmodule JeopardyWeb do
         ~s(<span>$#{abs(score)}</span>) |> raw
       end
 
+      def ga_tag() do
+        case Mix.env() do
+          :prod ->
+            ~E"""
+              <!-- Global site tag (gtag.js) - Google Analytics -->
+              <script async src="https://www.googletagmanager.com/gtag/js?id=UA-171375637-1"></script>
+              <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', 'UA-171375637-1');
+              </script>
+            """
+
+          _ ->
+            ""
+        end
+      end
+
       def field_display(model, obj, field_name) do
         val = Map.get(obj, field_name)
 
