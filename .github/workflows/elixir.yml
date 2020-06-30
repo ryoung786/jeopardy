@@ -72,3 +72,15 @@ jobs:
           GIGALIXIR_APP: ${{ secrets.GIGALIXIR_APP_NAME }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           MIGRATIONS: false  # defaults to true
+
+  notify-deploy:
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions-hub/gcloud@master
+        env:
+          PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
+          APPLICATION_CREDENTIALS: ${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}
+        with:
+          args: pubsub topics publish deploys --message="${{github.actor}}"
