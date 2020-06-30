@@ -15,4 +15,4 @@ jobs:
           PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
           APPLICATION_CREDENTIALS: ${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}
         with:
-          args: pubsub topics publish deploys --message="deploy ${{github.actor}} done"
+          args: pubsub topics publish deploys --message="${{github.actor}}"
