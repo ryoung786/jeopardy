@@ -75,6 +75,7 @@ defmodule JeopardyWeb do
   def live_component do
     quote do
       use Phoenix.LiveComponent
+      alias Jeopardy.GameEngine, as: Engine
 
       unquote(view_helpers())
     end

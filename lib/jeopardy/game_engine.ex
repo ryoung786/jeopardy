@@ -6,7 +6,6 @@ defmodule Jeopardy.GameEngine do
     do: event(event, nil, game_id)
 
   def event(event, data, game_id) do
-    Logger.warn("[xxx] in engine event #{inspect(game_id)}")
     state = State.retrieve_state(game_id)
     module = module_from_game(state)
 

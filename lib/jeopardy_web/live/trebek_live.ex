@@ -3,6 +3,7 @@ defmodule JeopardyWeb.TrebekLive do
   require Logger
   alias Jeopardy.Games.Game
   alias Jeopardy.Games
+  alias Jeopardy.GameEngine.State
 
   @impl true
   def mount(%{"code" => code}, %{"name" => name}, socket) do
@@ -10,12 +11,11 @@ defmodule JeopardyWeb.TrebekLive do
 
     case game.trebek do
       ^name ->
-        if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
+        if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, "game:#{game.id}")
 
         socket =
           socket
           |> assign(name: name)
-          |> assign(component: component_from_game(game))
           |> assigns(game)
 
         {:ok, socket}
@@ -33,44 +33,31 @@ defmodule JeopardyWeb.TrebekLive do
   end
 
   @impl true
-  def handle_info(%{event: _} = data, socket) do
-    component = component_from_game(socket.assigns.game)
-    send_update(component, Map.put(data, :id, Atom.to_string(component)))
-    {:noreply, socket}
-  end
+  def handle_info(%State{} = state, socket), do: {:noreply, assigns(socket, state)}
 
-  @impl true
-  # The db got updated, so let's query for the latest everything
-  # and update our assigns
-  def handle_info(_, socket), do: {:noreply, assigns(socket)}
+  defp assigns(socket, %Game{} = game), do: assigns(socket, State.retrieve_state(game.id))
 
-  defp assigns(socket) do
-    game = Games.get_by_code(socket.assigns.game.code)
-    assigns(socket, game)
-  end
-
-  defp assigns(socket, %Game{} = game) do
-    categories =
-      if game.status == "jeopardy",
-        do: game.jeopardy_round_categories,
-        else: game.double_jeopardy_round_categories
-
-    clues =
-      if game.status == "jeopardy",
-        do: Games.clues_by_category(game, :jeopardy),
-        else: Games.clues_by_category(game, :double_jeopardy)
-
-    clues =
-      Enum.reduce(clues, %{}, fn [category: category, clues: clues], acc ->
-        Map.put(acc, category, clues)
-      end)
-
+  defp assigns(socket, %State{} = state) do
     socket
-    |> assign(game: game)
-    |> assign(component: component_from_game(game))
-    |> assign(categories: categories)
-    |> assign(clues: clues)
-    |> assign(current_clue: Game.current_clue(game))
-    |> assign(players: Games.get_just_contestants(game))
+    |> assign(game: state.game)
+    |> assign(component: component_from_game(state.game))
+    |> assign(categories: categories(state.game))
+    |> assign(clues: clues_by_category(state.game))
+    |> assign(current_clue: state.current_clue)
+    |> assign(players: state.contestants)
+    |> assign(contestants: state.contestants)
+    |> assign(trebek: state.trebek)
+  end
+
+  defp clues_by_category(%Game{} = game) do
+    game.clues
+    |> Enum.filter(fn c -> c.round == game.status end)
+    |> Enum.group_by(fn c -> c.category end)
+  end
+
+  defp categories(%Game{} = game) do
+    if game.status == "jeopardy",
+      do: game.jeopardy_round_categories,
+      else: game.double_jeopardy_round_categories
   end
 end

@@ -2,7 +2,9 @@ defmodule Jeopardy.FSM.PreJeopardy.SelectingTrebek do
   use Jeopardy.FSM
   alias Jeopardy.Games.Game
 
-  def handle(%{event: :trebek_selected, data: data}, %{game: game}) do
+  def handle(:select_trebek, player_id, %State{game: game} = state) do
+    player = state.contestants[player_id]
+
     q =
       from g in Game,
         where: g.id == ^game.id,
@@ -11,12 +13,12 @@ defmodule Jeopardy.FSM.PreJeopardy.SelectingTrebek do
         select: g.id
 
     updates = [
-      trebek: data.name,
+      trebek: player.name,
       round_status: "introducing_roles"
     ]
 
     Repo.update_all_ts(q, set: updates)
 
-    retrieve_state(game.id)
+    {:ok, retrieve_state(game.id)}
   end
 end
