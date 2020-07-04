@@ -11,7 +11,15 @@ defmodule Jeopardy.Games do
   alias Jeopardy.Repo
   alias Jeopardy.GameState
 
-  def get_game!(id), do: Repo.get!(Game |> preload([_], [:players]), id)
+  def get_game!(id),
+    do:
+      from(g in Game,
+        where: g.id == ^id,
+        left_join: p in assoc(g, :players),
+        left_join: c in assoc(g, :clues),
+        preload: [players: p, clues: c]
+      )
+      |> Repo.one()
 
   def get_by_code(code) do
     Game

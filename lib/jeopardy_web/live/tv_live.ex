@@ -1,18 +1,19 @@
 defmodule JeopardyWeb.TvLive do
   use JeopardyWeb, :live_view
   require Logger
+  alias Jeopardy.GameEngine.State
   alias Jeopardy.Games
-  alias Jeopardy.Games.Game
 
   @impl true
   def mount(%{"code" => code}, _session, socket) do
+    game = Games.get_by_code(code)
+
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
+      Phoenix.PubSub.subscribe(Jeopardy.PubSub, "game:#{game.id}")
       Phoenix.PubSub.subscribe(Jeopardy.PubSub, "#{code}-finaljeopardy")
       Phoenix.PubSub.subscribe(Jeopardy.PubSub, "timer:#{code}")
     end
 
-    game = Games.get_by_code(code)
     {:ok, assigns(socket, game)}
   end
 
@@ -21,6 +22,10 @@ defmodule JeopardyWeb.TvLive do
     ~L"""
        <%= live_component(@socket, @component, render_assigns(assigns)) %>
     """
+  end
+
+  def handle_info(%State{} = state, socket) do
+    {:noreply, assigns(socket, state)}
   end
 
   def handle_info(%{event: _} = data, socket) do
@@ -44,18 +49,22 @@ defmodule JeopardyWeb.TvLive do
     {:noreply, assigns(socket, game)}
   end
 
-  defp assigns(socket, game) do
+  defp assigns(socket, %State{} = state) do
     clues = %{
-      "jeopardy" => Games.clues_by_category(game, :jeopardy),
-      "double_jeopardy" => Games.clues_by_category(game, :double_jeopardy)
+      "jeopardy" => Games.clues_by_category(state.game, :jeopardy),
+      "double_jeopardy" => Games.clues_by_category(state.game, :double_jeopardy)
     }
 
     socket
-    |> assign(game: game)
-    |> assign(component: component_from_game(game))
-    |> assign(players: Games.get_just_contestants(game))
-    |> assign(current_clue: Game.current_clue(game))
+    |> assign(game: state.game)
+    |> assign(component: component_from_game(state.game))
+    |> assign(players: state.contestants)
+    |> assign(contestants: state.contestants)
+    |> assign(current_clue: state.current_clue)
     |> assign(clues: clues)
     |> assign(timer: nil)
   end
+
+  defp assigns(socket, game),
+    do: assigns(socket, State.retrieve_state(game.id))
 end
