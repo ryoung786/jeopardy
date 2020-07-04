@@ -4,9 +4,16 @@ defmodule JeopardyWeb.Components.TV.PreJeopardy.AwaitingStart do
 
   @impl true
   def handle_event("start_game", _params, socket) do
-    # guard if not enough players
-    game = Jeopardy.JArchive.load_into_game(socket.assigns.game)
-    GameState.update_round_status(game.code, "awaiting_start", "selecting_trebek")
+    x =
+      GenServer.cast(
+        via_tuple(socket.assigns.game.id),
+        %{event: :start_game, data: nil}
+      )
+
+    y = Process.whereis(via_tuple(socket.assigns.game.id))
+    Logger.warn("[xxx] he #{inspect(x)}")
+    Logger.warn("[xxx] y #{inspect(y)}")
+
     {:noreply, socket}
   end
 
