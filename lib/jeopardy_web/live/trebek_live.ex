@@ -2,13 +2,10 @@ defmodule JeopardyWeb.TrebekLive do
   use JeopardyWeb, :live_view
   require Logger
   alias Jeopardy.Games.Game
-  alias Jeopardy.Games
   alias Jeopardy.GameEngine.State
 
   @impl true
-  def mount(%{"code" => code}, %{"name" => name}, socket) do
-    game = Games.get_by_code(code)
-
+  def mount(%{"code" => _code}, %{"name" => name, "game" => game}, socket) do
     case game.trebek do
       ^name ->
         if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, "game:#{game.id}")
@@ -34,6 +31,8 @@ defmodule JeopardyWeb.TrebekLive do
 
   @impl true
   def handle_info(%State{} = state, socket), do: {:noreply, assigns(socket, state)}
+  @impl true
+  def handle_info(_, socket), do: {:noreply, socket}
 
   defp assigns(socket, %Game{} = game), do: assigns(socket, State.retrieve_state(game.id))
 

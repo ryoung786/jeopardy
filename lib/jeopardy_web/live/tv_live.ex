@@ -29,6 +29,14 @@ defmodule JeopardyWeb.TvLive do
     {:noreply, assigns(socket, state)}
   end
 
+  @impl true
+  def handle_info(%{event: :next_category} = event, socket) do
+    Logger.warn("[xxx] got next category in TV")
+    data = Map.put(event, :id, Atom.to_string(socket.assigns.component))
+    send_update(socket.assigns.component, data)
+    {:noreply, socket}
+  end
+
   defp assigns(socket, %State{} = state) do
     clues = %{
       "jeopardy" => Games.clues_by_category(state.game, :jeopardy),

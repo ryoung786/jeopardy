@@ -25,7 +25,7 @@ defmodule Jeopardy.Games do
     Game
     |> where([g], g.code == ^code)
     |> where([g], g.is_active == true)
-    |> preload([_], [:players])
+    # |> preload([_], [:players])
     |> Repo.one()
   end
 

@@ -1,12 +1,10 @@
 defmodule JeopardyWeb.GameLive do
   use JeopardyWeb, :live_view
   require Logger
-  alias Jeopardy.Games
   alias Jeopardy.GameEngine.State
 
   @impl true
-  def mount(%{"code" => code}, %{"name" => name}, socket) do
-    game = Games.get_by_code(code)
+  def mount(%{"code" => _code}, %{"name" => name, "game" => game}, socket) do
     trebek_name = game.trebek
 
     case name do
@@ -43,13 +41,16 @@ defmodule JeopardyWeb.GameLive do
     end
   end
 
+  @impl true
+  def handle_info(_, socket), do: {:noreply, socket}
+
   defp assigns(socket, %State{} = state, name) do
     {_id, player} = state.contestants |> Enum.find(fn {_k, v} -> v.name == name end)
 
     socket
     |> assign(name: name)
     |> assign(player: player)
-    |> assign(can_buzz: Games.can_buzz?(state.game, player))
+    |> assign(can_buzz: can_buzz?(state, player))
     |> assign(game: state.game)
     |> assign(component: component_from_game(state.game))
     |> assign(players: state.contestants)
@@ -60,4 +61,10 @@ defmodule JeopardyWeb.GameLive do
 
   defp assigns(socket, game, name),
     do: assigns(socket, State.retrieve_state(game.id), name)
+
+  defp can_buzz?(%State{game: game} = state, player) do
+    is_nil(game.buzzer_player) && game.buzzer_lock_status == "clear" &&
+      state.current_clue &&
+      player.id not in state.current_clue.incorrect_players
+  end
 end

@@ -28,8 +28,7 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.RevealingBoard do
 
   @impl true
   def handle_event("finished_intro", _params, socket) do
-    Games.assign_board_control(socket.assigns.game, :random)
-    GameState.update_round_status(socket.assigns.game.code, "revealing_board", "selecting_clue")
+    Engine.event(:next, socket.assigns.game.id)
     {:noreply, socket}
   end
 
@@ -46,12 +45,10 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.RevealingBoard do
   defp broadcast(active_category_num, socket) do
     Phoenix.PubSub.broadcast(
       Jeopardy.PubSub,
-      socket.assigns.game.code,
+      "game:#{socket.assigns.game.id}",
       %{
         event: :next_category,
-        active_category_num: active_category_num,
-        status: socket.assigns.game.status,
-        round_status: socket.assigns.game.round_status
+        active_category_num: active_category_num
       }
     )
   end
