@@ -8,21 +8,19 @@ defmodule JeopardyWeb.Components.TV.FinalJeopardy.RevealingFinalScores do
 
   @impl true
   def handle_event("game_over", _params, socket) do
-    Jeopardy.GameState.update_round_status(
-      socket.assigns.game.code,
-      "revealing_final_scores",
-      "game_over"
-    )
-
-    Jeopardy.Stats.update(socket.assigns.game)
-
+    Engine.event(:reveal_complete, socket.assigns.game.id)
     {:noreply, socket}
   end
 
   @impl true
   def update(assigns, socket) do
     socket = assign(socket, assigns)
-    signatures = Enum.reduce(socket.assigns.players, %{}, &Map.put(&2, &1.id, get_signature(&1)))
+
+    signatures =
+      Enum.reduce(socket.assigns.players, %{}, fn {player_id, player}, acc ->
+        Map.put(acc, player_id, get_signature(player))
+      end)
+
     {:ok, assign(socket, signatures: signatures)}
   end
 

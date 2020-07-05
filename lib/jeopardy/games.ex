@@ -169,60 +169,6 @@ defmodule Jeopardy.Games do
     Game.changeset(game, %{current_clue_id: clue_id}) |> Repo.update()
   end
 
-  def final_jeopardy_correct_answer(%Game{} = game, %Player{} = player) do
-    # record player correctly answered clue and update clue's status
-    {_, [clue | _]} =
-      from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
-      |> Repo.update_all_ts(push: [correct_players: player.id], set: [id: game.current_clue_id])
-
-    # increase score of buzzer player by current clue value
-    amount = player.final_jeopardy_wager
-
-    {_, [new_score | _]} =
-      from(p in Player, where: p.id == ^player.id, select: p.score)
-      |> Repo.update_all_ts(
-        inc: [score: amount],
-        push: [correct_answers: clue.id],
-        set: [final_jeopardy_score_updated: true]
-      )
-
-    data = {
-      :score_updated,
-      %{player_id: player.id, player_name: player.name, score: new_score}
-    }
-
-    Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, data)
-
-    game
-  end
-
-  def final_jeopardy_incorrect_answer(%Game{} = game, %Player{} = player) do
-    # record player correctly answered clue and update clue's status
-    {_, [clue | _]} =
-      from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
-      |> Repo.update_all_ts(push: [incorrect_players: player.id], set: [id: game.current_clue_id])
-
-    # increase score of buzzer player by current clue value
-    amount = player.final_jeopardy_wager
-
-    {_, [new_score | _]} =
-      from(p in Player, where: p.id == ^player.id, select: p.score)
-      |> Repo.update_all_ts(
-        inc: [score: -1 * amount],
-        push: [incorrect_answers: clue.id],
-        set: [final_jeopardy_score_updated: true]
-      )
-
-    data = {
-      :score_updated,
-      %{player_id: player.id, player_name: player.name, score: new_score}
-    }
-
-    Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, data)
-
-    game
-  end
-
   def no_answer(%Game{} = game) do
     q = from g in Game, where: g.id == ^game.id, where: g.buzzer_lock_status == "clear"
 

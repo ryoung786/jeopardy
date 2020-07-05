@@ -6,7 +6,7 @@
         <form action="#" phx-submit="submit" phx-target="<%= @myself %>">
             <div class="holder">
                 <div class="answers">
-            <%= for c <- Enum.shuffle(@players) do %>
+            <%= for {_id, c} <- Enum.shuffle(@players) do %>
                 <label class="labelrow">
                     <% answer = case c.final_jeopardy_answer do
                     x when x in ["", nil] -> "(no answer)"

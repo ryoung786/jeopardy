@@ -11,12 +11,6 @@ defmodule JeopardyWeb.GameController do
         Jeopardy.Email.notify_new_game(game)
         |> Jeopardy.Mailer.deliver_later()
 
-        {:ok, _pid} =
-          DynamicSupervisor.start_child(
-            Jeopardy.DynamicSupervisor,
-            {Jeopardy.Engine, name: via_tuple(game.id)}
-          )
-
         conn
         |> put_session(:code, game.code)
         # |> configure_session(renew: true)
@@ -27,9 +21,5 @@ defmodule JeopardyWeb.GameController do
         |> put_flash(:error, "Sorry, there was an issue creating your game")
         |> redirect(to: "/")
     end
-  end
-
-  defp via_tuple(id) do
-    {:via, Registry, {Jeopardy.Registry, id}}
   end
 end
