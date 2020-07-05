@@ -2,14 +2,7 @@ defmodule Jeopardy.Timer do
   use GenServer
   require Logger
 
-  def start(code, time) do
-    GenServer.start_link(__MODULE__, {code, time})
-
-    Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{code}", %{
-      event: :timer_start,
-      time_left: time
-    })
-  end
+  def start(code, time), do: GenServer.start_link(__MODULE__, {code, time})
 
   def stop(code), do: Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{code}", :stop)
 
@@ -17,6 +10,12 @@ defmodule Jeopardy.Timer do
     Phoenix.PubSub.subscribe(Jeopardy.PubSub, "timer:#{code}")
 
     state = %{timer_ref: nil, timer: time, orig_time: time, code: code}
+
+    Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{code}", %{
+      event: :timer_start,
+      time_left: time
+    })
+
     {:ok, state}
   end
 
