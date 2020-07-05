@@ -3,9 +3,13 @@ defmodule Jeopardy.FSM.FinalJeopardy.AwaitingAnswers do
   alias Jeopardy.Games.Player
 
   @impl true
-  def on_enter(%State{} = state) do
-    Jeopardy.Timer.start(state.game.code, 60)
-    state
+  def on_enter(state) do
+    if all_final_jeopardy_answers_submitted?(state) do
+      State.update_round(state, "grading_answers")
+    else
+      Jeopardy.Timer.start(state.game.code, 60)
+      state
+    end
   end
 
   @impl true
@@ -22,7 +26,7 @@ defmodule Jeopardy.FSM.FinalJeopardy.AwaitingAnswers do
       Jeopardy.Timer.stop(state.game.code)
       {:ok, State.update_round(state, "grading_answers")}
     else
-      {:ok, state}
+      {:ok, retrieve_state(state.game.id)}
     end
   end
 
