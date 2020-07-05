@@ -5,9 +5,7 @@ defmodule JeopardyWeb.TvLive do
   alias Jeopardy.Games
 
   @impl true
-  def mount(%{"code" => code}, _session, socket) do
-    game = Games.get_by_code(code)
-
+  def mount(%{"code" => code}, %{"game" => game}, socket) do
     if connected?(socket) do
       Phoenix.PubSub.subscribe(Jeopardy.PubSub, "game:#{game.id}")
       Phoenix.PubSub.subscribe(Jeopardy.PubSub, "timer:#{code}")

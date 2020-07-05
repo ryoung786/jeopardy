@@ -1,8 +1,6 @@
 defmodule JeopardyWeb.Components.Trebek.Jeopardy.RevealingBoard do
   use JeopardyWeb.Components.Base, :trebek
   require Logger
-  alias Jeopardy.Games
-  alias Jeopardy.GameState
 
   @impl true
   def mount(socket), do: {:ok, assign(socket, active_category_num: 0)}
