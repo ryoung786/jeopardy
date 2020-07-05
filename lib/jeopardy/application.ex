@@ -21,9 +21,7 @@ defmodule Jeopardy.Application do
       JeopardyWeb.Endpoint,
       # Start a worker by calling: Jeopardy.Worker.start_link(arg)
       # {Jeopardy.Worker, arg}
-      Jeopardy.BIReplication,
-      {Registry, keys: :unique, name: Jeopardy.Registry},
-      {DynamicSupervisor, strategy: :one_for_one, name: Jeopardy.DynamicSupervisor}
+      Jeopardy.BIReplication
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
