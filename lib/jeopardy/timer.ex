@@ -7,10 +7,7 @@ defmodule Jeopardy.Timer do
   def start(code, time),
     do: GenServer.start_link(__MODULE__, {code, time}, name: String.to_atom(code))
 
-  def stop(code) do
-    server = String.to_atom(code)
-    if GenServer.whereis(server), do: GenServer.stop(server)
-  end
+  def stop(code), do: GenServer.stop(String.to_atom(code))
 
   ##############################################################################
   ### Server
