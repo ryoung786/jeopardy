@@ -28,16 +28,12 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
-  # The db got updated, so let's query for the latest everything
-  # and update our assigns
   def handle_info(%State{} = state, socket) do
     name = socket.assigns.name
 
-    if state.trebek && state.trebek.name == name do
-      {:noreply, redirect(socket, to: "/games/#{state.game.code}/trebek")}
-    else
-      {:noreply, assigns(socket, state, name)}
-    end
+    if state.trebek && state.trebek.name == name,
+      do: {:noreply, redirect(socket, to: "/games/#{state.game.code}/trebek")},
+      else: {:noreply, assigns(socket, state, name)}
   end
 
   @impl true

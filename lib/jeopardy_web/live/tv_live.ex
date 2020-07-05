@@ -22,9 +22,7 @@ defmodule JeopardyWeb.TvLive do
   end
 
   @impl true
-  def handle_info(%State{} = state, socket) do
-    {:noreply, assigns(socket, state)}
-  end
+  def handle_info(%State{} = state, socket), do: {:noreply, assigns(socket, state)}
 
   @impl true
   def handle_info(%{event: :next_category} = event, socket) do
@@ -40,9 +38,7 @@ defmodule JeopardyWeb.TvLive do
   end
 
   @impl true
-  def handle_info(%{time_left: time}, socket) do
-    {:noreply, assign(socket, timer: time)}
-  end
+  def handle_info(%{time_left: time}, socket), do: {:noreply, assign(socket, timer: time)}
 
   defp assigns(socket, %State{} = state) do
     clues = %{
