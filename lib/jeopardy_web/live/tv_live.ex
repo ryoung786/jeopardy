@@ -23,19 +23,28 @@ defmodule JeopardyWeb.TvLive do
 
   @impl true
   def handle_info(%State{} = state, socket) do
-    Logger.warn("[xxx] got update in TV")
     {:noreply, assigns(socket, state)}
   end
 
   @impl true
   def handle_info(%{event: :next_category} = event, socket) do
-    Logger.warn("[xxx] got next category in TV")
     data = Map.put(event, :id, Atom.to_string(socket.assigns.component))
     send_update(socket.assigns.component, data)
     {:noreply, socket}
   end
 
-  # impl timer handlers
+  @impl true
+  def handle_info(%{event: :timer_expired}, socket) do
+    Logger.warn("[xxx] got a time expired")
+    Jeopardy.GameEngine.event(:time_expired, socket.assigns.game.id)
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info(%{time_left: time} = e, socket) do
+    Logger.warn("[xxx] got a time left #{inspect(e)}")
+    {:noreply, assign(socket, timer: time)}
+  end
 
   defp assigns(socket, %State{} = state) do
     clues = %{

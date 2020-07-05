@@ -5,6 +5,13 @@ defmodule Jeopardy.FSM.Jeopardy.SelectingClue do
   import Ecto.Query
 
   @impl true
+  def on_enter(state) do
+    if Game.round_over?(state.game),
+      do: State.update_round(state, "recapping_scores"),
+      else: setup_round(state)
+  end
+
+  @impl true
   def handle(:clue_selected, clue_id, %State{} = state) do
     set_current_clue(state.game, clue_id)
     clue = set_clue_to_asked(clue_id)
@@ -13,6 +20,14 @@ defmodule Jeopardy.FSM.Jeopardy.SelectingClue do
       true -> {:ok, daily_double(state.game)}
       _ -> {:ok, normal(state)}
     end
+  end
+
+  defp setup_round(%State{game: game}) do
+    # lock buzzer
+    from(g in Game, where: g.id == ^game.id)
+    |> Repo.update_all_ts(set: [buzzer_player: nil, buzzer_lock_status: "locked"])
+
+    retrieve_state(game.id)
   end
 
   defp set_current_clue(game, clue_id),

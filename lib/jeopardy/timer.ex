@@ -2,19 +2,28 @@ defmodule Jeopardy.Timer do
   use GenServer
   require Logger
 
-  def start(code, time), do: GenServer.start_link(__MODULE__, {code, time}, name: :timer)
-  def stop(), do: GenServer.stop(:timer)
+  # TODO using String.to_atom instead of a Registry may be a memory leak
+
+  def start(code, time),
+    do: GenServer.start_link(__MODULE__, {code, time}, name: String.to_atom(code))
+
+  def stop(code) do
+    server = String.to_atom(code)
+    if GenServer.whereis(server), do: GenServer.stop(server)
+  end
 
   ##############################################################################
   ### Server
 
   # START
-  def init({code, time}), do: {:ok, %{time_left: time, ref: schedule_timer(0), code: code}}
+  def init({code, time}),
+    do: {:ok, %{time_left: time, ref: schedule_timer(0), code: code}}
 
   # EXPIRATION
   def handle_info(:tick, %{time_left: t, code: code}) when t <= 0 do
-    Phoenix.PubSub.broadcast(Jeopardy.PubSub, "timer:#{code}", %{event: :timer_expired})
-    Logger.warn("[xxx] #{t} seconds left!")
+    {topic, data} = {"timer:#{code}", %{event: :timer_expired}}
+    Phoenix.PubSub.broadcast(Jeopardy.PubSub, topic, data)
+    Logger.warn("[xxx] TICK, time left: 0")
     {:stop, :normal, nil}
   end
 
@@ -27,7 +36,8 @@ defmodule Jeopardy.Timer do
       time_left: time
     })
 
-    Logger.warn("[xxx] #{time} seconds left!")
+    Logger.warn("[xxx] TICK, time left: #{time}")
+
     {:noreply, %{time_left: time - 1, code: code}}
   end
 

@@ -1,7 +1,7 @@
 defmodule Jeopardy.FSM.Jeopardy.AwaitingBuzzer do
   use Jeopardy.FSM
   alias Jeopardy.Repo
-  alias Jeopardy.Games.Game
+  alias Jeopardy.Games.{Game, Clue}
   import Ecto.Query
 
   @impl true
@@ -13,6 +13,12 @@ defmodule Jeopardy.FSM.Jeopardy.AwaitingBuzzer do
   @impl true
   def handle(:buzz, player_id, %State{} = state) do
     buzz(player_id, state)
+    {:ok, retrieve_state(state.game.id)}
+  end
+
+  @impl true
+  def handle(:time_expired, nil, %State{} = state) do
+    no_answer(state)
     {:ok, retrieve_state(state.game.id)}
   end
 
@@ -38,11 +44,42 @@ defmodule Jeopardy.FSM.Jeopardy.AwaitingBuzzer do
 
     case Repo.update_all_ts(q, set: updates) do
       {0, _} ->
-        {:failed, nil}
+        Logger.warn("[xxx] FAILED buzz")
+        :failed
 
       {1, _} ->
+        Logger.warn("[xxx] SUCCESS buzz")
         Jeopardy.Timer.stop(state.game.code)
-        {:ok, nil}
+        :ok
+    end
+  end
+
+  defp no_answer(%State{game: game, current_clue: current_clue} = state) do
+    num_incorrect_answers = current_clue.incorrect_players |> Enum.count()
+
+    q =
+      from g in Game,
+        join: c in Clue,
+        on: g.current_clue_id == c.id,
+        where: g.id == ^game.id,
+        where: g.buzzer_lock_status == "clear",
+        where: g.round_status == "awaiting_buzzer",
+        where: g.current_clue_id == ^game.current_clue_id,
+        where:
+          fragment("coalesce(array_length(?, 1), 0)", c.incorrect_players) ==
+            ^num_incorrect_answers
+
+    updates = [buzzer_player: nil, buzzer_lock_status: "locked", round_status: "revealing_answer"]
+
+    case Repo.update_all_ts(q, set: updates) do
+      {0, _} ->
+        Logger.warn("[xxx] FAILED no_answer")
+        :failed
+
+      {1, _} ->
+        Logger.warn("[xxx] SUCCESS no_answer")
+        Jeopardy.Timer.stop(state.game.code)
+        :ok
     end
   end
 end

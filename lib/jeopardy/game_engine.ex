@@ -29,13 +29,18 @@ defmodule Jeopardy.GameEngine do
   defp module_from_game(%{game: game}) do
     {a, b} = {Macro.camelize(game.status), Macro.camelize(game.round_status)}
     a = if game.status == "double_jeopardy", do: "Jeopardy", else: a
+    Logger.warn("[xxx] module: #{a}.#{b}")
     String.to_existing_atom("Elixir.Jeopardy.FSM.#{a}.#{b}")
   end
 
   defp run_onenter_if_necessary(old_state, new_state) do
+    Logger.warn(
+      "[xxx] did change rounds?: #{inspect(did_game_change_rounds?(old_state, new_state))}"
+    )
+
     if did_game_change_rounds?(old_state, new_state),
-      do: new_state,
-      else: module_from_game(new_state).on_enter(new_state)
+      do: run_onenter_if_necessary(new_state, module_from_game(new_state).on_enter(new_state)),
+      else: new_state
   end
 
   defp did_game_change_rounds?(old, new) do

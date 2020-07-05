@@ -10,6 +10,7 @@ defmodule Jeopardy.FSM do
       import Jeopardy.GameEngine.State, only: [retrieve_state: 1]
       alias Jeopardy.Repo
       alias Jeopardy.GameEngine.State
+      require Logger
 
       @behaviour Jeopardy.FSM
 
