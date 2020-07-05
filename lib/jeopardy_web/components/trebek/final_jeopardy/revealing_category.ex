@@ -2,10 +2,6 @@ defmodule JeopardyWeb.Components.Trebek.FinalJeopardy.RevealingCategory do
   use JeopardyWeb.Components.Base, :trebek
   require Logger
 
-  # @impl true
-  # def mount(socket) do
-  # end
-
   @impl true
   def handle_event("read_clue", _params, socket) do
     game = socket.assigns.game
@@ -34,7 +30,7 @@ defmodule JeopardyWeb.Components.Trebek.FinalJeopardy.RevealingCategory do
   @impl true
   def update(assigns, socket) do
     statuses =
-      Enum.map(assigns.players, fn p ->
+      Enum.map(Map.values(assigns.players), fn p ->
         %{
           name: p.name,
           submitted: not is_nil(p.final_jeopardy_wager)
