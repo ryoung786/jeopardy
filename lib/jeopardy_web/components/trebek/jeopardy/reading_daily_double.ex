@@ -3,12 +3,7 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.ReadingDailyDouble do
 
   @impl true
   def handle_event("start_daily_double_timer", _params, socket) do
-    Jeopardy.GameState.update_round_status(
-      socket.assigns.game.code,
-      "reading_daily_double",
-      "answering_clue"
-    )
-
+    Engine.event(:next, socket.assigns.game.id)
     {:noreply, socket}
   end
 end

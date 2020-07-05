@@ -40,11 +40,12 @@ defmodule JeopardyWeb.WagerComponent do
   def handle_event("save", %{"wager" => params}, socket) do
     {min, max} = {socket.assigns.min, socket.assigns.max}
     clue = socket.assigns.clue
-    player = socket.assigns.player
 
     case Wager.validate(params, min, max) do
       {:ok, wager} ->
-        save_and_broadcast(player, clue, wager.amount, socket.assigns.game_code)
+        Jeopardy.GameEngine.event(:wager, wager.amount, clue.game_id)
+
+        # save_and_broadcast(player, clue, wager.amount, socket.assigns.game_code)
         {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -61,16 +62,6 @@ defmodule JeopardyWeb.WagerComponent do
         game = Jeopardy.Games.get_by_code(game_code)
         save(player, amount, game, :final_jeopardy)
     end
-  end
-
-  defp save(clue, amount, game_code, :daily_double) do
-    Clue.changeset(clue, %{wager: amount}) |> Repo.update()
-
-    GameState.update_round_status(
-      game_code,
-      "awaiting_daily_double_wager",
-      "reading_daily_double"
-    )
   end
 
   defp save(player, amount, game, :final_jeopardy) do
