@@ -10,6 +10,7 @@ defmodule JeopardyWeb.TrebekView do
   end
 
   def contestant_from_name(contestants, name) do
-    Enum.find(contestants, &(&1.name == name))
+    {_id, contestant} = Enum.find(contestants, fn {_, v} -> v.name == name end)
+    contestant
   end
 end

@@ -101,7 +101,7 @@ defmodule Jeopardy.FSM.Jeopardy.AnsweringClue do
   end
 
   defp contestants_remaining?(%{current_clue: clue, contestants: contestants}) do
-    num_wrong = Enum.count(clue.incorrect_players) - 1
+    num_wrong = Enum.count(clue.incorrect_players) + 1
     Enum.count(contestants) > num_wrong
   end
 end
