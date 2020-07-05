@@ -35,14 +35,12 @@ defmodule JeopardyWeb.TvLive do
 
   @impl true
   def handle_info(%{event: :timer_expired}, socket) do
-    Logger.warn("[xxx] got a time expired")
     Jeopardy.GameEngine.event(:time_expired, socket.assigns.game.id)
     {:noreply, socket}
   end
 
   @impl true
-  def handle_info(%{time_left: time} = e, socket) do
-    Logger.warn("[xxx] got a time left #{inspect(e)}")
+  def handle_info(%{time_left: time}, socket) do
     {:noreply, assign(socket, timer: time)}
   end
 

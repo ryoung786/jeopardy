@@ -23,7 +23,6 @@ defmodule Jeopardy.Timer do
   def handle_info(:tick, %{time_left: t, code: code}) when t <= 0 do
     {topic, data} = {"timer:#{code}", %{event: :timer_expired}}
     Phoenix.PubSub.broadcast(Jeopardy.PubSub, topic, data)
-    Logger.warn("[xxx] TICK, time left: 0")
     {:stop, :normal, nil}
   end
 
@@ -35,8 +34,6 @@ defmodule Jeopardy.Timer do
       event: :timer_tick,
       time_left: time
     })
-
-    Logger.warn("[xxx] TICK, time left: #{time}")
 
     {:noreply, %{time_left: time - 1, code: code}}
   end

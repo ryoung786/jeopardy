@@ -31,7 +31,6 @@ defmodule JeopardyWeb.GameLive do
   # The db got updated, so let's query for the latest everything
   # and update our assigns
   def handle_info(%State{} = state, socket) do
-    Logger.warn("[xxx] got update in GAME")
     name = socket.assigns.name
 
     if state.trebek && state.trebek.name == name do
