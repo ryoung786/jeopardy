@@ -11,13 +11,14 @@ defmodule JeopardyWeb.ScoreboardComponent do
     socket = assign(socket, assigns)
 
     signatures =
-      Enum.reduce(socket.assigns.contestants, %{}, &Map.put(&2, &1.id, get_signature(&1)))
+      Enum.map(socket.assigns.contestants, fn {id, _} -> {id, get_signature(id)} end)
+      |> Enum.into(%{})
 
     socket = assign(socket, signatures: signatures)
 
     {:ok, socket}
   end
 
-  defp get_signature(%Jeopardy.Games.Player{} = player),
-    do: Cachex.get!(:stats, "player-signature:#{player.id}")
+  defp get_signature(player_id),
+    do: Cachex.get!(:stats, "player-signature:#{player_id}")
 end

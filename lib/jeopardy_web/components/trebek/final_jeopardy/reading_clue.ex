@@ -3,12 +3,7 @@ defmodule JeopardyWeb.Components.Trebek.FinalJeopardy.ReadingClue do
 
   @impl true
   def handle_event("start_timer_click", _params, socket) do
-    Jeopardy.GameState.update_round_status(
-      socket.assigns.game.code,
-      "reading_clue",
-      "awaiting_answers"
-    )
-
+    Engine.event(:trebek_advance, socket.assigns.game.id)
     {:noreply, socket}
   end
 end

@@ -3,8 +3,7 @@ defmodule JeopardyWeb.Components.Game.PreJeopardy.SelectingTrebek do
 
   @impl true
   def handle_event("volunteer_to_host", _params, socket) do
-    name = socket.assigns.name
-    Jeopardy.Games.assign_trebek(socket.assigns.game, name)
+    Engine.event(:select_trebek, socket.assigns.player.id, socket.assigns.game.id)
     {:noreply, socket}
   end
 end

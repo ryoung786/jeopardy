@@ -27,7 +27,7 @@ defmodule JeopardyWeb.PageController do
 
     with {:ok, _changeset} <- Login.validate(login),
          %Game{} = g <- Games.get_by_code(code),
-         :ok <- add_player(g, name) do
+         :ok <- Jeopardy.GameEngine.event(:add_player, %{player_name: name}, g.id) do
       conn
       |> put_session(:name, name)
       |> put_session(:code, code)
@@ -53,17 +53,4 @@ defmodule JeopardyWeb.PageController do
         |> redirect(to: "/")
     end
   end
-
-  defp add_player(%Game{round_status: "awaiting_start"} = game, name) do
-    with false <- Games.get_all_players(game) |> Enum.map(& &1.name) |> Enum.member?(name),
-         {:ok, _} <-
-           Ecto.build_assoc(game, :players, %{name: name})
-           |> Jeopardy.Repo.insert() do
-      Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, %{event: :player_joined, name: name})
-    else
-      true -> {:error, :name_taken}
-    end
-  end
-
-  defp add_player(_, _), do: {:error, :game_in_progress}
 end

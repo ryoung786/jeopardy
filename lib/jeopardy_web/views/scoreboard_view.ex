@@ -11,7 +11,7 @@ defmodule JeopardyWeb.ScoreboardView do
 
   def stat_height(answers, players) do
     max =
-      Enum.map(players, fn p ->
+      Enum.map(players, fn {_player_id, p} ->
         [Enum.count(p.incorrect_answers), Enum.count(p.correct_answers)]
       end)
       |> Enum.flat_map(& &1)

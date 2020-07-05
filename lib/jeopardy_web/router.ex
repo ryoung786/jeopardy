@@ -54,7 +54,9 @@ defmodule JeopardyWeb.Router do
         conn |> put_flash(:info, "Game not found") |> redirect(to: "/") |> halt()
 
       game ->
-        assign(conn, :game, game)
+        conn
+        |> put_session(:game, game)
+        |> assign(:game, game)
     end
   end
 

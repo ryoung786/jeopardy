@@ -5,18 +5,13 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.AnsweringClue do
 
   @impl true
   def handle_event("correct", _params, socket) do
-    {:ok, game} =
-      Games.correct_answer(socket.assigns.game)
-      |> Games.lock_buzzer()
-      |> Games.assign_board_control(socket.assigns.game.buzzer_player)
-
-    GameState.to_selecting_clue(game)
+    Engine.event(:correct, socket.assigns.game.id)
     {:noreply, socket}
   end
 
   @impl true
   def handle_event("incorrect", _params, socket) do
-    Games.incorrect_answer(socket.assigns.game)
+    Engine.event(:incorrect, socket.assigns.game.id)
     {:noreply, socket}
   end
 end

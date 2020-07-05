@@ -8,7 +8,7 @@
         <div class="black"></div>
         <div class="brown"></div>
     </div>
-    <%= for c <- @contestants do %>
+    <%= for {_id, c} <- @contestants do %>
         <% buzz_class = if c.name == @buzzer.player_name, do: "buzz", else: "" %>
         <% prev_score = pre_score(c, @game) %>
         <% wager = abs(c.score - pre_score(c, @game)) %>

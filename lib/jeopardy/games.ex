@@ -11,13 +11,21 @@ defmodule Jeopardy.Games do
   alias Jeopardy.Repo
   alias Jeopardy.GameState
 
-  def get_game!(id), do: Repo.get!(Game |> preload([_], [:players]), id)
+  def get_game!(id),
+    do:
+      from(g in Game,
+        where: g.id == ^id,
+        left_join: p in assoc(g, :players),
+        left_join: c in assoc(g, :clues),
+        preload: [players: p, clues: c]
+      )
+      |> Repo.one()
 
   def get_by_code(code) do
     Game
     |> where([g], g.code == ^code)
     |> where([g], g.is_active == true)
-    |> preload([_], [:players])
+    # |> preload([_], [:players])
     |> Repo.one()
   end
 
@@ -161,60 +169,6 @@ defmodule Jeopardy.Games do
     Game.changeset(game, %{current_clue_id: clue_id}) |> Repo.update()
   end
 
-  def final_jeopardy_correct_answer(%Game{} = game, %Player{} = player) do
-    # record player correctly answered clue and update clue's status
-    {_, [clue | _]} =
-      from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
-      |> Repo.update_all_ts(push: [correct_players: player.id], set: [id: game.current_clue_id])
-
-    # increase score of buzzer player by current clue value
-    amount = player.final_jeopardy_wager
-
-    {_, [new_score | _]} =
-      from(p in Player, where: p.id == ^player.id, select: p.score)
-      |> Repo.update_all_ts(
-        inc: [score: amount],
-        push: [correct_answers: clue.id],
-        set: [final_jeopardy_score_updated: true]
-      )
-
-    data = {
-      :score_updated,
-      %{player_id: player.id, player_name: player.name, score: new_score}
-    }
-
-    Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, data)
-
-    game
-  end
-
-  def final_jeopardy_incorrect_answer(%Game{} = game, %Player{} = player) do
-    # record player correctly answered clue and update clue's status
-    {_, [clue | _]} =
-      from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
-      |> Repo.update_all_ts(push: [incorrect_players: player.id], set: [id: game.current_clue_id])
-
-    # increase score of buzzer player by current clue value
-    amount = player.final_jeopardy_wager
-
-    {_, [new_score | _]} =
-      from(p in Player, where: p.id == ^player.id, select: p.score)
-      |> Repo.update_all_ts(
-        inc: [score: -1 * amount],
-        push: [incorrect_answers: clue.id],
-        set: [final_jeopardy_score_updated: true]
-      )
-
-    data = {
-      :score_updated,
-      %{player_id: player.id, player_name: player.name, score: new_score}
-    }
-
-    Phoenix.PubSub.broadcast(Jeopardy.PubSub, game.code, data)
-
-    game
-  end
-
   def no_answer(%Game{} = game) do
     q = from g in Game, where: g.id == ^game.id, where: g.buzzer_lock_status == "clear"
 
@@ -228,93 +182,6 @@ defmodule Jeopardy.Games do
       response ->
         Logger.error("Couldn't update no_answer, error: #{inspect(response)}")
     end
-  end
-
-  def correct_answer(%Game{} = game) do
-    player_id =
-      from(
-        p in Player,
-        select: p.id,
-        where: p.name == ^game.buzzer_player,
-        where: p.game_id == ^game.id
-      )
-      |> Repo.one()
-
-    # record player correctly answered clue and update clue's status
-    {_, [clue | _]} =
-      from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
-      # TODO: will need to move this to when question is revealed, not when it's answered
-      |> Repo.update_all_ts(push: [correct_players: player_id], set: [asked_status: "asked"])
-
-    # increase score of buzzer player by current clue value
-    amount = if Clue.is_daily_double(clue), do: clue.wager, else: clue.value
-
-    from(p in Player, select: p, where: p.id == ^player_id)
-    |> Repo.update_all_ts(
-      inc: [score: amount],
-      push: [correct_answers: clue.id],
-      set: [id: player_id]
-    )
-
-    :telemetry.execute([:j, :anwers], %{
-      game_code: game.code,
-      correct: 1,
-      player_name: game.buzzer_player
-    })
-
-    Jeopardy.Stats.update(game)
-
-    game
-  end
-
-  def incorrect_answer(%Game{} = game) do
-    player_id =
-      from(
-        p in Player,
-        select: p.id,
-        where: p.name == ^game.buzzer_player,
-        where: p.game_id == ^game.id
-      )
-      |> Repo.one()
-
-    # record player incorrectly answered clue and update clue's status
-    {_, [clue | _]} =
-      from(c in Clue, select: c, where: c.id == ^game.current_clue_id)
-      |> Repo.update_all_ts(push: [incorrect_players: player_id], set: [asked_status: "asked"])
-
-    # increase score of buzzer player by current clue value
-    amount = if Clue.is_daily_double(clue), do: clue.wager, else: clue.value
-
-    from(p in Player, select: p, where: p.id == ^player_id)
-    |> Repo.update_all_ts(
-      inc: [score: -1 * amount],
-      push: [incorrect_answers: clue.id],
-      set: [id: player_id]
-    )
-
-    if Clue.is_daily_double(clue) do
-      Games.lock_buzzer(game)
-      GameState.update_round_status(game.code, "answering_clue", "revealing_answer")
-    else
-      case Clue.contestants_remaining?(clue) do
-        true ->
-          Games.clear_buzzer(game)
-          GameState.update_round_status(game.code, "answering_clue", "awaiting_buzzer")
-          Jeopardy.Timer.start(game.code, 5)
-
-        _ ->
-          Games.lock_buzzer(game)
-          GameState.update_round_status(game.code, "answering_clue", "revealing_answer")
-      end
-    end
-
-    :telemetry.execute([:j, :anwers], %{
-      game_code: game.code,
-      incorrect: 1,
-      player_name: game.buzzer_player
-    })
-
-    game
   end
 
   def set_up_final_jeopardy(%Game{} = game) do

@@ -1,14 +1,11 @@
 defmodule JeopardyWeb.GameLive do
   use JeopardyWeb, :live_view
   require Logger
-  alias Jeopardy.Games
-  alias Jeopardy.Games.Game
+  alias Jeopardy.GameEngine.State
 
   @impl true
-  def mount(%{"code" => code}, %{"name" => name}, socket) do
-    game = Games.get_by_code(code)
+  def mount(%{"code" => _code}, %{"name" => name, "game" => game}, socket) do
     trebek_name = game.trebek
-    player = Games.get_player(game, name)
 
     case name do
       "" ->
@@ -18,18 +15,8 @@ defmodule JeopardyWeb.GameLive do
         {:ok, redirect(socket, to: "/games/#{game.code}/trebek")}
 
       _ ->
-        if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
-
-        socket =
-          socket
-          |> assign(name: name)
-          |> assign(game: game)
-          |> assign(player: player)
-          |> assign(component: component_from_game(game))
-          |> assign(can_buzz: Games.can_buzz?(game, player))
-          |> assign(current_clue: Game.current_clue(game))
-
-        {:ok, socket}
+        if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, "game:#{game.id}")
+        {:ok, assigns(socket, game, name)}
     end
   end
 
@@ -40,35 +27,39 @@ defmodule JeopardyWeb.GameLive do
     """
   end
 
-  def handle_info(%{event: _} = data, socket) do
-    component = component_from_game(socket.assigns.game)
-    send_update(component, Map.put(data, :id, Atom.to_string(component)))
-    {:noreply, socket}
+  @impl true
+  def handle_info(%State{} = state, socket) do
+    name = socket.assigns.name
+
+    if state.trebek && state.trebek.name == name,
+      do: {:noreply, redirect(socket, to: "/games/#{state.game.code}/trebek")},
+      else: {:noreply, assigns(socket, state, name)}
   end
 
   @impl true
-  # The db got updated, so let's query for the latest everything
-  # and update our assigns
-  def handle_info(_, socket) do
-    game = game_from_socket(socket)
-    name = socket.assigns.name
-    player = Games.get_player(game, name)
+  def handle_info(_, socket), do: {:noreply, socket}
 
-    case game.trebek do
-      ^name ->
-        {:noreply, redirect(socket, to: "/games/#{game.code}/trebek")}
+  defp assigns(socket, %State{} = state, name) do
+    {_id, player} = state.contestants |> Enum.find(fn {_k, v} -> v.name == name end)
 
-      _ ->
-        socket =
-          socket
-          |> assign(game: game)
-          |> assign(player: player)
-          |> assign(component: component_from_game(game))
-          |> assign(can_buzz: Games.can_buzz?(game, player))
-          |> assign(players: Games.get_just_contestants(game))
-          |> assign(current_clue: Game.current_clue(game))
+    socket
+    |> assign(name: name)
+    |> assign(player: player)
+    |> assign(can_buzz: can_buzz?(state, player))
+    |> assign(game: state.game)
+    |> assign(component: component_from_game(state.game))
+    |> assign(players: state.contestants)
+    |> assign(contestants: state.contestants)
+    |> assign(current_clue: state.current_clue)
+    |> assign(clues: state.clues)
+  end
 
-        {:noreply, socket}
-    end
+  defp assigns(socket, game, name),
+    do: assigns(socket, State.retrieve_state(game.id), name)
+
+  defp can_buzz?(%State{game: game} = state, player) do
+    is_nil(game.buzzer_player) && game.buzzer_lock_status == "clear" &&
+      state.current_clue &&
+      player.id not in state.current_clue.incorrect_players
   end
 end

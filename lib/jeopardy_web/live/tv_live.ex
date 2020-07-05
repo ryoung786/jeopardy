@@ -1,18 +1,16 @@
 defmodule JeopardyWeb.TvLive do
   use JeopardyWeb, :live_view
   require Logger
+  alias Jeopardy.GameEngine.State
   alias Jeopardy.Games
-  alias Jeopardy.Games.Game
 
   @impl true
-  def mount(%{"code" => code}, _session, socket) do
+  def mount(%{"code" => code}, %{"game" => game}, socket) do
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(Jeopardy.PubSub, code)
-      Phoenix.PubSub.subscribe(Jeopardy.PubSub, "#{code}-finaljeopardy")
+      Phoenix.PubSub.subscribe(Jeopardy.PubSub, "game:#{game.id}")
       Phoenix.PubSub.subscribe(Jeopardy.PubSub, "timer:#{code}")
     end
 
-    game = Games.get_by_code(code)
     {:ok, assigns(socket, game)}
   end
 
@@ -23,39 +21,41 @@ defmodule JeopardyWeb.TvLive do
     """
   end
 
-  def handle_info(%{event: _} = data, socket) do
-    component = component_from_game(socket.assigns.game)
+  @impl true
+  def handle_info(%State{} = state, socket), do: {:noreply, assigns(socket, state)}
 
-    assigns =
-      socket.assigns
-      |> Map.delete(:flash)
-      |> Map.merge(data)
-      |> Map.put(:id, Atom.to_string(component))
-
-    send_update(component, assigns)
+  @impl true
+  def handle_info(%{event: :next_category} = event, socket) do
+    data = Map.put(event, :id, Atom.to_string(socket.assigns.component))
+    send_update(socket.assigns.component, data)
     {:noreply, socket}
   end
 
   @impl true
-  # The db got updated, so let's query for the latest everything
-  # and update our assigns
-  def handle_info(_, socket) do
-    game = Games.get_by_code(socket.assigns.game.code)
-    {:noreply, assigns(socket, game)}
+  def handle_info(%{event: :timer_expired}, socket) do
+    Jeopardy.GameEngine.event(:time_expired, socket.assigns.game.id)
+    {:noreply, socket}
   end
 
-  defp assigns(socket, game) do
+  @impl true
+  def handle_info(%{time_left: time}, socket), do: {:noreply, assign(socket, timer: time)}
+
+  defp assigns(socket, %State{} = state) do
     clues = %{
-      "jeopardy" => Games.clues_by_category(game, :jeopardy),
-      "double_jeopardy" => Games.clues_by_category(game, :double_jeopardy)
+      "jeopardy" => Games.clues_by_category(state.game, :jeopardy),
+      "double_jeopardy" => Games.clues_by_category(state.game, :double_jeopardy)
     }
 
     socket
-    |> assign(game: game)
-    |> assign(component: component_from_game(game))
-    |> assign(players: Games.get_just_contestants(game))
-    |> assign(current_clue: Game.current_clue(game))
+    |> assign(game: state.game)
+    |> assign(component: component_from_game(state.game))
+    |> assign(players: state.contestants)
+    |> assign(contestants: state.contestants)
+    |> assign(current_clue: state.current_clue)
     |> assign(clues: clues)
     |> assign(timer: nil)
   end
+
+  defp assigns(socket, game),
+    do: assigns(socket, State.retrieve_state(game.id))
 end

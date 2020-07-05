@@ -1,9 +1,7 @@
 defmodule Jeopardy.Games.Clue do
   use Jeopardy.Games.Schema
-  import Ecto.{Changeset, Query}
-  alias Jeopardy.Repo
+  import Ecto.Changeset
   alias Jeopardy.Games
-  alias Jeopardy.Games.{Player, Clue}
 
   schema "clues" do
     field :category, :string
@@ -43,14 +41,4 @@ defmodule Jeopardy.Games.Clue do
   def is_daily_double(clue), do: not is_nil(clue) && clue.type == "daily_double"
   def asked(clue), do: not is_nil(clue) && clue.asked_status == "asked"
   def game(clue), do: Games.get_game!(clue.game_id)
-
-  def contestants_remaining?(clue), do: contestants_remaining?(clue, Clue.game(clue))
-
-  def contestants_remaining?(clue, game) do
-    num_contestants =
-      from(p in Player, select: count(1), where: p.game_id == ^game.id and p.name != ^game.trebek)
-      |> Repo.one()
-
-    num_contestants - Enum.count(clue.incorrect_players) > 0
-  end
 end

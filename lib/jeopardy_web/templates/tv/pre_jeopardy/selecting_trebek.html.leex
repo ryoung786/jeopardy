@@ -10,8 +10,8 @@
     <div class="options">
         <h3>Who wants to be the host for this game?</h3>
         <ul>
-            <%= for name <- @audience do %>
-                <li><%= submit name, value: name, "phx-click": "trebek_selection", "phx-target": @myself %></li>
+            <%= for {player_id, player} <- @players do %>
+                <li><%= submit player.name, value: player_id, "phx-click": "trebek_selection", "phx-target": @myself %></li>
             <% end %>
         </ul>
     </div>

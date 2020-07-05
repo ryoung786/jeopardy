@@ -4,8 +4,7 @@ defmodule JeopardyWeb.Components.Trebek.Jeopardy.RevealingAnswer do
 
   @impl true
   def handle_event("revealed_answer", _params, socket) do
-    Jeopardy.Stats.update(socket.assigns.game)
-    Jeopardy.GameState.to_selecting_clue(socket.assigns.game)
+    Engine.event(:next, socket.assigns.game.id)
     {:noreply, socket}
   end
 end
