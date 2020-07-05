@@ -52,6 +52,8 @@ defmodule JeopardyWeb.TrebekLive do
     game.clues
     |> Enum.filter(fn c -> c.round == game.status end)
     |> Enum.group_by(fn c -> c.category end)
+    |> Enum.map(fn {k, v} -> {k, Enum.sort_by(v, & &1.value)} end)
+    |> Enum.into(%{})
   end
 
   defp categories(%Game{} = game) do
