@@ -4,6 +4,7 @@ defmodule Jeopardy.FSM.Jeopardy.RevealingBoard do
   alias Jeopardy.Games.Game
   import Ecto.Query
 
+  @impl true
   def handle(:next, _, %State{} = state) do
     {_, %{name: player_name}} = Enum.random(state.contestants)
 

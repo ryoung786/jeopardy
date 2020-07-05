@@ -4,6 +4,7 @@ defmodule Jeopardy.FSM.Jeopardy.SelectingClue do
   alias Jeopardy.Games.{Game, Clue}
   import Ecto.Query
 
+  @impl true
   def handle(:clue_selected, clue_id, %State{} = state) do
     set_current_clue(state.game, clue_id)
     clue = set_clue_to_asked(clue_id)

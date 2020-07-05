@@ -35,6 +35,8 @@ defmodule JeopardyWeb.TvLive do
     {:noreply, socket}
   end
 
+  # impl timer handlers
+
   defp assigns(socket, %State{} = state) do
     clues = %{
       "jeopardy" => Games.clues_by_category(state.game, :jeopardy),

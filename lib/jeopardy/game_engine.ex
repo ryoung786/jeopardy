@@ -39,13 +39,7 @@ defmodule Jeopardy.GameEngine do
   end
 
   defp did_game_change_rounds?(old, new) do
-    old.game.status == new.game.status &&
-      old.game.round_status == new.game.round_status
-  end
-
-  defmacro __using__([]) do
-    quote do
-      def on_enter(state), do: state
-    end
+    old.game.status != new.game.status ||
+      old.game.round_status != new.game.round_status
   end
 end
