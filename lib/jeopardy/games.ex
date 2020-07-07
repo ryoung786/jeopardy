@@ -6,7 +6,6 @@ defmodule Jeopardy.Games do
   import Ecto.Query, warn: false
 
   require Logger
-  alias Jeopardy.Games
   alias Jeopardy.Games.{Game, Player, Clue}
   alias Jeopardy.Repo
   alias Jeopardy.GameState

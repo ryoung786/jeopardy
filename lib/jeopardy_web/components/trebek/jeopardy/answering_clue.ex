@@ -1,7 +1,5 @@
 defmodule JeopardyWeb.Components.Trebek.Jeopardy.AnsweringClue do
   use JeopardyWeb.Components.Base, :trebek
-  alias Jeopardy.Games
-  alias Jeopardy.GameState
 
   @impl true
   def handle_event("correct", _params, socket) do
