@@ -47,6 +47,8 @@ config :jeopardy, Jeopardy.BIReplication,
   frequency: 1 * 60 * 60 * 1000,
   bucket: "jeopardy_ryoung_test"
 
+config :jeopardy, gtag: false
+
 if Mix.env() != :prod do
   config :git_hooks,
     auto_install: true,

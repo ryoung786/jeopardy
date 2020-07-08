@@ -46,6 +46,8 @@ config :jeopardy, Jeopardy.BIReplication,
   frequency: 1 * 60 * 1000,
   bucket: "jeopardy_ryoung"
 
+config :jeopardy, gtag: true
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
