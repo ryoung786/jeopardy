@@ -15,6 +15,7 @@ defmodule JeopardyWeb.Router do
 
   pipeline :api, do: plug(:accepts, ["json"])
   pipeline :games, do: plug(:ensure_game_exists)
+  pipeline :ensure_name, do: plug(:ensure_name_exists)
 
   pipeline :admin do
     plug(:ensure_admin)
@@ -31,10 +32,12 @@ defmodule JeopardyWeb.Router do
 
     scope "/games/:code" do
       pipe_through :games
-      live "/", GameLive, layout: {JeopardyWeb.LayoutView, :contestant}
       live "/tv", TvLive, layout: {JeopardyWeb.LayoutView, :tv}
-      live "/trebek", TrebekLive, layout: {JeopardyWeb.LayoutView, :trebek}
       live "/stats", StatsLive, layout: {JeopardyWeb.LayoutView, :stats}
+
+      pipe_through :ensure_name
+      live "/", GameLive, layout: {JeopardyWeb.LayoutView, :contestant}
+      live "/trebek", TrebekLive, layout: {JeopardyWeb.LayoutView, :trebek}
     end
   end
 
@@ -70,6 +73,12 @@ defmodule JeopardyWeb.Router do
         |> redirect(external: ElixirAuthGoogle.generate_oauth_url(conn) <> "&prompt=consent")
         |> halt()
     end
+  end
+
+  defp ensure_name_exists(conn, _opts) do
+    if get_session(conn, :name),
+      do: conn,
+      else: conn |> put_flash(:info, "Name plz") |> redirect(to: "/") |> halt()
   end
 
   if Mix.env() == :dev, do: forward("/sent_emails", Bamboo.SentEmailViewerPlug)
