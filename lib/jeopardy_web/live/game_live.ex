@@ -45,6 +45,13 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
+  def handle_info(%{event: :next_category} = event, socket) do
+    data = Map.put(event, :id, Atom.to_string(socket.assigns.component))
+    send_update(socket.assigns.component, data)
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info(_, socket), do: {:noreply, socket}
 
   defp assigns(socket, %State{} = state, name) do

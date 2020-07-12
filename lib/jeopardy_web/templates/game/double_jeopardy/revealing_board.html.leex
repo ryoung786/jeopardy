@@ -1,5 +1,10 @@
-<div class="game revealing_board single-instruction">
-    <p class="instruction">
-        Revealing this round's categories.
-    </p>
+<div class="game revealing_board">
+    <div class="content">
+        <p class="instruction <%= revealing_board_class(0, @active_category_num) %>">Revealing this round's categories.</p>
+        <%= for {i, category} <- @categories do %>
+            <p class="<%= revealing_board_class(i, @active_category_num) %>">
+                <%= raw(category) %>
+            </p>
+        <% end %>
+    </div>
 </div>

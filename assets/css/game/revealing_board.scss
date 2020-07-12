@@ -1,0 +1,55 @@
+.game.revealing_board {
+    height: 100%;
+    .content {
+        display: grid;
+        place-items: center;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        background: aliceblue;
+
+        .instruction {
+            padding: 20px;
+            text-shadow: none;
+            color: black;
+            font-size: 2rem;
+            min-height: 70px;
+            width: auto;
+
+            margin: 20px; padding: 20px; max-width: 500px; min-width: 200px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            background: white;
+            border-radius: 5px;
+            text-align: center;
+            font-family: 'Helvetica', 'Arial', sans-serif;
+        }
+
+        p {
+            text-align: center;
+            padding: 50px;
+            position: absolute;
+            transform: translateX(100vw);
+            background: blue;
+            color: white;
+            min-height: 50%;
+            width: 100%;
+            display: grid;
+            place-items: center;
+            text-shadow: 5px 5px 5px black;
+            font-family: "Georgia";
+            font-size: 3.6rem;
+        }
+
+        $speed: .75s;
+
+        .processed {
+            transform: translateX(-100vw);
+            transition: transform $speed ease;
+        }
+
+        .active {
+            transform: translateX(0);
+            transition: transform $speed ease;
+        }
+    }
+}
