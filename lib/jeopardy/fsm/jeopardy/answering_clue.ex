@@ -5,8 +5,10 @@ defmodule Jeopardy.FSM.Jeopardy.AnsweringClue do
   import Ecto.Query
 
   @impl true
-  def on_enter(state),
-    do: Jeopardy.FSM.clear_early_buzzer_penalties(state.contestants)
+  def on_enter(state) do
+    Jeopardy.FSM.clear_early_buzzer_penalties(state.contestants)
+    retrieve_state(state.game.id)
+  end
 
   @impl true
   def handle(:correct, nil, %State{} = state) do
