@@ -5,6 +5,10 @@ defmodule Jeopardy.FSM.Jeopardy.ReadingClue do
   import Ecto.Query
 
   @impl true
+  def on_enter(state),
+    do: Jeopardy.FSM.clear_early_buzzer_penalties(state.contestants)
+
+  @impl true
   def handle(:next, _, %State{} = state) do
     clear_buzzer_and_update_round(state)
     {:ok, retrieve_state(state.game.id)}

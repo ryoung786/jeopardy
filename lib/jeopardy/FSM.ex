@@ -27,6 +27,14 @@ defmodule Jeopardy.FSM do
     end)
   end
 
+  def clear_early_buzzer_penalties(players) do
+    time = DateTime.add(DateTime.utc_now(), -1_000_000_000, :second)
+
+    Enum.each(players, fn {id, _p} ->
+      Cachex.put!(:stats, "player:#{id}:early_buzz", time)
+    end)
+  end
+
   defmacro __using__([]) do
     quote do
       import Ecto.Query, warn: false

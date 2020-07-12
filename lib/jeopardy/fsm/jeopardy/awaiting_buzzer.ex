@@ -22,6 +22,12 @@ defmodule Jeopardy.FSM.Jeopardy.AwaitingBuzzer do
     {:ok, retrieve_state(state.game.id)}
   end
 
+  @impl true
+  def handle(:early_buzz, player_id, %State{} = state) do
+    Jeopardy.FSM.set_early_buzz_penalty(player_id)
+    {:ok, retrieve_state(state.game.id)}
+  end
+
   defp buzz(player_id, state) do
     player = state.contestants[player_id]
 
