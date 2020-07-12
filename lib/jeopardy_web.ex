@@ -175,8 +175,11 @@ defmodule JeopardyWeb do
 
             "[#{x}]"
 
-          f when f in ~w(air_date inserted_at updated_at)a ->
+          :air_date ->
             if val == nil, do: "nil", else: Date.to_string(val)
+
+          f when f in ~w(inserted_at updated_at replicated_at)a ->
+            if val == nil, do: "nil", else: DateTime.to_string(val)
 
           :id when model == Jeopardy.Games.Game ->
             ~s(<a href="/admin/games/#{val}">#{val}</a>)
