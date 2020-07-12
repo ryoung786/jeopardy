@@ -73,6 +73,9 @@ config :jeopardy, Jeopardy.BIReplication,
   frequency: 365 * 24 * 60 * 60 * 1000,
   bucket: "jeopardy_ryoung_test"
 
+# milliseconds
+config :jeopardy, early_buzz_penalty: 4_000
+
 # Do not include metadata nor timestamps in development logs
 # , level: :info
 config :logger, :console, format: "[$level] $message\n"

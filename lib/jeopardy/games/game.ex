@@ -70,6 +70,7 @@ defmodule Jeopardy.Games.Game do
         where: c.round == ^game.status,
         where: c.asked_status == "unasked",
         where: not is_nil(c.clue_text),
+        where: not (c.clue_text == "=" and c.answer_text == "="),
         select: count(1)
       )
       |> Repo.one()
