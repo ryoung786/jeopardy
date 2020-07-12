@@ -10,6 +10,12 @@ defmodule Jeopardy.FSM.Jeopardy.ReadingClue do
     {:ok, retrieve_state(state.game.id)}
   end
 
+  @impl true
+  def handle(:early_buzz, player_id, %State{} = state) do
+    Jeopardy.FSM.set_early_buzz_penalty(player_id)
+    {:ok, retrieve_state(state.game.id)}
+  end
+
   defp clear_buzzer_and_update_round(%State{} = state) do
     updates = [
       buzzer_player: nil,

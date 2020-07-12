@@ -1,7 +1,7 @@
 defmodule Jeopardy.FSM.Jeopardy.AwaitingBuzzer do
   use Jeopardy.FSM
   alias Jeopardy.Repo
-  alias Jeopardy.Games.{Game, Clue}
+  alias Jeopardy.Games.{Game, Clue, Player}
   import Ecto.Query
 
   @impl true
@@ -25,32 +25,34 @@ defmodule Jeopardy.FSM.Jeopardy.AwaitingBuzzer do
   defp buzz(player_id, state) do
     player = state.contestants[player_id]
 
-    q =
-      from g in Game,
-        where: g.id == ^state.game.id,
-        where: g.buzzer_lock_status == "clear",
-        where: is_nil(g.buzzer_player),
-        where: g.round_status == "awaiting_buzzer",
-        join: c in Clue,
-        on: c.id == g.current_clue_id,
-        on: ^player.id not in c.incorrect_players,
-        select: g.id
+    if Player.buzzer_locked_by_early_buzz?(player_id) do
+      :failed
+    else
+      q =
+        from g in Game,
+          where: g.id == ^state.game.id,
+          where: g.buzzer_lock_status == "clear",
+          where: is_nil(g.buzzer_player),
+          where: g.round_status == "awaiting_buzzer",
+          join: c in Clue,
+          on: c.id == g.current_clue_id,
+          on: ^player.id not in c.incorrect_players,
+          select: g.id
 
-    updates = [
-      buzzer_player: player.name,
-      buzzer_lock_status: "player",
-      round_status: "answering_clue"
-    ]
+      updates = [
+        buzzer_player: player.name,
+        buzzer_lock_status: "player",
+        round_status: "answering_clue"
+      ]
 
-    case Repo.update_all_ts(q, set: updates) do
-      {0, _} ->
-        Logger.warn("[xxx] FAILED buzz")
-        :failed
+      case Repo.update_all_ts(q, set: updates) do
+        {0, _} ->
+          :failed
 
-      {1, _} ->
-        Logger.warn("[xxx] SUCCESS buzz")
-        Jeopardy.Timer.stop(state.game.code)
-        :ok
+        {1, _} ->
+          Jeopardy.Timer.stop(state.game.code)
+          :ok
+      end
     end
   end
 
@@ -73,11 +75,9 @@ defmodule Jeopardy.FSM.Jeopardy.AwaitingBuzzer do
 
     case Repo.update_all_ts(q, set: updates) do
       {0, _} ->
-        Logger.warn("[xxx] FAILED no_answer")
         :failed
 
       {1, _} ->
-        Logger.warn("[xxx] SUCCESS no_answer")
         Jeopardy.Timer.stop(state.game.code)
         :ok
     end

@@ -16,6 +16,12 @@ defmodule Jeopardy.FSM.Jeopardy.AnsweringClue do
     {:ok, retrieve_state(state.game.id)}
   end
 
+  @impl true
+  def handle(:early_buzz, player_id, %State{} = state) do
+    Jeopardy.FSM.set_early_buzz_penalty(player_id)
+    {:ok, retrieve_state(state.game.id)}
+  end
+
   defp correct(%State{game: game} = state) do
     player_id = player_id_that_buzzed(state)
 

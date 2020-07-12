@@ -41,4 +41,10 @@ defmodule Jeopardy.Games.Clue do
   def is_daily_double(clue), do: not is_nil(clue) && clue.type == "daily_double"
   def asked(clue), do: not is_nil(clue) && clue.asked_status == "asked"
   def game(clue), do: Games.get_game!(clue.game_id)
+
+  def usable?(clue) do
+    not is_nil(clue) &&
+      not is_nil(clue.clue_text) &&
+      not (clue.clue_text == "=" && clue.answer_text == "=")
+  end
 end

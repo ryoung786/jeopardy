@@ -49,6 +49,9 @@ config :jeopardy, Jeopardy.BIReplication,
 
 config :jeopardy, gtag: false
 
+# milliseconds
+config :jeopardy, early_buzz_penalty: 250
+
 if Mix.env() != :prod do
   config :git_hooks,
     auto_install: true,
