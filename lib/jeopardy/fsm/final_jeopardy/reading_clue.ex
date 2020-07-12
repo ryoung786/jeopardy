@@ -3,9 +3,8 @@ defmodule Jeopardy.FSM.FinalJeopardy.ReadingClue do
   alias Jeopardy.Games.Player
 
   @impl true
-  def handle(:trebek_advance, _, %State{} = state) do
-    {:ok, State.update_round(state, "awaiting_answers")}
-  end
+  def handle(:trebek_advance, _, %State{} = state),
+    do: {:ok, State.update_round(state, "awaiting_answers")}
 
   @impl true
   def handle(:answer_submitted, %{player_id: player_id, answer: answer}, %State{} = state) do
