@@ -18,7 +18,6 @@
     display: grid;
     justify-content: center;
     align-items: center;
-    // height: 100vh;
     height: 100%;
     grid-template-rows: 66% 1fr;
     background: aliceblue;
@@ -34,5 +33,9 @@
 
     .negative {
         color: #E94860;
+    }
+
+    .invalid-feedback {
+        color: crimson;
     }
 }

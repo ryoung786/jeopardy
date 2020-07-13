@@ -9,7 +9,7 @@
         <div class="brown"></div>
     </div>
     <%= for {_id, c} <- @contestants do %>
-        <% buzz_class = if c.name == @buzzer.player_name, do: "buzz", else: "" %>
+        <% buzz_class = if c.name == @buzzer.player_name && @game.status != "final_jeopardy", do: "buzz", else: "" %>
         <% prev_score = pre_score(c, @game) %>
         <% wager = abs(c.score - pre_score(c, @game)) %>
         <div class="podium <%= buzz_class %>" data-player_id="<%= c.id %>">
