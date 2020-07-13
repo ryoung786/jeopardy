@@ -1,3 +1,7 @@
+@import "index";
+@import "theme";
+@import "animations";
+
 @import "jeopardy_common";
 @import "board";
 @import "scoreboard";
@@ -7,7 +11,3 @@
 @import "game/buzzer";
 @import "game/game";
 @import "game/final_jeopardy_submission";
-
-@import "index";
-@import "theme";
-@import "animations";

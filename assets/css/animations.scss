@@ -1,3 +1,5 @@
+$bounce-time-fn: cubic-bezier(.54,1.85,.5,1);
+
 @keyframes fadeout {
     from { opacity: 1; }
     to { opacity: 0; }
