@@ -1,24 +1,27 @@
-<%= if @game.buzzer_player == @name do %>
-    <div class="game answering_clue single-instruction">
-        <%= if Jeopardy.Games.Clue.is_daily_double(@current_clue) do %>
+<% name = @name %>
+<%= case {@game.buzzer_player, Jeopardy.Games.Clue.is_daily_double(@current_clue)} do %>
+    <%= {^name, true} -> %>
+        <div class="game answering_clue single-instruction">
             <p class="instruction">Tell <%= @game.trebek %> your answer when you're ready.</p>
-        <% else %>
-            <p class="instruction" phx-hook="vibratePhone">You buzzed in! Tell <%= @game.trebek %> your answer.</p>
-        <% end %>
-    </div>
-<% else %>
-    <%= if Jeopardy.Games.Clue.is_daily_double(@current_clue) do %>
+        </div>
+    <%= {^name, false} -> %>
+        <div class="game answering_clue you_buzzed_in">
+            <div class="container">
+                <%= render CommonView, "svgs/lightbulb.html", assigns %>
+                <p class="instruction" phx-hook="vibratePhone">You buzzed in! Tell <%= @game.trebek %> your answer.</p>
+            </div>
+        </div>
+    <%= {_, true} -> %> <h1>other person daily double</h1>
         <div class="game answering_clue single-instruction">
             <p class="instruction">
                 <%= @game.board_control %> hit the Daily Double! <br />
                 Waiting for them to make their wager.
             </p>
         </div>
-    <% else %>
+    <%= {_, false} -> %>
         <%= render "early_buzz_penalty.html", assigns %>
         <div class="game answering_clue single-instruction"
              phx-click="early_buzz" phx-target="<%= @myself %>">
             <p class="instruction"><%= @game.board_control %> buzzed in.</p>
         </div>
-    <% end %>
 <% end %>
