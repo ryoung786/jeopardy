@@ -1,5 +1,6 @@
 defmodule JeopardyWeb.GameView do
   use JeopardyWeb, :view
+  alias JeopardyWeb.CommonView
   require Logger
 
   def revealing_board_class(i, current) do
