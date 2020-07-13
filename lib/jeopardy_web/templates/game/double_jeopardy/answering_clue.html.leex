@@ -11,11 +11,11 @@
                 <p class="instruction" phx-hook="vibratePhone">You buzzed in! Tell <%= @game.trebek %> your answer.</p>
             </div>
         </div>
-    <%= {_, true} -> %> <h1>other person daily double</h1>
+    <%= {_, true} -> %>
         <div class="game answering_clue single-instruction">
             <p class="instruction">
                 <%= @game.board_control %> hit the Daily Double! <br />
-                Waiting for them to make their wager.
+                Waiting for them to answer.
             </p>
         </div>
     <%= {_, false} -> %>
