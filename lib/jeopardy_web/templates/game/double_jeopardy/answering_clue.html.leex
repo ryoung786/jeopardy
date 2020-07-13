@@ -15,15 +15,13 @@
             </p>
         </div>
     <% else %>
-        <div class="game answering_clue single-instruction"
-             phx-click="early_buzz" phx-target="<%= @myself %>">
-            <%= if @early_buzz_penalty do %>
-                <p class="instruction">
-                    You buzzed in too early.  Locked temporarily.
-                </p>
-            <% else %>
+        <%= if @early_buzz_penalty do %>
+            <%= render "early_buzz_penalty.html", assigns %>
+        <% else %>
+            <div class="game answering_clue single-instruction"
+                 phx-click="early_buzz" phx-target="<%= @myself %>">
                 <p class="instruction"><%= @game.board_control %> buzzed in.</p>
-            <% end %>
-        </div>
+            </div>
+        <% end %>
     <% end %>
 <% end %>
