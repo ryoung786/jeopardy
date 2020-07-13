@@ -21,12 +21,14 @@
     .container {
         display: grid;
         place-items: center;
+        $speed: 250ms;
 
         svg.lock {
             width: 100px;
             height: 100px;
             fill: salmon;
             filter: drop-shadow(4px 4px 5px #999);
+            animation: early_buzz cubic-bezier(.54,1.85,.5,1) $speed;
         }
         .instruction {
             margin: 20px; padding: 20px; max-width: 500px; min-width: 200px;
@@ -34,6 +36,19 @@
             background: white;
             border-radius: 5px;
             text-align: center;
+            animation: slidein cubic-bezier(.54,1.85,.5,1) $speed;
         }
     }
+    @keyframes early_buzz {
+        from {
+            transform: translateY(-25%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
 }

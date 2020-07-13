@@ -50,7 +50,7 @@ config :jeopardy, Jeopardy.BIReplication,
 config :jeopardy, gtag: false
 
 # milliseconds
-config :jeopardy, early_buzz_penalty: 250
+config :jeopardy, early_buzz_penalty: 1_000
 
 if Mix.env() != :prod do
   config :git_hooks,
