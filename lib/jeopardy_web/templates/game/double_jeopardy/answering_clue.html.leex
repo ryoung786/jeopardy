@@ -1,24 +1,24 @@
 <% name = @name %>
 <%= case {@game.buzzer_player, Jeopardy.Games.Clue.is_daily_double(@current_clue)} do %>
-    <%= {^name, true} -> %>
+    <% {^name, true} -> %>
         <div class="game answering_clue single-instruction">
             <p class="instruction">Tell <%= @game.trebek %> your answer when you're ready.</p>
         </div>
-    <%= {^name, false} -> %>
+    <% {^name, false} -> %>
         <div class="game answering_clue you_buzzed_in">
             <div class="container">
                 <%= render CommonView, "svgs/lightbulb.html", assigns %>
                 <p class="instruction" phx-hook="vibratePhone">You buzzed in! Tell <%= @game.trebek %> your answer.</p>
             </div>
         </div>
-    <%= {_, true} -> %>
+    <% {_, true} -> %>
         <div class="game answering_clue single-instruction">
             <p class="instruction">
                 <%= @game.board_control %> hit the Daily Double! <br />
                 Waiting for them to answer.
             </p>
         </div>
-    <%= {_, false} -> %>
+    <% {_, false} -> %>
         <%= render "early_buzz_penalty.html", assigns %>
         <div class="game answering_clue single-instruction"
              phx-click="early_buzz" phx-target="<%= @myself %>">
