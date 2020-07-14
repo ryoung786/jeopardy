@@ -17,8 +17,7 @@ defmodule JeopardyWeb.GameLive do
 
       _ ->
         state = State.retrieve_state(game.id)
-        player = player_from_name(state, name)
-        if connected?(socket), do: pubsub_subscribe(game.id, player.id)
+        if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, "game:#{game.id}")
         {:ok, assigns(socket, state, name)}
     end
   end
@@ -40,11 +39,6 @@ defmodule JeopardyWeb.GameLive do
   end
 
   @impl true
-  def handle_info({:early_buzz, lock_status}, socket) do
-    {:noreply, assign(socket, early_buzz_penalty: lock_status == :locked)}
-  end
-
-  @impl true
   def handle_info(%{event: :next_category} = event, socket) do
     data = Map.put(event, :id, Atom.to_string(socket.assigns.component))
     send_update(socket.assigns.component, data)
@@ -61,7 +55,6 @@ defmodule JeopardyWeb.GameLive do
     |> assign(name: name)
     |> assign(player: player)
     |> assign(can_buzz: can_buzz?(state, player))
-    |> assign(early_buzz_penalty: Player.buzzer_locked_by_early_buzz?(player.id))
     |> assign(game: state.game)
     |> assign(component: component_from_game(state.game))
     |> assign(players: state.contestants)
@@ -79,10 +72,5 @@ defmodule JeopardyWeb.GameLive do
   defp player_from_name(%State{} = state, name) do
     {_id, player} = state.contestants |> Enum.find(fn {_k, v} -> v.name == name end)
     player
-  end
-
-  defp pubsub_subscribe(game_id, player_id) do
-    Phoenix.PubSub.subscribe(Jeopardy.PubSub, "game:#{game_id}")
-    Phoenix.PubSub.subscribe(Jeopardy.PubSub, "player:#{player_id}")
   end
 end

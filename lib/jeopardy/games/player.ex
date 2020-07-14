@@ -42,16 +42,4 @@ defmodule Jeopardy.Games.Player do
       _ -> {5, max(1000, p.score)}
     end
   end
-
-  def buzzer_locked_by_early_buzz?(player_id) do
-    now = DateTime.utc_now()
-
-    last_buzz_time =
-      Cachex.fetch!(:stats, "player:#{player_id}:early_buzz", fn ->
-        {:ignore, DateTime.add(now, -1_000_000_000, :second)}
-      end)
-
-    DateTime.diff(now, last_buzz_time, :millisecond) <
-      Application.get_env(:jeopardy, :early_buzz_penalty)
-  end
 end
