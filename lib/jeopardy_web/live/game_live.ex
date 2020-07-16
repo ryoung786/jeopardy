@@ -18,7 +18,10 @@ defmodule JeopardyWeb.GameLive do
       _ ->
         state = State.retrieve_state(game.id)
         if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, "game:#{game.id}")
-        {:ok, assigns(socket, state, name)}
+
+        if name in Enum.map(state.contestants, fn {_id, p} -> p.name end),
+          do: {:ok, assigns(socket, state, name)},
+          else: {:ok, socket |> put_flash(:info, "Please rejoin a game") |> redirect(to: "/")}
     end
   end
 
@@ -33,9 +36,13 @@ defmodule JeopardyWeb.GameLive do
   def handle_info(%State{} = state, socket) do
     name = socket.assigns.name
 
-    if state.trebek && state.trebek.name == name,
-      do: {:noreply, redirect(socket, to: "/games/#{state.game.code}/trebek")},
-      else: {:noreply, assigns(socket, state, name)}
+    if state.trebek && state.trebek.name == name do
+      {:noreply, redirect(socket, to: "/games/#{state.game.code}/trebek")}
+    else
+      if name in Enum.map(state.contestants, fn {_id, p} -> p.name end),
+        do: {:noreply, assigns(socket, state, name)},
+        else: {:noreply, socket |> put_flash(:info, "Please rejoin a game") |> redirect(to: "/")}
+    end
   end
 
   @impl true
@@ -70,7 +77,10 @@ defmodule JeopardyWeb.GameLive do
   end
 
   defp player_from_name(%State{} = state, name) do
-    {_id, player} = state.contestants |> Enum.find(fn {_k, v} -> v.name == name end)
-    player
+    with {_id, player} <- state.contestants |> Enum.find(fn {_k, v} -> v.name == name end) do
+      player
+    else
+      _ -> nil
+    end
   end
 end

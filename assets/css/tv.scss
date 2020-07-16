@@ -1,3 +1,6 @@
+@import "index";
+@import "theme";
+@import "animations";
 @import "jeopardy_common";
 @import "board";
 @import "scoreboard";
@@ -9,6 +12,3 @@
 @import "tv/revealing_board";
 @import "tv/selecting_clue";
 @import "tv/stats-modal";
-@import "index";
-@import "theme";
-@import "animations";

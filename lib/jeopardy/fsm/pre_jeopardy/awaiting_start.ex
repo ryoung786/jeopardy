@@ -21,6 +21,11 @@ defmodule Jeopardy.FSM.PreJeopardy.AwaitingStart do
     end
   end
 
+  def handle(:remove_player, player_id, state) do
+    Jeopardy.Repo.delete(%Jeopardy.Games.Player{id: player_id})
+    {:ok, retrieve_state(state.game.id)}
+  end
+
   # def handle(%{event: :player_exited, data: data}, %{game: game} = state) do
   # remove the player
   # end
