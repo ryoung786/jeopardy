@@ -21,6 +21,6 @@
     <% {_, false} -> %>
         <%= render "early_buzz_penalty.html", assigns %>
         <div class="game answering_clue single-instruction" phx-hook="SomeoneElseBuzzedIn">
-            <p class="instruction"><%= @game.board_control %> buzzed in.</p>
+            <p class="instruction"><%= @game.buzzer_player %> buzzed in.</p>
         </div>
 <% end %>
