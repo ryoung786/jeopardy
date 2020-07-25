@@ -78,7 +78,7 @@ defmodule JeopardyWeb.Router do
   defp ensure_name_exists(conn, _opts) do
     if get_session(conn, :name),
       do: conn,
-      else: conn |> put_flash(:info, "Name plz") |> redirect(to: "/") |> halt()
+      else: conn |> put_flash(:info, "Please enter your name") |> redirect(to: "/") |> halt()
   end
 
   if Mix.env() == :dev, do: forward("/sent_emails", Bamboo.SentEmailViewerPlug)
