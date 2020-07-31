@@ -47,6 +47,10 @@ config :jeopardy, Jeopardy.BIReplication,
   frequency: 1 * 60 * 60 * 1000,
   bucket: "jeopardy_ryoung_test"
 
+config :jeopardy, Jeopardy.Cron.CullOldRecords,
+  # daily
+  frequency: 24 * 60 * 60 * 1000
+
 config :jeopardy, gtag: false
 
 # milliseconds
