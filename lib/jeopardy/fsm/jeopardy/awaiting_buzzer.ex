@@ -1,7 +1,7 @@
 defmodule Jeopardy.FSM.Jeopardy.AwaitingBuzzer do
   use Jeopardy.FSM
   alias Jeopardy.Repo
-  alias Jeopardy.Games.{Game, Clue, Player}
+  alias Jeopardy.Games.{Game, Clue}
   import Ecto.Query
 
   @impl true
