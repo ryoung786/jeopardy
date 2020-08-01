@@ -17,4 +17,14 @@ defmodule Jeopardy.Email do
     |> text_body("New game: " <> url)
     |> html_body("New game: <a href=\"#{url}\">#{url}</a>")
   end
+
+  def reset_password(%{user: user, subject: subject, text: text, html: html}) do
+    new_email(
+      to: user.email,
+      from: "notifications@ryoung.info",
+      subject: subject,
+      html_body: html,
+      text_body: text
+    )
+  end
 end

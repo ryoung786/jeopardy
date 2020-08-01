@@ -30,7 +30,10 @@ config :phoenix, :json_library, Jason
 
 config :jeopardy, :pow,
   user: Jeopardy.Users.User,
-  repo: Jeopardy.Repo
+  repo: Jeopardy.Repo,
+  extensions: [PowResetPassword, PowEmailConfirmation],
+  controller_callbacks: Pow.Extension.Phoenix.ControllerCallbacks,
+  mailer_backend: MyAppWeb.Pow.Mailer
 
 config :jeopardy, Jeopardy.Mailer,
   adapter: Bamboo.SendGridAdapter,

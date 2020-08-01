@@ -1,5 +1,7 @@
 defmodule JeopardyWeb.Router do
   use JeopardyWeb, :router
+  use Pow.Phoenix.Router
+  use Pow.Extension.Phoenix.Router, extensions: [PowResetPassword, PowEmailConfirmation]
   import Phoenix.LiveDashboard.Router
   require Logger
   alias Jeopardy.Games
@@ -22,10 +24,15 @@ defmodule JeopardyWeb.Router do
     plug :put_root_layout, {JeopardyWeb.LayoutView, :admin}
   end
 
+  pipeline :protected do
+    plug Pow.Plug.RequireAuthenticated, error_handler: Pow.Phoenix.PlugErrorHandler
+  end
+
   scope "/" do
     pipe_through :browser
 
     pow_routes()
+    pow_extension_routes()
   end
 
   scope "/", JeopardyWeb do
