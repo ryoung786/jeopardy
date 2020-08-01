@@ -28,6 +28,10 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :jeopardy, :pow,
+  user: Jeopardy.Users.User,
+  repo: Jeopardy.Repo
+
 config :jeopardy, Jeopardy.Mailer,
   adapter: Bamboo.SendGridAdapter,
   server: "smtp.domain",

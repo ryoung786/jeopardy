@@ -22,6 +22,12 @@ defmodule JeopardyWeb.Router do
     plug :put_root_layout, {JeopardyWeb.LayoutView, :admin}
   end
 
+  scope "/" do
+    pipe_through :browser
+
+    pow_routes()
+  end
+
   scope "/", JeopardyWeb do
     pipe_through :browser
 

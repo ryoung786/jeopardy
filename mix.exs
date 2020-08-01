@@ -56,6 +56,7 @@ defmodule Jeopardy.MixProject do
       {:bamboo, "~> 1.5"},
       {:bamboo_smtp, "~> 2.1.0"},
       {:google_api_storage, "~> 0.22"},
+      {:pow, "~> 1.0.20"},
       {:goth, "~> 1.2.0"}
     ]
   end
