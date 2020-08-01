@@ -33,7 +33,8 @@ config :jeopardy, :pow,
   repo: Jeopardy.Repo,
   extensions: [PowResetPassword, PowEmailConfirmation],
   controller_callbacks: Pow.Extension.Phoenix.ControllerCallbacks,
-  mailer_backend: MyAppWeb.Pow.Mailer
+  mailer_backend: MyAppWeb.Pow.Mailer,
+  web_module: JeopardyWeb
 
 config :jeopardy, Jeopardy.Mailer,
   adapter: Bamboo.SendGridAdapter,

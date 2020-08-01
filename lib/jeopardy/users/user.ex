@@ -2,6 +2,7 @@ defmodule Jeopardy.Users.User do
   use Ecto.Schema
   use Pow.Ecto.Schema
   use Pow.Extension.Ecto.Schema, extensions: [PowResetPassword, PowEmailConfirmation]
+  use PowAssent.Ecto.Schema
 
   schema "users" do
     pow_user_fields()
