@@ -1,28 +1,40 @@
-<h1>Sign in</h1>
+<div class="homepage pow">
+    <%= render_layout JeopardyWeb.PageView, "header.html", assigns do %>
+        <h1>Sign in</h1>
+    <% end %>
 
-<%= form_for @changeset, @action, [as: :user], fn f -> %>
-  <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+
+    <div class="options">
+
+        <a class="button button-outline social-login" href="<%= Routes.pow_assent_authorization_path(@conn, :new, :google) %>">
+            <%= render JeopardyWeb.CommonView, "svgs/google.html" %> <span>Sign in with Google</span>
+        </a>
+        <a class="button button-outline social-login" href="<%= Routes.pow_assent_authorization_path(@conn, :new, :facebook) %>">
+            <img src="<%= Routes.static_path(@conn, "/images/facebook.png") %>" alt="facebook login image"> <span>Sign in with Facebook</span>
+        </a>
+
+        <center><h3 class="or">Or</h3></center>
+
+        <%= form_for @changeset, @action, [as: :user], fn f -> %>
+            <%= if @changeset.action do %>
+                <div class="alert alert-danger">
+                    <p>Oops, something went wrong! Please check the errors below.</p>
+                </div>
+            <% end %>
+
+            <%= label f, Pow.Ecto.Schema.user_id_field(@changeset) %>
+            <%= text_input f, Pow.Ecto.Schema.user_id_field(@changeset) %>
+            <%= error_tag f, Pow.Ecto.Schema.user_id_field(@changeset) %>
+
+            <%= label f, :password %>
+            <%= password_input f, :password %>
+            <%= error_tag f, :password %>
+
+            <div>
+                <%= submit "Sign in" %>
+            </div>
+        <% end %>
+
+        <span><%= link "Register", to: Routes.pow_registration_path(@conn, :new) %></span>
     </div>
-  <% end %>
-
-  <%= label f, Pow.Ecto.Schema.user_id_field(@changeset) %>
-  <%= text_input f, Pow.Ecto.Schema.user_id_field(@changeset) %>
-  <%= error_tag f, Pow.Ecto.Schema.user_id_field(@changeset) %>
-
-  <%= label f, :password %>
-  <%= password_input f, :password %>
-  <%= error_tag f, :password %>
-
-  <div>
-    <%= submit "Sign in" %>
-  </div>
-<% end %>
-
-
-<span><%= link "Register", to: Routes.pow_registration_path(@conn, :new) %></span>
-<div>
-    <%= for link <- PowAssent.Phoenix.ViewHelpers.provider_links(@conn),
-          do: content_tag(:span, link) %>
 </div>

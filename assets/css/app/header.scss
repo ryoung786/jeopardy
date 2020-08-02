@@ -1,12 +1,4 @@
-@import "theme";
-
-.onclick-void-holder > main { height: 100%; }
-
 .homepage {
-    min-height: 100%;
-    background: #F9F9F9;
-    overscroll-behavior-y: contain;
-
     .header {
         svg { display: inline-block; vertical-align: text-bottom; }
         background: $dark-shades;
@@ -69,52 +61,25 @@
             font-family: "Bungee", "Helvetica Neue", sans-serif;
             font-size: 6rem;
         }
-    }
-    .curved-div svg {
-        display: block;
-        path { transform: scale(1.1) translateX(-3px); }
-    }
-    .curved-div.upper {
-        background: #f9f9f9;
-        transform: translateY(2px);
-    }
-    .curved-div h1 {
-        font-size: 6rem;
-        margin: 0 20px;
-        text-shadow: 2px 2px 2px #666;
-    }
-    .curved-div p {
-        font-size: 1.6rem;
-        margin:0 5rem 20px 5rem;
-        font-family: "Roboto Slab", "Helvetica Neue", sans-serif;
-        color: #fff;
-    }
 
-    .options {
-        color: #222;
-        padding: 20px;
-        margin: auto;
-        max-width: 300px;
-        form { margin: 0px; }
-        input { background: #fff; }
+        svg {
+            display: block;
+            path { transform: scale(1.1) translateX(-3px); }
+        }
+        &.upper {
+            background: #f9f9f9;
+            transform: translateY(2px);
+        }
+        h1 {
+            font-size: 6rem;
+            margin: 0 20px;
+            text-shadow: 2px 2px 2px #666;
+        }
+        p {
+            font-size: 1.6rem;
+            margin:0 5rem 20px 5rem;
+            font-family: "Roboto Slab", "Helvetica Neue", sans-serif;
+            color: #fff;
+        }
     }
-}
-
-.homepage.tv {
-    .header-instructions {
-        font-family: "Roboto Slab", "Helvetica Neue", sans-serif;
-        text-shadow: 2px 2px 2px #666;
-        padding: 0px 10px;
-        font-size: 5rem;
-        list-style: none;
-        margin: 20px 0 0 0;
-    }
-    .share-prompt { margin-top: 20px; margin-bottom: 0px; }
-    .room-code-label { margin-top: 0px; }
-    .options ul { list-style: inside; }
-}
-
-@media only screen and (max-width: 400px) {
-    .homepage .curved-div h1, .homepage .curved-div .this-is-jeopardy { font-size: 4rem; }
-    .homepage .curved-div p { font-size: 1.4rem; }
 }

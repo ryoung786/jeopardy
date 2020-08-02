@@ -1,0 +1,36 @@
+.onclick-void-holder > main { height: 100%; }
+
+.homepage {
+    min-height: 100%;
+    background: #f9f9f9;
+    overscroll-behavior-y: contain;
+
+
+    .options {
+        color: #222;
+        padding: 20px;
+        margin: auto;
+        max-width: 300px;
+        form { margin: 0px; }
+        input { background: #fff; }
+    }
+
+    &.tv {
+        .header-instructions {
+            font-family: "Roboto Slab", "Helvetica Neue", sans-serif;
+            text-shadow: 2px 2px 2px #666;
+            padding: 0px 10px;
+            font-size: 5rem;
+            list-style: none;
+            margin: 20px 0 0 0;
+        }
+        .share-prompt { margin-top: 20px; margin-bottom: 0px; }
+        .room-code-label { margin-top: 0px; }
+        .options ul { list-style: inside; }
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .homepage .curved-div h1, .homepage .curved-div .this-is-jeopardy { font-size: 4rem; }
+    .homepage .curved-div p { font-size: 1.4rem; }
+}
