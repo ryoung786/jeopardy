@@ -29,8 +29,3 @@
         .options ul { list-style: inside; }
     }
 }
-
-@media only screen and (max-width: 400px) {
-    .homepage .curved-div h1, .homepage .curved-div .this-is-jeopardy { font-size: 4rem; }
-    .homepage .curved-div p { font-size: 1.4rem; }
-}

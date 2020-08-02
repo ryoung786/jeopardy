@@ -7,7 +7,7 @@
             </a>
             <div class="user-profile-dropdown">
                 <ul>
-                    <%= link to: "/" do %><li>Account</li><% end %>
+                    <%= link to: Routes.pow_registration_path(@conn, :edit) do %><li>Account</li><% end %>
                     <%= link to: Routes.pow_session_path(@conn, :delete), method: :delete do %><li>Sign Out</li><% end %>
                 </ul>
             </div>

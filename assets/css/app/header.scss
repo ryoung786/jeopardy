@@ -1,6 +1,5 @@
 .homepage {
     .header {
-        svg { display: inline-block; vertical-align: text-bottom; }
         background: $dark-shades;
         padding: 5px;
         padding-right: 10px;
@@ -8,10 +7,14 @@
             max-width: 1400px;
             display: flex;
             justify-content: flex-end;
-            margin: auto;
-            .email {
-                color: white;
-                margin-right: 5px;
+            .user-profile {
+                display: flex;
+                .email {
+                    color: white;
+                    margin-right: 5px;
+                    align-self: flex-end;
+                }
+                svg { display: block; }
             }
         }
 
@@ -80,6 +83,25 @@
             margin:0 5rem 20px 5rem;
             font-family: "Roboto Slab", "Helvetica Neue", sans-serif;
             color: #fff;
+        }
+    }
+}
+
+
+
+@media only screen and (max-width: 400px) {
+    .homepage {
+        .header .email {
+            font-size: 1.4rem;
+        }
+        .curved-div {
+            h1, .this-is-jeopardy {
+                font-size: 3rem;
+                margin-bottom: 10px;
+            }
+            p {
+                font-size: 1.4rem;
+            }
         }
     }
 }
