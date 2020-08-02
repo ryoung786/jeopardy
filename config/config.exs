@@ -42,6 +42,11 @@ config :jeopardy, :pow_assent,
       client_id: System.get_env("GOOGLE_CLIENT_ID"),
       client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),
       strategy: Assent.Strategy.Google
+    ],
+    facebook: [
+      client_id: System.get_env("FACEBOOK_CLIENT_ID"),
+      client_secret: System.get_env("FACEBOOK_CLIENT_SECRET"),
+      strategy: Assent.Strategy.Facebook
     ]
   ]
 

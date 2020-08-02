@@ -56,6 +56,7 @@ defmodule JeopardyWeb.Router do
     get "/", PageController, :index
     post "/", PageController, :join
     post "/games", GameController, :create
+    get "/privacy-policy", PageController, :privacy_policy
 
     scope "/games/:code" do
       pipe_through :games
