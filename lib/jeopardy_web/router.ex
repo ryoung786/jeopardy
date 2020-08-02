@@ -56,7 +56,6 @@ defmodule JeopardyWeb.Router do
     get "/", PageController, :index
     post "/", PageController, :join
     post "/games", GameController, :create
-    get "/auth/google/callback", GoogleAuthController, :index
 
     scope "/games/:code" do
       pipe_through :games
@@ -70,7 +69,7 @@ defmodule JeopardyWeb.Router do
   end
 
   scope "/admin", JeopardyWeb.Admin do
-    pipe_through [:browser, :admin]
+    pipe_through [:browser, :protected, :admin]
 
     get "/", GameController, :index
     live_dashboard "/dashboard", metrics: JeopardyWeb.Telemetry
@@ -92,14 +91,15 @@ defmodule JeopardyWeb.Router do
   end
 
   defp ensure_admin(conn, _opts) do
-    case get_session(conn, :admin) do
-      true ->
-        conn
+    admin_user_emails = Application.fetch_env!(:jeopardy, :admin)[:ADMIN_USER_EMAILS]
 
-      _ ->
-        conn
-        |> redirect(external: ElixirAuthGoogle.generate_oauth_url(conn) <> "&prompt=consent")
-        |> halt()
+    if conn.assigns.current_user.email in admin_user_emails do
+      conn
+    else
+      conn
+      |> put_status(404)
+      |> put_view(JeopardyWeb.ErrorView)
+      |> render(:"404")
     end
   end
 

@@ -37,6 +37,7 @@ defmodule Jeopardy.MixProject do
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
+      # try upgrading to 0.14
       {:phoenix_live_view, "~> 0.13.0"},
       {:floki, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
@@ -52,7 +53,6 @@ defmodule Jeopardy.MixProject do
       {:calendar, "~> 1.0.0"},
       {:cachex, "~> 3.2"},
       {:distillery, "~> 2.1"},
-      {:elixir_auth_google, "~> 1.1.0"},
       {:bamboo, "~> 1.5"},
       {:bamboo_smtp, "~> 2.1.0"},
       {:google_api_storage, "~> 0.22"},
