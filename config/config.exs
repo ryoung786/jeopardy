@@ -36,6 +36,15 @@ config :jeopardy, :pow,
   mailer_backend: MyAppWeb.Pow.Mailer,
   web_module: JeopardyWeb
 
+config :jeopardy, :pow_assent,
+  providers: [
+    google: [
+      client_id: System.get_env("GOOGLE_CLIENT_ID"),
+      client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),
+      strategy: Assent.Strategy.Google
+    ]
+  ]
+
 config :jeopardy, Jeopardy.Mailer,
   adapter: Bamboo.SendGridAdapter,
   server: "smtp.domain",
