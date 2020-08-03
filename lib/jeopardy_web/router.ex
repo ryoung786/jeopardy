@@ -1,7 +1,7 @@
 defmodule JeopardyWeb.Router do
   use JeopardyWeb, :router
   use Pow.Phoenix.Router
-  use Pow.Extension.Phoenix.Router, extensions: [PowResetPassword, PowEmailConfirmation]
+  use Pow.Extension.Phoenix.Router, extensions: [PowResetPassword]
   use PowAssent.Phoenix.Router
   import Phoenix.LiveDashboard.Router
   require Logger

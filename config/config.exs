@@ -31,7 +31,7 @@ config :phoenix, :json_library, Jason
 config :jeopardy, :pow,
   user: Jeopardy.Users.User,
   repo: Jeopardy.Repo,
-  extensions: [PowResetPassword, PowEmailConfirmation],
+  extensions: [PowResetPassword],
   controller_callbacks: Pow.Extension.Phoenix.ControllerCallbacks,
   mailer_backend: MyAppWeb.Pow.Mailer,
   web_module: JeopardyWeb
