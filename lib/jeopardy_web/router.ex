@@ -1,5 +1,8 @@
 defmodule JeopardyWeb.Router do
   use JeopardyWeb, :router
+  use Pow.Phoenix.Router
+  use Pow.Extension.Phoenix.Router, extensions: [PowResetPassword, PowEmailConfirmation]
+  use PowAssent.Phoenix.Router
   import Phoenix.LiveDashboard.Router
   require Logger
   alias Jeopardy.Games
@@ -22,13 +25,38 @@ defmodule JeopardyWeb.Router do
     plug :put_root_layout, {JeopardyWeb.LayoutView, :admin}
   end
 
+  pipeline :protected do
+    plug Pow.Plug.RequireAuthenticated, error_handler: Pow.Phoenix.PlugErrorHandler
+  end
+
+  pipeline :skip_csrf_protection do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_flash
+    plug :put_secure_browser_headers
+  end
+
+  scope "/" do
+    pipe_through :skip_csrf_protection
+
+    pow_assent_authorization_post_callback_routes()
+  end
+
+  scope "/" do
+    pipe_through :browser
+
+    pow_routes()
+    pow_assent_routes()
+    pow_extension_routes()
+  end
+
   scope "/", JeopardyWeb do
     pipe_through :browser
 
     get "/", PageController, :index
     post "/", PageController, :join
     post "/games", GameController, :create
-    get "/auth/google/callback", GoogleAuthController, :index
+    get "/privacy-policy", PageController, :privacy_policy
 
     scope "/games/:code" do
       pipe_through :games
@@ -42,7 +70,7 @@ defmodule JeopardyWeb.Router do
   end
 
   scope "/admin", JeopardyWeb.Admin do
-    pipe_through [:browser, :admin]
+    pipe_through [:browser, :protected, :admin]
 
     get "/", GameController, :index
     live_dashboard "/dashboard", metrics: JeopardyWeb.Telemetry
@@ -64,14 +92,15 @@ defmodule JeopardyWeb.Router do
   end
 
   defp ensure_admin(conn, _opts) do
-    case get_session(conn, :admin) do
-      true ->
-        conn
+    admin_user_emails = Application.fetch_env!(:jeopardy, :admin)[:ADMIN_USER_EMAILS]
 
-      _ ->
-        conn
-        |> redirect(external: ElixirAuthGoogle.generate_oauth_url(conn) <> "&prompt=consent")
-        |> halt()
+    if conn.assigns.current_user.email in admin_user_emails do
+      conn
+    else
+      conn
+      |> put_status(404)
+      |> put_view(JeopardyWeb.ErrorView)
+      |> render(:"404")
     end
   end
 

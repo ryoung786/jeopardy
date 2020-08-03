@@ -53,4 +53,9 @@ defmodule JeopardyWeb.PageController do
         |> redirect(to: "/")
     end
   end
+
+  def privacy_policy(conn, _params) do
+    conn
+    |> render("privacy_policy.html")
+  end
 end

@@ -30,7 +30,7 @@ config :jeopardy, JeopardyWeb.Endpoint,
   ],
   secret_key_base: secret_key_base
 
-config :jeopardy, :admin, ADMIN_USER: System.get_env("JEOPARDY_ADMIN_USER")
+config :jeopardy, :admin, ADMIN_USER_EMAILS: [System.get_env("JEOPARDY_ADMIN_USER")]
 
 # ## Using releases (Elixir v1.9+)
 #

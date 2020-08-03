@@ -28,6 +28,28 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :jeopardy, :pow,
+  user: Jeopardy.Users.User,
+  repo: Jeopardy.Repo,
+  extensions: [PowResetPassword, PowEmailConfirmation],
+  controller_callbacks: Pow.Extension.Phoenix.ControllerCallbacks,
+  mailer_backend: MyAppWeb.Pow.Mailer,
+  web_module: JeopardyWeb
+
+config :jeopardy, :pow_assent,
+  providers: [
+    google: [
+      client_id: System.get_env("GOOGLE_CLIENT_ID"),
+      client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),
+      strategy: Assent.Strategy.Google
+    ],
+    facebook: [
+      client_id: System.get_env("FACEBOOK_CLIENT_ID"),
+      client_secret: System.get_env("FACEBOOK_CLIENT_SECRET"),
+      strategy: Assent.Strategy.Facebook
+    ]
+  ]
+
 config :jeopardy, Jeopardy.Mailer,
   adapter: Bamboo.SendGridAdapter,
   server: "smtp.domain",

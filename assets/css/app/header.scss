@@ -1,0 +1,108 @@
+.homepage {
+    .header {
+        background: $dark-shades;
+        padding: 5px;
+        padding-right: 10px;
+        .content {
+            max-width: 1400px;
+            display: flex;
+            justify-content: flex-end;
+            .user-profile {
+                display: flex;
+                .email {
+                    color: white;
+                    margin-right: 5px;
+                    align-self: flex-end;
+                }
+                svg { display: block; }
+            }
+        }
+
+        .user-profile-dropdown {
+            opacity: 0;
+            transform: translateY(-100vh);
+            &.active {
+                opacity: 1;
+                transform: translateY(0);
+                transition: opacity 250ms ease;
+            }
+            position: absolute;
+            background: white;
+            z-index: 999;
+            border-radius: 4px;
+            top: 35px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            ul {
+                list-style: none;
+                margin: 0;
+                li {
+                    margin: 0;
+                    padding: 5px 40px;
+                    &:hover { background: aliceblue; }
+                }
+                a:first-child li {
+                    padding-top: 10px;
+                    border-radius: 4px 4px 0 0;
+                }
+                a:last-child li {
+                    padding-bottom: 10px;
+                    border-radius: 0 0 4px 4px;
+                }
+            }
+        }
+    }
+
+    .curved-div {
+        position: relative;
+        background: $dark-shades;
+        color: #FFF;
+        text-align: center;
+        overflow: hidden;
+        font-family: "Roboto Slab", "Helvetica Neue", sans-serif;
+        font-size: 5rem;
+
+        .this-is-jeopardy {
+            font-family: "Bungee", "Helvetica Neue", sans-serif;
+            font-size: 6rem;
+        }
+
+        svg {
+            display: block;
+            path { transform: scale(1.1) translateX(-3px); }
+        }
+        &.upper {
+            background: #f9f9f9;
+            transform: translateY(2px);
+        }
+        h1 {
+            font-size: 6rem;
+            margin: 0 20px;
+            text-shadow: 2px 2px 2px #666;
+        }
+        p {
+            font-size: 1.6rem;
+            margin:0 5rem 20px 5rem;
+            font-family: "Roboto Slab", "Helvetica Neue", sans-serif;
+            color: #fff;
+        }
+    }
+}
+
+
+
+@media only screen and (max-width: 400px) {
+    .homepage {
+        .header .email {
+            font-size: 1.4rem;
+        }
+        .curved-div {
+            h1, .this-is-jeopardy {
+                font-size: 3rem;
+                margin-bottom: 10px;
+            }
+            p {
+                font-size: 1.4rem;
+            }
+        }
+    }
+}
