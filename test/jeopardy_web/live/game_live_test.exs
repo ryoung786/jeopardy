@@ -5,18 +5,44 @@ defmodule JeopardyWeb.GameLiveTest do
 
   alias Jeopardy.Drafts
 
-  @create_attrs %{clues: %{}, description: "some description", format: "some format", name: "some name", owner_id: 42, owner_type: "some owner_type", tags: []}
-  @update_attrs %{clues: %{}, description: "some updated description", format: "some updated format", name: "some updated name", owner_id: 43, owner_type: "some updated owner_type", tags: []}
-  @invalid_attrs %{clues: nil, description: nil, format: nil, name: nil, owner_id: nil, owner_type: nil, tags: nil}
+  @create_attrs %{
+    clues: %{},
+    description: "some description",
+    format: "jeopardy",
+    name: "some name",
+    owner_id: 42,
+    owner_type: "user",
+    tags: []
+  }
+  @update_attrs %{
+    clues: %{},
+    description: "some updated description",
+    format: "jeopardy",
+    name: "some updated name",
+    owner_id: 42,
+    owner_type: "user",
+    tags: []
+  }
+  @invalid_attrs %{
+    clues: nil,
+    description: nil,
+    format: nil,
+    name: nil,
+    owner_id: nil,
+    owner_type: nil,
+    tags: nil
+  }
 
   defp fixture(:game) do
     {:ok, game} = Drafts.create_game(@create_attrs)
     game
   end
 
-  defp create_game(_) do
+  defp create_game(%{conn: conn}) do
+    user = %Jeopardy.Users.User{email: "admin@foo.com", id: 42}
+    conn = Pow.Plug.assign_current_user(conn, user, otp_app: :my_app)
     game = fixture(:game)
-    %{game: game}
+    %{game: game, conn: conn}
   end
 
   describe "Index" do
@@ -38,7 +64,7 @@ defmodule JeopardyWeb.GameLiveTest do
       assert_patch(index_live, Routes.game_index_path(conn, :new))
 
       assert index_live
-             |> form("#game-form", game: @invalid_attrs)
+             |> form("#game-form", game: Map.drop(@invalid_attrs, [:tags, :clues]))
              |> render_change() =~ "can&apos;t be blank"
 
       {:ok, _, html} =
@@ -60,7 +86,7 @@ defmodule JeopardyWeb.GameLiveTest do
       assert_patch(index_live, Routes.game_index_path(conn, :edit, game))
 
       assert index_live
-             |> form("#game-form", game: @invalid_attrs)
+             |> form("#game-form", game: Map.drop(@invalid_attrs, [:tags, :clues]))
              |> render_change() =~ "can&apos;t be blank"
 
       {:ok, _, html} =
@@ -100,7 +126,7 @@ defmodule JeopardyWeb.GameLiveTest do
       assert_patch(show_live, Routes.game_show_path(conn, :edit, game))
 
       assert show_live
-             |> form("#game-form", game: @invalid_attrs)
+             |> form("#game-form", game: Map.drop(@invalid_attrs, [:tags, :clues]))
              |> render_change() =~ "can&apos;t be blank"
 
       {:ok, _, html} =

@@ -6,9 +6,33 @@ defmodule Jeopardy.DraftsTest do
   describe "games" do
     alias Jeopardy.Drafts.Game
 
-    @valid_attrs %{clues: %{}, description: "some description", format: "some format", name: "some name", owner_id: 42, owner_type: "some owner_type", tags: []}
-    @update_attrs %{clues: %{}, description: "some updated description", format: "some updated format", name: "some updated name", owner_id: 43, owner_type: "some updated owner_type", tags: []}
-    @invalid_attrs %{clues: nil, description: nil, format: nil, name: nil, owner_id: nil, owner_type: nil, tags: nil}
+    @valid_attrs %{
+      clues: %{},
+      description: "some description",
+      format: "jeopardy",
+      name: "some name",
+      owner_id: 42,
+      owner_type: "user",
+      tags: []
+    }
+    @update_attrs %{
+      clues: %{},
+      description: "some updated description",
+      format: "jeopardy",
+      name: "some updated name",
+      owner_id: 43,
+      owner_type: "user",
+      tags: []
+    }
+    @invalid_attrs %{
+      clues: nil,
+      description: nil,
+      format: nil,
+      name: nil,
+      owner_id: nil,
+      owner_type: nil,
+      tags: nil
+    }
 
     def game_fixture(attrs \\ %{}) do
       {:ok, game} =
@@ -33,10 +57,10 @@ defmodule Jeopardy.DraftsTest do
       assert {:ok, %Game{} = game} = Drafts.create_game(@valid_attrs)
       assert game.clues == %{}
       assert game.description == "some description"
-      assert game.format == "some format"
+      assert game.format == "jeopardy"
       assert game.name == "some name"
       assert game.owner_id == 42
-      assert game.owner_type == "some owner_type"
+      assert game.owner_type == "user"
       assert game.tags == []
     end
 
@@ -49,10 +73,10 @@ defmodule Jeopardy.DraftsTest do
       assert {:ok, %Game{} = game} = Drafts.update_game(game, @update_attrs)
       assert game.clues == %{}
       assert game.description == "some updated description"
-      assert game.format == "some updated format"
+      assert game.format == "jeopardy"
       assert game.name == "some updated name"
       assert game.owner_id == 43
-      assert game.owner_type == "some updated owner_type"
+      assert game.owner_type == "user"
       assert game.tags == []
     end
 
