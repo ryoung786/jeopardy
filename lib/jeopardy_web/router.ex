@@ -69,6 +69,19 @@ defmodule JeopardyWeb.Router do
     end
   end
 
+  pipeline :accounts, do: plug(:ensure_admin)
+
+  scope "/account", JeopardyWeb.Accounts.Drafts do
+    pipe_through [:browser, :protected, :accounts]
+
+    live "/games", GameLive.Index, :index
+    live "/games/new", GameLive.Index, :new
+    live "/games/:id/edit", GameLive.Index, :edit
+
+    live "/games/:id", GameLive.Show, :show
+    live "/games/:id/show/edit", GameLive.Show, :edit
+  end
+
   scope "/admin", JeopardyWeb.Admin do
     pipe_through [:browser, :protected, :admin]
 
