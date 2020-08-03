@@ -1,20 +1,33 @@
 .homepage {
     .header {
         background: $dark-shades;
-        padding: 5px;
-        padding-right: 10px;
+        padding: 10px;
+        padding-bottom: 5px;
         .content {
             max-width: 1400px;
-            display: flex;
-            justify-content: flex-end;
-            .user-profile {
-                display: flex;
-                .email {
-                    color: white;
-                    margin-right: 5px;
-                    align-self: flex-end;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            justify-items: end;
+            .home-link {
+                justify-self: start;
+                img {
+                    width: 24px;
+                    height: 24px;
+                    display: block;
                 }
-                svg { display: block; }
+            }
+            .account-container {
+                position: relative;
+                .user-profile {
+                    display: flex;
+                    .email {
+                        color: white;
+                        margin-right: 5px;
+                        align-self: flex-end;
+                    }
+                    svg { display: block; }
+                }
             }
         }
 
@@ -27,6 +40,7 @@
                 transition: opacity 250ms ease;
             }
             position: absolute;
+            right: 0;
             background: white;
             z-index: 999;
             border-radius: 4px;
@@ -38,6 +52,7 @@
                 li {
                     margin: 0;
                     padding: 5px 40px;
+                    white-space: nowrap;
                     &:hover { background: aliceblue; }
                 }
                 a:first-child li {
