@@ -1,6 +1,6 @@
 <header class="header">
     <div class="content">
-        <a href="/" class="home-link"><img src="<%= Routes.static_path(@conn, "/favicon-32x32.png") %>" alt="home"></a>
+        <a href="/" class="home-link"><img src="<%= Routes.static_path(@conn, "/images/home_logo.png") %>" alt="home"></a>
         <div class="account-container">
         <%= if Pow.Plug.current_user(@conn) do %>
             <a href="#" class="user-profile" onclick="toggle_user_profile_dropdown()">
