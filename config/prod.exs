@@ -10,7 +10,7 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :jeopardy, JeopardyWeb.Endpoint,
-  url: [host: "jeopardy.ryoung.info", port: 80],
+  # url: [host: "jeopardy.ryoung.info", port: 80],
   # Without this line, your app will not start the web server!
   server: true,
   # Needed for Phoenix 1.3. Doesn't hurt for other versions
@@ -18,7 +18,8 @@ config :jeopardy, JeopardyWeb.Endpoint,
   # Needed for Phoenix 1.2 and 1.4. Doesn't hurt for 1.3.
   http: [port: {:system, "PORT"}],
   secret_key_base: "${SECRET_KEY_BASE}",
-  url: [host: "${APP_NAME}.gigalixirapp.com", port: 443],
+  # url: [host: "${APP_NAME}.gigalixirapp.com", port: 443],
+  url: [scheme: "https", host: "jeopardy.ryoung.info", port: 443],
   cache_static_manifest: "priv/static/cache_manifest.json",
   # To bust cache during hot upgrades
   version: Mix.Project.config()[:version],
