@@ -16,5 +16,7 @@ window.addEventListener("click", (event) => {
   }
 
   const element = document.querySelector(".header .user-profile-dropdown");
-  element.classList.remove("active");
+  if (element) {
+    element.classList.remove("active");
+  }
 });
