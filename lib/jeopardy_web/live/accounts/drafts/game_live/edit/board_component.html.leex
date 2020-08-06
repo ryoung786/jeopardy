@@ -6,15 +6,9 @@
             </div>
 
             <%= for clue <- clues do %>
-
                 <%= live_patch to: edit_clue_path(@socket, @round_name, @game, clue), class: "clue" do %>
                 <span class="value">$<%= Map.get(clue, "value") %></span>
-                <!--
-                <p class="clue_text">Q: <%= Map.get(clue, "clue") %></p>
-                <p class="answer_text">A: <%= Map.get(clue, "answer") %></p>
-                -->
                 <% end %>
-
             <% end %>
         </div>
     <% end %>
