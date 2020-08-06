@@ -70,7 +70,10 @@ defmodule JeopardyWeb.Router do
     end
   end
 
-  pipeline :accounts, do: plug(:ensure_admin)
+  pipeline :accounts do
+    plug(:ensure_admin)
+    plug :put_root_layout, {JeopardyWeb.LayoutView, :accounts}
+  end
 
   scope "/account", JeopardyWeb.Accounts.Drafts do
     pipe_through [:browser, :protected, :accounts]

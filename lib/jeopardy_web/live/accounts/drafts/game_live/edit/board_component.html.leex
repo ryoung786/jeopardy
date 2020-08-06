@@ -1,0 +1,19 @@
+<div class="board">
+    <%= for %{"category" => category, "clues" => clues} <- @round do %>
+        <div class="category">
+            <div class="header">
+                <%= raw(category) %>
+            </div>
+
+            <%= for clue <- clues do %>
+            <div class="clue">
+                <span class="value">$<%= Map.get(clue, "value") %></span>
+                <!--
+                <p class="clue_text">Q: <%= Map.get(clue, "clue") %></p>
+                <p class="answer_text">A: <%= Map.get(clue, "answer") %></p>
+                -->
+            </div>
+            <% end %>
+        </div>
+    <% end %>
+</div>

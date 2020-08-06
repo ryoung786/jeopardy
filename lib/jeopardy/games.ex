@@ -193,8 +193,6 @@ defmodule Jeopardy.Games do
       |> Repo.one()
 
     set_current_clue(game, final_jeopardy_clue_id)
-
-    # TODO start wager timer
   end
 
   def contestants_yet_to_be_updated(%Game{} = game) do

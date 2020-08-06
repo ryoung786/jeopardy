@@ -17,6 +17,7 @@ module.exports = (env, options) => {
     },
     entry: {
       app: glob.sync("./vendor/**/*.js").concat(["./js/app.js"]),
+      accounts: glob.sync("./vendor/**/*.js").concat(["./js/accounts.js"]),
       tv: glob.sync("./vendor/**/*.js").concat(["./js/tv.js"]),
       contestant: glob.sync("./vendor/**/*.js").concat(["./js/contestant.js"]),
       trebek: glob.sync("./vendor/**/*.js").concat(["./js/trebek.js"]),

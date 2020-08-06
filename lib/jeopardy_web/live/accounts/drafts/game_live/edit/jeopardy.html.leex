@@ -1,1 +1,3 @@
-<h1>abc</h1>
+<h1>Jeopardy Round</h1>
+
+<%= live_component @socket, JeopardyWeb.Accounts.Drafts.GameLive.Edit.BoardComponent, game: @game, round: Map.get(@game.clues, "jeopardy") %>
