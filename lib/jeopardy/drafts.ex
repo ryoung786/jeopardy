@@ -5,8 +5,8 @@ defmodule Jeopardy.Drafts do
 
   import Ecto.Query, warn: false
   alias Jeopardy.Repo
-
   alias Jeopardy.Drafts.Game
+  require Logger
 
   @doc """
   Returns the list of games.
@@ -110,7 +110,10 @@ defmodule Jeopardy.Drafts do
     Game.final_jeopardy_changeset(fj_clue, attrs)
   end
 
-  def get_clue(%Game{} = game, clue_id) do
+  def get_clue!(%Game{} = game, clue_id) when is_binary(clue_id),
+    do: get_clue!(game, String.to_integer(clue_id))
+
+  def get_clue!(%Game{} = game, clue_id) do
     categories =
       if clue_id <= 30,
         do: Map.get(game.clues, "jeopardy"),
@@ -127,7 +130,7 @@ defmodule Jeopardy.Drafts do
   end
 
   def update_clue(%Game{} = game, clue_id, attrs) when is_integer(clue_id),
-    do: update_clue(game, get_clue(game, clue_id), attrs)
+    do: update_clue(game, get_clue!(game, clue_id), attrs)
 
   def update_clue(%Game{} = game, %{} = clue, attrs) do
     with cs1 <- change_clue(clue, attrs),

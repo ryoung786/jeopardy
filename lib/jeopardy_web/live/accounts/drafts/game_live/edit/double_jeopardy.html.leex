@@ -1,3 +1,13 @@
 <h1>Double Jeopardy Round</h1>
 
+<%= if @live_action in [:edit_clue] do %>
+    <%= live_modal @socket, JeopardyWeb.Accounts.Drafts.GameLive.Edit.FormComponent,
+    id: @clue.id,
+    title: "Edit clue",
+    action: @live_action,
+    game: @game,
+    clue: @clue,
+    return_to: Routes.game_edit_double_jeopardy_path(@socket, :edit, @game) %>
+<% end %>
+
 <%= live_component @socket, JeopardyWeb.Accounts.Drafts.GameLive.Edit.BoardComponent, game: @game, round: Map.get(@game.clues, "double_jeopardy") %>
