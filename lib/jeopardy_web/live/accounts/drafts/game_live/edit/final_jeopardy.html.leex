@@ -1,1 +1,23 @@
-<h1>final jeopardy</h1>
+<h1>Final Jeopardy</h1>
+
+<%= inspect(@changeset) %>
+<%= f = form_for @changeset, "#",
+  as: "fj_clue",
+  id: "final-jeopardy-form",
+  phx_change: "validate",
+  phx_submit: "save" %>
+
+  <%= label f, :category %>
+  <%= text_input f, :category %>
+  <%= error_tag f, :category %>
+
+  <%= label f, :clue %>
+  <%= text_input f, :clue %>
+  <%= error_tag f, :clue %>
+
+  <%= label f, :answer %>
+  <%= text_input f, :answer %>
+  <%= error_tag f, :answer %>
+
+  <%= submit "Save", phx_disable_with: "Saving..." %>
+</form>

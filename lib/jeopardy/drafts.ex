@@ -101,4 +101,28 @@ defmodule Jeopardy.Drafts do
   def change_game(%Game{} = game, attrs \\ %{}) do
     Game.changeset(game, attrs)
   end
+
+  def change_clue(%{} = clue, attrs \\ %{}) do
+    Game.clue_changeset(clue, attrs)
+  end
+
+  def change_final_jeopardy_clue(fj_clue, attrs \\ %{}) do
+    Game.final_jeopardy_changeset(fj_clue, attrs)
+  end
+
+  def update_final_jeopardy_clue(%Game{} = game, attrs) do
+    fj_json = Map.get(game.clues, "final_jeopardy")
+
+    with cs1 <- Game.final_jeopardy_changeset(%{}, fj_json),
+         {true, _} <- {cs1.valid?, cs1},
+         m <- Ecto.Changeset.apply_changes(cs1),
+         cs2 <- Game.final_jeopardy_changeset(m, attrs),
+         {true, _} <- {cs2.valid?, cs2},
+         updated <- Ecto.Changeset.apply_changes(cs2) do
+      updated_clues = update_in(game.clues, ["final_jeopardy"], &(&1 && updated))
+      update_game(game, %{clues: updated_clues})
+    else
+      {false, cs} -> {:error, Map.put(cs, :action, :validate)}
+    end
+  end
 end

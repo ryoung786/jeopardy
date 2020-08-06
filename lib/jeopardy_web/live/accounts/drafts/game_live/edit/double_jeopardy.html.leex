@@ -1,1 +1,3 @@
-<h1>djeopardy</h1>
+<h1>Double Jeopardy Round</h1>
+
+<%= live_component @socket, JeopardyWeb.Accounts.Drafts.GameLive.Edit.BoardComponent, game: @game, round: Map.get(@game.clues, "double_jeopardy") %>

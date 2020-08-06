@@ -27,4 +27,29 @@ defmodule Jeopardy.Drafts.Game do
     %{^owner_type => module} = %{"user" => Jeopardy.Users.User}
     Jeopardy.Repo.get(module, game.owner_id)
   end
+
+  def clue_changeset(clue, attrs) do
+    types = %{clue: :string, answer: :string, type: :string, value: :integer}
+    max_msg = "Keep it short! 500 letters is the max."
+
+    {clue, types}
+    |> cast(attrs, Map.keys(types))
+    |> validate_required(~w(clue answer type value)a)
+    |> validate_length(:clue, max: 500, message: max_msg)
+    |> validate_length(:answer, max: 500, message: max_msg)
+    |> validate_inclusion(:type, ["standard", "daily_double"])
+    |> validate_number(:value, greater_than: 0)
+  end
+
+  def final_jeopardy_changeset(fj_clue, attrs) do
+    types = %{clue: :string, answer: :string, category: :string}
+    max_msg = "Keep it short! 500 letters is the max."
+
+    {fj_clue, types}
+    |> cast(attrs, Map.keys(types))
+    |> validate_required(~w(clue answer category)a)
+    |> validate_length(:clue, max: 500, message: max_msg)
+    |> validate_length(:answer, max: 500, message: max_msg)
+    |> validate_length(:category, max: 15, message: "Keep it short! 100 letters is the max.")
+  end
 end
