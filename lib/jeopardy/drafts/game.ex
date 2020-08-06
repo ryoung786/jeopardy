@@ -29,12 +29,13 @@ defmodule Jeopardy.Drafts.Game do
   end
 
   def clue_changeset(clue, attrs) do
-    types = %{clue: :string, answer: :string, type: :string, value: :integer}
+    types = %{id: :integer, clue: :string, answer: :string, type: :string, value: :integer}
     max_msg = "Keep it short! 500 letters is the max."
 
     {clue, types}
     |> cast(attrs, Map.keys(types))
-    |> validate_required(~w(clue answer type value)a)
+    |> validate_required(~w(id clue answer type value)a)
+    |> validate_number(:id, greater_than: 0)
     |> validate_length(:clue, max: 500, message: max_msg)
     |> validate_length(:answer, max: 500, message: max_msg)
     |> validate_inclusion(:type, ["standard", "daily_double"])

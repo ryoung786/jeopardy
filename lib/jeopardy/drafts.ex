@@ -110,6 +110,59 @@ defmodule Jeopardy.Drafts do
     Game.final_jeopardy_changeset(fj_clue, attrs)
   end
 
+  def get_clue(%Game{} = game, clue_id) do
+    categories =
+      if clue_id <= 30,
+        do: Map.get(game.clues, "jeopardy"),
+        else: Map.get(game.clues, "double_jeopardy")
+
+    clue =
+      Enum.reduce(categories, [], fn x, acc ->
+        acc ++ Map.get(x, "clues")
+      end)
+      |> List.flatten()
+      |> Enum.find(&(Map.get(&1, "id") == clue_id))
+
+    change_clue(%{}, clue) |> Ecto.Changeset.apply_changes()
+  end
+
+  def update_clue(%Game{} = game, clue_id, attrs) when is_integer(clue_id),
+    do: update_clue(game, get_clue(game, clue_id), attrs)
+
+  def update_clue(%Game{} = game, %{} = clue, attrs) do
+    with cs1 <- change_clue(clue, attrs),
+         {true, _} <- {cs1.valid?, cs1},
+         m <- Ecto.Changeset.apply_changes(cs1),
+         cs2 <- change_clue(m, attrs),
+         {true, _} <- {cs2.valid?, cs2},
+         updated <- Ecto.Changeset.apply_changes(cs2) do
+      updated = updated |> Map.new(fn {k, v} -> {Atom.to_string(k), v} end)
+      clue_id = Map.get(updated, "id")
+      round = if clue_id <= 30, do: "jeopardy", else: "double_jeopardy"
+
+      updated_clues =
+        update_in(game.clues, [round], fn categories ->
+          Enum.map(categories, fn category_obj ->
+            clues = Map.get(category_obj, "clues")
+
+            %{
+              category_obj
+              | "clues" =>
+                  Enum.map(clues, fn clue ->
+                    if clue_id == Map.get(clue, "id"),
+                      do: updated,
+                      else: clue
+                  end)
+            }
+          end)
+        end)
+
+      update_game(game, %{clues: updated_clues})
+    else
+      {false, cs} -> {:error, Map.put(cs, :action, :validate)}
+    end
+  end
+
   def update_final_jeopardy_clue(%Game{} = game, attrs) do
     fj_json = Map.get(game.clues, "final_jeopardy")
 
@@ -119,6 +172,7 @@ defmodule Jeopardy.Drafts do
          cs2 <- Game.final_jeopardy_changeset(m, attrs),
          {true, _} <- {cs2.valid?, cs2},
          updated <- Ecto.Changeset.apply_changes(cs2) do
+      updated = updated |> Map.new(fn {k, v} -> {Atom.to_string(k), v} end)
       updated_clues = update_in(game.clues, ["final_jeopardy"], &(&1 && updated))
       update_game(game, %{clues: updated_clues})
     else
