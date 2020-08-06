@@ -7,7 +7,7 @@
 
             <%= for clue <- clues do %>
 
-                <%= live_patch to: Routes.game_edit_double_jeopardy_path(@socket, :edit_clue, @game, Map.get(clue, "id")), class: "clue" do %>
+                <%= live_patch to: edit_clue_path(@socket, @round_name, @game, clue), class: "clue" do %>
                 <span class="value">$<%= Map.get(clue, "value") %></span>
                 <!--
                 <p class="clue_text">Q: <%= Map.get(clue, "clue") %></p>
