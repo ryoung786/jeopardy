@@ -5,8 +5,8 @@ defmodule Jeopardy.Drafts do
 
   import Ecto.Query, warn: false
   alias Jeopardy.Repo
-
   alias Jeopardy.Drafts.Game
+  require Logger
 
   @doc """
   Returns the list of games.
@@ -50,7 +50,7 @@ defmodule Jeopardy.Drafts do
 
   """
   def create_game(attrs \\ %{}) do
-    %Game{}
+    %Game{clues: default_clues()}
     |> Game.changeset(attrs)
     |> Repo.insert()
   end
@@ -101,4 +101,168 @@ defmodule Jeopardy.Drafts do
   def change_game(%Game{} = game, attrs \\ %{}) do
     Game.changeset(game, attrs)
   end
+
+  def default_clues() do
+    %{
+      "jeopardy" => default_categories(0),
+      "double_jeopardy" => default_categories(1),
+      "final_jeopardy" => %{
+        "category" => nil,
+        "clue" => nil,
+        "answer" => nil
+      }
+    }
+  end
+
+  def default_categories(round) do
+    values = Enum.map(1..5, &(&1 * 100 * (round + 1)))
+    ids = Enum.map(1..30, &(&1 + round * 30))
+
+    Enum.zip(ids, Stream.cycle(values))
+    |> Enum.map(fn {id, value} ->
+      default_clue(id, value)
+    end)
+    |> Enum.chunk_every(5)
+    |> Enum.map(&%{"category" => nil, "clues" => &1})
+  end
+
+  def default_clue(id, value) do
+    %{
+      "id" => id,
+      "clue" => nil,
+      "answer" => nil,
+      "type" => "standard",
+      "value" => value
+    }
+  end
+
+  def change_category(%{} = category, attrs \\ %{}) do
+    Game.category_changeset(category, attrs)
+  end
+
+  def change_clue(%{} = clue, attrs \\ %{}) do
+    Game.clue_changeset(clue, attrs)
+  end
+
+  def change_final_jeopardy_clue(fj_clue, attrs \\ %{}) do
+    Game.final_jeopardy_changeset(fj_clue, attrs)
+  end
+
+  def get_category!(%Game{} = game, category_id) when is_binary(category_id),
+    do: get_category!(game, String.to_integer(category_id))
+
+  def get_category!(%Game{} = game, category_id) do
+    {categories, category_id} =
+      if category_id < 6,
+        do: {Map.get(game.clues, "jeopardy"), category_id},
+        else: {Map.get(game.clues, "double_jeopardy"), category_id - 6}
+
+    category_name = categories |> Enum.at(category_id) |> Map.get("category")
+    %{category: category_name}
+
+    # change_clue(%{}, clue) |> Ecto.Changeset.apply_changes()
+  end
+
+  def get_clue!(%Game{} = game, clue_id) when is_binary(clue_id),
+    do: get_clue!(game, String.to_integer(clue_id))
+
+  def get_clue!(%Game{} = game, clue_id) do
+    categories =
+      if clue_id <= 30,
+        do: Map.get(game.clues, "jeopardy"),
+        else: Map.get(game.clues, "double_jeopardy")
+
+    clue =
+      Enum.reduce(categories, [], fn x, acc ->
+        acc ++ Map.get(x, "clues")
+      end)
+      |> List.flatten()
+      |> Enum.find(&(Map.get(&1, "id") == clue_id))
+
+    change_clue(%{}, clue) |> Ecto.Changeset.apply_changes()
+  end
+
+  def update_clue(%Game{} = game, clue_id, attrs) when is_integer(clue_id),
+    do: update_clue(game, get_clue!(game, clue_id), attrs)
+
+  def update_clue(%Game{} = game, %{} = clue, attrs) do
+    with cs1 <- change_clue(clue, attrs),
+         {true, _} <- {cs1.valid?, cs1},
+         m <- Ecto.Changeset.apply_changes(cs1),
+         cs2 <- change_clue(m, attrs),
+         {true, _} <- {cs2.valid?, cs2},
+         updated <- Ecto.Changeset.apply_changes(cs2) do
+      updated = to_string_map_keys(updated)
+      clue_id = Map.get(updated, "id")
+      round = if clue_id <= 30, do: "jeopardy", else: "double_jeopardy"
+
+      updated_clues =
+        update_in(game.clues, [round], fn categories ->
+          Enum.map(categories, fn category_obj ->
+            clues = Map.get(category_obj, "clues")
+
+            %{
+              category_obj
+              | "clues" =>
+                  Enum.map(clues, fn clue ->
+                    if clue_id == Map.get(clue, "id"),
+                      do: updated,
+                      else: clue
+                  end)
+            }
+          end)
+        end)
+
+      update_game(game, %{clues: updated_clues})
+    else
+      {false, cs} -> {:error, Map.put(cs, :action, :validate)}
+    end
+  end
+
+  def update_category(%Game{} = game, category_id, %{} = category, attrs) do
+    category_json =
+      if category_id < 6,
+        do: Map.get(game.clues, "jeopardy") |> Enum.at(category_id),
+        else: Map.get(game.clues, "double_jeopardy") |> Enum.at(category_id - 6)
+
+    {round, category_id} =
+      if category_id < 6,
+        do: {"jeopardy", category_id},
+        else: {"double_jeopardy", category_id - 6}
+
+    with cs <- change_category(category, attrs),
+         {true, _} <- {cs.valid?, cs},
+         updated <- Ecto.Changeset.apply_changes(cs) do
+      updated = to_string_map_keys(updated)
+      updated = Map.merge(category_json, updated)
+
+      updated_clues =
+        update_in(game.clues, [round], fn categories ->
+          List.replace_at(categories, category_id, updated)
+        end)
+
+      update_game(game, %{clues: updated_clues})
+    else
+      {false, cs} -> {:error, Map.put(cs, :action, :validate)}
+    end
+  end
+
+  def update_final_jeopardy_clue(%Game{} = game, attrs) do
+    fj_json = Map.get(game.clues, "final_jeopardy")
+
+    with cs1 <- Game.final_jeopardy_changeset(%{}, fj_json),
+         {true, _} <- {cs1.valid?, cs1},
+         m <- Ecto.Changeset.apply_changes(cs1),
+         cs2 <- Game.final_jeopardy_changeset(m, attrs),
+         {true, _} <- {cs2.valid?, cs2},
+         updated <- Ecto.Changeset.apply_changes(cs2) do
+      updated = to_string_map_keys(updated)
+      updated_clues = update_in(game.clues, ["final_jeopardy"], &(&1 && updated))
+      update_game(game, %{clues: updated_clues})
+    else
+      {false, cs} -> {:error, Map.put(cs, :action, :validate)}
+    end
+  end
+
+  defp to_string_map_keys(m), do: Map.new(m, fn {k, v} -> {Atom.to_string(k), v} end)
 end

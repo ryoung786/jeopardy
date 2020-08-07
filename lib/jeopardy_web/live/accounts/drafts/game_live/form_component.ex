@@ -40,12 +40,19 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.FormComponent do
   end
 
   defp save_game(socket, :new, game_params) do
+    # owner is required.  We can get it from the pow authenticated current_user
+    game_params =
+      Map.merge(game_params, %{
+        "owner_id" => socket.assigns.current_user.id,
+        "owner_type" => "user"
+      })
+
     case Drafts.create_game(game_params) do
-      {:ok, _game} ->
+      {:ok, game} ->
         {:noreply,
          socket
          |> put_flash(:info, "Game created successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+         |> push_redirect(to: Routes.game_edit_jeopardy_path(socket, :edit, game, "jeopardy"))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

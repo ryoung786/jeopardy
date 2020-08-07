@@ -1,12 +1,16 @@
 defmodule JeopardyWeb.Accounts.Drafts.GameLive.Index do
   use JeopardyWeb, :live_view
-
   alias Jeopardy.Drafts
   alias Jeopardy.Drafts.Game
+  require Logger
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, assign(socket, :games, list_games())}
+  def mount(_params, %{"current_user_id" => current_user_id}, socket) do
+    {:ok,
+     assign(socket,
+       games: list_games(),
+       current_user: Jeopardy.Users.get_user!(current_user_id)
+     )}
   end
 
   @impl true

@@ -27,6 +27,7 @@ defmodule JeopardyWeb.Router do
 
   pipeline :protected do
     plug Pow.Plug.RequireAuthenticated, error_handler: Pow.Phoenix.PlugErrorHandler
+    plug :add_user_to_session
   end
 
   pipeline :skip_csrf_protection do
@@ -69,14 +70,20 @@ defmodule JeopardyWeb.Router do
     end
   end
 
-  pipeline :accounts, do: plug(:ensure_admin)
+  pipeline :accounts do
+    plug(:ensure_admin)
+    plug :put_root_layout, {JeopardyWeb.LayoutView, :accounts}
+  end
 
   scope "/account", JeopardyWeb.Accounts.Drafts do
     pipe_through [:browser, :protected, :accounts]
 
     live "/games", GameLive.Index, :index
     live "/games/new", GameLive.Index, :new
-    live "/games/:id/edit", GameLive.Index, :edit
+    live "/games/:id/edit/final-jeopardy", GameLive.Edit.FinalJeopardy, :edit
+    live "/games/:id/edit/:round", GameLive.Edit.Jeopardy, :edit
+    live "/games/:id/edit/:round/clue/:clue_id", GameLive.Edit.Jeopardy, :edit_clue
+    live "/games/:id/edit/:round/category/:category_id", GameLive.Edit.Jeopardy, :edit_category
 
     live "/games/:id", GameLive.Show, :show
     live "/games/:id/show/edit", GameLive.Show, :edit
@@ -122,6 +129,9 @@ defmodule JeopardyWeb.Router do
       do: conn,
       else: conn |> put_flash(:info, "Please enter your name") |> redirect(to: "/") |> halt()
   end
+
+  defp add_user_to_session(conn, _opts),
+    do: put_session(conn, :current_user_id, Pow.Plug.current_user(conn).id)
 
   if Mix.env() == :dev, do: forward("/sent_emails", Bamboo.SentEmailViewerPlug)
 end
