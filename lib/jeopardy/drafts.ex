@@ -50,9 +50,7 @@ defmodule Jeopardy.Drafts do
 
   """
   def create_game(attrs \\ %{}) do
-    attrs = Map.merge(%{"clues" => default_clues()}, attrs)
-
-    %Game{}
+    %Game{clues: default_clues()}
     |> Game.changeset(attrs)
     |> Repo.insert()
   end
