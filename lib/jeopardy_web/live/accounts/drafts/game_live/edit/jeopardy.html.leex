@@ -15,4 +15,15 @@
     return_to: edit_path(@socket, @round, @game) %>
 <% end %>
 
+<%= if @live_action in [:edit_category] do %>
+    <%= live_modal @socket, JeopardyWeb.Accounts.Drafts.GameLive.Edit.CategoryFormComponent,
+    id: @game.id,
+    title: "Edit Category",
+    action: @live_action,
+    game: @game,
+    category: @category,
+    idx: @category_id,
+    return_to: edit_path(@socket, @round, @game) %>
+<% end %>
+
 <%= live_component @socket, JeopardyWeb.Accounts.Drafts.GameLive.Edit.BoardComponent, game: @game, round: Map.get(@game.clues, @round), round_name: @round %>

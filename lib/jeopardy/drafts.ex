@@ -102,12 +102,31 @@ defmodule Jeopardy.Drafts do
     Game.changeset(game, attrs)
   end
 
+  def change_category(%{} = category, attrs \\ %{}) do
+    Game.category_changeset(category, attrs)
+  end
+
   def change_clue(%{} = clue, attrs \\ %{}) do
     Game.clue_changeset(clue, attrs)
   end
 
   def change_final_jeopardy_clue(fj_clue, attrs \\ %{}) do
     Game.final_jeopardy_changeset(fj_clue, attrs)
+  end
+
+  def get_category!(%Game{} = game, category_id) when is_binary(category_id),
+    do: get_category!(game, String.to_integer(category_id))
+
+  def get_category!(%Game{} = game, category_id) do
+    {categories, category_id} =
+      if category_id < 6,
+        do: {Map.get(game.clues, "jeopardy"), category_id},
+        else: {Map.get(game.clues, "double_jeopardy"), category_id - 6}
+
+    category_name = categories |> Enum.at(category_id) |> Map.get("category")
+    %{category: category_name}
+
+    # change_clue(%{}, clue) |> Ecto.Changeset.apply_changes()
   end
 
   def get_clue!(%Game{} = game, clue_id) when is_binary(clue_id),
@@ -158,6 +177,33 @@ defmodule Jeopardy.Drafts do
                   end)
             }
           end)
+        end)
+
+      update_game(game, %{clues: updated_clues})
+    else
+      {false, cs} -> {:error, Map.put(cs, :action, :validate)}
+    end
+  end
+
+  def update_category(%Game{} = game, category_id, %{} = category, attrs) do
+    category_json =
+      if(category_id < 6,
+        do: Map.get(game.clues, "jeopardy"),
+        else: Map.get(game.clues, "double_jeopardy")
+      )
+      |> Enum.at(category_id)
+
+    round = if category_id < 6, do: "jeopardy", else: "double_jeopardy"
+
+    with cs <- change_category(category, attrs),
+         {true, _} <- {cs.valid?, cs},
+         updated <- Ecto.Changeset.apply_changes(cs) do
+      updated = updated |> Map.new(fn {k, v} -> {Atom.to_string(k), v} end)
+      updated = Map.merge(category_json, updated)
+
+      updated_clues =
+        update_in(game.clues, [round], fn categories ->
+          List.replace_at(categories, category_id, updated)
         end)
 
       update_game(game, %{clues: updated_clues})

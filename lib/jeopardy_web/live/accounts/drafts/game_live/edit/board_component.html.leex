@@ -1,9 +1,10 @@
 <div class="board">
-    <%= for %{"category" => category, "clues" => clues} <- @round do %>
+    <%= for {%{"category" => category, "clues" => clues}, i} <- Enum.with_index(@round) do %>
         <div class="category">
-            <div class="header">
+            <% i = if @round_name == "double_jeopardy", do: i+6, else: i %>
+            <%= live_patch to: edit_category_path(@socket, @round_name, @game, i), class: "category-name" do %>
                 <%= raw(category) %>
-            </div>
+            <% end %>
 
             <%= for clue <- clues do %>
                 <%= live_patch to: edit_clue_path(@socket, @round_name, @game, clue), class: "clue" do %>

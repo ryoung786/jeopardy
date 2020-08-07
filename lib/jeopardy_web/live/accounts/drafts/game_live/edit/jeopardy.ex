@@ -4,10 +4,22 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit.Jeopardy do
   require Logger
 
   @impl true
+  def handle_params(%{"id" => id, "category_id" => category_id, "round" => round}, _url, socket) do
+    round = String.replace(round, "-", "_")
+    game = Drafts.get_game!(id)
+
+    {:noreply,
+     socket
+     |> assign(round: round)
+     |> assign(game: game)
+     |> assign(category_id: category_id)
+     |> assign(category: Drafts.get_category!(game, category_id))}
+  end
+
+  @impl true
   def handle_params(%{"id" => id, "clue_id" => clue_id, "round" => round}, _url, socket) do
     round = String.replace(round, "-", "_")
     game = Drafts.get_game!(id)
-    clue = Drafts.get_clue!(game, clue_id)
 
     {:noreply,
      socket

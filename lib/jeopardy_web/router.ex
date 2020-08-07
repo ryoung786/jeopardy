@@ -80,10 +80,10 @@ defmodule JeopardyWeb.Router do
 
     live "/games", GameLive.Index, :index
     live "/games/new", GameLive.Index, :new
-    live "/games/:id/edit", GameLive.Edit, :edit
     live "/games/:id/edit/final-jeopardy", GameLive.Edit.FinalJeopardy, :edit
     live "/games/:id/edit/:round", GameLive.Edit.Jeopardy, :edit
     live "/games/:id/edit/:round/clue/:clue_id", GameLive.Edit.Jeopardy, :edit_clue
+    live "/games/:id/edit/:round/category/:category_id", GameLive.Edit.Jeopardy, :edit_category
 
     live "/games/:id", GameLive.Show, :show
     live "/games/:id/show/edit", GameLive.Show, :edit

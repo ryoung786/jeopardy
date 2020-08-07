@@ -53,4 +53,14 @@ defmodule Jeopardy.Drafts.Game do
     |> validate_length(:answer, max: 500, message: max_msg)
     |> validate_length(:category, max: 15, message: "Keep it short! 100 letters is the max.")
   end
+
+  def category_changeset(category, attrs) do
+    types = %{category: :string}
+    max_msg = "Keep it short! 500 characters is the max."
+
+    {category, types}
+    |> cast(attrs, Map.keys(types))
+    |> validate_required(~w(category)a)
+    |> validate_length(:category, max: 500, message: max_msg)
+  end
 end
