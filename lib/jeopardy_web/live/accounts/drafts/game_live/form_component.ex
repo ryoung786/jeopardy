@@ -52,7 +52,7 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Game created successfully")
-         |> push_redirect(to: Routes.game_index_path(socket, :edit, game))}
+         |> push_redirect(to: Routes.game_edit_jeopardy_path(socket, :edit, game, "jeopardy"))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

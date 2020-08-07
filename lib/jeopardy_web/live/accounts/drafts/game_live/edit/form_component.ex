@@ -3,7 +3,7 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit.FormComponent do
   alias Jeopardy.Drafts
 
   @impl true
-  def update(%{game: game, clue: clue} = assigns, socket) do
+  def update(%{clue: clue} = assigns, socket) do
     changeset = Drafts.change_clue(%{}, clue)
 
     {:ok,

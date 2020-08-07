@@ -1,7 +1,6 @@
 defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit.FinalJeopardy do
   use JeopardyWeb, :live_view
   alias Jeopardy.Drafts
-  alias Jeopardy.Drafts.Game
   require Logger
 
   @impl true

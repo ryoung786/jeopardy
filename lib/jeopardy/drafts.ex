@@ -50,6 +50,8 @@ defmodule Jeopardy.Drafts do
 
   """
   def create_game(attrs \\ %{}) do
+    attrs = Map.merge(%{"clues" => default_clues()}, attrs)
+
     %Game{}
     |> Game.changeset(attrs)
     |> Repo.insert()
@@ -100,6 +102,40 @@ defmodule Jeopardy.Drafts do
   """
   def change_game(%Game{} = game, attrs \\ %{}) do
     Game.changeset(game, attrs)
+  end
+
+  def default_clues() do
+    %{
+      "jeopardy" => default_categories(0),
+      "double_jeopardy" => default_categories(1),
+      "final_jeopardy" => %{
+        "category" => nil,
+        "clue" => nil,
+        "answer" => nil
+      }
+    }
+  end
+
+  def default_categories(round) do
+    values = Enum.map(1..5, &(&1 * 100 * (round + 1)))
+    ids = Enum.map(1..30, &(&1 + round * 30))
+
+    Enum.zip(ids, Stream.cycle(values))
+    |> Enum.map(fn {id, value} ->
+      default_clue(id, value)
+    end)
+    |> Enum.chunk_every(5)
+    |> Enum.map(&%{"category" => nil, "clues" => &1})
+  end
+
+  def default_clue(id, value) do
+    %{
+      "id" => id,
+      "clue" => nil,
+      "answer" => nil,
+      "type" => "standard",
+      "value" => value
+    }
   end
 
   def change_category(%{} = category, attrs \\ %{}) do
@@ -158,7 +194,7 @@ defmodule Jeopardy.Drafts do
          cs2 <- change_clue(m, attrs),
          {true, _} <- {cs2.valid?, cs2},
          updated <- Ecto.Changeset.apply_changes(cs2) do
-      updated = updated |> Map.new(fn {k, v} -> {Atom.to_string(k), v} end)
+      updated = to_string_map_keys(updated)
       clue_id = Map.get(updated, "id")
       round = if clue_id <= 30, do: "jeopardy", else: "double_jeopardy"
 
@@ -187,18 +223,19 @@ defmodule Jeopardy.Drafts do
 
   def update_category(%Game{} = game, category_id, %{} = category, attrs) do
     category_json =
-      if(category_id < 6,
-        do: Map.get(game.clues, "jeopardy"),
-        else: Map.get(game.clues, "double_jeopardy")
-      )
-      |> Enum.at(category_id)
+      if category_id < 6,
+        do: Map.get(game.clues, "jeopardy") |> Enum.at(category_id),
+        else: Map.get(game.clues, "double_jeopardy") |> Enum.at(category_id - 6)
 
-    round = if category_id < 6, do: "jeopardy", else: "double_jeopardy"
+    {round, category_id} =
+      if category_id < 6,
+        do: {"jeopardy", category_id},
+        else: {"double_jeopardy", category_id - 6}
 
     with cs <- change_category(category, attrs),
          {true, _} <- {cs.valid?, cs},
          updated <- Ecto.Changeset.apply_changes(cs) do
-      updated = updated |> Map.new(fn {k, v} -> {Atom.to_string(k), v} end)
+      updated = to_string_map_keys(updated)
       updated = Map.merge(category_json, updated)
 
       updated_clues =
@@ -221,11 +258,13 @@ defmodule Jeopardy.Drafts do
          cs2 <- Game.final_jeopardy_changeset(m, attrs),
          {true, _} <- {cs2.valid?, cs2},
          updated <- Ecto.Changeset.apply_changes(cs2) do
-      updated = updated |> Map.new(fn {k, v} -> {Atom.to_string(k), v} end)
+      updated = to_string_map_keys(updated)
       updated_clues = update_in(game.clues, ["final_jeopardy"], &(&1 && updated))
       update_game(game, %{clues: updated_clues})
     else
       {false, cs} -> {:error, Map.put(cs, :action, :validate)}
     end
   end
+
+  defp to_string_map_keys(m), do: Map.new(m, fn {k, v} -> {Atom.to_string(k), v} end)
 end

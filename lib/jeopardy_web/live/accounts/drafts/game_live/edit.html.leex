@@ -1,6 +1,6 @@
 <%= live_component(@socket, JeopardyWeb.Accounts.Drafts.GameLive.FormComponent,
-  id: @game.id,
-  title: "Edit #{@game.name}",
-  action: @live_action,
-  game: @game,
-  return_to: Routes.game_edit_jeopardy_path(@socket, :edit, @game)) %>
+    id: @game.id,
+    title: "Edit #{@game.name}",
+    action: @live_action,
+    game: @game,
+    return_to: Routes.game_edit_jeopardy_path(@socket, :edit, @game, "jeopardy")) %>

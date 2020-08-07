@@ -4,7 +4,7 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit.CategoryFormComponent do
   require Logger
 
   @impl true
-  def update(%{game: game, category: category, idx: idx} = assigns, socket) do
+  def update(%{category: category} = assigns, socket) do
     changeset = Drafts.change_category(%{}, category)
 
     {:ok,
