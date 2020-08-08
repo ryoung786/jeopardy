@@ -14,7 +14,6 @@ defmodule Jeopardy.Cron.CullOldRecords do
   end
 
   def handle_info(:work, state) do
-    Logger.error("[xxx] in handle_info, about to cull")
     cull()
 
     schedule_work()
@@ -24,10 +23,10 @@ defmodule Jeopardy.Cron.CullOldRecords do
   defp schedule_work() do
     frequency = Application.fetch_env!(:jeopardy, __MODULE__)[:frequency]
     Process.send_after(self(), :work, frequency)
-    Logger.error("[xxx] cull work scheduled, freq (in ms): #{inspect(frequency)}")
   end
 
   def cull(),
+    # order matters! fkey constraints throw errors otherwise
     do:
       ~w(clues players games)
       |> Enum.each(&cull/1)
@@ -39,14 +38,7 @@ defmodule Jeopardy.Cron.CullOldRecords do
       "clues" => Jeopardy.Games.Clue
     }
 
-    Logger.error("[xxx] culling module #{inspect(module)}")
-
-    {num_deleted, _} =
-      from(x in module, where: x.updated_at < ago(14, "day"))
-      |> Jeopardy.Repo.delete_all()
-
-    # |> Jeopardy.Repo.all()
-
-    Logger.error("[xxx] deleted #{Enum.count(num_deleted)} from #{module}")
+    from(x in module, where: x.updated_at < ago(14, "day"))
+    |> Jeopardy.Repo.delete_all()
   end
 end
