@@ -32,7 +32,6 @@ async function loadCSVFromGCS(event, table) {
 }
 
 async function dedupe(table) {
-  // Queries the U.S. given names dataset for the state of Texas.
   const dataset = "prod";
 
   const query = `DELETE ${dataset}.${table} a 
@@ -67,7 +66,8 @@ exports.helloGCS = (event, context) => {
     !(
       event.name.startsWith("incremental_games_") ||
       event.name.startsWith("incremental_players_") ||
-      event.name.startsWith("incremental_clues_")
+      event.name.startsWith("incremental_clues_") ||
+      event.name.startsWith("db_records_")
     )
   ) {
     console.log("don't care");
@@ -78,16 +78,23 @@ exports.helloGCS = (event, context) => {
     ? "games"
     : event.name.startsWith("incremental_players_")
     ? "players"
-    : "clues";
+    : event.name.startsWith("incremental_clues_")
+    ? "clues"
+    : "db_records";
+
+  const skip_dedupe = ["db_records"];
 
   console.log(`Processing file: ${event.name} ;; bucket: ${event.bucket}`);
 
   loadCSVFromGCS(event, table)
     .then(() => {
       console.log(`Table uploaded: ${table}`);
+      if (skip_dedupe.includes(table)) return;
+
       dedupe(table);
     })
     .then(() => {
+      if (skip_dedupe.includes(table)) return;
       console.log(`Table deduped: ${table}`);
     });
 };

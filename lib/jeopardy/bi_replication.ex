@@ -1,5 +1,6 @@
 defmodule Jeopardy.BIReplication do
   use GenServer
+  alias Jeopardy.Repo
   import Ecto.Query
   require Logger
 
@@ -17,6 +18,7 @@ defmodule Jeopardy.BIReplication do
   def handle_info(:work, state) do
     # Do the work you desire here
     incremental_updates()
+    total_db_records()
 
     # Reschedule once more
     schedule_work()
@@ -32,6 +34,19 @@ defmodule Jeopardy.BIReplication do
     do:
       ~w(games players clues)
       |> Enum.each(&incremental_updates/1)
+
+  def total_db_records() do
+    num_records =
+      from(x in "pg_stat_user_tables", select: sum(x.n_live_tup))
+      |> Repo.one()
+
+    bucket = Application.fetch_env!(:jeopardy, Jeopardy.BIReplication)[:bucket]
+    timestamp = DateTime.to_string(DateTime.utc_now())
+    file_name = "db_records_#{timestamp}"
+    File.write(file_name, "num_records,replicated_at\n#{num_records},#{timestamp}")
+    upload_file(bucket, file_name)
+    File.rm(file_name)
+  end
 
   defp incremental_updates(table) do
     timestamp = DateTime.to_string(DateTime.utc_now())
@@ -51,7 +66,7 @@ defmodule Jeopardy.BIReplication do
     # For when the gigalixir postgres version is updated:
     # {:ok, %{num_rows: num_rows}} =
     #   Ecto.Adapters.SQL.query(
-    #     Jeopardy.Repo,
+    #     Repo,
     #     "COPY (UPDATE #{table} SET replicated_at = (CURRENT_TIMESTAMP AT TIME ZONE 'UTC') WHERE updated_at > replicated_at RETURNING *) to '#{
     #       file_path
     #     }' WITH (FORMAT CSV, HEADER)"
@@ -60,12 +75,12 @@ defmodule Jeopardy.BIReplication do
     # 1. Get Data
     stream =
       Ecto.Adapters.SQL.stream(
-        Jeopardy.Repo,
+        Repo,
         "COPY (SELECT * FROM #{table} WHERE updated_at > replicated_at OR replicated_at is NULL) to STDOUT WITH (FORMAT CSV, HEADER)"
       )
 
     # 2. Write csv data to file
-    Jeopardy.Repo.transaction(fn ->
+    Repo.transaction(fn ->
       stream
       |> Enum.map(& &1.rows)
       |> Stream.into(File.stream!(file_name))
@@ -77,7 +92,7 @@ defmodule Jeopardy.BIReplication do
       from(x in module,
         where: x.updated_at > x.replicated_at or is_nil(x.replicated_at)
       )
-      |> Jeopardy.Repo.update_all(set: [replicated_at: DateTime.utc_now()])
+      |> Repo.update_all(set: [replicated_at: DateTime.utc_now()])
 
     # 4. Upload the file to GCS if we found any records
     bucket = Application.fetch_env!(:jeopardy, Jeopardy.BIReplication)[:bucket]
