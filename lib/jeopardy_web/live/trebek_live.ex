@@ -5,7 +5,9 @@ defmodule JeopardyWeb.TrebekLive do
   alias Jeopardy.GameEngine.State
 
   @impl true
-  def mount(%{"code" => _code}, %{"name" => name, "game" => game}, socket) do
+  def mount(%{"code" => _code}, %{"name" => name, "game_id" => game_id}, socket) do
+    game = Jeopardy.Games.get_game!(game_id)
+
     case game.trebek do
       ^name ->
         if connected?(socket), do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, "game:#{game.id}")

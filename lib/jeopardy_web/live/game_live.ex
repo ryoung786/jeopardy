@@ -5,7 +5,8 @@ defmodule JeopardyWeb.GameLive do
   alias Jeopardy.Games.Player
 
   @impl true
-  def mount(%{"code" => _code}, %{"name" => name, "game" => game}, socket) do
+  def mount(%{"code" => _code}, %{"name" => name, "game_id" => game_id}, socket) do
+    game = Jeopardy.Games.get_game!(game_id)
     trebek_name = game.trebek
 
     case name do

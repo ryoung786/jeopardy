@@ -106,7 +106,7 @@ defmodule JeopardyWeb.Router do
 
       game ->
         conn
-        |> put_session(:game, game)
+        |> put_session(:game_id, game.id)
         |> assign(:game, game)
     end
   end
