@@ -41,11 +41,12 @@ defmodule Jeopardy.Cron.CullOldRecords do
 
     Logger.error("[xxx] culling module #{inspect(module)}")
 
-    foo =
+    {num_deleted, _} =
       from(x in module, where: x.updated_at < ago(14, "day"))
-      # |> Jeopardy.Repo.delete_all()
-      |> Jeopardy.Repo.all()
+      |> Jeopardy.Repo.delete_all()
 
-    Logger.error("[xxx] would've deleted #{Enum.count(foo)} from #{module}")
+    # |> Jeopardy.Repo.all()
+
+    Logger.error("[xxx] deleted #{Enum.count(num_deleted)} from #{module}")
   end
 end
