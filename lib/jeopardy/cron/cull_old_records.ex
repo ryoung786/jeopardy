@@ -14,6 +14,7 @@ defmodule Jeopardy.Cron.CullOldRecords do
   end
 
   def handle_info(:work, state) do
+    Logger.error("[xxx] in handle_info, about to cull")
     cull()
 
     schedule_work()
@@ -21,8 +22,9 @@ defmodule Jeopardy.Cron.CullOldRecords do
   end
 
   defp schedule_work() do
-    frequency = Application.fetch_env!(:jeopardy, __MODULE__)[:frequency]
+    frequency = 10000 || Application.fetch_env!(:jeopardy, __MODULE__)[:frequency]
     Process.send_after(self(), :work, frequency)
+    Logger.error("[xxx] cull work scheduled, freq: #{inspect(frequency)}")
   end
 
   def cull(),
@@ -37,7 +39,13 @@ defmodule Jeopardy.Cron.CullOldRecords do
       "clues" => Jeopardy.Games.Clue
     }
 
-    from(x in module, where: x.updated_at < ago(14, "day"))
-    |> Jeopardy.Repo.delete_all()
+    Logger.error("[xxx] culling module #{inspect(module)}")
+
+    foo =
+      from(x in module, where: x.updated_at < ago(14, "day"))
+      # |> Jeopardy.Repo.delete_all()
+      |> Jeopardy.Repo.all()
+
+    Logger.error("[xxx] would've deleted #{Enum.count(foo)} from #{module}")
   end
 end
