@@ -29,7 +29,7 @@ defmodule Jeopardy.Cron.CullOldRecords do
 
   def cull(),
     do:
-      ~w(games players clues)
+      ~w(clues players games)
       |> Enum.each(&cull/1)
 
   defp cull(table) do
