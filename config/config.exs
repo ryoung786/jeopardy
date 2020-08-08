@@ -71,7 +71,8 @@ config :jeopardy, Jeopardy.BIReplication,
 
 config :jeopardy, Jeopardy.Cron.CullOldRecords,
   # daily
-  frequency: 24 * 60 * 60 * 1000
+  # frequency: 24 * 60 * 60 * 1000
+  frequency: 10 * 1000
 
 config :jeopardy, gtag: false
 

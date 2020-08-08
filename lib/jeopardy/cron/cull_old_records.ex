@@ -22,9 +22,9 @@ defmodule Jeopardy.Cron.CullOldRecords do
   end
 
   defp schedule_work() do
-    frequency = 10000 || Application.fetch_env!(:jeopardy, __MODULE__)[:frequency]
+    frequency = Application.fetch_env!(:jeopardy, __MODULE__)[:frequency]
     Process.send_after(self(), :work, frequency)
-    Logger.error("[xxx] cull work scheduled, freq: #{inspect(frequency)}")
+    Logger.error("[xxx] cull work scheduled, freq (in ms): #{inspect(frequency)}")
   end
 
   def cull(),
