@@ -5,7 +5,7 @@
 	        <div class="second"></div>
             </div>
         <% end %>
-        <%= form_for :submission, "#", ["phx-target": "#{@id}", phx_submit: :save], fn f -> %>
+        <%= form_for :submission, "#", ["phx-target": @myself, phx_submit: :save], fn f -> %>
             <%= text_input f, :answer, placeholder: "answer", required: true,  "phx-debounce": "blur", "phx-update": "ignore" %>
             <%= error_tag f, :answer %>
             <%= submit "Submit" %>
