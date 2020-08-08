@@ -1,5 +1,5 @@
 <div id="<%= @id %>" class="wager">
-    <%= form_for @changeset, "#", [phx_change: :validate, "phx-target": "#{@id}", phx_submit: :save], fn f -> %>
+    <%= form_for @changeset, "#", [phx_change: :validate, "phx-target": @myself, phx_submit: :save], fn f -> %>
         <%= telephone_input f, :amount, placeholder: @max, required: true,  "phx-debounce": "blur" %>
         <%= error_tag f, :amount %>
         <%= submit "Submit Wager" %>
