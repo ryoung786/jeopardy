@@ -34,10 +34,10 @@ async function loadCSVFromGCS(event, table) {
 async function dedupe(table) {
   const dataset = "prod";
 
-  const query = `DELETE ${dataset}.${table} a 
+  const query = `DELETE ${dataset}.${table} a
     WHERE a.replicated_at < (
-      SELECT MAX(replicated_at) 
-      FROM ${dataset}.${table} b 
+      SELECT MAX(replicated_at)
+      FROM ${dataset}.${table} b
       WHERE a.id = b.id
     )`;
 
@@ -94,7 +94,14 @@ exports.helloGCS = (event, context) => {
       dedupe(table);
     })
     .then(() => {
-      if (skip_dedupe.includes(table)) return;
-      console.log(`Table deduped: ${table}`);
+      // delete our original gcs file
+      storage.bucket(event.bucket).file(event.name).delete();
+
+      if (!skip_dedupe.includes(table)) {
+        console.log(`Table deduped: ${table}`);
+      }
+    })
+    .then(() => {
+      console.log(`deleted gcs file ${event.name}`);
     });
 };
