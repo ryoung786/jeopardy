@@ -51,6 +51,6 @@ defmodule JeopardyWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug Pow.Plug.Session, otp_app: :jeopardy
+  plug JeopardyWeb.Pow.Plug, otp_app: :jeopardy
   plug JeopardyWeb.Router
 end

@@ -121,6 +121,7 @@ defmodule JeopardyWeb.Router do
       |> put_status(404)
       |> put_view(JeopardyWeb.ErrorView)
       |> render(:"404")
+      |> halt()
     end
   end
 
