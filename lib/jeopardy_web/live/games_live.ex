@@ -28,4 +28,10 @@ defmodule JeopardyWeb.GamesLive do
     filtered_games = Jeopardy.Drafts.search_games(socket.assigns.user, q)
     {:noreply, assign(socket, games: filtered_games)}
   end
+
+  @impl true
+  def handle_event("select_game", %{"id" => game_id}, socket) do
+    IO.inspect(game_id, label: "[xxx] clicked")
+    {:noreply, socket}
+  end
 end

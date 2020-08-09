@@ -1,0 +1,6 @@
+.choose_from_existing tbody tr {
+    cursor: pointer;
+    &:hover {
+        background-color: aliceblue;
+    }
+}

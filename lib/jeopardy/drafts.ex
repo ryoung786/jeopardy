@@ -21,6 +21,12 @@ defmodule Jeopardy.Drafts do
     Repo.all(Game)
   end
 
+  def list_games(%Jeopardy.Users.User{} = user) do
+    Game
+    |> where([g], g.owner_id == ^user.id)
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single game.
 

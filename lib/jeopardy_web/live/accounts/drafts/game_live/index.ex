@@ -6,10 +6,12 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Index do
 
   @impl true
   def mount(_params, %{"current_user_id" => current_user_id}, socket) do
+    user = Jeopardy.Users.get_user!(current_user_id)
+
     {:ok,
      assign(socket,
-       games: list_games(),
-       current_user: Jeopardy.Users.get_user!(current_user_id)
+       games: Drafts.list_games(user),
+       current_user: user
      )}
   end
 
@@ -40,11 +42,8 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Index do
   def handle_event("delete", %{"id" => id}, socket) do
     game = Drafts.get_game!(id)
     {:ok, _} = Drafts.delete_game(game)
+    user = socket.assigns.user
 
-    {:noreply, assign(socket, :games, list_games())}
-  end
-
-  defp list_games do
-    Drafts.list_games()
+    {:noreply, assign(socket, :games, Drafts.list_games(user))}
   end
 end
