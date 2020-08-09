@@ -18,9 +18,7 @@
         <h2>or</h2>
 
         <div class="new-game">
-            <%= form_for @conn, Routes.game_path(@conn, :create), fn _ -> %>
-                <%= submit "New Game" %>
-            <% end %>
+            <%= link "New Game", to: Routes.games_path(@conn, :index), class: "button"  %>
         </div>
     </div>
 </div>

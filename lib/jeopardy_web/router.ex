@@ -59,13 +59,15 @@ defmodule JeopardyWeb.Router do
     post "/games", GameController, :create
     get "/privacy-policy", PageController, :privacy_policy
 
+    live "/games", GamesLive, :index
+
     scope "/games/:code" do
       pipe_through :games
       live "/tv", TvLive, layout: {JeopardyWeb.LayoutView, :tv}
       live "/stats", StatsLive, layout: {JeopardyWeb.LayoutView, :stats}
 
       pipe_through :ensure_name
-      live "/", GameLive, layout: {JeopardyWeb.LayoutView, :contestant}
+      live "/", ContestantLive, layout: {JeopardyWeb.LayoutView, :contestant}
       live "/trebek", TrebekLive, layout: {JeopardyWeb.LayoutView, :trebek}
     end
   end
@@ -89,7 +91,7 @@ defmodule JeopardyWeb.Router do
     live "/games/:id/show/edit", GameLive.Show, :edit
   end
 
-  scope "/admin", JeopardyWeb.Admin do
+  scope "/admin", JeopardyWeb.Admin, as: :admin do
     pipe_through [:browser, :protected, :admin]
 
     get "/", GameController, :index

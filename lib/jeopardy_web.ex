@@ -53,7 +53,7 @@ defmodule JeopardyWeb do
         view =
           case String.split(Atom.to_string(__MODULE__), ".") |> List.last() do
             "TvLive" -> "TV"
-            "GameLive" -> "Game"
+            "ContestantLive" -> "Game"
             "TrebekLive" -> "Trebek"
           end
 

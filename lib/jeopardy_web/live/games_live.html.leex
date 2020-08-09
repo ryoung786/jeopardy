@@ -1,0 +1,40 @@
+<h1>hello</h1>
+
+<div class="quickstart">
+    <h2>Play a random game from the Jeopardy Archives</h2>
+    <%= form_for :quickstart, Routes.game_path(@socket, :create), fn _ -> %>
+        <%= submit "Quick Start" %>
+    <% end %>
+</div>
+
+<%= if @available_games_count == 0 do %>
+    <h2>Empty state</h2>
+<% else %>
+    <div class="choose_from_existing">
+
+        <div class="search-and-filters">
+            <form phx-change="search" class="search-form">
+                <%= text_input :search, :query, placeholder: "Search for a game", autofocus: true, "phx-debounce": "50", autocomplete: "off" %>
+            </form>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Tags</th>
+                </tr>
+            </thead>
+            <tbody id="games">
+                <%= for game <- @games do %>
+                    <tr id="game-<%= game.id %>">
+                        <td><%= game.name %></td>
+                        <td><%= game.description %></td>
+                        <td><%= Enum.join(game.tags, ", ") %></td>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
+
+    </div>
+<% end %>

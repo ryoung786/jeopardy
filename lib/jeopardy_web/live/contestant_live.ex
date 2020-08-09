@@ -1,4 +1,4 @@
-defmodule JeopardyWeb.GameLive do
+defmodule JeopardyWeb.ContestantLive do
   use JeopardyWeb, :live_view
   require Logger
   alias Jeopardy.GameEngine.State

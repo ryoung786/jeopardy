@@ -265,4 +265,27 @@ defmodule Jeopardy.Drafts do
   end
 
   defp to_string_map_keys(m), do: Map.new(m, fn {k, v} -> {Atom.to_string(k), v} end)
+
+  def search_games(nil = _user, query) do
+    q = "%#{query}%"
+
+    from(g in Game,
+      where: like(g.name, ^q),
+      or_where: like(g.description, ^q),
+      or_where: fragment("exists (select * from unnest(?) tag where tag like ?)", g.tags, ^q)
+    )
+    |> Repo.all()
+  end
+
+  def search_games(_user, query) do
+    q = "%#{query}%"
+
+    from(g in Game,
+      # where: [owner_id: ^user.id]
+      where: like(g.name, ^q),
+      or_where: like(g.description, ^q),
+      or_where: fragment("exists (select * from unnest(?) tag where tag like ?)", g.tags, ^q)
+    )
+    |> Repo.all()
+  end
 end
