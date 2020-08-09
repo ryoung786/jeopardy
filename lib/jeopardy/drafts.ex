@@ -294,4 +294,7 @@ defmodule Jeopardy.Drafts do
     )
     |> Repo.all()
   end
+
+  def load_into_game(%Jeopardy.Drafts.Game{} = dgame, %Jeopardy.Games.Game{} = game),
+    do: Jeopardy.Drafts.Loader.load_into_game(dgame, game)
 end

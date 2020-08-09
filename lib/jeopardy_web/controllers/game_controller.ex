@@ -4,7 +4,7 @@ defmodule JeopardyWeb.GameController do
   require Logger
 
   def create(conn, _params) do
-    case Games.create() do
+    case Games.create_from_random_jarchive() do
       {:ok, game} ->
         :telemetry.execute([:j, :games, :created], %{c: 1})
 

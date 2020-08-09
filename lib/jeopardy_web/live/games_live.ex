@@ -32,6 +32,9 @@ defmodule JeopardyWeb.GamesLive do
   @impl true
   def handle_event("select_game", %{"id" => game_id}, socket) do
     IO.inspect(game_id, label: "[xxx] clicked")
+
+    draft_game = Drafts.get_game!(game_id)
+    Jeopardy.Games.create_from_draft_game(draft_game)
     {:noreply, socket}
   end
 end
