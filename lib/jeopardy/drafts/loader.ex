@@ -60,7 +60,7 @@ defmodule Jeopardy.Drafts.Loader do
 
   defp map_clues(%DGame{} = dgame, "final_jeopardy" = round) do
     fj = dgame.clues[round] |> Map.put("type", "final_jeopardy")
-    [map_clue_json(fj, fj["category"])]
+    [map_clue_json(fj, fj["category"], round)]
   end
 
   defp map_clues(%DGame{} = dgame, round) do
@@ -70,13 +70,14 @@ defmodule Jeopardy.Drafts.Loader do
     |> Enum.flat_map(fn cat ->
       cat_name = cat["category"]
 
-      Enum.map(cat["clues"], &map_clue_json(&1, cat_name))
+      Enum.map(cat["clues"], &map_clue_json(&1, cat_name, round))
     end)
   end
 
-  defp map_clue_json(clue, cat_name) do
+  defp map_clue_json(clue, cat_name, round) do
     %{
       category: cat_name,
+      round: round,
       clue_text: clue["clue"],
       answer_text: clue["answer"],
       value: clue["value"],

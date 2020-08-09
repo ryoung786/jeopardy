@@ -1,13 +1,10 @@
 defmodule Jeopardy.FSM.PreJeopardy.AwaitingStart do
   use Jeopardy.FSM
 
-  def handle(:start_game, _data, %{game: game} = state) do
-    if state.game.players |> Enum.count() >= 2 do
-      Jeopardy.JArchive.load_into_game(game)
-      {:ok, State.update_round(state, "selecting_trebek")}
-    else
-      {:error, :not_enough_players}
-    end
+  def handle(:start_game, _data, %{game: _game} = state) do
+    if state.game.players |> Enum.count() >= 2,
+      do: {:ok, State.update_round(state, "selecting_trebek")},
+      else: {:error, :not_enough_players}
   end
 
   def handle(:add_player, %{player_name: name}, state) do
@@ -25,10 +22,6 @@ defmodule Jeopardy.FSM.PreJeopardy.AwaitingStart do
     Jeopardy.Repo.delete(%Jeopardy.Games.Player{id: player_id})
     {:ok, retrieve_state(state.game.id)}
   end
-
-  # def handle(%{event: :player_exited, data: data}, %{game: game} = state) do
-  # remove the player
-  # end
 
   defp is_name_taken?(players, name),
     do: players |> Enum.any?(fn p -> p.name == name end)

@@ -7,6 +7,13 @@
     <% end %>
 </div>
 
+<%= if @confirm_selection do %>
+    <%= live_modal @socket, JeopardyWeb.Games.ConfirmSelectionComponent,
+    id: "game-#{@confirm_selection.id}",
+    game: @confirm_selection,
+    return_to: "/games" %>
+<% end %>
+
 <%= if @available_games_count == 0 do %>
     <h2>Empty state</h2>
 <% else %>
