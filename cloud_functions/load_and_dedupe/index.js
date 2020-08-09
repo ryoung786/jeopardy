@@ -1,11 +1,62 @@
 const { BigQuery } = require("@google-cloud/bigquery");
 const { Storage } = require("@google-cloud/storage");
+const path = require("path");
+const os = require("os");
+const fs = require("fs");
 
 const bigquery = new BigQuery();
 const storage = new Storage();
 
+async function did_num_records_change(event) {
+  const old_num_records = await count_records();
+  const new_num_records = await get_records_from_gcs_file(event);
+
+  console.log("num_records from BQ", old_num_records);
+  console.log("num_records from file", new_num_records);
+
+  return old_num_records != new_num_records;
+}
+
+async function count_records() {
+  const dataset = "prod";
+  const table = "db_records";
+
+  const query = `SELECT num_records
+    FROM ${dataset}.${table}
+    ORDER BY replicated_at DESC
+    LIMIT 1`;
+
+  // For all options, see https://cloud.google.com/bigquery/docs/reference/rest/v2/jobs/query
+  const options = { query: query, location: "US" };
+  const [job] = await bigquery.createQueryJob(options);
+  const [rows] = await job.getQueryResults();
+  return rows[0].num_records;
+}
+
+async function get_records_from_gcs_file(event) {
+  const tempFilePath = path.join(os.tmpdir(), "abc");
+  console.log("tempFilePath", tempFilePath);
+  await storage
+    .bucket(event.bucket)
+    .file(event.name)
+    .download({ destination: tempFilePath });
+  const line = fs.readFileSync(tempFilePath).toString().split("\n")[1];
+  fs.unlinkSync(tempFilePath);
+  return parseInt(line.split(",")[0]);
+}
+
 async function loadCSVFromGCS(event, table) {
   const datasetId = "prod";
+
+  // if we're dealing with db_records and there wasn't a change,
+  // then there's no need to insert another record into BigQuery
+  if (table == "db_records") {
+    const did_change = await did_num_records_change(event);
+    if (!did_change) {
+      console.log("it did not change, so skipping loading csv into bq");
+      return;
+    }
+  }
 
   // https://cloud.google.com/bigquery/docs/reference/rest/v2/Job#JobConfigurationLoad
   const metadata = {
@@ -22,13 +73,32 @@ async function loadCSVFromGCS(event, table) {
     .load(storage.bucket(event.bucket).file(event.name), metadata);
 
   // load() waits for the job to finish
-  console.log(`Job ${job.id} completed.  table: ${table}`);
+  console.log(`CSV Loading Job ${job.id} completed.  table: ${table}`);
 
   // Check the job's status for errors
   const errors = job.status.errors;
   if (errors && errors.length > 0) {
     throw errors;
   }
+}
+
+async function latest_db_records_count() {
+  const query = `SELECT num_records
+    FROM prod.db_records
+    ORDER BY replicated_at DESC
+    LIMIT 1`;
+
+  // For all options, see https://cloud.google.com/bigquery/docs/reference/rest/v2/jobs/query
+  const options = {
+    query: query,
+    location: "US",
+  };
+
+  // Run the query as a job
+  const [job] = await bigquery.createQueryJob(options);
+  // Wait for the query to finish
+  const [rows] = await job.getQueryResults();
+  return rows[0].num_records;
 }
 
 async function dedupe(table) {
