@@ -19,6 +19,8 @@ defmodule JeopardyWeb.GamesLive do
       socket
       |> assign(user: user)
       |> assign(games: games)
+      |> assign(query: "")
+      |> assign(filters: %{my_games: false})
       |> assign(confirm_selection: nil)
       |> assign(available_games_count: Enum.count(games))
 
@@ -31,8 +33,11 @@ defmodule JeopardyWeb.GamesLive do
 
   @impl true
   def handle_event("search", %{"search" => %{"query" => q}}, socket) do
-    filtered_games = Jeopardy.Drafts.search_games(socket.assigns.user, q)
-    {:noreply, assign(socket, games: filtered_games)}
+    {:noreply,
+     assign(socket,
+       query: q,
+       games: get_filtered_games(%{socket.assigns | query: q})
+     )}
   end
 
   @impl true
@@ -40,5 +45,20 @@ defmodule JeopardyWeb.GamesLive do
     draft_game = Drafts.get_game!(game_id)
     # Jeopardy.Games.create_from_draft_game(draft_game)
     {:noreply, assign(socket, confirm_selection: draft_game)}
+  end
+
+  @impl true
+  def handle_event("toggle_my_games", _, socket) do
+    filters = Map.update!(socket.assigns.filters, :my_games, &(!&1))
+
+    {:noreply,
+     assign(socket,
+       filters: filters,
+       games: get_filtered_games(%{socket.assigns | filters: filters})
+     )}
+  end
+
+  defp get_filtered_games(%{user: user, query: q, filters: filters}) do
+    Jeopardy.Drafts.search_games(user, q, filters)
   end
 end
