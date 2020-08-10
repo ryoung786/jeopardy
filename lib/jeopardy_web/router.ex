@@ -27,7 +27,6 @@ defmodule JeopardyWeb.Router do
 
   pipeline :protected do
     plug Pow.Plug.RequireAuthenticated, error_handler: Pow.Phoenix.PlugErrorHandler
-    plug :add_user_to_session
   end
 
   pipeline :skip_csrf_protection do
@@ -132,9 +131,6 @@ defmodule JeopardyWeb.Router do
       do: conn,
       else: conn |> put_flash(:info, "Please enter your name") |> redirect(to: "/") |> halt()
   end
-
-  defp add_user_to_session(conn, _opts),
-    do: put_session(conn, :current_user_id, Pow.Plug.current_user(conn).id)
 
   if Mix.env() == :dev, do: forward("/sent_emails", Bamboo.SentEmailViewerPlug)
 end
