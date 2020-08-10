@@ -1,4 +1,5 @@
 <div class="homepage">
+    <div id="bg"></div>
     <%= render_layout __MODULE__, "header.html", assigns do %>
         <h1 class="this-is-jeopardy">This is Jeopardy!</h1>
         <p>Play real Jeopardy matches with friends, using your phone as a buzzer!</p>

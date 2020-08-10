@@ -1,10 +1,13 @@
-.onclick-void-holder > main { height: 100%; }
+#bg {
+    position: fixed;
+    top: 0; bottom: 0; left: 0; right: 0;
+    z-index: -99999;
+}
 
 .homepage {
-    min-height: 100%;
-    background: #f9f9f9;
-    overscroll-behavior-y: contain;
-
+    #bg {
+        background: #f9f9f9;
+    }
 
     .options {
         color: #222;

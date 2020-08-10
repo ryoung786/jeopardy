@@ -1,4 +1,5 @@
 <div class="homepage">
+    <div id="bg"></div>
     <%= render_layout __MODULE__, "header.html", assigns do %>
         <h1>Privacy Policy</h1>
     <% end %>
@@ -70,48 +71,48 @@
         </p>
 
         <ul>
-        <li>
-            To facilitate account creation and logon process. If you choose to link your account with us to a third party account (such as your Google or Facebook account), we use the information you allowed us to collect from those third parties to facilitate account creation and logon process for the performance of the contract. See the section below headed “HOW DO WE HANDLE YOUR SOCIAL LOGINS” for further information.
-        </li>
-        <li>
-            To send you marketing and promotional communications. We and/or our third party marketing partners may use the personal information you send to us for our marketing purposes, if this is in accordance with your marketing preferences. You can opt-out of our marketing emails at any time (see the “WHAT ARE YOUR PRIVACY RIGHTS” below).
-        </li>
-        <li>
-            To send administrative information to you. We may use your personal information to send you product, service and new feature information and/or information about changes to our terms, conditions, and policies.
-        </li>
-        <li>
-            To post testimonials. We post testimonials on our Services that may contain personal information. Prior to posting a testimonial, we will obtain your consent to use your name and testimonial. If you wish to update, or delete your testimonial, please contact us at ryoung786@gmail.com and be sure to include your name, testimonial location, and contact information.
-        </li>
-        <li>
-            Deliver targeted advertising to you. We may use your information to develop and display content and advertising (and work with third parties who do so) tailored to your interests and/or location and to measure its effectiveness.
-        </li>
-        <li>
-            Request Feedback. We may use your information to request feedback and to contact you about your use of our Services.
-        </li>
-        <li>
-            To protect our Services. We may use your information as part of our efforts to keep our Services safe and secure (for example, for fraud monitoring and prevention).
-        </li>
-        <li>
-            To enable user-to-user communications. We may use your information in order to enable user-to-user communications with each user’s consent.
-        </li>
-        <li>
-            To enforce our terms, conditions and policies for Business Purposes, Legal Reasons and Contractual.
-        </li>
-        <li>
-            To respond to legal requests and prevent harm. If we receive a subpoena or other legal request, we may need to inspect the data we hold to determine how to respond.
-        </li>
-        <li>
-            To manage user accounts. We may use your information for the purposes of managing our account and keeping it in working order.
-        </li>
-        <li>
-            To deliver services to the user. We may use your information to provide you with the requested service.
-        </li>
-        <li>
-            To respond to user inquiries/offer support to users. We may use your information to respond to your inquiries and solve any potential issues you might have with the use of our Services.
-        </li>
-        <li>
-            For other Business Purposes. We may use your information for other Business Purposes, such as data analysis, identifying usage trends, determining the effectiveness of our promotional campaigns and to evaluate and improve our Services, products, marketing and your experience. We may use and store this information in aggregated and anonymized form so that it is not associated with individual end users and does not include personal information. We will not use identifiable personal information without your consent.
-        </li>
+            <li>
+                To facilitate account creation and logon process. If you choose to link your account with us to a third party account (such as your Google or Facebook account), we use the information you allowed us to collect from those third parties to facilitate account creation and logon process for the performance of the contract. See the section below headed “HOW DO WE HANDLE YOUR SOCIAL LOGINS” for further information.
+            </li>
+            <li>
+                To send you marketing and promotional communications. We and/or our third party marketing partners may use the personal information you send to us for our marketing purposes, if this is in accordance with your marketing preferences. You can opt-out of our marketing emails at any time (see the “WHAT ARE YOUR PRIVACY RIGHTS” below).
+            </li>
+            <li>
+                To send administrative information to you. We may use your personal information to send you product, service and new feature information and/or information about changes to our terms, conditions, and policies.
+            </li>
+            <li>
+                To post testimonials. We post testimonials on our Services that may contain personal information. Prior to posting a testimonial, we will obtain your consent to use your name and testimonial. If you wish to update, or delete your testimonial, please contact us at ryoung786@gmail.com and be sure to include your name, testimonial location, and contact information.
+            </li>
+            <li>
+                Deliver targeted advertising to you. We may use your information to develop and display content and advertising (and work with third parties who do so) tailored to your interests and/or location and to measure its effectiveness.
+            </li>
+            <li>
+                Request Feedback. We may use your information to request feedback and to contact you about your use of our Services.
+            </li>
+            <li>
+                To protect our Services. We may use your information as part of our efforts to keep our Services safe and secure (for example, for fraud monitoring and prevention).
+            </li>
+            <li>
+                To enable user-to-user communications. We may use your information in order to enable user-to-user communications with each user’s consent.
+            </li>
+            <li>
+                To enforce our terms, conditions and policies for Business Purposes, Legal Reasons and Contractual.
+            </li>
+            <li>
+                To respond to legal requests and prevent harm. If we receive a subpoena or other legal request, we may need to inspect the data we hold to determine how to respond.
+            </li>
+            <li>
+                To manage user accounts. We may use your information for the purposes of managing our account and keeping it in working order.
+            </li>
+            <li>
+                To deliver services to the user. We may use your information to provide you with the requested service.
+            </li>
+            <li>
+                To respond to user inquiries/offer support to users. We may use your information to respond to your inquiries and solve any potential issues you might have with the use of our Services.
+            </li>
+            <li>
+                For other Business Purposes. We may use your information for other Business Purposes, such as data analysis, identifying usage trends, determining the effectiveness of our promotional campaigns and to evaluate and improve our Services, products, marketing and your experience. We may use and store this information in aggregated and anonymized form so that it is not associated with individual end users and does not include personal information. We will not use identifiable personal information without your consent.
+            </li>
         </ul>
 
         <h3>        3. WILL YOUR INFORMATION BE SHARED WITH ANYONE?</h3>

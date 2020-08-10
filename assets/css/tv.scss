@@ -12,3 +12,5 @@
 @import "tv/revealing_board";
 @import "tv/selecting_clue";
 @import "tv/stats-modal";
+
+html, body, .onclick-void-holder, .onclick-void-holder>div { height: 100%; }
