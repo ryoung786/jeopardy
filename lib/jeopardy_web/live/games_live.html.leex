@@ -1,9 +1,11 @@
 <div class="main-container">
-    <div class="quickstart">
-        <h2>Play a random game from the Jeopardy Archives</h2>
-        <%= form_for :quickstart, Routes.game_path(@socket, :create), fn _ -> %>
-            <%= submit "Quick Start" %>
-        <% end %>
+    <div class="top">
+        <div class="quickstart">
+            <h2>Play a random game from the Jeopardy Archives</h2>
+            <%= form_for :quickstart, Routes.game_path(@socket, :create), fn _ -> %>
+                <%= submit "Quick Start" %>
+            <% end %>
+        </div>
     </div>
 
     <%= if @confirm_selection do %>
@@ -17,6 +19,8 @@
         <h2>Empty state</h2>
     <% else %>
         <div class="choose_from_existing">
+
+            <h4 class="community-header">Or find a game created by the community.</h4>
 
             <div class="search-and-filters">
                 <form phx-change="search" class="search-form">
@@ -56,8 +60,8 @@
             <%= if Enum.empty?(@games) do %>
                 <div class="no-results">
                     <p><strong>No Results</strong></p>
-                    <p>Can't find that perfect game? Create your own!</p>
-                    <%= link "Custom Game", class: "button", to: "/" %>
+                    <p>Can't find that perfect game?<br />Create your own!</p>
+                    <%= link "Custom Game", class: "button", to: "/account/games/new" %>
                 </div>
             <% end %>
         </div>

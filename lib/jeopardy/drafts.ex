@@ -273,25 +273,37 @@ defmodule Jeopardy.Drafts do
 
   defp to_string_map_keys(m), do: Map.new(m, fn {k, v} -> {Atom.to_string(k), v} end)
 
+  def search_games(nil = _user, search_query, _filters) do
+    search_helper_query(Game, search_query)
+    |> Repo.all()
+  end
+
   def search_games(%User{} = user, search_query, %{my_games: _} = filters) do
+    query = my_games_query(user.id, filters)
+    query = search_helper_query(query, search_query)
+
+    query
+    |> Repo.all()
+  end
+
+  defp my_games_query(user_id, filters) do
+    if filters.my_games,
+      do: from(g in Game, where: [owner_id: ^user_id, owner_type: "user"]),
+      else: Game
+  end
+
+  defp search_helper_query(query, search_query) do
     search_query = String.trim(search_query)
     q = "%#{search_query}%"
 
-    my_games_filter =
-      if filters.my_games,
-        do: from(g in Game, where: [owner_id: ^user.id, owner_type: "user"]),
-        else: Game
-
-    if(search_query == "",
-      do: my_games_filter,
+    if search_query == "",
+      do: query,
       else:
-        from(g in my_games_filter,
+        from(g in query,
           where:
             ilike(g.name, ^q) or ilike(g.description, ^q) or
               fragment("exists (select * from unnest(?) tag where tag ilike ?)", g.tags, ^q)
         )
-    )
-    |> Repo.all()
   end
 
   def load_into_game(%Jeopardy.Drafts.Game{} = dgame, %Jeopardy.Games.Game{} = game),

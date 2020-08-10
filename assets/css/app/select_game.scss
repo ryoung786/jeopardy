@@ -1,13 +1,32 @@
 .main-container {
-    max-width: 950px;
-    padding: 0 25px;
     display: flex;
     flex-direction: column;
-    margin: auto;
+    form, input {margin-bottom: 0;}
+
+    .top {
+        background: aliceblue;
+    }
+}
+
+.quickstart {
+    max-width: 500px;
+    text-align: center;
+    margin: 50px auto;
 }
 
 .choose_from_existing {
+
+    max-width: 950px;
+    padding: 0 25px;
+    margin: auto;
+    width: 100%;
     margin-top: 50px;
+
+    .community-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
     .results tbody tr {
         cursor: pointer;
         &:hover {
@@ -16,7 +35,6 @@
     }
 
     .search-and-filters {
-        form, input {margin-bottom: 0;}
         display: grid;
         grid-template-columns: 1fr auto;
         align-items: center;
@@ -43,5 +61,6 @@
         flex-direction: column;
         align-items: center;
         box-shadow: 0px 5px 15px lightgray;
+        text-align: center;
     }
 }
