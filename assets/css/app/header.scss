@@ -1,6 +1,10 @@
 .homepage .header,
 body > header.header {
     background: $dark-shades;
+    background-image: linear-gradient(90deg, #b224ef 0%, #6713d2 48%, #4CC3FF 100%);
+    background-size: 400% 400%;
+    animation: bg-rotate 30s ease infinite;
+    animation-delay: -4s;
     padding: 10px;
     .content {
         max-width: 1400px;
@@ -69,6 +73,11 @@ body > header.header {
 .homepage .curved-div {
     position: relative;
     background: $dark-shades;
+    background-image: linear-gradient(90deg, #b224ef 0%, #6713d2 48%, #4CC3FF 100%);
+    background-size: 400% 400%;
+    animation: bg-rotate 30s ease infinite;
+    animation-delay: -4s;
+
     color: #FFF;
     text-align: center;
     overflow: hidden;
