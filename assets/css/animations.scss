@@ -29,3 +29,15 @@ $bounce-time-fn: cubic-bezier(.54,1.85,.5,1);
         opacity: 1;
     }
 }
+
+@keyframes popin {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

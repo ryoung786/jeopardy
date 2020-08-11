@@ -1,10 +1,11 @@
-<h3>Play this game?</h3>
+<div class="content">
+    <h3 class="name"><%= @game.name %></h3>
+    <span class="desc"><%= @game.description %></span>
+</div>
 
-<label>Name:</label> <span><%= @game.name %></span>
-<label>Description:</label> <span><%= @game.description %></span>
-<label>Tags:</label> <span><%= @game.tags %></span>
-
-<%= form_for :confirmation, "/games", as: "confirmation" %>
-  <input type="hidden" name="game_id" value="<%= @game.id %>" />
-  <%= submit "Play game" %>
-</form>
+<footer>
+    <%= form_for :confirmation, "/games", as: "confirmation" %>
+        <input type="hidden" name="game_id" value="<%= @game.id %>" />
+        <%= submit "Play game" %>
+    </form>
+</footer>
