@@ -23,8 +23,8 @@
             <h4 class="community-header">Or find a game created by the community</h4>
 
             <div class="search-and-filters">
-                <form phx-change="search" class="search-form">
-                    <%= text_input :search, :query, placeholder: "Search for a game", autofocus: true, "phx-debounce": "300", autocomplete: "off" %>
+                <form phx-change="search" class="search-form" onSubmit="document.getElementById('searchbox').blur();return false;" action="">
+                    <%= text_input :search, :query, placeholder: "Search for a game", autofocus: false, "phx-debounce": "300", autocomplete: "off", id: "searchbox" %>
                 </form>
                 <%= if @user do %>
                     <div class="filters">
