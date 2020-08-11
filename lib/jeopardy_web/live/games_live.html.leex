@@ -24,7 +24,7 @@
 
             <div class="search-and-filters">
                 <form phx-change="search" class="search-form" onSubmit="document.getElementById('searchbox').blur();return false;" action="">
-                    <%= text_input :search, :query, placeholder: "Search for a game", autofocus: false, "phx-debounce": "300", autocomplete: "off", id: "searchbox" %>
+                    <%= text_input :search, :query, placeholder: "Search for a game", autofocus: false, "phx-debounce": "300", autocomplete: "off", id: "searchbox", value: @query %>
                 </form>
                 <%= if @user do %>
                     <div class="filters">
