@@ -16,8 +16,6 @@ defmodule JeopardyWeb.PageController do
     :telemetry.execute([:metrics_demo, :test], %{bar: "hello"})
 
     conn
-    # |> clear_session
-    # |> configure_session(drop: true)
     |> assign(:changeset, Login.changeset())
     |> render("index.html")
   end
@@ -26,24 +24,32 @@ defmodule JeopardyWeb.PageController do
     code = String.upcase(code)
 
     with {:ok, _changeset} <- Login.validate(login),
-         %Game{} = g <- Games.get_by_code(code),
-         :ok <- Jeopardy.GameEngine.event(:add_player, %{player_name: name}, g.id) do
-      conn
-      |> put_session(:name, name)
-      |> put_session(:code, code)
-      |> put_session(:game_id, g.id)
-      |> redirect(to: "/games/#{code}")
+         %Game{id: game_id} = g <- Games.get_by_code(code) do
+      case get_session(conn) do
+        %{"name" => ^name, "code" => ^code, "game_id" => ^game_id} ->
+          redirect(conn, to: "/games/#{code}")
+
+        _ ->
+          case Jeopardy.GameEngine.event(:add_player, %{player_name: name}, g.id) do
+            :ok ->
+              conn
+              |> put_session(:name, name)
+              |> put_session(:code, code)
+              |> put_session(:game_id, g.id)
+              |> redirect(to: "/games/#{code}")
+
+            {:error, :name_taken} ->
+              conn
+              |> put_flash(:error, "Sorry, that name has already been taken")
+              |> redirect(to: "/")
+
+            {:error, :game_in_progress} ->
+              conn
+              |> put_flash(:error, "Sorry, that game is already in progress")
+              |> redirect(to: "/")
+          end
+      end
     else
-      {:error, :name_taken} ->
-        conn
-        |> put_flash(:error, "Sorry, that name has already been taken")
-        |> redirect(to: "/")
-
-      {:error, :game_in_progress} ->
-        conn
-        |> put_flash(:error, "Sorry, that game is already in progress")
-        |> redirect(to: "/")
-
       {:error, changeset} ->
         conn |> render("index.html", changeset: changeset)
 
