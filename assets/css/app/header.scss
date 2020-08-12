@@ -109,6 +109,15 @@ body > header.header {
         color: #fff;
     }
 }
+.curved-bottom-svg { display: block; }
+.curved-div-bottom {
+    clip-path: url(#curved-bottom-clip-path);
+    background-image: linear-gradient(90deg, #b224ef 0%, #6713d2 48%, #4d94ff 100%);
+    background-size: 400% 400%;
+    animation: bg-rotate 30s ease infinite;
+    animation-delay: -4s;
+    height: 40px;
+}
 
 @media only screen and (max-width: 400px) {
     .homepage .header,
