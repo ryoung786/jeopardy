@@ -39,6 +39,10 @@ defmodule JeopardyWeb do
 
       # Include shared imports and aliases for views
       unquote(view_helpers())
+
+      def header(socket, logged_in_user),
+        do:
+          render(JeopardyWeb.CommonView, "header.html", conn: socket, current_user: logged_in_user)
     end
   end
 
