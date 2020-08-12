@@ -2,9 +2,7 @@
     <div class="top">
         <div class="quickstart">
             <h2>Play a random game from the Jeopardy Archives</h2>
-            <%= form_for :quickstart, Routes.game_path(@socket, :create), fn _ -> %>
-                <%= submit "Quick Start" %>
-            <% end %>
+            <%= button "Quick Start", to: Routes.game_path(@socket, :create) %>
         </div>
     </div>
 

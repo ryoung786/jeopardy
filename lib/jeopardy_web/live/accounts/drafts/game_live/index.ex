@@ -34,7 +34,7 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Games")
+    |> assign(:page_title, "Your Games")
     |> assign(:game, nil)
   end
 
