@@ -5,6 +5,12 @@
 
     .top {
         background: aliceblue;
+        margin-top: -70px;
+        padding-top: 30px;
+    }
+    .alert.has-content ~ .top {
+        margin-top: 0px;
+        padding-top: 0px;
     }
 }
 

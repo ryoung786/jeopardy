@@ -1,4 +1,18 @@
 <div class="main-container">
+    <%= render_layout JeopardyWeb.PageView, "header.html", assigns, do: nil %>
+
+    <% flash_info = live_flash(@flash, :info) %>
+    <p class="alert alert-info <%= if flash_info != nil, do: "has-content" %>"
+       role="alert"
+       phx-click="lv:clear-flash"
+       phx-value-key="info"><%= flash_info %></p>
+
+    <% flash_error = live_flash(@flash, :error) %>
+    <p class="alert alert-danger <%= if flash_error != nil, do: "has-content" %>"
+       role="alert"
+       phx-click="lv:clear-flash"
+       phx-value-key="error"><%= flash_error %></p>
+
     <div class="top">
         <div class="quickstart">
             <h2>Play a random game from the Jeopardy Archives</h2>

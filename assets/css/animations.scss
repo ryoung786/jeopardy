@@ -18,6 +18,11 @@ $bounce-time-fn: cubic-bezier(.54,1.85,.5,1);
     100% { transform: scale(1)   rotate(0); }
 }
 
+@keyframes slidedown {
+    from { transform: translateY(-100px); }
+    to { transform: translateY(0); }
+}
+
 @keyframes slidein {
     from {
         transform: translateY(25%);
