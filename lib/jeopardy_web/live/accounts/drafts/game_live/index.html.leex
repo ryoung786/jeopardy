@@ -1,15 +1,32 @@
-<h1>Your Games</h1>
+<%= render_layout JeopardyWeb.PageView, "header.html", assigns, do: nil %>
+<% flash_info = live_flash(@flash, :info) %>
+<p class="alert alert-info <%= if flash_info != nil, do: "has-content" %>"
+   role="alert"
+   phx-click="lv:clear-flash"
+   phx-value-key="info"><%= flash_info %></p>
 
-<%= mygames_component @socket, assigns %>
+<% flash_error = live_flash(@flash, :error) %>
+<p class="alert alert-danger <%= if flash_error != nil, do: "has-content" %>"
+   role="alert"
+   phx-click="lv:clear-flash"
+   phx-value-key="error"><%= flash_error %></p>
 
-<%= if @live_action in [:new] do %>
-    <%= live_modal @socket, JeopardyWeb.Accounts.Drafts.GameLive.FormComponent,
-    id: @game.id || :new,
-    title: @page_title,
-    action: @live_action,
-    game: @game,
-    current_user: @current_user,
-    return_to: Routes.game_index_path(@socket, :index) %>
-<% end %>
+<div class="account-games">
 
-<span><%= live_patch "New Game", to: Routes.game_index_path(@socket, :new) %></span>
+
+    <h2>Your Games</h2>
+
+    <%= mygames_component @socket, assigns %>
+
+    <%= if @live_action in [:new] do %>
+        <%= live_modal @socket, JeopardyWeb.Accounts.Drafts.GameLive.FormComponent,
+        id: @game.id || :new,
+        title: @page_title,
+        action: @live_action,
+        game: @game,
+        current_user: @current_user,
+        return_to: Routes.game_index_path(@socket, :index) %>
+    <% end %>
+
+    <span><%= live_patch "New Game", to: Routes.game_index_path(@socket, :new) %></span>
+</div>

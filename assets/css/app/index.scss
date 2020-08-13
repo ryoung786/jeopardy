@@ -19,7 +19,7 @@
     }
 
     .alert.has-content ~ .options {
-        animation: slidedown .5s $bounce-time-fn forwards;
+        animation: $flash-animation;
     }
 
     &.tv {

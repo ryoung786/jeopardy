@@ -1,5 +1,15 @@
+@import "jeopardy_common";
+@import "animations";
 @import "theme";
 @import "app/header";
 @import "app/pow";
+@import "common/alerts";
+@import "accounts/games";
 @import "accounts/board";
-@import "jeopardy_common";
+
+main.container {
+    padding: 0 20px;
+    .header-bottom {
+        margin: 0 -20px;
+    }
+}
