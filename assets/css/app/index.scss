@@ -18,6 +18,10 @@
         input { background: #fff; }
     }
 
+    .alert.has-content ~ .options {
+        animation: slidedown .5s $bounce-time-fn forwards;
+    }
+
     &.tv {
         .header-instructions {
             font-family: "Roboto Slab", "Helvetica Neue", sans-serif;

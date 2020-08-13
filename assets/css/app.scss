@@ -1,3 +1,4 @@
+@import "animations";
 @import "theme";
 @import "app/header";
 @import "app/index";
@@ -29,7 +30,8 @@
     margin: 20px auto;
     margin-bottom: 30px;
     min-width: unquote("min(100vw, 900px)");
-    animation: slidedown .5s $bounce-time-fn;
+    animation: slidedown .5s $bounce-time-fn forwards;
+    transform: translateY(-400px);
     box-shadow: $box-shadow;
     border: 0;
 }

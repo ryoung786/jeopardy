@@ -1,7 +1,7 @@
 .homepage .header,
 body > header.header {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     background: $dark-shades;
     background-image: linear-gradient(90deg, #b224ef 0%, #6713d2 48%, #4d94ff 100%);
     background-size: 400% 400%;
@@ -111,7 +111,7 @@ body > header.header {
         color: #fff;
     }
 }
-.header-bottom { z-index: 1; }
+.header-bottom { z-index: 1; position: relative; }
 .curved-bottom-svg { display: block; }
 .curved-div-bottom {
     clip-path: url(#curved-bottom-clip-path);
