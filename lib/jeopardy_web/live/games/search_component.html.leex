@@ -1,0 +1,46 @@
+<div id="<%= @id %>" class="games-search-component">
+    <div class="search-and-filters">
+        <form phx-change="search" phx-target="<%= @myself %>" class="search-form" onSubmit="document.getElementById('searchbox').blur();return false;" action="">
+            <%= text_input :search, :query, placeholder: "Search for a game", autofocus: false, "phx-debounce": "300", autocomplete: "off", id: "searchbox", value: @query %>
+        </form>
+
+        <div class="filters">
+            <%= if true || :my_games not in @hidden_filters do %>
+                <form phx-change="toggle_my_games" phx-target="<%= @myself %>" class="filter_form">
+                    <label>
+                        <input name="cbox" <%= if @filters.my_games, do: "checked" %> type="checkbox" value="<%= @filters.my_games %>" >
+                        Only my games
+                    </label>
+                </form>
+            <% end %>
+        </div>
+    </div>
+    <table class="results">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Tags</th>
+            </tr>
+        </thead>
+        <tbody id="games">
+            <%= for game <- @games do %>
+                <tr id="game-<%= game.id %>"
+                    phx-click="select_game"
+                    phx-target="<%= @myself %>"
+                    phx-value-id="<%= game.id %>">
+                    <td><%= game.name %></td>
+                    <td><%= game.description %></td>
+                    <td><%= Enum.join(game.tags, ", ") %></td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+    <%= if Enum.empty?(@games) do %>
+        <div class="no-results">
+            <p><strong>No Results</strong></p>
+            <p>Can't find that perfect game?<br />Create your own!</p>
+            <%= link "Custom Game", class: "button", to: "/account/games/new" %>
+        </div>
+    <% end %>
+</div>

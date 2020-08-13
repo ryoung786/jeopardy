@@ -1,5 +1,8 @@
 <h1>Listing Games</h1>
 
+<%= live_component @socket, SearchComponent, id: :search_component, user: @current_user, hidden_filters: [:my_games], filters: %{my_games: false} %>
+
+
 <%= if @live_action in [:new] do %>
     <%= live_modal @socket, JeopardyWeb.Accounts.Drafts.GameLive.FormComponent,
     id: @game.id || :new,

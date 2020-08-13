@@ -2,6 +2,7 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Index do
   use JeopardyWeb, :live_view
   alias Jeopardy.Drafts
   alias Jeopardy.Drafts.Game
+  alias JeopardyWeb.Games.SearchComponent
   require Logger
 
   @impl true
