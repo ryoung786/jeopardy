@@ -11,6 +11,16 @@
    phx-click="lv:clear-flash"
    phx-value-key="error"><%= flash_error %></p>
 
+<%= if @live_action in [:new] do %>
+    <%= live_modal @socket, JeopardyWeb.Accounts.Drafts.GameLive.FormComponent,
+    id: @game.id || :new,
+    title: @page_title,
+    action: @live_action,
+    game: @game,
+    current_user: @current_user,
+    return_to: Routes.game_index_path(@socket, :index) %>
+<% end %>
+
 <div class="account-games">
 
 
@@ -18,15 +28,6 @@
 
     <%= mygames_component @socket, assigns %>
 
-    <%= if @live_action in [:new] do %>
-        <%= live_modal @socket, JeopardyWeb.Accounts.Drafts.GameLive.FormComponent,
-        id: @game.id || :new,
-        title: @page_title,
-        action: @live_action,
-        game: @game,
-        current_user: @current_user,
-        return_to: Routes.game_index_path(@socket, :index) %>
-    <% end %>
 
     <span><%= live_patch "New Game", to: Routes.game_index_path(@socket, :new) %></span>
 </div>
