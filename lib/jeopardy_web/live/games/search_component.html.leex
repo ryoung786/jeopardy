@@ -5,10 +5,11 @@
         </form>
 
         <div class="filters">
-            <%= if true || :my_games not in @hidden_filters do %>
+            <%= if :my_games not in @hidden_filters do %>
                 <form phx-change="toggle_my_games" phx-target="<%= @myself %>" class="filter_form">
                     <label>
-                        <input name="cbox" <%= if @filters.my_games, do: "checked" %> type="checkbox" value="<%= @filters.my_games %>" >
+                        <input name="cbox" <%= if :my_games in @filters, do: "checked" %>
+                               type="checkbox" value="<%= :my_games in @filters %>" >
                         Only my games
                     </label>
                 </form>
@@ -21,6 +22,7 @@
                 <th>Name</th>
                 <th>Description</th>
                 <th>Tags</th>
+                <%= if @edit_delete_col do %><th></th><% end %>
             </tr>
         </thead>
         <tbody id="games">
@@ -32,6 +34,13 @@
                     <td><%= game.name %></td>
                     <td><%= game.description %></td>
                     <td><%= Enum.join(game.tags, ", ") %></td>
+
+                    <%= if @edit_delete_col do %>
+                        <td>
+                            <span><%= live_redirect "Edit", to: Routes.game_edit_jeopardy_path(@socket, :edit, game, "jeopardy") %></span>
+                            <span><%= link "Delete", to: "#", phx_click: "delete", phx_target: @myself, phx_value_id: game.id, data: [confirm: "Are you sure?"] %></span>
+                        </td>
+                    <% end %>
                 </tr>
             <% end %>
         </tbody>

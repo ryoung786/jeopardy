@@ -278,16 +278,15 @@ defmodule Jeopardy.Drafts do
     |> Repo.all()
   end
 
-  def search_games(%User{} = user, search_query, %{my_games: _} = filters) do
+  def search_games(%User{} = user, search_query, filters) do
     query = my_games_query(user.id, filters)
     query = search_helper_query(query, search_query)
 
-    query
-    |> Repo.all()
+    query |> Repo.all()
   end
 
   defp my_games_query(user_id, filters) do
-    if filters.my_games,
+    if :my_games in filters,
       do: from(g in Game, where: [owner_id: ^user_id, owner_type: "user"]),
       else: Game
   end

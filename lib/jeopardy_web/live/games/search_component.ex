@@ -4,23 +4,19 @@ defmodule JeopardyWeb.Games.SearchComponent do
 
   @impl true
   def mount(socket) do
-    IO.inspect(socket.assigns, label: "[xxx] search component mount assigns")
-    # defaults
     socket =
       socket
-      |> assign(query: "")
       |> assign(user: nil)
-      |> assign(filters: %{my_games: false})
+      |> assign(filters: [])
       |> assign(hidden_filters: [])
-      |> assign(games: [])
+      |> assign(edit_delete_col: false)
 
     {:ok, socket}
   end
 
   @impl true
   def update(assigns, socket) do
-    IO.inspect(assigns, label: "[xxx] search component assigns")
-    socket = assign(socket, assigns)
+    socket = assign(socket, assigns) |> assign(query: "")
 
     {:ok, assign(socket, games: get_filtered_games(socket.assigns))}
   end
@@ -36,23 +32,31 @@ defmodule JeopardyWeb.Games.SearchComponent do
 
   @impl true
   def handle_event("select_game", %{"id" => game_id}, socket) do
-    # send to parent
-    draft_game = Drafts.get_game!(game_id)
-    {:noreply, assign(socket, confirm_selection: draft_game)}
+    send(self(), {:game_selected, game_id})
+    {:noreply, socket}
   end
 
   @impl true
   def handle_event("toggle_my_games", _, socket) do
-    filters = Map.update!(socket.assigns.filters, :my_games, &(!&1))
+    filters = toggle(socket.assigns.filters, :my_games)
+    socket = assign(socket, filters: filters)
 
-    {:noreply,
-     assign(socket,
-       filters: filters,
-       games: get_filtered_games(%{socket.assigns | filters: filters})
-     )}
+    {:noreply, assign(socket, games: get_filtered_games(socket.assigns))}
   end
 
-  defp get_filtered_games(%{user: user, query: q, filters: filters}) do
-    Jeopardy.Drafts.search_games(user, q, filters)
+  @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    id = String.to_integer(id)
+    {:ok, _} = Drafts.delete_game(%Drafts.Game{id: id})
+    send(self(), {:game_deleted, id})
+
+    {:noreply, assign(socket, games: get_filtered_games(socket.assigns))}
+  end
+
+  defp get_filtered_games(%{user: user, query: q, filters: filters}),
+    do: Drafts.search_games(user, q, filters)
+
+  defp toggle(arr, x) do
+    if x in arr, do: List.delete(arr, x), else: [x | arr]
   end
 end

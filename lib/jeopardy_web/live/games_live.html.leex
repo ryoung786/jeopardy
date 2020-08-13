@@ -31,51 +31,8 @@
         <h2>Empty state</h2>
     <% else %>
         <div class="choose_from_existing">
-
             <h4 class="community-header">Or find a game created by the community</h4>
-
-            <div class="search-and-filters">
-                <form phx-change="search" class="search-form" onSubmit="document.getElementById('searchbox').blur();return false;" action="">
-                    <%= text_input :search, :query, placeholder: "Search for a game", autofocus: false, "phx-debounce": "300", autocomplete: "off", id: "searchbox", value: @query %>
-                </form>
-                <%= if @user do %>
-                    <div class="filters">
-                        <form phx-change="toggle_my_games" class="filter_form">
-                            <label>
-                                <input name="cbox" <%= if @filters.my_games, do: "checked" %> type="checkbox" value="<%= @filters.my_games %>" >
-                                Only my games
-                            </label>
-                        </form>
-                    </div>
-                <% end %>
-            </div>
-            <table class="results">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Tags</th>
-                    </tr>
-                </thead>
-                <tbody id="games">
-                    <%= for game <- @games do %>
-                        <tr id="game-<%= game.id %>"
-                            phx-click="select_game"
-                            phx-value-id="<%= game.id %>">
-                            <td><%= game.name %></td>
-                            <td><%= game.description %></td>
-                            <td><%= Enum.join(game.tags, ", ") %></td>
-                        </tr>
-                    <% end %>
-                </tbody>
-            </table>
-            <%= if Enum.empty?(@games) do %>
-                <div class="no-results">
-                    <p><strong>No Results</strong></p>
-                    <p>Can't find that perfect game?<br />Create your own!</p>
-                    <%= link "Custom Game", class: "button", to: "/account/games/new" %>
-                </div>
-            <% end %>
+            <%= live_component @socket, SearchComponent, id: :search_component, user: @user %>
         </div>
     <% end %>
 </div>

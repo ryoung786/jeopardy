@@ -40,11 +40,23 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Index do
   end
 
   @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    game = Drafts.get_game!(id)
-    {:ok, _} = Drafts.delete_game(game)
-    user = socket.assigns.user
+  def handle_info({:game_selected, id}, socket) do
+    game = Jeopardy.Drafts.get_game!(id)
+    {:noreply, push_redirect(socket, to: Routes.game_show_path(socket, :show, game))}
+  end
 
-    {:noreply, assign(socket, :games, Drafts.list_games(user))}
+  @impl true
+  def handle_info({:game_deleted, _id}, socket) do
+    {:noreply, put_flash(socket, :info, "Successfully deleted game")}
+  end
+
+  def mygames_component(socket, assigns) do
+    live_component(socket, SearchComponent,
+      id: :search_component,
+      user: assigns.current_user,
+      hidden_filters: [:my_games],
+      filters: [:my_games],
+      edit_delete_col: true
+    )
   end
 end
