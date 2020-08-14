@@ -1,6 +1,5 @@
 defmodule JeopardyWeb.GamesLive do
   use JeopardyWeb, :live_view
-  alias Jeopardy.Drafts
   alias JeopardyWeb.Games.SearchComponent
   require Logger
 

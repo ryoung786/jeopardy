@@ -22,12 +22,8 @@
 <% end %>
 
 <div class="account-games">
-
-
     <h2>Your Games</h2>
-
     <%= mygames_component @socket, assigns %>
-
 
     <span><%= live_patch "New Game", to: Routes.game_index_path(@socket, :new) %></span>
 </div>
