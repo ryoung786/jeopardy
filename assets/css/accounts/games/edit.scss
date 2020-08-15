@@ -1,0 +1,53 @@
+#edit-draft-game {
+    .tabs {
+        display: flex;
+        list-style-type: none;
+        .tab {
+            display: inline-block;
+            flex-grow: 1;
+            text-align: center;
+            line-height: 48px;
+            height: 48px;
+            padding: 0;
+            margin: 0;
+            text-transform: uppercase;
+
+            a {
+                color: #333;
+                padding: 0 12px;
+                display: block;
+                width: 100%;
+                height: 100%;
+                padding: 0 24px;
+                font-size: 14px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                transition: color .28s ease, background-color .28s ease;
+            }
+
+            .indicator {
+                opacity: 0;
+                transform: translateY(10px);
+                z-index: -10000;
+                height: 1px;
+                margin-top: -1px;
+                background-color: $dark-shades;
+                transition: opacity 250ms ease, transform 250ms ease;
+            }
+
+            &:hover, &:focus {
+                background-color: aliceblue;
+            }
+
+            &.active {
+                a {
+                    color: $dark-shades;
+                }
+                .indicator {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        }
+    }
+}

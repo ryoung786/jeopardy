@@ -29,10 +29,10 @@
 
     <%= if @available_games_count == 0 do %>
         <h4 class="community-header">Or create your own custom game</h4>
-        <%= live_patch "Create your own", to: Routes.game_index_path(@socket, :new), class: "button empty-state-create-link" %>
+        <%= link "Create your own", to: Routes.game_index_path(@socket, :new), class: "button empty-state-create-link" %>
     <% else %>
         <div class="choose_from_existing">
-            <p class="create-your-own"><%= live_patch "Create your own", to: Routes.game_index_path(@socket, :new)  %>
+            <p class="create-your-own"><%= link "Create your own", to: Routes.game_index_path(@socket, :new)  %>
             <h4 class="community-header">Or find a game created by the community</h4>
             <%= live_component @socket, SearchComponent, id: :search_component, user: @user %>
         </div>
