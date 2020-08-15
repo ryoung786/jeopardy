@@ -2,7 +2,7 @@
 <%= render JeopardyWeb.Accounts.Drafts.GameLive.EditView, "live_flash.html", assigns %>
 
 <div id="edit-draft-game">
-    <div class="nav"><%= link "< Your Games", to: Routes.game_index_path(@socket, :index) %></div>
+    <div class="nav"><%= link "Back to Your Games", to: Routes.game_index_path(@socket, :index) %></div>
 
     <div class="tabs-container">
         <ul class="tabs">
@@ -11,11 +11,11 @@
                 <div class="indicator"></div>
             </li>
             <li class="tab <%= if @active_tab == "jeopardy", do: "active" %>">
-                <%= live_patch "Jeopardy Round", to: Routes.game_edit_path(@socket, :edit, @game.id, "jeopardy") %>
+                <%= live_patch "Jeopardy", to: Routes.game_edit_path(@socket, :edit, @game.id, "jeopardy") %>
                 <div class="indicator"></div>
             </li>
             <li class="tab <%= if @active_tab == "double_jeopardy", do: "active" %>">
-                <%= live_patch "Double Jeopardy Round", to: Routes.game_edit_path(@socket, :edit, @game.id, "double-jeopardy") %>
+                <%= live_patch "Double Jeopardy", to: Routes.game_edit_path(@socket, :edit, @game.id, "double-jeopardy") %>
                 <div class="indicator"></div>
             </li>
             <li class="tab <%= if @active_tab == "final_jeopardy", do: "active" %>">
@@ -23,5 +23,107 @@
                 <div class="indicator"></div>
             </li>
         </ul>
+    </div>
+
+    <div class="page">
+        <div class="toc">
+            <ul>
+                <%= for l <- @toc_links do %>
+                    <li><a href="#<%= "#{@active_tab}::#{l}" %>"><%= l %></a></li>
+                <% end %>
+            </ul>
+        </div>
+        <div class="content">
+            <div class="details <%= if @active_tab == "details", do: "active" %>"">
+                <%= f = form_for @cs.details, "#",
+                as: "details",
+                phx_change: "validate-details",
+                phx_submit: "save" %>
+
+                <%= label f, :name %>
+                <%= text_input f, :name %>
+                <%= error_tag f, :name %>
+
+                <%= label f, :description %>
+                <%= textarea f, :description %>
+                <%= error_tag f, :description %>
+
+                <%= label f, :tags %>
+                <%= text_input f, :tags %>
+                <%= error_tag f, :tags %>
+                </form>
+            </div>
+            <div class="jeopardy <%= if @active_tab == "jeopardy", do: "active" %>"">
+                <%= f = form_for :jeopardy, "#",
+                as: "jeopardy",
+                phx_change: "validate-jeopardy",
+                phx_submit: "save" %>
+                <%= for {%{"category" => cname, "clues" => clues}, i} <- @game.clues["jeopardy"] |> Enum.with_index do %>
+                    <%= label f, :category, name: "jeopardy::#{cname}" %>
+                    <%= text_input f, :category %>
+                    <%= error_tag f, :category %>
+
+                    <%= for clue <- clues do %>
+                        <%= label f, :value %>
+                        <%= number_input f, :value %>
+                        <%= error_tag f, :value %>
+
+                        <%= label f, :clue %>
+                        <%= textarea f, :clue %>
+                        <%= error_tag f, :clue %>
+
+                        <%= label f, :answer %>
+                        <%= text_input f, :answer %>
+                        <%= error_tag f, :answer %>
+                    <% end %>
+                <% end %>
+                </form>
+            </div>
+            <div class="double-jeopardy <%= if @active_tab == "double_jeopardy", do: "active" %>"">
+                <%= f = form_for :jeopardy, "#",
+                as: "double_jeopardy",
+                phx_change: "validate-double_jeopardy",
+                phx_submit: "save" %>
+                <%= for {%{"category" => cname, "clues" => clues}, i} <- @game.clues["double_jeopardy"] |> Enum.with_index do %>
+                    <%= label f, :category, name: "double-jeopardy::#{cname}" %>
+                    <%= text_input f, :category %>
+                    <%= error_tag f, :category %>
+
+                    <%= for clue <- clues do %>
+                        <%= label f, :value %>
+                        <%= number_input f, :value %>
+                        <%= error_tag f, :value %>
+
+                        <%= label f, :clue %>
+                        <%= textarea f, :clue %>
+                        <%= error_tag f, :clue %>
+
+                        <%= label f, :answer %>
+                        <%= text_input f, :answer %>
+                        <%= error_tag f, :answer %>
+                    <% end %>
+                <% end %>
+                </form>
+            </div>
+            <div class="final-jeopardy <%= if @active_tab == "final_jeopardy", do: "active" %>"">
+                <%= f = form_for @cs.final_jeopardy, "#",
+                as: "final_jeopardy",
+                name: "final_jeopardy::Category",
+                phx_change: "validate-final_jeopardy",
+                phx_submit: "save" %>
+                        <%= label f, :category %>
+                        <%= text_input f, :category %>
+                        <%= error_tag f, :category %>
+
+                        <%= label f, :clue %>
+                        <%= textarea f, :clue %>
+                        <%= error_tag f, :clue %>
+
+                        <%= label f, :answer %>
+                        <%= text_input f, :answer %>
+                        <%= error_tag f, :answer %>
+                </form>
+            </div>
+        </div>
     </div>
 </div>

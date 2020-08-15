@@ -1,7 +1,15 @@
 #edit-draft-game {
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    grid-gap: 20px;
+    overflow: auto;
     .tabs {
         display: flex;
         list-style-type: none;
+        margin: 0;
+        box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+
         .tab {
             display: inline-block;
             flex-grow: 1;
@@ -27,12 +35,12 @@
 
             .indicator {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(0);
                 z-index: -10000;
                 height: 1px;
-                margin-top: -1px;
                 background-color: $dark-shades;
                 transition: opacity 250ms ease, transform 250ms ease;
+                margin: 0 10%;
             }
 
             &:hover, &:focus {
@@ -45,9 +53,39 @@
                 }
                 .indicator {
                     opacity: 1;
-                    transform: translateY(0);
+                    transform: translateY(-10px);
                 }
             }
+        }
+    }
+
+    .page {
+        flex-grow: 1;
+        display: grid;
+        grid-template-columns: minmax(25vw, auto) 1fr;
+        overflow: auto;
+        .toc {
+            background: unquote("hsl(0 0% 95% / 60%)");
+            border-radius: 4px;
+            padding: 10px;
+            margin-right: 20px;
+            box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+            align-self: start;
+            ul {
+                display: grid;
+                grid-template-rows: auto;
+                grid-gap: 5px;
+                list-style-type: none;
+                margin-bottom: 0;
+                li {
+                    margin-bottom: 0;
+                }
+            }
+        }
+        .content {
+            overflow: scroll;
+            > div { display: none; }
+            > div.active { display: block; }
         }
     }
 }
