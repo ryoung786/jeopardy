@@ -9,7 +9,7 @@ defmodule JeopardyWeb.GameController do
     handle(conn, Games.create_from_draft_game(draft_game))
   end
 
-  def create(conn, params) do
+  def create(conn, _params) do
     handle(conn, Games.create_from_random_jarchive())
     conn |> redirect(to: "/games")
   end
