@@ -59,7 +59,8 @@
                 phx_change: "validate-jeopardy",
                 phx_submit: "save" %>
                 <%= for {%{"category" => cname, "clues" => clues}, i} <- @game.clues["jeopardy"] |> Enum.with_index do %>
-                    <%= label f, :category, id: "jeopardy::category_#{i+1}", class: "category-name" do %>Category: <%= cname || "(empty)" %><% end %>
+                    <div id="jeopardy::category_<%= i+1 %>"></div>
+                    <%= label f, :category, class: "category-name" do %>Category: <%= cname || "(empty)" %><% end %>
                     <%= text_input f, :category %>
                     <%= error_tag f, :category %>
 
@@ -85,7 +86,8 @@
                 phx_change: "validate-double_jeopardy",
                 phx_submit: "save" %>
                 <%= for {%{"category" => cname, "clues" => clues}, i} <- @game.clues["double_jeopardy"] |> Enum.with_index do %>
-                    <%= label f, :category, id: "double_jeopardy::category_#{i+1}", class: "category-name" do %>Category: <%= cname || "(empty)" %><% end %>
+                    <div id="double_jeopardy::category_<%= i+1 %>"></div>
+                    <%= label f, :category, class: "category-name" do %>Category: <%= cname || "(empty)" %><% end %>
                     <%= text_input f, :category %>
                     <%= error_tag f, :category %>
 
