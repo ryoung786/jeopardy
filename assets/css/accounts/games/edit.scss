@@ -7,7 +7,7 @@
     .tabs {
         display: flex;
         list-style-type: none;
-        margin: 0;
+        margin: 0 2px;
         box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
 
         .tab {
@@ -64,11 +64,12 @@
         display: grid;
         grid-template-columns: minmax(25vw, auto) 1fr;
         overflow: auto;
+        margin: 0 2px;
         .toc {
             background: unquote("hsl(0 0% 95% / 60%)");
             border-radius: 4px;
             padding: 10px;
-            margin-right: 20px;
+            margin: 2px 20px 0 2px;
             box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
             align-self: start;
             ul {

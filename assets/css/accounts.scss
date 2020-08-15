@@ -23,3 +23,4 @@ body, body > div > main {
         overflow: auto;
     }
 }
+body > div > main { grid-template-rows: auto auto 1fr; }
