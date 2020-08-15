@@ -2,14 +2,17 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Index do
   use JeopardyWeb, :live_view
   alias Jeopardy.Drafts
   alias Jeopardy.Drafts.Game
+  alias JeopardyWeb.Games.SearchComponent
   require Logger
 
   @impl true
   def mount(_params, %{"current_user_id" => current_user_id}, socket) do
+    user = Jeopardy.Users.get_user!(current_user_id)
+
     {:ok,
      assign(socket,
-       games: list_games(),
-       current_user: Jeopardy.Users.get_user!(current_user_id)
+       games: Drafts.list_games(user),
+       current_user: user
      )}
   end
 
@@ -32,19 +35,28 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Games")
+    |> assign(:page_title, "Your Games")
     |> assign(:game, nil)
   end
 
   @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    game = Drafts.get_game!(id)
-    {:ok, _} = Drafts.delete_game(game)
-
-    {:noreply, assign(socket, :games, list_games())}
+  def handle_info({:game_selected, id}, socket) do
+    game = Jeopardy.Drafts.get_game!(id)
+    {:noreply, push_redirect(socket, to: Routes.game_show_path(socket, :show, game))}
   end
 
-  defp list_games do
-    Drafts.list_games()
+  @impl true
+  def handle_info({:game_deleted, _id}, socket) do
+    {:noreply, put_flash(socket, :info, "Successfully deleted game")}
+  end
+
+  def mygames_component(socket, assigns) do
+    live_component(socket, SearchComponent,
+      id: :search_component,
+      user: assigns.current_user,
+      hidden_filters: [:my_games],
+      filters: [:my_games],
+      edit_delete_col: true
+    )
   end
 end

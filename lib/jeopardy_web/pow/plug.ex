@@ -25,6 +25,7 @@ defmodule JeopardyWeb.Pow.Plug do
       conn
       |> Plug.Conn.fetch_session()
       |> Plug.Conn.put_session(@session_key, token)
+      |> Plug.Conn.put_session(:current_user_id, user.id)
 
     {conn, user}
   end
@@ -33,5 +34,6 @@ defmodule JeopardyWeb.Pow.Plug do
     conn
     |> Plug.Conn.fetch_session()
     |> Plug.Conn.delete_session(@session_key)
+    |> Plug.Conn.delete_session(:current_user_id)
   end
 end

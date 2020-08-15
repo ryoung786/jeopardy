@@ -39,6 +39,10 @@ defmodule JeopardyWeb do
 
       # Include shared imports and aliases for views
       unquote(view_helpers())
+
+      def header(socket, logged_in_user),
+        do:
+          render(JeopardyWeb.CommonView, "header.html", conn: socket, current_user: logged_in_user)
     end
   end
 
@@ -53,7 +57,7 @@ defmodule JeopardyWeb do
         view =
           case String.split(Atom.to_string(__MODULE__), ".") |> List.last() do
             "TvLive" -> "TV"
-            "GameLive" -> "Game"
+            "ContestantLive" -> "Game"
             "TrebekLive" -> "Trebek"
           end
 

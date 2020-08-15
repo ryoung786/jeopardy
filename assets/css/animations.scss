@@ -18,6 +18,11 @@ $bounce-time-fn: cubic-bezier(.54,1.85,.5,1);
     100% { transform: scale(1)   rotate(0); }
 }
 
+@keyframes slidedown {
+    from { transform: translateY(-100px); }
+    to { transform: translateY(0); }
+}
+
 @keyframes slidein {
     from {
         transform: translateY(25%);
@@ -28,4 +33,22 @@ $bounce-time-fn: cubic-bezier(.54,1.85,.5,1);
         transform: translateY(0);
         opacity: 1;
     }
+}
+
+@keyframes popin {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes bg-rotate {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
 }

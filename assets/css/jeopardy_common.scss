@@ -11,7 +11,7 @@
 .font_7 { font-family: "Gloria Hallelujah", cursive; }
 .font_8 { font-family: "Rock Salt", cursive; }
 
-*{
+* {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
@@ -28,4 +28,28 @@ button:hover {
     outline:0
 }
 
-html, body, .onclick-void-holder, .onclick-void-holder>div { height: 100%; }
+@import "animations";
+@import "theme";
+.phx-modal {
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    .phx-modal-content {
+        position: relative;
+        box-shadow: $box-shadow;
+        border-radius: 5px;
+        border: none;
+        animation: popin 200ms ease;
+        animation: popin 200ms cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        max-width: 800px;
+        margin: 0;
+        .phx-modal-close {
+            position: absolute;
+            right: 8px;
+            top: 0;
+            font-size: 2rem;
+        }
+        button { margin-bottom: 10px; }
+    }
+}

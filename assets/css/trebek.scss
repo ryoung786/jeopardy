@@ -15,3 +15,5 @@
 @import "animations";
 @import "checkmark";
 @import "switch_toggles";
+
+html, body, .onclick-void-holder, .onclick-void-holder>div, .onclick-void-holder main.container { height: 100%; }

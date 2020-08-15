@@ -1,4 +1,4 @@
-defmodule JeopardyWeb.GameLive do
+defmodule JeopardyWeb.ContestantLive do
   use JeopardyWeb, :live_view
   require Logger
   alias Jeopardy.GameEngine.State
@@ -22,7 +22,11 @@ defmodule JeopardyWeb.GameLive do
 
         if name in Enum.map(state.contestants, fn {_id, p} -> p.name end),
           do: {:ok, assigns(socket, state, name)},
-          else: {:ok, socket |> put_flash(:info, "Please rejoin a game") |> redirect(to: "/")}
+          else:
+            {:ok,
+             socket
+             |> put_flash(:info, "You were removed from the game by the host")
+             |> redirect(to: "/")}
     end
   end
 
@@ -42,7 +46,11 @@ defmodule JeopardyWeb.GameLive do
     else
       if name in Enum.map(state.contestants, fn {_id, p} -> p.name end),
         do: {:noreply, assigns(socket, state, name)},
-        else: {:noreply, socket |> put_flash(:info, "Please rejoin a game") |> redirect(to: "/")}
+        else:
+          {:noreply,
+           socket
+           |> put_flash(:info, "You were removed from the game by the host")
+           |> redirect(to: "/")}
     end
   end
 

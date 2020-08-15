@@ -27,7 +27,6 @@ defmodule JeopardyWeb.Router do
 
   pipeline :protected do
     plug Pow.Plug.RequireAuthenticated, error_handler: Pow.Phoenix.PlugErrorHandler
-    plug :add_user_to_session
   end
 
   pipeline :skip_csrf_protection do
@@ -59,13 +58,15 @@ defmodule JeopardyWeb.Router do
     post "/games", GameController, :create
     get "/privacy-policy", PageController, :privacy_policy
 
+    live "/games", GamesLive, :index
+
     scope "/games/:code" do
       pipe_through :games
       live "/tv", TvLive, layout: {JeopardyWeb.LayoutView, :tv}
       live "/stats", StatsLive, layout: {JeopardyWeb.LayoutView, :stats}
 
       pipe_through :ensure_name
-      live "/", GameLive, layout: {JeopardyWeb.LayoutView, :contestant}
+      live "/", ContestantLive, layout: {JeopardyWeb.LayoutView, :contestant}
       live "/trebek", TrebekLive, layout: {JeopardyWeb.LayoutView, :trebek}
     end
   end
@@ -80,6 +81,10 @@ defmodule JeopardyWeb.Router do
 
     live "/games", GameLive.Index, :index
     live "/games/new", GameLive.Index, :new
+
+    live "/games/:id/edit", GameLive.Edit, :edit
+    live "/games/:id/edit/:round", GameLive.Edit, :edit
+
     live "/games/:id/edit/final-jeopardy", GameLive.Edit.FinalJeopardy, :edit
     live "/games/:id/edit/:round", GameLive.Edit.Jeopardy, :edit
     live "/games/:id/edit/:round/clue/:clue_id", GameLive.Edit.Jeopardy, :edit_clue
@@ -89,7 +94,7 @@ defmodule JeopardyWeb.Router do
     live "/games/:id/show/edit", GameLive.Show, :edit
   end
 
-  scope "/admin", JeopardyWeb.Admin do
+  scope "/admin", JeopardyWeb.Admin, as: :admin do
     pipe_through [:browser, :protected, :admin]
 
     get "/", GameController, :index
@@ -130,9 +135,6 @@ defmodule JeopardyWeb.Router do
       do: conn,
       else: conn |> put_flash(:info, "Please enter your name") |> redirect(to: "/") |> halt()
   end
-
-  defp add_user_to_session(conn, _opts),
-    do: put_session(conn, :current_user_id, Pow.Plug.current_user(conn).id)
 
   if Mix.env() == :dev, do: forward("/sent_emails", Bamboo.SentEmailViewerPlug)
 end

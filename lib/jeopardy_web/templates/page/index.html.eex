@@ -1,8 +1,16 @@
 <div class="homepage">
+    <div id="bg"></div>
     <%= render_layout __MODULE__, "header.html", assigns do %>
         <h1 class="this-is-jeopardy">This is Jeopardy!</h1>
         <p>Play real Jeopardy matches with friends, using your phone as a buzzer!</p>
     <% end %>
+
+    <% flash_info = get_flash(@conn, :info) %>
+    <% flash_error = get_flash(@conn, :error) %>
+    <p class="alert alert-info <%= if flash_info, do: "has-content" %>"
+       role="alert"><%= flash_info %></p>
+    <p class="alert alert-danger <%= if flash_error, do: "has-content" %>"
+       role="alert"><%= flash_error %></p>
 
     <div class="options">
         <div class="join">
@@ -18,9 +26,7 @@
         <h2>or</h2>
 
         <div class="new-game">
-            <%= form_for @conn, Routes.game_path(@conn, :create), fn _ -> %>
-                <%= submit "New Game" %>
-            <% end %>
+            <%= link "New Game", to: Routes.games_path(@conn, :index), class: "button"  %>
         </div>
     </div>
 </div>

@@ -34,6 +34,24 @@ defmodule Jeopardy.Games do
     |> Repo.insert()
   end
 
+  def create_from_random_jarchive() do
+    with {:ok, game} <- create(),
+         game when game != :error <- Jeopardy.JArchive.load_into_game(game) do
+      {:ok, game}
+    else
+      {:error, error} -> {:error, error}
+      :error -> {:error, "something went wrong"}
+    end
+  end
+
+  def create_from_draft_game(%Jeopardy.Drafts.Game{} = draft_game) do
+    with {:ok, game} <- create() do
+      Jeopardy.Drafts.load_into_game(draft_game, game)
+    else
+      {:error, error} -> {:error, error}
+    end
+  end
+
   def assign_trebek(%Game{} = game, name) do
     q =
       from g in Game,

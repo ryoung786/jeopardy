@@ -20,4 +20,10 @@ defmodule JeopardyWeb.LiveHelpers do
     modal_opts = [id: :modal, return_to: path, component: component, opts: opts]
     live_component(socket, JeopardyWeb.ModalComponent, modal_opts)
   end
+
+  defmacro capture(do: expression) do
+    quote do
+      unquote(expression)
+    end
+  end
 end

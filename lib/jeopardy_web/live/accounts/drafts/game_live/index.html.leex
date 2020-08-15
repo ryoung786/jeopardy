@@ -1,4 +1,15 @@
-<h1>Listing Games</h1>
+<%= render_layout JeopardyWeb.PageView, "header.html", assigns, do: nil %>
+<% flash_info = live_flash(@flash, :info) %>
+<p class="alert alert-info <%= if flash_info != nil, do: "has-content" %>"
+   role="alert"
+   phx-click="lv:clear-flash"
+   phx-value-key="info"><%= flash_info %></p>
+
+<% flash_error = live_flash(@flash, :error) %>
+<p class="alert alert-danger <%= if flash_error != nil, do: "has-content" %>"
+   role="alert"
+   phx-click="lv:clear-flash"
+   phx-value-key="error"><%= flash_error %></p>
 
 <%= if @live_action in [:new] do %>
     <%= live_modal @socket, JeopardyWeb.Accounts.Drafts.GameLive.FormComponent,
@@ -10,30 +21,9 @@
     return_to: Routes.game_index_path(@socket, :index) %>
 <% end %>
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Tags</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody id="games">
-        <%= for game <- @games do %>
-            <tr id="game-<%= game.id %>">
-                <td><%= game.name %></td>
-                <td><%= game.description %></td>
-                <td><%= Enum.join(game.tags, ", ") %></td>
+<div class="account-games">
+    <h2>Your Games</h2>
+    <%= mygames_component @socket, assigns %>
 
-                <td>
-                    <span><%= live_redirect "Show", to: Routes.game_show_path(@socket, :show, game) %></span>
-                    <span><%= live_redirect "Edit", to: Routes.game_edit_jeopardy_path(@socket, :edit, game, "jeopardy") %></span>
-                    <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: game.id, data: [confirm: "Are you sure?"] %></span>
-                </td>
-            </tr>
-        <% end %>
-    </tbody>
-</table>
-
-<span><%= live_patch "New Game", to: Routes.game_index_path(@socket, :new) %></span>
+    <span><%= live_patch "New Game", to: Routes.game_index_path(@socket, :new) %></span>
+</div>

@@ -1,0 +1,55 @@
+<div id="<%= @id %>" class="games-search-component">
+    <div class="search-and-filters">
+        <form phx-change="search" phx-target="<%= @myself %>" class="search-form" onSubmit="document.getElementById('searchbox').blur();return false;" action="">
+            <%= text_input :search, :query, placeholder: "Search for a game", autofocus: false, "phx-debounce": "300", autocomplete: "off", id: "searchbox", value: @query %>
+        </form>
+
+        <div class="filters">
+            <%= if :my_games not in @hidden_filters do %>
+                <form phx-change="toggle_my_games" phx-target="<%= @myself %>" class="filter_form">
+                    <label>
+                        <input name="cbox" <%= if :my_games in @filters, do: "checked" %>
+                               type="checkbox" value="<%= :my_games in @filters %>" >
+                        Only my games
+                    </label>
+                </form>
+            <% end %>
+        </div>
+    </div>
+    <table class="results">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Tags</th>
+                <%= if @edit_delete_col do %><th></th><% end %>
+            </tr>
+        </thead>
+        <tbody id="games">
+            <%= for game <- @games do %>
+                <tr id="game-<%= game.id %>"
+                    phx-click="select_game"
+                    phx-target="<%= @myself %>"
+                    phx-value-id="<%= game.id %>">
+                    <td><%= game.name %></td>
+                    <td><%= game.description %></td>
+                    <td><%= Enum.join(game.tags, ", ") %></td>
+
+                    <%= if @edit_delete_col do %>
+                        <td>
+                            <span><%= live_redirect "Edit", to: Routes.game_edit_jeopardy_path(@socket, :edit, game, "jeopardy") %></span>
+                            <span><%= link "Delete", to: "#", phx_click: "delete", phx_target: @myself, phx_value_id: game.id, data: [confirm: "Are you sure?"] %></span>
+                        </td>
+                    <% end %>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+    <%= if Enum.empty?(@games) do %>
+        <div class="no-results">
+            <p><strong>No Results</strong></p>
+            <p>Can't find that perfect game?<br />Create your own!</p>
+            <%= link "Custom Game", class: "button", to: "/account/games/new" %>
+        </div>
+    <% end %>
+</div>

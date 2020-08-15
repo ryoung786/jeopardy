@@ -1,0 +1,40 @@
+<div class="main-container">
+    <%= render_layout JeopardyWeb.PageView, "header.html", assigns, do: nil %>
+
+    <% flash_info = live_flash(@flash, :info) %>
+    <p class="alert alert-info <%= if flash_info != nil, do: "has-content" %>"
+       role="alert"
+       phx-click="lv:clear-flash"
+       phx-value-key="info"><%= flash_info %></p>
+
+    <% flash_error = live_flash(@flash, :error) %>
+    <p class="alert alert-danger <%= if flash_error != nil, do: "has-content" %>"
+       role="alert"
+       phx-click="lv:clear-flash"
+       phx-value-key="error"><%= flash_error %></p>
+
+    <div class="top">
+        <div class="quickstart">
+            <h2>Play a random game from the Jeopardy Archives</h2>
+            <%= button "Quick Start", to: Routes.game_path(@socket, :create) %>
+        </div>
+    </div>
+
+    <%= if @confirm_selection do %>
+        <%= live_modal @socket, JeopardyWeb.Games.ConfirmSelectionComponent,
+        id: "game-#{@confirm_selection.id}",
+        game: @confirm_selection,
+        return_to: "/games" %>
+    <% end %>
+
+    <%= if @available_games_count == 0 do %>
+        <h4 class="community-header">Or create your own custom game</h4>
+        <%= link "Create your own", to: Routes.game_index_path(@socket, :new), class: "button empty-state-create-link" %>
+    <% else %>
+        <div class="choose_from_existing">
+            <p class="create-your-own"><%= link "Create your own", to: Routes.game_index_path(@socket, :new)  %>
+            <h4 class="community-header">Or find a game created by the community</h4>
+            <%= live_component @socket, SearchComponent, id: :search_component, user: @user %>
+        </div>
+    <% end %>
+</div>

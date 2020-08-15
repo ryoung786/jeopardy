@@ -12,3 +12,5 @@
 @import "game/buzzer";
 @import "game/game";
 @import "game/final_jeopardy_submission";
+
+html, body, .onclick-void-holder, .onclick-void-holder>div, .onclick-void-holder main.container { height: 100%; }

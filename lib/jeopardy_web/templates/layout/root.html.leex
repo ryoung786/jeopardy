@@ -17,6 +17,7 @@
         <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
     </head>
     <body>
+        <%= render JeopardyWeb.CommonView, "header.html", assigns %>
         <div class="onclick-void-holder" onclick="void(0);">
             <%= @inner_content %>
         </div>

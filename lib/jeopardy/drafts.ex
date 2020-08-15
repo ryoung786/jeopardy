@@ -6,6 +6,7 @@ defmodule Jeopardy.Drafts do
   import Ecto.Query, warn: false
   alias Jeopardy.Repo
   alias Jeopardy.Drafts.Game
+  alias Jeopardy.Users.User
   require Logger
 
   @doc """
@@ -19,6 +20,12 @@ defmodule Jeopardy.Drafts do
   """
   def list_games do
     Repo.all(Game)
+  end
+
+  def list_games(%Jeopardy.Users.User{} = user) do
+    Game
+    |> where([g], g.owner_id == ^user.id)
+    |> Repo.all()
   end
 
   @doc """
@@ -265,4 +272,39 @@ defmodule Jeopardy.Drafts do
   end
 
   defp to_string_map_keys(m), do: Map.new(m, fn {k, v} -> {Atom.to_string(k), v} end)
+
+  def search_games(nil = _user, search_query, _filters) do
+    search_helper_query(Game, search_query)
+    |> Repo.all()
+  end
+
+  def search_games(%User{} = user, search_query, filters) do
+    query = my_games_query(user.id, filters)
+    query = search_helper_query(query, search_query)
+
+    query |> Repo.all()
+  end
+
+  defp my_games_query(user_id, filters) do
+    if :my_games in filters,
+      do: from(g in Game, where: [owner_id: ^user_id, owner_type: "user"]),
+      else: Game
+  end
+
+  defp search_helper_query(query, search_query) do
+    search_query = String.trim(search_query)
+    q = "%#{search_query}%"
+
+    if search_query == "",
+      do: query,
+      else:
+        from(g in query,
+          where:
+            ilike(g.name, ^q) or ilike(g.description, ^q) or
+              fragment("exists (select * from unnest(?) tag where tag ilike ?)", g.tags, ^q)
+        )
+  end
+
+  def load_into_game(%Jeopardy.Drafts.Game{} = dgame, %Jeopardy.Games.Game{} = game),
+    do: Jeopardy.Drafts.Loader.load_into_game(dgame, game)
 end
