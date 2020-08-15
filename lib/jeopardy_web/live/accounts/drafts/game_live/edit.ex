@@ -33,16 +33,18 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
 
   defp toc_links_for_round(%Game{} = game, round) do
     case round do
-      "details" -> ["General Info"]
-      "jeopardy" -> categories(game, round)
-      "double_jeopardy" -> categories(game, round)
-      "final_jeopardy" -> ["Category", "Clue"]
+      "details" -> [%{link: "general_info", text: "General Info"}]
+      "jeopardy" -> toc_categories(game, round)
+      "double_jeopardy" -> toc_categories(game, round)
+      "final_jeopardy" -> [%{link: "category", text: "Category"}, %{link: "clue", text: "Clue"}]
     end
   end
 
-  defp categories(%Game{} = game, round) when round in ~w(jeopardy double_jeopardy),
+  defp toc_categories(%Game{} = game, round) when round in ~w(jeopardy double_jeopardy),
     do:
       game.clues[round]
       |> Enum.with_index()
-      |> Enum.map(fn {cat, i} -> cat["category"] || "Category #{i + 1}" end)
+      |> Enum.map(fn {cat, i} ->
+        %{link: "category_#{i + 1}", text: cat["category"] || "Category #{i + 1}"}
+      end)
 end

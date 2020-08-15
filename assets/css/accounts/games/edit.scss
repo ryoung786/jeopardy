@@ -1,5 +1,4 @@
 #edit-draft-game {
-    height: 100%;
     display: grid;
     grid-template-rows: auto auto 1fr;
     grid-gap: 20px;
@@ -85,8 +84,14 @@
         }
         .content {
             overflow: scroll;
+            scroll-behavior: smooth;
             > div { display: none; }
             > div.active { display: block; }
+            .category-name {
+                position: sticky;
+                top: 0;
+                background: white;
+            }
         }
     }
 }

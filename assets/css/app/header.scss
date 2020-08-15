@@ -5,7 +5,7 @@ body > header.header {
     background: $dark-shades;
     background-image: linear-gradient(90deg, #b224ef 0%, #6713d2 48%, #4d94ff 100%);
     background-size: 400% 400%;
-    // animation: bg-rotate 30s ease infinite;
+    animation: bg-rotate 30s ease infinite;
     animation-delay: -4s;
     padding: 10px;
     .content {
@@ -77,7 +77,7 @@ body > header.header {
     background: $dark-shades;
     background-image: linear-gradient(90deg, #b224ef 0%, #6713d2 48%, #4d94ff 100%);
     background-size: 400% 400%;
-    // animation: bg-rotate 30s ease infinite;
+    animation: bg-rotate 30s ease infinite;
     animation-delay: -4s;
 
     color: #FFF;
@@ -117,7 +117,7 @@ body > header.header {
     clip-path: url(#curved-bottom-clip-path);
     background-image: linear-gradient(90deg, #b224ef 0%, #6713d2 48%, #4d94ff 100%);
     background-size: 400% 400%;
-    // animation: bg-rotate 30s ease infinite;
+    animation: bg-rotate 30s ease infinite;
     animation-delay: -4s;
     height: 40px;
 }

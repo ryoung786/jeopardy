@@ -29,7 +29,7 @@
         <div class="toc">
             <ul>
                 <%= for l <- @toc_links do %>
-                    <li><a href="#<%= "#{@active_tab}::#{l}" %>"><%= l %></a></li>
+                    <li><a href="#<%= "#{@active_tab}::#{l.link}" %>"><%= l.text %></a></li>
                 <% end %>
             </ul>
         </div>
@@ -40,7 +40,7 @@
                 phx_change: "validate-details",
                 phx_submit: "save" %>
 
-                <%= label f, :name %>
+                <%= label f, :name, id: "details:name" %>
                 <%= text_input f, :name %>
                 <%= error_tag f, :name %>
 
@@ -59,7 +59,7 @@
                 phx_change: "validate-jeopardy",
                 phx_submit: "save" %>
                 <%= for {%{"category" => cname, "clues" => clues}, i} <- @game.clues["jeopardy"] |> Enum.with_index do %>
-                    <%= label f, :category, name: "jeopardy::#{cname}" %>
+                    <%= label f, :category, id: "jeopardy::category_#{i+1}", class: "category-name" do %>Category: <%= cname || "(empty)" %><% end %>
                     <%= text_input f, :category %>
                     <%= error_tag f, :category %>
 
@@ -85,7 +85,7 @@
                 phx_change: "validate-double_jeopardy",
                 phx_submit: "save" %>
                 <%= for {%{"category" => cname, "clues" => clues}, i} <- @game.clues["double_jeopardy"] |> Enum.with_index do %>
-                    <%= label f, :category, name: "double-jeopardy::#{cname}" %>
+                    <%= label f, :category, id: "double_jeopardy::category_#{i+1}", class: "category-name" do %>Category: <%= cname || "(empty)" %><% end %>
                     <%= text_input f, :category %>
                     <%= error_tag f, :category %>
 
@@ -111,17 +111,17 @@
                 name: "final_jeopardy::Category",
                 phx_change: "validate-final_jeopardy",
                 phx_submit: "save" %>
-                        <%= label f, :category %>
-                        <%= text_input f, :category %>
-                        <%= error_tag f, :category %>
+                <%= label f, :category, id: "final_jeopardy::category" %>
+                <%= text_input f, :category %>
+                <%= error_tag f, :category %>
 
-                        <%= label f, :clue %>
-                        <%= textarea f, :clue %>
-                        <%= error_tag f, :clue %>
+                <%= label f, :clue, id: "final_jeopardy::clue" %>
+                    <%= textarea f, :clue %>
+                    <%= error_tag f, :clue %>
 
-                        <%= label f, :answer %>
-                        <%= text_input f, :answer %>
-                        <%= error_tag f, :answer %>
+                    <%= label f, :answer %>
+                    <%= text_input f, :answer %>
+                    <%= error_tag f, :answer %>
                 </form>
             </div>
         </div>
