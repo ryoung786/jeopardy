@@ -34,7 +34,7 @@ defmodule Jeopardy.Drafts.Game do
 
     {clue, types}
     |> cast(attrs, Map.keys(types))
-    |> validate_required(~w(id clue answer type value)a)
+    # |> validate_required(~w(id clue answer type value)a)
     |> validate_number(:id, greater_than: 0)
     |> validate_length(:clue, max: 500, message: max_msg)
     |> validate_length(:answer, max: 500, message: max_msg)
@@ -48,7 +48,7 @@ defmodule Jeopardy.Drafts.Game do
 
     {fj_clue, types}
     |> cast(attrs, Map.keys(types))
-    |> validate_required(~w(clue answer category)a)
+    # |> validate_required(~w(clue answer category)a)
     |> validate_length(:clue, max: 500, message: max_msg)
     |> validate_length(:answer, max: 500, message: max_msg)
     |> validate_length(:category, max: 15, message: "Keep it short! 100 letters is the max.")
