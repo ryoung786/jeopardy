@@ -90,16 +90,19 @@
         .content {
             overflow: scroll;
             scroll-behavior: smooth;
+            form { margin-bottom: 0; }
             > div { display: none; }
             > div.active { display: block; }
             label { color: #2d3742; font-weight: unset; }
 
             .category-and-clues {
                 margin-bottom: 40px;
-                .category-group {
-                    display: flex;
+                .category-form {
                     position: sticky;
                     top: 0;
+                }
+                .category-group {
+                    display: flex;
                     background: white;
                     z-index: 1;
                     margin-bottom: 1.5rem;

@@ -37,8 +37,7 @@
             <div class="details <%= if @active_tab == "details", do: "active" %>"">
                 <%= f = form_for @cs.details, "#",
                 as: "details",
-                phx_change: "validate-details",
-                phx_submit: "save" %>
+                phx_change: "validate-details" %>
 
                 <%= label f, :name, id: "details:name" %>
                 <%= text_input f, :name, "phx-blur": "blur-details", "phx-value-field": "name" %>
@@ -54,87 +53,98 @@
                 </form>
             </div>
             <div class="jeopardy <%= if @active_tab == "jeopardy", do: "active" %>"">
-                <%= f = form_for :jeopardy, "#",
-                as: "jeopardy",
-                phx_change: "validate-jeopardy",
-                phx_submit: "save" %>
-                <%= for {%{"category" => cname, "clues" => clues}, i} <- @game.clues["jeopardy"] |> Enum.with_index do %>
+                <%= for {%{"clues" => clues}, i} <- @game.clues["jeopardy"] |> Enum.with_index do %>
                     <div id="jeopardy::category_<%= i+1 %>" class="category-and-clues">
+
+                        <%= f = form_for @cs.jeopardy.categories |> Enum.at(i), "#",
+                        class: "category-form",
+                        as: "category",
+                        phx_change: "validate-category" %>
+                        <%= hidden_input f, :id, value: i %>
+                        <%= hidden_input f, :round, value: "jeopardy" %>
                         <div class="category-group">
                             <%= label f, :category, class: "category-name" do %>Category:<% end %>
-                            <%= text_input f, :category, placeholder: "Category Name" %>
+                            <%= text_input f, :category, placeholder: "Category Name",
+                            "phx-blur": "blur-category", "phx-value-id": i, "phx-value-round": "jeopardy" %>
                             <%= error_tag f, :category %>
                         </div>
+                </form>
 
-                        <%= for _clue <- clues do %>
-                            <div class="clue-group">
-                                <div class="form-group">
-                                    <%= label f, :value %>
-                                    <%= number_input f, :value, placeholder: 100, step: 100, min: 0 %>
-                                    <%= error_tag f, :value %>
-                                </div>
+                <%= for clue <- clues do %>
+                    <%= f = form_for @cs.jeopardy.clues[clue["id"]], "#", as: "clue", phx_change: "validate-clue" %>
+                    <%= hidden_input f, :id, value: clue["id"] %>
+                    <%= hidden_input f, :round, value: "jeopardy" %>
+                    <div class="clue-group">
+                        <div class="form-group">
+                            <%= label f, :value %>
+                            <%= number_input f, :value, placeholder: 100, step: 100, min: 0 %>
+                            <%= error_tag f, :value %>
+                        </div>
 
-                                <div class="form-group">
-                                    <%= label f, :clue %>
-                                    <%= text_input f, :clue, placeholder: "Clue" %>
-                                    <%= error_tag f, :clue %>
-                                </div>
+                        <div class="form-group">
+                            <%= label f, :clue %>
+                            <%= text_input f, :clue, placeholder: "Clue" %>
+                            <%= error_tag f, :clue %>
+                        </div>
 
-                                <div class="form-group">
-                                    <%= label f, :answer %>
-                                    <%= text_input f, :answer, placeholder: "Answer" %>
-                                    <%= error_tag f, :answer %>
-                                </div>
-                            </div>
-                        <% end %>
+                        <div class="form-group">
+                            <%= label f, :answer %>
+                            <%= text_input f, :answer, placeholder: "Answer" %>
+                            <%= error_tag f, :answer %>
+                        </div>
+                    </div>
+                </form>
+                <% end %>
                     </div>
                 <% end %>
-                </form>
             </div>
             <div class="double-jeopardy <%= if @active_tab == "double_jeopardy", do: "active" %>"">
-                <%= f = form_for :jeopardy, "#",
-                as: "double_jeopardy",
-                phx_change: "validate-double_jeopardy",
-                phx_submit: "save" %>
-                <%= for {%{"category" => cname, "clues" => clues}, i} <- @game.clues["double_jeopardy"] |> Enum.with_index do %>
+                <%= for {%{"clues" => clues}, i} <- @game.clues["double_jeopardy"] |> Enum.with_index do %>
                     <div id="double_jeopardy::category_<%= i+1 %>" class="category-and-clues">
 
+                        <%= f = form_for @cs.double_jeopardy.categories |> Enum.at(i), "#",
+                        class: "category-form",
+                        as: "category",
+                        phx_change: "validate-category" %>
+                        <%= hidden_input f, :id, value: i %>
+                        <%= hidden_input f, :round, value: "jeopardy" %>
                         <div class="category-group">
                             <%= label f, :category, class: "category-name" do %>Category:<% end %>
-                            <%= text_input f, :category, placeholder: "Category Name" %>
+                            <%= text_input f, :category, placeholder: "Category Name",
+                            "phx-blur": "blur-category", "phx-value-id": i, "phx-value-round": "jeopardy" %>
                             <%= error_tag f, :category %>
                         </div>
+                </form>
 
-                        <%= for _clue <- clues do %>
-                            <div class="clue-group">
-                                <div class="form-group">
-                                    <%= label f, :value %>
-                                    <%= number_input f, :value, placeholder: 100 %>
-                                    <%= error_tag f, :value %>
+                <%= for clue <- clues do %>
+                    <%= f = form_for @cs.double_jeopardy.clues[clue["id"]], "#", as: "clue", phx_change: "validate-clue" %>
+                    <div class="clue-group">
+                        <div class="form-group">
+                            <%= label f, :value %>
+                            <%= number_input f, :value, placeholder: 100 %>
+                            <%= error_tag f, :value %>
+                        </div>
+                        <div class="form-group">
+                            <%= label f, :clue %>
+                            <%= text_input f, :clue, placeholder: "Clue" %>
+                            <%= error_tag f, :clue %>
+                        </div>
+                        <div class="form-group">
+                            <%= label f, :answer %>
+                            <%= text_input f, :answer, placeholder: "Answer" %>
+                            <%= error_tag f, :answer %>
+                        </div>
                                 </div>
-
-                                <div class="form-group">
-                                    <%= label f, :clue %>
-                                    <%= text_input f, :clue, placeholder: "Clue" %>
-                                    <%= error_tag f, :clue %>
-                                </div>
-                                <div class="form-group">
-                                    <%= label f, :answer %>
-                                    <%= text_input f, :answer, placeholder: "Answer" %>
-                                    <%= error_tag f, :answer %>
-                                </div>
-                            </div>
+                            </form>
                         <% end %>
                     </div>
                 <% end %>
-                </form>
             </div>
             <div class="final-jeopardy <%= if @active_tab == "final_jeopardy", do: "active" %>"">
                 <%= f = form_for @cs.final_jeopardy, "#",
                 as: "final_jeopardy",
                 name: "final_jeopardy::Category",
-                phx_change: "validate-final-jeopardy",
-                phx_submit: "save" %>
+                phx_change: "validate-final-jeopardy" %>
                 <%= label f, :category, id: "final_jeopardy::category" %>
                 <%= text_input f, :category, "phx-blur": "blur-final-jeopardy", "phx-value-field": "category" %>
                 <%= error_tag f, :category %>
