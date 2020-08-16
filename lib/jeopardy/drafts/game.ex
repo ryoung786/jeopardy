@@ -19,7 +19,6 @@ defmodule Jeopardy.Drafts.Game do
     game
     |> cast(attrs, [:owner_id, :owner_type, :name, :description, :tags, :format, :clues])
     |> validate_required([:owner_id, :owner_type, :name, :description, :tags, :format, :clues])
-    |> validate_exclusion(:name, ~w(test))
     |> validate_inclusion(:owner_type, ~w(user))
     |> validate_inclusion(:format, ~w(jeopardy))
   end

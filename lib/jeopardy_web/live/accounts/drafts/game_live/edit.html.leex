@@ -41,15 +41,15 @@
                 phx_submit: "save" %>
 
                 <%= label f, :name, id: "details:name" %>
-                <%= text_input f, :name %>
+                <%= text_input f, :name, "phx-blur": "blur-details", "phx-value-field": "name" %>
                 <%= error_tag f, :name %>
 
                 <%= label f, :description %>
-                <%= textarea f, :description %>
+                <%= textarea f, :description, "phx-blur": "blur-details", "phx-value-field": "description" %>
                 <%= error_tag f, :description %>
 
                 <%= label f, :tags %>
-                <%= text_input f, :tags %>
+                <%= text_input f, :tags, "phx-blur": "blur-details", "phx-value-field": "tags", value: input_value(f, :tags) |> Enum.join(", ") %>
                 <%= error_tag f, :tags %>
                 </form>
             </div>

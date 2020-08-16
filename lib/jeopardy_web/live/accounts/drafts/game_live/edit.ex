@@ -33,22 +33,50 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
 
   @impl true
   def handle_event("validate-details", %{"details" => params}, socket) do
-    IO.inspect(params, label: "[xxx] details params")
-
-    cs =
+    params =
       Map.update!(
-        socket.assigns.cs,
-        :details,
-        fn _ ->
-          socket.assigns.game
-          |> Drafts.change_game(params)
-          |> Map.put(:action, :validate)
-        end
+        params,
+        "tags",
+        fn str -> String.split(str, ",", trim: true) |> Enum.map(&String.trim/1) end
       )
 
-    IO.inspect(cs.details, label: "[xxx] cs")
+    cs =
+      Map.replace!(
+        socket.assigns.cs,
+        :details,
+        socket.assigns.game
+        |> Drafts.change_game(params)
+        |> Map.put(:action, :validate)
+      )
 
     {:noreply, assign(socket, cs: cs)}
+  end
+
+  @impl true
+  def handle_event("blur-details", %{"field" => field, "value" => val}, socket) do
+    params =
+      case field do
+        "tags" -> %{field => String.split(val, ",", trim: true) |> Enum.map(&String.trim/1)}
+        _ -> %{field => val}
+      end
+
+    IO.inspect(params, label: "[xxx] blur params2")
+
+    IO.inspect(
+      socket.assigns.game
+      |> Game.changeset(params),
+      label: "[xxx] "
+    )
+
+    case Drafts.update_game(socket.assigns.game, params) do
+      {:ok, game} ->
+        {:noreply,
+         assign(socket, game: game, cs: %{socket.assigns.cs | details: Drafts.change_game(game)})}
+
+      {:error, cs} ->
+        IO.inspect(cs, label: "[xxx] error cs")
+        {:noreply, assign(socket, cs: %{socket.assigns.cs | details: cs})}
+    end
   end
 
   defp toc_links_for_round(%Game{} = game, round) do
