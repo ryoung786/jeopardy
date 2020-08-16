@@ -7,17 +7,11 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
   @impl true
   def handle_params(%{"id" => id, "round" => round}, _url, socket)
       when round in ~w(details jeopardy double-jeopardy final-jeopardy) do
-    IO.inspect(round, label: "[xxx] round")
-
     round = String.replace(round, "-", "_")
     game = Drafts.get_game!(id)
     toc_links = toc_links_for_round(game, round)
-    fj_clue = Map.get(game.clues, "final_jeopardy")
 
-    cs = %{
-      details: Drafts.change_game(game),
-      final_jeopardy: Drafts.change_final_jeopardy_clue(%{}, fj_clue)
-    }
+    cs = all_changesets(game)
 
     {:noreply,
      socket
@@ -30,6 +24,82 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
   @impl true
   def handle_params(%{"id" => id}, url, socket),
     do: handle_params(%{"id" => id, "round" => "details"}, url, socket)
+
+  @impl true
+  def handle_event("update-details", %{"details" => params}, socket) do
+    params =
+      Map.update!(
+        params,
+        "tags",
+        fn str -> String.split(str, ",", trim: true) |> Enum.map(&String.trim/1) end
+      )
+
+    case Drafts.update_game(socket.assigns.game, params) do
+      {:ok, game} ->
+        {:noreply,
+         assign(socket, game: game, cs: %{socket.assigns.cs | details: Drafts.change_game(game)})}
+
+      {:error, cs} ->
+        {:noreply, assign(socket, cs: %{socket.assigns.cs | details: cs})}
+    end
+  end
+
+  @impl true
+  def handle_event("update-category", %{"category" => params}, socket) do
+    id = String.to_integer(params["id"])
+    round = params["round"]
+    id = if round == "jeopardy", do: id, else: id + 6
+
+    case Drafts.update_category(socket.assigns.game, id, %{}, params) do
+      {:ok, game} ->
+        {:noreply,
+         socket
+         |> assign(game: game)
+         |> assign(toc_links: toc_links_for_round(game, round))
+         |> assign(cs: all_changesets(game))}
+
+      {:error, cs} ->
+        %{assigns: %{cs: all}} =
+          update_in(socket.assigns.cs[round][:categories], &List.replace_at(&1, id, cs))
+
+        {:noreply, assign(socket, cs: all)}
+    end
+  end
+
+  @impl true
+  def handle_event("update-clue", %{"clue" => params}, socket) do
+    id = String.to_integer(params["id"])
+    round = String.to_atom(params["round"])
+
+    case Drafts.update_clue(socket.assigns.game, id, params) do
+      {:ok, game} ->
+        {:noreply, assign(socket, game: game, cs: all_changesets(game))}
+
+      {:error, cs} ->
+        %{assigns: %{cs: all}} = put_in(socket.assigns.cs[round][:clues][id], cs)
+        {:noreply, assign(socket, cs: all)}
+    end
+  end
+
+  @impl true
+  def handle_event("update-final-jeopardy", %{"final_jeopardy" => params}, socket) do
+    case Drafts.update_final_jeopardy_clue(socket.assigns.game, params) do
+      {:ok, game} ->
+        fj_clue = Map.get(game.clues, "final_jeopardy")
+
+        {:noreply,
+         assign(socket,
+           game: game,
+           cs: %{
+             socket.assigns.cs
+             | final_jeopardy: Drafts.change_final_jeopardy_clue(%{}, fj_clue)
+           }
+         )}
+
+      {:error, cs} ->
+        {:noreply, assign(socket, cs: %{socket.assigns.cs | final_jeopardy: cs})}
+    end
+  end
 
   defp toc_links_for_round(%Game{} = game, round) do
     case round do
@@ -47,4 +117,41 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
       |> Enum.map(fn {cat, i} ->
         %{link: "category_#{i + 1}", text: cat["category"] || "Category #{i + 1}"}
       end)
+
+  def generate_category_changesets(game, round) do
+    Map.get(game.clues, Atom.to_string(round))
+    |> Enum.map(fn c ->
+      Drafts.change_category(%{}, %{category: c["category"]})
+    end)
+  end
+
+  def generate_clue_changesets(game, round) do
+    Map.get(game.clues, Atom.to_string(round))
+    |> Enum.reduce(%{}, fn c, acc ->
+      cs_map =
+        c["clues"]
+        |> Enum.reduce(%{}, fn clue, acc2 ->
+          Map.merge(acc2, %{clue["id"] => Drafts.change_clue(%{}, clue)})
+        end)
+
+      Map.merge(acc, cs_map)
+    end)
+  end
+
+  defp all_changesets(game) do
+    fj_clue = Map.get(game.clues, "final_jeopardy")
+
+    %{
+      details: Drafts.change_game(game),
+      jeopardy: %{
+        categories: generate_category_changesets(game, :jeopardy),
+        clues: generate_clue_changesets(game, :jeopardy)
+      },
+      double_jeopardy: %{
+        categories: generate_category_changesets(game, :double_jeopardy),
+        clues: generate_clue_changesets(game, :double_jeopardy)
+      },
+      final_jeopardy: Drafts.change_final_jeopardy_clue(%{}, fj_clue)
+    }
+  end
 end

@@ -36,93 +36,124 @@
         <div class="content">
             <div class="details <%= if @active_tab == "details", do: "active" %>"">
                 <%= f = form_for @cs.details, "#",
-                as: "details",
-                phx_change: "validate-details",
-                phx_submit: "save" %>
+                        as: "details",
+                        phx_change: "update-details" %>
+                    <%= label f, :name, id: "details:name" %>
+                    <%= text_input f, :name, "phx-debounce": "blur" %>
+                    <%= error_tag f, :name %>
 
-                <%= label f, :name, id: "details:name" %>
-                <%= text_input f, :name %>
-                <%= error_tag f, :name %>
+                    <%= label f, :description %>
+                    <%= textarea f, :description, "phx-debounce": "blur" %>
+                    <%= error_tag f, :description %>
 
-                <%= label f, :description %>
-                <%= textarea f, :description %>
-                <%= error_tag f, :description %>
-
-                <%= label f, :tags %>
-                <%= text_input f, :tags %>
-                <%= error_tag f, :tags %>
+                    <%= label f, :tags %>
+                    <%= text_input f, :tags, "phx-debounce": "blur", value: input_value(f, :tags) |> Enum.join(", ") %>
+                    <%= error_tag f, :tags %>
                 </form>
             </div>
             <div class="jeopardy <%= if @active_tab == "jeopardy", do: "active" %>"">
-                <%= f = form_for :jeopardy, "#",
-                as: "jeopardy",
-                phx_change: "validate-jeopardy",
-                phx_submit: "save" %>
-                <%= for {%{"category" => cname, "clues" => clues}, i} <- @game.clues["jeopardy"] |> Enum.with_index do %>
-                    <div id="jeopardy::category_<%= i+1 %>"></div>
-                    <%= label f, :category, class: "category-name" do %>Category: <%= cname || "(empty)" %><% end %>
-                    <%= text_input f, :category %>
-                    <%= error_tag f, :category %>
+                <%= for {%{"clues" => clues}, i} <- @game.clues["jeopardy"] |> Enum.with_index do %>
+                    <div id="jeopardy::category_<%= i+1 %>" class="category-and-clues">
+                        <%= f = form_for @cs.jeopardy.categories |> Enum.at(i), "#",
+                                class: "category-form",
+                                as: "category",
+                                phx_change: "update-category" %>
+                            <%= hidden_input f, :id, value: i %>
+                            <%= hidden_input f, :round, value: "jeopardy" %>
+                            <div class="category-group">
+                                <%= label f, :category, class: "category-name" do %>Category:<% end %>
+                                <%= text_input f, :category, placeholder: "Category Name",
+                                    "phx-debounce": "blur" %>
+                                <%= error_tag f, :category %>
+                            </div>
+                        </form>
 
-                    <%= for _clue <- clues do %>
-                        <%= label f, :value %>
-                        <%= number_input f, :value %>
-                        <%= error_tag f, :value %>
+                        <%= for clue <- clues do %>
+                            <%= f = form_for @cs.jeopardy.clues[clue["id"]], "#", as: "clue", phx_change: "update-clue" %>
+                                <%= hidden_input f, :id, value: clue["id"] %>
+                                <%= hidden_input f, :round, value: "jeopardy" %>
+                                <div class="clue-group">
+                                    <div class="form-group">
+                                        <%= label f, :value %>
+                                        <%= number_input f, :value, placeholder: 100, step: 100, min: 0, "phx-debounce": "blur" %>
+                                        <%= error_tag f, :value %>
+                                    </div>
 
-                        <%= label f, :clue %>
-                        <%= textarea f, :clue %>
-                        <%= error_tag f, :clue %>
+                                    <div class="form-group">
+                                        <%= label f, :clue %>
+                                        <%= text_input f, :clue, placeholder: "Clue", "phx-debounce": "blur" %>
+                                        <%= error_tag f, :clue %>
+                                    </div>
 
-                        <%= label f, :answer %>
-                        <%= text_input f, :answer %>
-                        <%= error_tag f, :answer %>
-                    <% end %>
+                                    <div class="form-group">
+                                        <%= label f, :answer %>
+                                        <%= text_input f, :answer, placeholder: "Answer", "phx-debounce": "blur" %>
+                                        <%= error_tag f, :answer %>
+                                    </div>
+                                </div>
+                            </form>
+                        <% end %>
+                    </div>
                 <% end %>
-                </form>
             </div>
             <div class="double-jeopardy <%= if @active_tab == "double_jeopardy", do: "active" %>"">
-                <%= f = form_for :jeopardy, "#",
-                as: "double_jeopardy",
-                phx_change: "validate-double_jeopardy",
-                phx_submit: "save" %>
-                <%= for {%{"category" => cname, "clues" => clues}, i} <- @game.clues["double_jeopardy"] |> Enum.with_index do %>
-                    <div id="double_jeopardy::category_<%= i+1 %>"></div>
-                    <%= label f, :category, class: "category-name" do %>Category: <%= cname || "(empty)" %><% end %>
-                    <%= text_input f, :category %>
-                    <%= error_tag f, :category %>
+                <%= for {%{"clues" => clues}, i} <- @game.clues["double_jeopardy"] |> Enum.with_index do %>
+                    <div id="double_jeopardy::category_<%= i+1 %>" class="category-and-clues">
+                        <%= f = form_for @cs.double_jeopardy.categories |> Enum.at(i), "#",
+                                class: "category-form",
+                                as: "category",
+                                phx_change: "update-category" %>
+                            <%= hidden_input f, :id, value: i %>
+                            <%= hidden_input f, :round, value: "double_jeopardy" %>
+                            <div class="category-group">
+                                <%= label f, :category, class: "category-name" do %>Category:<% end %>
+                                <%= text_input f, :category, placeholder: "Category Name",
+                                    "phx-debounce": "blur" %>
+                                <%= error_tag f, :category %>
+                            </div>
+                        </form>
 
-                    <%= for _clue <- clues do %>
-                        <%= label f, :value %>
-                        <%= number_input f, :value %>
-                        <%= error_tag f, :value %>
-
-                        <%= label f, :clue %>
-                        <%= textarea f, :clue %>
-                        <%= error_tag f, :clue %>
-
-                        <%= label f, :answer %>
-                        <%= text_input f, :answer %>
-                        <%= error_tag f, :answer %>
-                    <% end %>
+                        <%= for clue <- clues do %>
+                            <%= f = form_for @cs.double_jeopardy.clues[clue["id"]], "#", as: "clue", phx_change: "update-clue" %>
+                                <%= hidden_input f, :id, value: clue["id"] %>
+                                <%= hidden_input f, :round, value: "double_jeopardy" %>
+                                <div class="clue-group">
+                                    <div class="form-group">
+                                        <%= label f, :value %>
+                                        <%= number_input f, :value, placeholder: 100, "phx-debounce": "blur" %>
+                                        <%= error_tag f, :value %>
+                                    </div>
+                                    <div class="form-group">
+                                        <%= label f, :clue %>
+                                        <%= text_input f, :clue, placeholder: "Clue", "phx-debounce": "blur" %>
+                                        <%= error_tag f, :clue %>
+                                    </div>
+                                    <div class="form-group">
+                                        <%= label f, :answer %>
+                                        <%= text_input f, :answer, placeholder: "Answer", "phx-debounce": "blur" %>
+                                        <%= error_tag f, :answer %>
+                                    </div>
+                                </div>
+                            </form>
+                        <% end %>
+                    </div>
                 <% end %>
-                </form>
             </div>
             <div class="final-jeopardy <%= if @active_tab == "final_jeopardy", do: "active" %>"">
                 <%= f = form_for @cs.final_jeopardy, "#",
-                as: "final_jeopardy",
-                name: "final_jeopardy::Category",
-                phx_change: "validate-final_jeopardy",
-                phx_submit: "save" %>
-                <%= label f, :category, id: "final_jeopardy::category" %>
-                <%= text_input f, :category %>
-                <%= error_tag f, :category %>
+                        as: "final_jeopardy",
+                        name: "final_jeopardy::Category",
+                        phx_change: "update-final-jeopardy" %>
+                    <%= label f, :category, id: "final_jeopardy::category" %>
+                    <%= text_input f, :category, "phx-debounce": "blur" %>
+                    <%= error_tag f, :category %>
 
-                <%= label f, :clue, id: "final_jeopardy::clue" %>
-                    <%= textarea f, :clue %>
+                    <%= label f, :clue, id: "final_jeopardy::clue" %>
+                    <%= textarea f, :clue, "phx-debounce": "blur" %>
                     <%= error_tag f, :clue %>
 
                     <%= label f, :answer %>
-                    <%= text_input f, :answer %>
+                    <%= text_input f, :answer, "phx-debounce": "blur" %>
                     <%= error_tag f, :answer %>
                 </form>
             </div>
