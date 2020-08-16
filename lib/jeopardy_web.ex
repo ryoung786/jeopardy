@@ -160,6 +160,15 @@ defmodule JeopardyWeb do
           else: ""
       end
 
+      def oauth_link(conn, provider) do
+        # yuuuuuck, but authorization_link doesn't provide any option to
+        # embed any inner html inside the a tag
+        {:safe, [_, _, [[_, "href", _, _, link, _]] | _]} =
+          PowAssent.Phoenix.ViewHelpers.authorization_link(conn, provider)
+
+        link
+      end
+
       def field_display(model, obj, field_name) do
         val = Map.get(obj, field_name)
 

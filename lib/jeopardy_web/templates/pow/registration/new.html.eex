@@ -7,10 +7,10 @@
 
     <div class="options">
 
-        <a class="button button-outline social-login" href="<%= Routes.pow_assent_authorization_path(@conn, :new, :google) %>">
+        <a class="button button-outline social-login" href="<%= oauth_link(@conn, :google) %>">
             <%= render JeopardyWeb.CommonView, "svgs/google.html" %> <span>Register with Google</span>
         </a>
-        <a class="button button-outline social-login" href="<%= Routes.pow_assent_authorization_path(@conn, :new, :facebook) %>">
+        <a class="button button-outline social-login" href="<%= oauth_link(@conn, :facebook) %>">
             <img src="<%= Routes.static_path(@conn, "/images/facebook.png") %>" alt="facebook login image"> <span>Register with Facebook</span>
         </a>
 
