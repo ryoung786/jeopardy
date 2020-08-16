@@ -7,8 +7,6 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
   @impl true
   def handle_params(%{"id" => id, "round" => round}, _url, socket)
       when round in ~w(details jeopardy double-jeopardy final-jeopardy) do
-    IO.inspect(round, label: "[xxx] round")
-
     round = String.replace(round, "-", "_")
     game = Drafts.get_game!(id)
     toc_links = toc_links_for_round(game, round)
@@ -60,21 +58,47 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
         _ -> %{field => val}
       end
 
-    IO.inspect(params, label: "[xxx] blur params2")
-
-    IO.inspect(
-      socket.assigns.game
-      |> Game.changeset(params),
-      label: "[xxx] "
-    )
-
     case Drafts.update_game(socket.assigns.game, params) do
       {:ok, game} ->
         {:noreply,
          assign(socket, game: game, cs: %{socket.assigns.cs | details: Drafts.change_game(game)})}
 
       {:error, cs} ->
-        IO.inspect(cs, label: "[xxx] error cs")
+        {:noreply, assign(socket, cs: %{socket.assigns.cs | details: cs})}
+    end
+  end
+
+  @impl true
+  def handle_event("validate-jeopardy", %{"jeopardy" => params}, socket) do
+    IO.inspect(params, label: "[xxx] validate jeopardy params")
+    cs = socket.assigns.cs
+    {:noreply, assign(socket, cs: cs)}
+  end
+
+  @impl true
+  def handle_event("validate-final-jeopardy", %{"final_jeopardy" => params}, socket) do
+    cs =
+      Map.replace!(
+        socket.assigns.cs,
+        :final_jeopardy,
+        socket.assigns.game
+        |> Drafts.change_final_jeopardy_clue(params)
+        |> Map.put(:action, :validate)
+      )
+
+    {:noreply, assign(socket, cs: cs)}
+  end
+
+  @impl true
+  def handle_event("blur-final-jeopardy", %{"field" => field, "value" => val}, socket) do
+    params = %{field => val}
+
+    case Drafts.update_final_jeopardy_clue(socket.assigns.game, params) do
+      {:ok, game} ->
+        {:noreply,
+         assign(socket, game: game, cs: %{socket.assigns.cs | details: Drafts.change_game(game)})}
+
+      {:error, cs} ->
         {:noreply, assign(socket, cs: %{socket.assigns.cs | details: cs})}
     end
   end
