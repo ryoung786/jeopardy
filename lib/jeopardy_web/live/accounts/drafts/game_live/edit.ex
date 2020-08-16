@@ -26,33 +26,13 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
     do: handle_params(%{"id" => id, "round" => "details"}, url, socket)
 
   @impl true
-  def handle_event("validate-details", %{"details" => params}, socket) do
+  def handle_event("update-details", %{"details" => params}, socket) do
     params =
       Map.update!(
         params,
         "tags",
         fn str -> String.split(str, ",", trim: true) |> Enum.map(&String.trim/1) end
       )
-
-    cs =
-      Map.replace!(
-        socket.assigns.cs,
-        :details,
-        socket.assigns.game
-        |> Drafts.change_game(params)
-        |> Map.put(:action, :validate)
-      )
-
-    {:noreply, assign(socket, cs: cs)}
-  end
-
-  @impl true
-  def handle_event("blur-details", %{"field" => field, "value" => val}, socket) do
-    params =
-      case field do
-        "tags" -> %{field => String.split(val, ",", trim: true) |> Enum.map(&String.trim/1)}
-        _ -> %{field => val}
-      end
 
     case Drafts.update_game(socket.assigns.game, params) do
       {:ok, game} ->
@@ -65,15 +45,25 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
   end
 
   @impl true
-  def handle_event("validate-category", %{"category" => params}, socket) do
+  def handle_event("update-category", %{"category" => params}, socket) do
     id = String.to_integer(params["id"])
-    round = String.to_atom(params["round"])
-    new_cs = Drafts.change_category(%{}, params) |> Map.put(:action, :validate)
+    round = params["round"]
+    id = if round == "jeopardy", do: id, else: id + 6
 
-    %{assigns: %{cs: cs}} =
-      update_in(socket.assigns.cs[round][:categories], &List.replace_at(&1, id, new_cs))
+    case Drafts.update_category(socket.assigns.game, id, %{}, params) do
+      {:ok, game} ->
+        {:noreply,
+         socket
+         |> assign(game: game)
+         |> assign(toc_links: toc_links_for_round(game, round))
+         |> assign(cs: all_changesets(game))}
 
-    {:noreply, assign(socket, cs: cs)}
+      {:error, cs} ->
+        %{assigns: %{cs: all}} =
+          update_in(socket.assigns.cs[round][:categories], &List.replace_at(&1, id, cs))
+
+        {:noreply, assign(socket, cs: all)}
+    end
   end
 
   @impl true
@@ -92,53 +82,22 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
   end
 
   @impl true
-  def handle_event("blur-category", %{"round" => round, "id" => id, "value" => val}, socket) do
-    id = String.to_integer(id)
-    id = if round == "jeopardy", do: id, else: id + 6
-    params = %{category: val}
-
-    case Drafts.update_category(socket.assigns.game, id, %{}, params) do
+  def handle_event("update-final-jeopardy", %{"final_jeopardy" => params}, socket) do
+    case Drafts.update_final_jeopardy_clue(socket.assigns.game, params) do
       {:ok, game} ->
+        fj_clue = Map.get(game.clues, "final_jeopardy")
+
         {:noreply,
          assign(socket,
            game: game,
-           toc_links: toc_links_for_round(game, round),
-           cs: all_changesets(game)
+           cs: %{
+             socket.assigns.cs
+             | final_jeopardy: Drafts.change_final_jeopardy_clue(%{}, fj_clue)
+           }
          )}
 
       {:error, cs} ->
-        %{assigns: %{cs: all}} =
-          update_in(socket.assigns.cs[round][:categories], &List.replace_at(&1, id, cs))
-
-        {:noreply, assign(socket, cs: all)}
-    end
-  end
-
-  @impl true
-  def handle_event("validate-final-jeopardy", %{"final_jeopardy" => params}, socket) do
-    cs =
-      Map.replace!(
-        socket.assigns.cs,
-        :final_jeopardy,
-        socket.assigns.game
-        |> Drafts.change_final_jeopardy_clue(params)
-        |> Map.put(:action, :validate)
-      )
-
-    {:noreply, assign(socket, cs: cs)}
-  end
-
-  @impl true
-  def handle_event("blur-final-jeopardy", %{"field" => field, "value" => val}, socket) do
-    params = %{field => val}
-
-    case Drafts.update_final_jeopardy_clue(socket.assigns.game, params) do
-      {:ok, game} ->
-        {:noreply,
-         assign(socket, game: game, cs: %{socket.assigns.cs | details: Drafts.change_game(game)})}
-
-      {:error, cs} ->
-        {:noreply, assign(socket, cs: %{socket.assigns.cs | details: cs})}
+        {:noreply, assign(socket, cs: %{socket.assigns.cs | final_jeopardy: cs})}
     end
   end
 
