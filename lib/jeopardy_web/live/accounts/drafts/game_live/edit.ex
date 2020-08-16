@@ -77,17 +77,18 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
   end
 
   @impl true
-  def handle_event("validate-clue", %{"clue" => params}, socket) do
+  def handle_event("update-clue", %{"clue" => params}, socket) do
     id = String.to_integer(params["id"])
     round = String.to_atom(params["round"])
-    clue = Drafts.get_clue!(socket.assigns.game, id)
-    new_cs = Drafts.change_clue(clue, params) |> Map.put(:action, :validate)
 
-    IO.inspect(params, label: "[xxx] clue params")
-    IO.inspect(new_cs, label: "[xxx] clue cs")
-    %{assigns: %{cs: cs}} = put_in(socket.assigns.cs[round][:clues][id], new_cs)
+    case Drafts.update_clue(socket.assigns.game, id, params) do
+      {:ok, game} ->
+        {:noreply, assign(socket, game: game, cs: all_changesets(game))}
 
-    {:noreply, assign(socket, cs: cs)}
+      {:error, cs} ->
+        %{assigns: %{cs: all}} = put_in(socket.assigns.cs[round][:clues][id], cs)
+        {:noreply, assign(socket, cs: all)}
+    end
   end
 
   @impl true

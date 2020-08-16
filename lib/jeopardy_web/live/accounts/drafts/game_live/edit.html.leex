@@ -71,25 +71,25 @@
                 </form>
 
                 <%= for clue <- clues do %>
-                    <%= f = form_for @cs.jeopardy.clues[clue["id"]], "#", as: "clue", phx_change: "validate-clue" %>
+                    <%= f = form_for @cs.jeopardy.clues[clue["id"]], "#", as: "clue", phx_change: "update-clue" %>
                     <%= hidden_input f, :id, value: clue["id"] %>
                     <%= hidden_input f, :round, value: "jeopardy" %>
                     <div class="clue-group">
                         <div class="form-group">
                             <%= label f, :value %>
-                            <%= number_input f, :value, placeholder: 100, step: 100, min: 0 %>
+                            <%= number_input f, :value, placeholder: 100, step: 100, min: 0, "phx-debounce": "blur" %>
                             <%= error_tag f, :value %>
                         </div>
 
                         <div class="form-group">
                             <%= label f, :clue %>
-                            <%= text_input f, :clue, placeholder: "Clue" %>
+                            <%= text_input f, :clue, placeholder: "Clue", "phx-debounce": "blur" %>
                             <%= error_tag f, :clue %>
                         </div>
 
                         <div class="form-group">
                             <%= label f, :answer %>
-                            <%= text_input f, :answer, placeholder: "Answer" %>
+                            <%= text_input f, :answer, placeholder: "Answer", "phx-debounce": "blur" %>
                             <%= error_tag f, :answer %>
                         </div>
                     </div>
