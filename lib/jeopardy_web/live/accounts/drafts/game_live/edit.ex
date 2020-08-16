@@ -60,7 +60,10 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
 
       {:error, cs} ->
         %{assigns: %{cs: all}} =
-          update_in(socket.assigns.cs[round][:categories], &List.replace_at(&1, id, cs))
+          update_in(
+            socket.assigns.cs[String.to_atom(round)][:categories],
+            &List.replace_at(&1, id, cs)
+          )
 
         {:noreply, assign(socket, cs: all)}
     end
