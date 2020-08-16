@@ -31,6 +31,26 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
   def handle_params(%{"id" => id}, url, socket),
     do: handle_params(%{"id" => id, "round" => "details"}, url, socket)
 
+  @impl true
+  def handle_event("validate-details", %{"details" => params}, socket) do
+    IO.inspect(params, label: "[xxx] details params")
+
+    cs =
+      Map.update!(
+        socket.assigns.cs,
+        :details,
+        fn _ ->
+          socket.assigns.game
+          |> Drafts.change_game(params)
+          |> Map.put(:action, :validate)
+        end
+      )
+
+    IO.inspect(cs.details, label: "[xxx] cs")
+
+    {:noreply, assign(socket, cs: cs)}
+  end
+
   defp toc_links_for_round(%Game{} = game, round) do
     case round do
       "details" -> [%{link: "general_info", text: "General Info"}]
