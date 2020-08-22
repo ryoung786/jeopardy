@@ -18,6 +18,7 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
      |> assign(game: game)
      |> assign(toc_links: toc_links)
      |> assign(cs: cs)
+     |> assign(saved_category_marker: %{round: nil, id: nil})
      |> assign(active_tab: round)}
   end
 
@@ -56,6 +57,7 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
          socket
          |> assign(game: game)
          |> assign(toc_links: toc_links_for_round(game, round))
+         |> assign(saved_category_marker: %{round: round, id: id})
          |> assign(cs: all_changesets(game))}
 
       {:error, cs} ->
@@ -70,17 +72,29 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
   end
 
   @impl true
-  def handle_event("update-clue", %{"clue" => params}, socket) do
+  def handle_event("update-clue", %{"clue" => params} = all_params, socket) do
     id = String.to_integer(params["id"])
+    category_id = String.to_integer(params["category_id"])
     round = String.to_atom(params["round"])
+    changed_field = all_params["_target"] |> Enum.at(1)
+    changed_field_params = Map.take(params, [changed_field])
 
-    case Drafts.update_clue(socket.assigns.game, id, params) do
+    case Drafts.update_clue(socket.assigns.game, id, changed_field_params) do
       {:ok, game} ->
-        {:noreply, assign(socket, game: game, cs: all_changesets(game))}
+        cs = Drafts.get_clue!(game, id) |> Drafts.change_clue(params) |> Map.put(:action, :saved)
+        all_changesets = update_clue_changeset(socket, round, id, cs)
+
+        {:noreply,
+         socket
+         |> assign(game: game)
+         |> assign(cs: all_changesets)
+         |> assign(saved_category_marker: %{round: round, id: category_id})}
 
       {:error, cs} ->
-        %{assigns: %{cs: all}} = put_in(socket.assigns.cs[round][:clues][id], cs)
-        {:noreply, assign(socket, cs: all)}
+        all_changesets = update_clue_changeset(socket, round, id, cs)
+
+        {:noreply,
+         assign(socket, cs: all_changesets, saved_category_marker: %{round: nil, id: nil})}
     end
   end
 
@@ -156,5 +170,14 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
       },
       final_jeopardy: Drafts.change_final_jeopardy_clue(%{}, fj_clue)
     }
+  end
+
+  # defp update_saved_clue_changeset(socket, round, clue_id, category_id, cs) do
+  #   %{assigns: %{cs: all}} = put_in(socket.assigns.cs[round][:clues][id], cs)
+  # end
+
+  defp update_clue_changeset(socket, round, id, cs) do
+    %{assigns: %{cs: all}} = put_in(socket.assigns.cs[round][:clues][id], cs)
+    all
   end
 end

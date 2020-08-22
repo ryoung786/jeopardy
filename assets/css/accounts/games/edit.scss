@@ -112,15 +112,16 @@
                     }
                     input { margin-bottom: 0; max-width: 500px; }
                     .saved {
-                        // animation: fadeout .9s ease forwards 7s;
+                        animation: fadeout .9s ease forwards 4s;
                         display: flex;
                         align-items: center;
                         color: #779966;
                         font-size: 1.4rem;
+                        margin-left: 5px;
                         svg.checkmark .check {
-                            animation: dash-check .9s ease-in-out forwards 2s;
+                            animation: dash-check .9s ease-in-out forwards;
                         }
-                        .text { opacity: 0; animation: fadein .9s ease forwards 2.2s; }
+                        .text { opacity: 0; animation: fadein .9s ease forwards .2s; }
                     }
                 }
                 .clue-group {

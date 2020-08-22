@@ -31,6 +31,7 @@
                 <%= for l <- @toc_links do %>
                     <li><a href="#<%= "#{@active_tab}::#{l.link}" %>"><%= l.text %></a></li>
                 <% end %>
+                <li><%= inspect(@saved_category_marker) %>
             </ul>
         </div>
         <div class="content">
@@ -65,16 +66,19 @@
                                 <%= text_input f, :category, placeholder: "Category Name",
                                     "phx-debounce": "blur" %>
                                 <%= error_tag f, :category %>
+                                <%= if @saved_category_marker.round == :jeopardy and @saved_category_marker.id == i do %>
                                 <div class="saved">
                                     <%= render JeopardyWeb.CommonView, "svgs/checkmark.html", stroke_width: 10 %>
                                     <span class="text">Saved</span>
                                 </div>
+                                <% end %>
                             </div>
                         </form>
 
                         <%= for clue <- clues do %>
                             <%= f = form_for @cs.jeopardy.clues[clue["id"]], "#", as: "clue", phx_change: "update-clue" %>
                                 <%= hidden_input f, :id, value: clue["id"] %>
+                                <%= hidden_input f, :category_id, value: i %>
                                 <%= hidden_input f, :round, value: "jeopardy" %>
                                 <div class="clue-group">
                                     <div class="form-group">
@@ -121,6 +125,7 @@
                         <%= for clue <- clues do %>
                             <%= f = form_for @cs.double_jeopardy.clues[clue["id"]], "#", as: "clue", phx_change: "update-clue" %>
                                 <%= hidden_input f, :id, value: clue["id"] %>
+                                <%= hidden_input f, :category_id, value: i %>
                                 <%= hidden_input f, :round, value: "double_jeopardy" %>
                                 <div class="clue-group">
                                     <div class="form-group">
