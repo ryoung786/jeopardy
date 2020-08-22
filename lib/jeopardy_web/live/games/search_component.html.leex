@@ -5,7 +5,7 @@
         </form>
 
         <div class="filters">
-            <%= if :my_games not in @hidden_filters do %>
+            <%= if @user != nil and (:my_games not in @hidden_filters) do %>
                 <form phx-change="toggle_my_games" phx-target="<%= @myself %>" class="filter_form">
                     <label>
                         <input name="cbox" <%= if :my_games in @filters, do: "checked" %>
