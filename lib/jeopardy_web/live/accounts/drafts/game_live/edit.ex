@@ -18,7 +18,6 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
      |> assign(game: game)
      |> assign(toc_links: toc_links)
      |> assign(cs: cs)
-     |> assign(saved_category_marker: %{round: nil, id: nil})
      |> assign(active_tab: round)}
   end
 
@@ -57,7 +56,6 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
          socket
          |> assign(game: game)
          |> assign(toc_links: toc_links_for_round(game, round))
-         |> assign(saved_category_marker: %{round: round, id: id})
          |> assign(cs: all_changesets(game))}
 
       {:error, cs} ->
@@ -78,6 +76,7 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
     round = String.to_atom(params["round"])
     changed_field = all_params["_target"] |> Enum.at(1)
     changed_field_params = Map.take(params, [changed_field])
+    should_push_draft_saved = should_push_js_event(socket.assigns.game, id, changed_field_params)
 
     case Drafts.update_clue(socket.assigns.game, id, changed_field_params) do
       {:ok, game} ->
@@ -86,15 +85,12 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
 
         {:noreply,
          socket
-         |> assign(game: game)
-         |> assign(cs: all_changesets)
-         |> assign(saved_category_marker: %{round: round, id: category_id})}
+         |> maybe_push_js_event(should_push_draft_saved, round, category_id)
+         |> assign(game: game, cs: all_changesets)}
 
       {:error, cs} ->
         all_changesets = update_clue_changeset(socket, round, id, cs)
-
-        {:noreply,
-         assign(socket, cs: all_changesets, saved_category_marker: %{round: nil, id: nil})}
+        {:noreply, assign(socket, cs: all_changesets)}
     end
   end
 
@@ -179,5 +175,21 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
   defp update_clue_changeset(socket, round, id, cs) do
     %{assigns: %{cs: all}} = put_in(socket.assigns.cs[round][:clues][id], cs)
     all
+  end
+
+  defp maybe_push_js_event(socket, should_push, round, category_id) do
+    if should_push,
+      do: push_event(socket, "draft_saved", %{round: round, category_id: category_id}),
+      else: socket
+  end
+
+  defp should_push_js_event(game, clue_id, params) do
+    changes =
+      Drafts.get_clue!(game, clue_id)
+      |> Drafts.change_clue(params)
+
+    changes.changes
+    |> Enum.empty?()
+    |> Kernel.not()
   end
 end

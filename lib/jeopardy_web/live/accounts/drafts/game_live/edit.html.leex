@@ -31,10 +31,9 @@
                 <%= for l <- @toc_links do %>
                     <li><a href="#<%= "#{@active_tab}::#{l.link}" %>"><%= l.text %></a></li>
                 <% end %>
-                <li><%= inspect(@saved_category_marker) %>
             </ul>
         </div>
-        <div class="content">
+        <div id="edit-draft-content" class="content" phx-hook="SaveDraft">
             <div class="details <%= if @active_tab == "details", do: "active" %>"">
                 <%= f = form_for @cs.details, "#",
                         as: "details",
@@ -66,12 +65,10 @@
                                 <%= text_input f, :category, placeholder: "Category Name",
                                     "phx-debounce": "blur" %>
                                 <%= error_tag f, :category %>
-                                <%= if @saved_category_marker.round == :jeopardy and @saved_category_marker.id == i do %>
-                                <div class="saved">
-                                    <%= render JeopardyWeb.CommonView, "svgs/checkmark.html", stroke_width: 10 %>
+                                <div class="saved" data-category="<%= i %>" data-round="jeopardy">
+                                    <%= render JeopardyWeb.CommonView, "svgs/checkmark.html", stroke_width: 10, color: "#7b8c73" %>
                                     <span class="text">Saved</span>
                                 </div>
-                                <% end %>
                             </div>
                         </form>
 
