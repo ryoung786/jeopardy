@@ -118,14 +118,12 @@
                         color: #7b8c73;
                         font-size: 1.2rem;
                         margin-left: 5px;
+                        svg.checkmark { width: 20px; }
                         &.active {
                             opacity: 1;
                             animation: fadeout 1.5s ease forwards 2s;
-                            svg.checkmark {
-                                width: 20px;
-                                .check {
-                                    animation: dash-check .9s ease-in-out forwards;
-                                }
+                            svg.checkmark .check {
+                                animation: dash-check .9s ease-in-out forwards;
                             }
                             .text { opacity: 0; animation: fadein .9s ease forwards 0s; }
                         }

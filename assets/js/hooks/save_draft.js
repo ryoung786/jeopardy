@@ -2,7 +2,6 @@
 
 export default {
   mounted() {
-    console.log("ok");
     this.handleEvent("draft_saved", (args) => {
       let el = document.querySelector(
         `.${args.round} .saved[data-category='${args.category_id}']`
