@@ -17,35 +17,7 @@
         <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/accounts.js") %>"></script>
     </head>
     <body>
-        <header class="header">
-            <div class="content">
-                <a href="/" class="home-link"><img src="<%= Routes.static_path(@conn, "/images/home_logo.png") %>" alt="home"></a>
-                <div class="account-container">
-                    <%= if Pow.Plug.current_user(@conn) do %>
-                        <a href="#" class="user-profile" onclick="toggle_user_profile_dropdown()">
-                            <span class="email"><%= @current_user.email %></span>
-                            <%= render JeopardyWeb.CommonView, "svgs/user_profile.html" %>
-                        </a>
-                        <div class="user-profile-dropdown">
-                            <ul>
-                                <%= link to: Routes.pow_registration_path(@conn, :edit) do %><li>Account</li><% end %>
-                                <%= link to: Routes.pow_session_path(@conn, :delete), method: :delete do %><li>Sign Out</li><% end %>
-                            </ul>
-                        </div>
-                    <% else %>
-                        <a href="#" class="user-profile" onclick="toggle_user_profile_dropdown()">
-                            <%= render JeopardyWeb.CommonView, "svgs/user_profile.html" %>
-                        </a>
-                        <div class="user-profile-dropdown">
-                            <ul>
-                                <%= link to: Routes.pow_session_path(@conn, :new) do %><li>Sign In</li><% end %>
-                                <%= link to: Routes.pow_registration_path(@conn, :new) do %><li>Register</li><% end %>
-                            </ul>
-                        </div>
-                    <% end %>
-                </div>
-            </div>
-        </header>
+        <%= render JeopardyWeb.CommonView, "header.html", assigns %>
         <%= @inner_content %>
     </body>
 </html>
