@@ -51,7 +51,7 @@ defmodule Jeopardy.Drafts.Game do
     # |> validate_required(~w(clue answer category)a)
     |> validate_length(:clue, max: 500, message: max_msg)
     |> validate_length(:answer, max: 500, message: max_msg)
-    |> validate_length(:category, max: 15, message: "Keep it short! 100 letters is the max.")
+    |> validate_length(:category, max: 100, message: "Keep it short! 100 letters is the max.")
   end
 
   def category_changeset(category, attrs) do

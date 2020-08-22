@@ -33,7 +33,7 @@
                 <% end %>
             </ul>
         </div>
-        <div class="content">
+        <div id="edit-draft-content" class="content" phx-hook="SaveDraft">
             <div class="details <%= if @active_tab == "details", do: "active" %>"">
                 <%= f = form_for @cs.details, "#",
                         as: "details",
@@ -56,7 +56,7 @@
                     <div id="jeopardy::category_<%= i+1 %>" class="category-and-clues">
                         <%= f = form_for @cs.jeopardy.categories |> Enum.at(i), "#",
                                 class: "category-form",
-                                as: "category",
+                                as: "category-form-jeopardy-#{i}",
                                 phx_change: "update-category" %>
                             <%= hidden_input f, :id, value: i %>
                             <%= hidden_input f, :round, value: "jeopardy" %>
@@ -65,17 +65,25 @@
                                 <%= text_input f, :category, placeholder: "Category Name",
                                     "phx-debounce": "blur" %>
                                 <%= error_tag f, :category %>
+                                <div class="saved" data-category="<%= i %>" data-round="jeopardy">
+                                    <%= render JeopardyWeb.CommonView, "svgs/checkmark.html", stroke_width: 10, color: "#7b8c73" %>
+                                    <span class="text">Saved</span>
+                                </div>
                             </div>
                         </form>
 
                         <%= for clue <- clues do %>
-                            <%= f = form_for @cs.jeopardy.clues[clue["id"]], "#", as: "clue", phx_change: "update-clue" %>
+                            <%= f = form_for @cs.jeopardy.clues[clue["id"]], "#",
+                                    as: "clue-form-round0-#{i}-#{clue["id"]}",
+                                    phx_change: "update-clue" %>
                                 <%= hidden_input f, :id, value: clue["id"] %>
+                                <%= hidden_input f, :category_id, value: i %>
                                 <%= hidden_input f, :round, value: "jeopardy" %>
                                 <div class="clue-group">
                                     <div class="form-group">
                                         <%= label f, :value %>
-                                        <%= number_input f, :value, placeholder: 100, step: 100, min: 0, "phx-debounce": "blur" %>
+                                        <%= number_input f, :value, id: "clue-form-#{i}-#{clue["id"]}-value",
+                                            placeholder: 100, step: 100, min: 0, "phx-debounce": "blur" %>
                                         <%= error_tag f, :value %>
                                     </div>
 
@@ -101,21 +109,27 @@
                     <div id="double_jeopardy::category_<%= i+1 %>" class="category-and-clues">
                         <%= f = form_for @cs.double_jeopardy.categories |> Enum.at(i), "#",
                                 class: "category-form",
-                                as: "category",
+                                as: "category-form-dj-#{i}",
                                 phx_change: "update-category" %>
                             <%= hidden_input f, :id, value: i %>
                             <%= hidden_input f, :round, value: "double_jeopardy" %>
                             <div class="category-group">
                                 <%= label f, :category, class: "category-name" do %>Category:<% end %>
                                 <%= text_input f, :category, placeholder: "Category Name",
-                                    "phx-debounce": "blur" %>
+                                       "phx-debounce": "blur" %>
                                 <%= error_tag f, :category %>
+                                <div class="saved" data-category="<%= i %>" data-round="double-jeopardy">
+                                    <%= render JeopardyWeb.CommonView, "svgs/checkmark.html", stroke_width: 10, color: "#7b8c73" %>
+                                    <span class="text">Saved</span>
+                                </div>
                             </div>
                         </form>
 
                         <%= for clue <- clues do %>
-                            <%= f = form_for @cs.double_jeopardy.clues[clue["id"]], "#", as: "clue", phx_change: "update-clue" %>
+                            <%= f = form_for @cs.double_jeopardy.clues[clue["id"]], "#",
+                                    as: "clue-form-round1-#{i}-#{clue["id"]}", phx_change: "update-clue" %>
                                 <%= hidden_input f, :id, value: clue["id"] %>
+                                <%= hidden_input f, :category_id, value: i %>
                                 <%= hidden_input f, :round, value: "double_jeopardy" %>
                                 <div class="clue-group">
                                     <div class="form-group">
@@ -152,7 +166,7 @@
                     <%= textarea f, :clue, "phx-debounce": "blur" %>
                     <%= error_tag f, :clue %>
 
-                    <%= label f, :answer %>
+                    <%= label f, :answer, id: "final_jeopardy::answer" %>
                     <%= text_input f, :answer, "phx-debounce": "blur" %>
                     <%= error_tag f, :answer %>
                 </form>
