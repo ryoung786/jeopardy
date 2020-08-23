@@ -11,7 +11,10 @@ defmodule Jeopardy.Repo.Migrations.BackfillDraftsFromJarchive do
   end
 
   def up do
-    if Application.get_env(:jeopardy, :env) != "test",
+    env = Application.get_env(:jeopardy, :env)
+    Logger.warn("[xxx] env: #{inspect(env)}")
+
+    if env != :test,
       do: Backfill.get_files([]) |> Backfill.process_files()
   end
 end
