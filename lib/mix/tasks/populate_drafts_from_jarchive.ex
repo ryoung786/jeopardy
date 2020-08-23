@@ -1,9 +1,10 @@
 defmodule Mix.Tasks.PopulateDraftsFromJarchive do
   use Mix.Task
   alias Jeopardy.Drafts
+  require Logger
 
   @shortdoc "Create draft games from jarchive json files"
-  @archive_path Path.join(:code.priv_dir(:jeopardy), "jarchive2")
+  @archive_path Path.join(:code.priv_dir(:jeopardy), "jarchive")
 
   def run(args) do
     Mix.Task.run("app.start")
@@ -20,12 +21,12 @@ defmodule Mix.Tasks.PopulateDraftsFromJarchive do
   def process_files(files) do
     Enum.with_index(files)
     |> Enum.each(fn {file, i} ->
-      if rem(i, 100) == 0, do: Mix.shell().info("processed #{i} files")
+      if rem(i, 100) == 0, do: Logger.warn("processed #{i} files")
 
       with {:ok, f} <- File.read(Path.join(@archive_path, file)) do
         process_file(f, i)
       else
-        _ -> Mix.shell().error("Couldn't find #{file}")
+        _ -> Logger.error("Couldn't find #{file}")
       end
     end)
   end
