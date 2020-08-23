@@ -39,6 +39,10 @@ defmodule Mix.Tasks.ParseToJson do
     %{
       id: id,
       air_date: parse_air_date(html),
+      episode_num: get_episode_num(html),
+      title: Floki.find(html, "#game_title") |> Floki.text(),
+      description: Floki.find(html, "#game_comments") |> Floki.text(),
+      contestants: get_contestants(html),
       jeopardy_round_categories: categories_by_round(:jeopardy, html),
       double_jeopardy_round_categories: categories_by_round(:double_jeopardy, html),
       final_jeopardy_category: final_jeopardy_clue[:category],
@@ -139,6 +143,18 @@ defmodule Mix.Tasks.ParseToJson do
          |> Date.from_iso8601() do
       {:ok, air_date} -> air_date
       _ -> nil
+    end
+  end
+
+  def get_contestants(html),
+    do: Floki.find(html, "#contestants_table .contestants a") |> Enum.map(&Floki.text/1)
+
+  def get_episode_num(html) do
+    title = Floki.find(html, "#game_title") |> Floki.text()
+
+    case Regex.run(~r/#(\d+) -/, title) |> Enum.at(1) do
+      nil -> nil
+      ep_num_as_string -> String.to_integer(ep_num_as_string)
     end
   end
 end

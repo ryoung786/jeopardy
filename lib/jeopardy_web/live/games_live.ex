@@ -13,13 +13,11 @@ defmodule JeopardyWeb.GamesLive do
   def mount(_params, _session, socket), do: mount_with_current_user(nil, socket)
 
   defp mount_with_current_user(user, socket) do
-    games = Jeopardy.Drafts.list_games()
-
     socket =
       socket
       |> assign(user: user)
       |> assign(confirm_selection: nil)
-      |> assign(available_games_count: Enum.count(games))
+      |> assign(available_games_count: Jeopardy.Drafts.count_games())
 
     {:ok, socket}
   end

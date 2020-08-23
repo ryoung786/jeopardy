@@ -37,7 +37,6 @@ defmodule Jeopardy.MixProject do
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
-      # try upgrading to 0.14
       {:phoenix_live_view, "~> 0.14.0"},
       {:floki, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
@@ -60,6 +59,8 @@ defmodule Jeopardy.MixProject do
       {:pow_assent, "~> 0.4.8"},
       {:certifi, "~> 2.4"},
       {:ssl_verify_fun, "~> 1.1"},
+      {:scrivener, "~> 2.7"},
+      {:scrivener_ecto, "~> 2.0"},
       {:goth, "~> 1.2.0"}
     ]
   end

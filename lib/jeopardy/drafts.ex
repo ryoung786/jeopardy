@@ -28,6 +28,8 @@ defmodule Jeopardy.Drafts do
     |> Repo.all()
   end
 
+  def count_games(), do: Repo.aggregate(Game, :count)
+
   @doc """
   Gets a single game.
 
@@ -275,14 +277,14 @@ defmodule Jeopardy.Drafts do
 
   def search_games(nil = _user, search_query, _filters) do
     search_helper_query(Game, search_query)
-    |> Repo.all()
+    |> Repo.paginate(page: 1, page_size: 10)
   end
 
   def search_games(%User{} = user, search_query, filters) do
     query = my_games_query(user.id, filters)
     query = search_helper_query(query, search_query)
 
-    query |> Repo.all()
+    query |> Repo.paginate(page: 1, page_size: 10)
   end
 
   defp my_games_query(user_id, filters) do
