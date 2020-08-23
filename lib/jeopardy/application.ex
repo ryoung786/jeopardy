@@ -22,7 +22,8 @@ defmodule Jeopardy.Application do
       # Start a worker by calling: Jeopardy.Worker.start_link(arg)
       # {Jeopardy.Worker, arg}
       Jeopardy.BIReplication,
-      Jeopardy.Cron.CullOldRecords
+      Jeopardy.Cron.CullOldRecords,
+      Jeopardy.Backfills.DraftGames
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
