@@ -58,7 +58,6 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
       |> Drafts.change_category(params)
 
     should_push = changes.changes |> Enum.empty?() |> Kernel.not()
-    IO.inspect(should_push, label: "[xxx] should_push")
 
     case Drafts.update_category(socket.assigns.game, id_all, %{}, params) do
       {:ok, game} ->

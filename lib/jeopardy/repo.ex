@@ -3,6 +3,8 @@ defmodule Jeopardy.Repo do
     otp_app: :jeopardy,
     adapter: Ecto.Adapters.Postgres
 
+  use Scrivener, page_size: 10
+
   def update_all_ts(queryable, updates, opts \\ []) do
     update_all(
       queryable,

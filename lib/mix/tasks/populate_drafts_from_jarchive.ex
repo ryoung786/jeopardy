@@ -47,11 +47,11 @@ defmodule Mix.Tasks.PopulateDraftsFromJarchive do
   def desc_from_json(json) do
     case String.trim(json["description"]) do
       "" -> "#{json["air_date"]}"
-      _ -> "#{json["air_date"]}: #{json["description"]}"
+      _ -> "#{json["air_date"]}: #{json["description"]}" |> String.slice(0, 200)
     end
   end
 
-  def tags_from_json(json), do: json["contestants"]
+  def tags_from_json(json), do: json["contestants"] |> Enum.map(&String.slice(&1, 0, 200))
 
   def clues_from_json(json) do
     json = add_clue_ids(json)
