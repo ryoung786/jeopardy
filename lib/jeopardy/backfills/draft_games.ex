@@ -13,7 +13,7 @@ defmodule Jeopardy.Backfills.DraftGames do
     Logger.warn("[xxx] beginning backfill")
     count = from(g in Game, where: g.owner_type == "jarchive") |> Repo.aggregate(:count)
 
-    if count < 6000,
+    if count < 6000 && Application.get_env(:jeopardy, :env) != :test,
       do: Backfill.get_files([]) |> Backfill.process_files(),
       else: Logger.warn("[xxx] backfill already populated")
 
