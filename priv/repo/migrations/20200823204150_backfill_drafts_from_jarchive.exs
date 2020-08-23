@@ -4,6 +4,7 @@ defmodule Jeopardy.Repo.Migrations.BackfillDraftsFromJarchive do
   alias Jeopardy.Drafts.Game
   import Ecto.Query
   alias Mix.Tasks.PopulateDraftsFromJarchive, as: Backfill
+  require Logger
 
   def down do
     from(g in Game, where: g.owner_type == "jarchive")
