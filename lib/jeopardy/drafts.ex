@@ -275,16 +275,23 @@ defmodule Jeopardy.Drafts do
 
   defp to_string_map_keys(m), do: Map.new(m, fn {k, v} -> {Atom.to_string(k), v} end)
 
-  def search_games(nil = _user, search_query, _filters) do
-    search_helper_query(Game, search_query)
-    |> Repo.paginate(page: 1, page_size: 10)
+  def search_games(user, search_query, filters, pagination \\ [])
+
+  def search_games(nil = _user, search_query, _filters, pagination) do
+    query = search_helper_query(Game, search_query)
+    do_search_games(query, pagination)
   end
 
-  def search_games(%User{} = user, search_query, filters) do
+  def search_games(%User{} = user, search_query, filters, pagination) do
     query = my_games_query(user.id, filters)
     query = search_helper_query(query, search_query)
+    do_search_games(query, pagination)
+  end
 
-    query |> Repo.paginate(page: 1, page_size: 10)
+  defp do_search_games(query, pagination \\ []) do
+    default_pagination = [page: 1, page_size: 5]
+    pagination = Keyword.merge(default_pagination, pagination)
+    Repo.paginate(query, pagination)
   end
 
   defp my_games_query(user_id, filters) do

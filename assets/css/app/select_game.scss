@@ -63,6 +63,14 @@
             }
         }
     }
+    .pagination {
+        display: grid;
+        grid-auto-flow: column;
+        color: #4d6d8f;
+        font-size: 1.4rem;
+        .prev { text-align: left; }
+        .next { text-align: right; }
+    }
     .no-results {
         margin: auto;
         width: 350px;

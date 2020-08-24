@@ -45,6 +45,14 @@
             <% end %>
         </tbody>
     </table>
+    <div class="pagination">
+        <%= if @page > 1 do %>
+            <%= link "prev", to: "#", class: "prev", phx_click: "prev_page", phx_target: @myself %>
+        <% end %>
+        <%= if @page < @games.total_pages do %>
+            <%= link "next", to: "#", class: "next", phx_click: "next_page", phx_target: @myself %>
+        <% end %>
+    </div>
     <%= if Enum.empty?(@games) do %>
         <div class="no-results">
             <p><strong>No Results</strong></p>
