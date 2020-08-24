@@ -64,12 +64,10 @@
         }
     }
     .pagination {
-        display: grid;
-        grid-auto-flow: column;
         color: #4d6d8f;
         font-size: 1.4rem;
-        .prev { text-align: left; }
-        .next { text-align: right; }
+        text-align: left;
+        .next { float: right; }
     }
     .no-results {
         margin: auto;
