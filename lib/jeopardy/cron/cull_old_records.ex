@@ -38,7 +38,7 @@ defmodule Jeopardy.Cron.CullOldRecords do
       "clues" => Jeopardy.Games.Clue
     }
 
-    from(x in module, where: x.updated_at < ago(14, "day"))
+    from(x in module, where: x.updated_at < ago(1, "day"))
     |> Jeopardy.Repo.delete_all()
   end
 end
