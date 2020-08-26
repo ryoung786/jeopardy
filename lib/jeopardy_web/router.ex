@@ -6,6 +6,7 @@ defmodule JeopardyWeb.Router do
   import Phoenix.LiveDashboard.Router
   require Logger
   alias Jeopardy.Games
+  alias Jeopardy.Drafts
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -35,6 +36,8 @@ defmodule JeopardyWeb.Router do
     plug :fetch_flash
     plug :put_secure_browser_headers
   end
+
+  pipeline :authorized, do: plug(:ensure_admin_or_owner)
 
   scope "/" do
     pipe_through :skip_csrf_protection
@@ -72,7 +75,7 @@ defmodule JeopardyWeb.Router do
   end
 
   pipeline :accounts do
-    plug(:ensure_admin)
+    # plug(:ensure_admin)
     plug :put_root_layout, {JeopardyWeb.LayoutView, :accounts}
   end
 
@@ -82,6 +85,7 @@ defmodule JeopardyWeb.Router do
     live "/games", GameLive.Index, :index
     live "/games/new", GameLive.Index, :new
 
+    pipe_through :authorized
     live "/games/:id/edit", GameLive.Edit, :edit
     live "/games/:id/edit/:round", GameLive.Edit, :edit
 
@@ -134,6 +138,29 @@ defmodule JeopardyWeb.Router do
     if get_session(conn, :name),
       do: conn,
       else: conn |> put_flash(:info, "Please enter your name") |> redirect(to: "/") |> halt()
+  end
+
+  defp ensure_admin_or_owner(conn, _opts) do
+    with %Drafts.Game{} = game <- Drafts.get_game(conn.params["id"]),
+         true <- is_admin_or_owner(conn.assigns.current_user, game) do
+      conn
+    else
+      _ -> halt_with_status(conn, 404)
+    end
+  end
+
+  defp is_admin_or_owner(user, game),
+    do: is_admin(user) || (game.owner_type == "user" && game.owner_id == user.id)
+
+  defp is_admin(user),
+    do: user.email in Application.fetch_env!(:jeopardy, :admin)[:ADMIN_USER_EMAILS]
+
+  defp halt_with_status(conn, status) do
+    conn
+    |> put_status(status)
+    |> put_view(JeopardyWeb.ErrorView)
+    |> render(:"#{status}")
+    |> halt()
   end
 
   if Mix.env() == :dev, do: forward("/sent_emails", Bamboo.SentEmailViewerPlug)
