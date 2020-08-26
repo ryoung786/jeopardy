@@ -5,21 +5,26 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
   require Logger
 
   @impl true
-  def handle_params(%{"id" => id, "round" => round}, _url, socket)
-      when round in ~w(details jeopardy double-jeopardy final-jeopardy) do
-    round = String.replace(round, "-", "_")
+  def mount(%{"id" => id} = _params, %{"current_user_id" => current_user_id}, socket) do
+    user = Jeopardy.Users.get_user!(current_user_id)
+    round = "details"
     game = Drafts.get_game!(id)
     toc_links = toc_links_for_round(game, round)
-
     cs = all_changesets(game)
 
-    {:noreply,
+    {:ok,
      socket
+     |> assign(current_user: user)
      |> assign(game: game)
      |> assign(toc_links: toc_links)
      |> assign(cs: cs)
      |> assign(active_tab: round)}
   end
+
+  @impl true
+  def handle_params(%{"round" => round}, _url, socket)
+      when round in ~w(details jeopardy double-jeopardy final-jeopardy),
+      do: {:noreply, assign(socket, active_tab: String.replace(round, "-", "_"))}
 
   @impl true
   def handle_params(%{"id" => id}, url, socket),
