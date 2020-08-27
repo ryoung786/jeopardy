@@ -3,8 +3,10 @@ defmodule JeopardyWeb.ModalComponent do
 
   @impl true
   def render(assigns) do
+    class = Keyword.get(assigns.opts, :class)
+
     ~L"""
-    <div id="<%= @id %>" class="phx-modal"
+    <div id="<%= @id %>" class="phx-modal <%= class %>"
       phx-capture-click="close"
       phx-window-keydown="close"
       phx-key="escape"
