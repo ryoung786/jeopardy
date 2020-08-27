@@ -15,7 +15,7 @@
   <%= error_tag f, :description %>
 
   <%= label f, :tags %>
-  <%= multiple_select f, :tags, ["Option 1": "option1", "Option 2": "option2"] %>
+  <%= text_input f, :tags, "phx-debounce": "blur", value: input_value(f, :tags) |> Enum.join(", ") %>
   <%= error_tag f, :tags %>
 
   <%= submit "Save", phx_disable_with: "Saving..." %>

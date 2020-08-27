@@ -14,6 +14,13 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"game" => game_params}, socket) do
+    game_params =
+      Map.update!(
+        game_params,
+        "tags",
+        fn str -> String.split(str, ",", trim: true) |> Enum.map(&String.trim/1) end
+      )
+
     changeset =
       socket.assigns.game
       |> Drafts.change_game(game_params)
