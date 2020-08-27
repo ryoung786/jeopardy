@@ -97,6 +97,9 @@ export default {
 
     canvas.onmousedown = (e) => {
       self.painting = true;
+
+      self.canvas.width = parseInt(getComputedStyle(self.canvas).width);
+      self.canvas.height = parseInt(getComputedStyle(self.canvas).height);
       self.reOffset(self);
       // get the mouse position
       let mouseX = parseInt(e.clientX - self.offsetX);
