@@ -14,7 +14,8 @@
   <%= text_input f, :description %>
   <%= error_tag f, :description %>
 
-  <%= label f, :tags %>
+  <%= label f, :tags, class: "label-tags" %>
+  <span class="tags-help-text">Example: history, science, math</span>
   <%= text_input f, :tags, "phx-debounce": "blur", value: input_value(f, :tags) |> Enum.join(", ") %>
   <%= error_tag f, :tags %>
 

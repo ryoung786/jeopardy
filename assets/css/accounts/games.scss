@@ -21,3 +21,13 @@
         }
     }
 }
+
+#game-form {
+  margin-bottom: 0;
+  .label-tags { display: inline-block; }
+  .tags-help-text {
+    font-size: 1.3rem;
+    font-style: italic;
+    margin-left: 1rem;
+  }
+}
