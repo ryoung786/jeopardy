@@ -190,8 +190,6 @@ export default {
       canvas_copy.getContext("2d").putImageData(imgdata, 0, 0);
       let data_url = canvas_copy.toDataURL();
 
-      console.log(data_url);
-
       this.pushEventTo(".awaiting_start", "signed-podium", {
         url: data_url,
       });
