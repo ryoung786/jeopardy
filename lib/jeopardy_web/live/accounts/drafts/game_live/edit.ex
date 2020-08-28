@@ -23,8 +23,11 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.Edit do
 
   @impl true
   def handle_params(%{"round" => round}, _url, socket)
-      when round in ~w(details jeopardy double-jeopardy final-jeopardy),
-      do: {:noreply, assign(socket, active_tab: String.replace(round, "-", "_"))}
+      when round in ~w(details jeopardy double-jeopardy final-jeopardy) do
+    round = String.replace(round, "-", "_")
+    toc_links = toc_links_for_round(socket.assigns.game, round)
+    {:noreply, assign(socket, active_tab: round, toc_links: toc_links)}
+  end
 
   @impl true
   def handle_params(%{"id" => id}, url, socket),
