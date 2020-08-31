@@ -43,8 +43,8 @@ config :logger, level: :info
 config :goth, json: {:system, "GCP_CREDENTIALS"}
 
 config :jeopardy, Jeopardy.BIReplication,
-  # 1 hour (1 mins for now, as a test)
-  frequency: 1 * 60 * 1000,
+  # every 20 mins
+  frequency: 20 * 60 * 1000,
   bucket: "jeopardy_ryoung"
 
 config :jeopardy, gtag: true
