@@ -14,12 +14,7 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"game" => game_params}, socket) do
-    game_params =
-      Map.update!(
-        game_params,
-        "tags",
-        fn str -> String.split(str, ",", trim: true) |> Enum.map(&String.trim/1) end
-      )
+    game_params = tag_string_to_array(game_params)
 
     changeset =
       socket.assigns.game
@@ -29,9 +24,8 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.FormComponent do
     {:noreply, assign(socket, :changeset, changeset)}
   end
 
-  def handle_event("save", %{"game" => game_params}, socket) do
-    save_game(socket, socket.assigns.action, game_params)
-  end
+  def handle_event("save", %{"game" => game_params}, socket),
+    do: save_game(socket, socket.assigns.action, game_params)
 
   defp save_game(socket, :edit, game_params) do
     case Drafts.update_game(socket.assigns.game, game_params) do
@@ -49,10 +43,9 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.FormComponent do
   defp save_game(socket, :new, game_params) do
     # owner is required.  We can get it from the pow authenticated current_user
     game_params =
-      Map.merge(game_params, %{
-        "owner_id" => socket.assigns.current_user.id,
-        "owner_type" => "user"
-      })
+      game_params
+      |> add_owner_fields(socket.assigns.current_user.id)
+      |> tag_string_to_array()
 
     case Drafts.create_game(game_params) do
       {:ok, game} ->
@@ -64,5 +57,17 @@ defmodule JeopardyWeb.Accounts.Drafts.GameLive.FormComponent do
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
     end
+  end
+
+  defp add_owner_fields(%{} = game_params, user_id) do
+    Map.merge(game_params, %{"owner_id" => user_id, "owner_type" => "user"})
+  end
+
+  defp tag_string_to_array(%{} = game_params) do
+    Map.update!(
+      game_params,
+      "tags",
+      fn str -> String.split(str, ",", trim: true) |> Enum.map(&String.trim/1) end
+    )
   end
 end
