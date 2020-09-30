@@ -1,11 +1,5 @@
 # Jeopardy
 
-## State Machine
-### Pre-Jeopardy
-![img](docs/pre_jeopardy.png)
+![img](docs/ss_index.png)
 
-### Jeopardy Rounds
-![img](docs/jeopardy_rounds.png)
-
-### Final Jeopardy
-![img](docs/final_jeopardy.png)
+This is the elixir/phoenix codebase that powers [https://jeopardy.ryoung.info](jeopardy.ryoung.info).  Jeopardy games are sourced from the [http://j-archive.com/](J!Archive), and users can create their own custom games.
