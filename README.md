@@ -2,4 +2,4 @@
 
 ![img](docs/ss_index.png)
 
-This is the elixir/phoenix codebase that powers [https://jeopardy.ryoung.info](jeopardy.ryoung.info).  Jeopardy games are sourced from the [http://j-archive.com/](J!Archive), and users can create their own custom games.
+This is the elixir/phoenix codebase that powers [jeopardy.ryoung.info](https://jeopardy.ryoung.info).  Jeopardy games are sourced from the [J!Archive](http://j-archive.com/), and users can create their own custom games.
