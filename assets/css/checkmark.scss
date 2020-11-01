@@ -7,7 +7,7 @@ svg.checkmark {
         stroke-dashoffset: 0;
         &.check {
             stroke-dashoffset: -100;
-            // animation: dash-check .9s ease-in-out forwards;
+            animation: dash-check .9s ease-in-out forwards;
         }
     }
 
