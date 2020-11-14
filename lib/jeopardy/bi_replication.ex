@@ -36,16 +36,25 @@ defmodule Jeopardy.BIReplication do
       |> Enum.each(&incremental_updates/1)
 
   def total_db_records() do
+    # Use the cache to see if the number has changed.  Cache is cheap and free.
+    {:ok, prev_num_records} = Cachex.get(:stats, "replication:total_db_records")
+
     num_records =
       from(x in "pg_stat_user_tables", select: sum(x.n_live_tup))
       |> Repo.one()
 
-    bucket = Application.fetch_env!(:jeopardy, Jeopardy.BIReplication)[:bucket]
-    timestamp = DateTime.to_string(DateTime.utc_now())
-    file_name = "db_records_#{timestamp}"
-    File.write(file_name, "num_records,replicated_at\n#{num_records},#{timestamp}")
-    upload_file(bucket, file_name)
-    File.rm(file_name)
+    Cachex.put(:stats, "replication:total_db_records", num_records)
+
+    # Only upload to GCS if there's been a change.
+    # Why? Upload operations cost money when we surpass the free tier threshold.
+    if num_records != prev_num_records do
+      bucket = Application.fetch_env!(:jeopardy, Jeopardy.BIReplication)[:bucket]
+      timestamp = DateTime.to_string(DateTime.utc_now())
+      file_name = "db_records_#{timestamp}"
+      File.write(file_name, "num_records,replicated_at\n#{num_records},#{timestamp}")
+      upload_file(bucket, file_name)
+      File.rm(file_name)
+    end
   end
 
   defp incremental_updates(table) do
@@ -95,6 +104,7 @@ defmodule Jeopardy.BIReplication do
       |> Repo.update_all(set: [replicated_at: DateTime.utc_now()])
 
     # 4. Upload the file to GCS if we found any records
+    Logger.info("[BI_Replication] found #{num_rows} to replicate in #{table} table")
     bucket = Application.fetch_env!(:jeopardy, Jeopardy.BIReplication)[:bucket]
     if num_rows > 0, do: upload_file(bucket, file_name)
 
@@ -118,6 +128,6 @@ defmodule Jeopardy.BIReplication do
       )
 
     # Print the object.
-    Logger.warn("Uploaded #{object.name} to #{object.selfLink}")
+    Logger.info("Uploaded #{object.name} to #{object.selfLink}")
   end
 end
