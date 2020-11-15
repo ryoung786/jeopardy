@@ -45,6 +45,10 @@ defmodule Jeopardy.BIReplication do
 
     Cachex.put(:stats, "replication:total_db_records", num_records)
 
+    Logger.info(
+      "[BI_Replication] prev_num_records: #{prev_num_records}, current num_records: #{num_records}"
+    )
+
     # Only upload to GCS if there's been a change.
     # Why? Upload operations cost money when we surpass the free tier threshold.
     if num_records != prev_num_records do
@@ -54,6 +58,8 @@ defmodule Jeopardy.BIReplication do
       File.write(file_name, "num_records,replicated_at\n#{num_records},#{timestamp}")
       upload_file(bucket, file_name)
       File.rm(file_name)
+    else
+      Logger.info("[BI_Replication] no change in num_records. Skipping upload to GCS")
     end
   end
 
