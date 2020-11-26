@@ -27,7 +27,11 @@ defmodule Jeopardy.GameEngine do
       end
     rescue
       FunctionClauseError ->
-        {:error, "State doesn't support event #{event}"}
+        Logger.info(
+          "State #{state.game.status}/#{state.game.round_status} doesn't support event #{event}"
+        )
+
+        {:error, :event_not_supported_by_game_state}
     end
   end
 

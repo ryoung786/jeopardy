@@ -43,7 +43,7 @@ defmodule JeopardyWeb.PageController do
               |> put_flash(:error, "Sorry, that name has already been taken")
               |> redirect(to: "/")
 
-            {:error, :game_in_progress} ->
+            {:error, :event_not_supported_by_game_state} ->
               conn
               |> put_flash(:error, "Sorry, that game is already in progress")
               |> redirect(to: "/")
