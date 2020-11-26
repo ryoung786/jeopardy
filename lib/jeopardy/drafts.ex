@@ -289,7 +289,7 @@ defmodule Jeopardy.Drafts do
     do_search_games(query, pagination)
   end
 
-  defp do_search_games(query, pagination \\ []) do
+  defp do_search_games(query, pagination) do
     default_pagination = [page: 1, page_size: 5]
     pagination = Keyword.merge(default_pagination, pagination)
     Repo.paginate(query, pagination)
