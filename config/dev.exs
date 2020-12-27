@@ -82,7 +82,7 @@ config :jeopardy, early_buzz_penalty: 1_000
 
 # Do not include metadata nor timestamps in development logs
 # , level: :info
-config :logger, :console, format: "[$level] $message\n"
+config :logger, :console, format: "$metadata[$level] $message\n"
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.

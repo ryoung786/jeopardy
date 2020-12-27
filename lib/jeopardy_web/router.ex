@@ -114,6 +114,9 @@ defmodule JeopardyWeb.Router do
         conn |> put_flash(:info, "Game not found") |> redirect(to: "/") |> halt()
 
       game ->
+        Logger.metadata(game_id: game.id)
+        Logger.metadata(game_code: game.code)
+
         conn
         |> put_session(:game_id, game.id)
         |> assign(:game, game)
@@ -135,9 +138,14 @@ defmodule JeopardyWeb.Router do
   end
 
   defp ensure_name_exists(conn, _opts) do
-    if get_session(conn, :name),
-      do: conn,
-      else: conn |> put_flash(:info, "Please enter your name") |> redirect(to: "/") |> halt()
+    case get_session(conn, :name) do
+      nil ->
+        conn |> put_flash(:info, "Please enter your name") |> redirect(to: "/") |> halt()
+
+      name ->
+        Logger.metadata(player_name: name)
+        conn
+    end
   end
 
   defp ensure_admin_or_owner(conn, _opts) do
