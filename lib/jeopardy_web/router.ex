@@ -116,6 +116,8 @@ defmodule JeopardyWeb.Router do
       game ->
         Logger.metadata(game_id: game.id)
         Logger.metadata(game_code: game.code)
+        LogflareLogger.context(game_id: game.id)
+        LogflareLogger.context(game_code: game.code)
 
         conn
         |> put_session(:game_id, game.id)
@@ -144,6 +146,7 @@ defmodule JeopardyWeb.Router do
 
       name ->
         Logger.metadata(player_name: name)
+        LogflareLogger.context(player_name: name)
         conn
     end
   end

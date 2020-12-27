@@ -38,7 +38,19 @@ config :jeopardy, Jeopardy.Repo,
   pool_size: 2
 
 # Do not print debug messages in production
-config :logger, level: :info
+config :logger, level: :info, backends: [:console, LogflareLogger.HttpBackend]
+
+config :logflare_logger_backend,
+  # https://api.logflare.app is configured by default and you can set your own url
+  url: "https://api.logflare.app",
+  # Default LogflareLogger level is :info. Note that log messages are filtered by the :logger application first
+  level: :info,
+  api_key: "${LOGFLARE_API_KEY}",
+  source_id: "${LOGFLARE_SOURCE_ID}",
+  # minimum time in ms before a log batch is sent to the server ",
+  flush_interval: 1_000,
+  # maximum number of events before a log batch is sent to the server
+  max_batch_size: 50
 
 config :goth, json: {:system, "GCP_CREDENTIALS"}
 
