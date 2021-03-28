@@ -60,10 +60,21 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      MIX_ENV: prod
       SECRET_KEY_BASE: ${{ secrets.PHX_SECRET_KEY_BASE }}
       LOGFLARE_API_KEY: ${{ secrets.LOGFLARE_API_KEY }}
       LOGFLARE_SOURCE_ID: ${{ secrets.LOGFLARE_SOURCE_ID }}
-      MIX_ENV: prod
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      EMAIL_NOTIFICATION_RECIPIENT: ${{ secrets.EMAIL_NOTIFICATION_RECIPIENT }}
+      FACEBOOK_CLIENT_ID: ${{ secrets.FACEBOOK_CLIENT_ID }}
+      FACEBOOK_CLIENT_SECRET: ${{ secrets.FACEBOOK_CLIENT_SECRET }}
+      GCLOUD_PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
+      GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      JEOPARDY_ADMIN_USER: ${{ secrets.JEOPARDY_ADMIN_USER }}
+      SMTP_API_KEY: ${{ secrets.SMTP_API_KEY }}
 
     steps:
       - uses: actions/checkout@v2
