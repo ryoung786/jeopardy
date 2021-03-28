@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 # For production, don't forget to configure the url host
 # to something meaningful, Phoenix uses this information
@@ -10,35 +10,22 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :jeopardy, JeopardyWeb.Endpoint,
-  # url: [host: "jeopardy.ryoung.info", port: 80],
-  # Without this line, your app will not start the web server!
-  server: true,
-  # Needed for Phoenix 1.3. Doesn't hurt for other versions
-  load_from_system_env: true,
-  # Needed for Phoenix 1.2 and 1.4. Doesn't hurt for 1.3.
-  http: [port: {:system, "PORT"}],
-  secret_key_base: "${SECRET_KEY_BASE}",
-  # url: [host: "${APP_NAME}.gigalixirapp.com", port: 443],
-  url: [scheme: "https", host: "jeopardy.ryoung.info", port: 443],
+  url: [host: "jeopardy.ryoung.info", port: 4000],
   cache_static_manifest: "priv/static/cache_manifest.json",
-  # To bust cache during hot upgrades
-  version: Mix.Project.config()[:version],
-  check_origin: [
-    "https://jeopardy.ryoung.info",
-    "https://jeopardytv.gigalixirapp.com"
-  ]
+  check_origin: ["https://jeopardy.ryoung.info"],
+  secret_key_base: System.get_env("SECRET_KEY_BASE"),
+  server: true
 
 config :jeopardy, Jeopardy.Repo,
   adapter: Ecto.Adapters.Postgres,
-  url: "${DATABASE_URL}",
-  # Works around a bug in older versions of ecto. Doesn't hurt for other versions.
-  database: "",
-  ssl: true,
-  # Free tier db only allows 4 connections. Rolling deploys need pool_size*(n+1) connections where n is the number of app replicas.
-  pool_size: 2
+  url: System.get_env("DATABASE_URL"),
+  # ssl: true,
+  pool_size: 10
 
 # Do not print debug messages in production
-config :logger, level: :info, backends: [:console, LogflareLogger.HttpBackend]
+config :logger,
+  level: :info,
+  backends: [:console, LogflareLogger.HttpBackend]
 
 config :logflare_logger_backend,
   # https://api.logflare.app is configured by default and you can set your own url
@@ -60,6 +47,8 @@ config :jeopardy, Jeopardy.BIReplication,
   bucket: "jeopardy_ryoung"
 
 config :jeopardy, gtag: true
+
+config :jeopardy, :admin, ADMIN_USER_EMAILS: [System.get_env("JEOPARDY_ADMIN_USER")]
 
 # ## SSL Support
 #
@@ -97,4 +86,3 @@ config :jeopardy, gtag: true
 
 # Finally import the config/prod.secret.exs which loads secrets
 # and configuration from environment variables.
-import_config "prod.secret.exs"
