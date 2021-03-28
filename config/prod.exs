@@ -39,7 +39,7 @@ config :logflare_logger_backend,
   # maximum number of events before a log batch is sent to the server
   max_batch_size: 50
 
-config :goth, config: System.get_env("GCP_CREDENTIALS")
+config :goth, json: System.get_env("GCP_CREDENTIALS")
 
 config :jeopardy, Jeopardy.BIReplication,
   # every 20 mins
