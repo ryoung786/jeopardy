@@ -61,7 +61,7 @@ defmodule Jeopardy.MixProject do
       {:ssl_verify_fun, "~> 1.1"},
       {:scrivener, "~> 2.7"},
       {:scrivener_ecto, "~> 2.0"},
-      {:logflare_logger_backend, "~> 0.7.6"},
+      {:logflare_logger_backend, "~> 0.8.0"},
       {:goth, "~> 1.2.0"}
     ]
   end

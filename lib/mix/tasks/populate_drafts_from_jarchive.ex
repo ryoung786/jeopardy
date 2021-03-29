@@ -14,16 +14,19 @@ defmodule Mix.Tasks.PopulateDraftsFromJarchive do
   def get_files([_ | _] = ids), do: Enum.map(ids, fn id -> "#{id}.json" end)
 
   def get_files([]) do
-    {:ok, files} = File.ls(@archive_path)
+    path = Path.join(:code.priv_dir(:jeopardy), "jarchive")
+    {:ok, files} = File.ls(path)
     files
   end
 
   def process_files(files) do
+    path = Path.join(:code.priv_dir(:jeopardy), "jarchive")
+
     Enum.with_index(files)
     |> Enum.each(fn {file, i} ->
       if rem(i, 100) == 0, do: Logger.warn("processed #{i} files")
 
-      with {:ok, f} <- File.read(Path.join(@archive_path, file)) do
+      with {:ok, f} <- File.read(Path.join(path, file)) do
         process_file(f, i)
       else
         _ -> Logger.error("Couldn't find #{file}")
