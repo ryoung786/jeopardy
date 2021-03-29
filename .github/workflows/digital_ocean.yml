@@ -2,9 +2,9 @@ name: CI/CD
 
 on:
   push:
-    branches: [ ocean ]
+    branches: [ master ]
   pull_request:
-    branches: [ ocean ]
+    branches: [ master ]
 
 jobs:
 
@@ -55,7 +55,7 @@ jobs:
 
   deploy:
     needs: test # Will only run if the test job succeeds
-    if: github.event_name == 'push' && github.ref == 'refs/heads/ocean'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
 
     runs-on: ubuntu-latest
 
@@ -79,7 +79,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ocean # Checkout out ocean instead of the latest commit
+          ref: master # Checkout out master instead of the latest commit
           fetch-depth: 0 # Checkout the whole branch
       - uses: actions/setup-elixir@v1.5
         with:
@@ -110,6 +110,7 @@ jobs:
           KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
             sudo systemctl restart jeopardy.service
+            # ${{ secrets.DEPLOY_DIR }}/_build/prod/rel/jeopardy/bin/jeopardy eval "Jeopardy.Release.migrate"
 
   notify-deploy:
     needs: deploy
