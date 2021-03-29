@@ -10,7 +10,7 @@ import Config
 # which you should run after static files are built and
 # before starting your production server.
 config :jeopardy, JeopardyWeb.Endpoint,
-  url: [host: "jeopardy.ryoung.info", port: 4000],
+  url: [host: "jeopardy.ryoung.info", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json",
   check_origin: ["https://jeopardy.ryoung.info"],
   secret_key_base: System.get_env("SECRET_KEY_BASE"),
