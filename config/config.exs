@@ -5,12 +5,12 @@
 # is restricted to this project.
 
 # General application configuration
-use Mix.Config
+import Config
 
 config :jeopardy,
   ecto_repos: [Jeopardy.Repo]
 
-config :jeopardy, env: Mix.env()
+config :jeopardy, env: config_env()
 
 # Configures the endpoint
 config :jeopardy, JeopardyWeb.Endpoint,
@@ -78,7 +78,7 @@ config :jeopardy, gtag: false
 # milliseconds
 config :jeopardy, early_buzz_penalty: 1_000
 
-if Mix.env() != :prod do
+if config_env() != :prod do
   config :git_hooks,
     auto_install: true,
     verbose: true,
@@ -93,4 +93,4 @@ end
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env()}.exs"
+import_config "#{config_env()}.exs"
