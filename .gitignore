@@ -18,6 +18,9 @@
 # Where 3rd-party dependencies like ExDoc output generated docs.
 /doc/
 
+# any service account keys
+service-account.json
+
 # Elixer Language Server indexing
 /.elixir_ls/
 
