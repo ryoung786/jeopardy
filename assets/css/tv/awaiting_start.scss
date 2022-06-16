@@ -83,4 +83,14 @@
         display: block;
         opacity: 0.5;
     }
+
+    .qrcode {
+      display: grid;
+      place-items: center;
+
+      svg {
+        width: 100px;
+        height: 100px;
+      }
+    }
 }
