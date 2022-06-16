@@ -30,4 +30,11 @@ defmodule JeopardyWeb.TvView do
       p.score
     end
   end
+
+  def qrcode(game_code) do
+    Routes.join_url(JeopardyWeb.Endpoint, :index, game_code)
+    |> EQRCode.encode()
+    |> EQRCode.svg(color: :white, background_color: :transparent)
+    |> raw()
+  end
 end
