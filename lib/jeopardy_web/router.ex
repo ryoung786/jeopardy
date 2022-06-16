@@ -58,7 +58,6 @@ defmodule JeopardyWeb.Router do
 
     get "/", PageController, :index
     post "/", PageController, :join
-
     post "/games", GameController, :create
     get "/privacy-policy", PageController, :privacy_policy
 
@@ -68,9 +67,6 @@ defmodule JeopardyWeb.Router do
       pipe_through :games
       live "/tv", TvLive, layout: {JeopardyWeb.LayoutView, :tv}
       live "/stats", StatsLive, layout: {JeopardyWeb.LayoutView, :stats}
-
-      get "/join", JoinController, :index
-      post "/join", JoinController, :join
 
       pipe_through :ensure_name
       live "/", ContestantLive, layout: {JeopardyWeb.LayoutView, :contestant}
