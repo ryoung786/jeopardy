@@ -84,13 +84,21 @@
         opacity: 0.5;
     }
 
-    .qrcode {
-      display: grid;
-      place-items: center;
+    .flex {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: center;
+      column-gap: 50px;
 
-      svg {
-        width: 100px;
-        height: 100px;
+      .qrcode {
+        display: grid;
+        place-items: center;
+
+        svg {
+          width: 150px;
+          height: 150px;
+          transform: translateY(7px);
+        }
       }
     }
 }
