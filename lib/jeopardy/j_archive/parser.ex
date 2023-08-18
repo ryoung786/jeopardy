@@ -51,7 +51,9 @@ defmodule Jeopardy.JArchive.Parser do
   def parse_air_date(html) do
     title = Floki.find(html, "head title") |> Floki.text()
 
-    with [_, date_str] <- Regex.run(~r/aired (\d\d\d\d-\d\d?-\d\d?)$/, title),
+    # The 2 Trebek pilot episodes were never aired, but they do have a
+    # tape date, so let's use that instead
+    with [_, _, date_str] <- Regex.run(~r/(aired|taped) (\d\d\d\d-\d\d?-\d\d?)$/, title),
          {:ok, air_date} <- Date.from_iso8601(date_str) do
       air_date
     else
