@@ -30,7 +30,7 @@ For each season, get all game ids
 get_game_ids = fn season_id ->
   Req.get!(req, url: "showseason.php", params: [season: season_id]).body
   |> Floki.parse_document!()
-  |> Floki.attribute("#content table a", "href")
+  |> Floki.attribute("#content table td:first-child a", "href")
   |> Enum.map(fn href ->
     IO.puts(href)
     [_, id] = Regex.run(~r/showgame.php\?game_id=([0-9]+)/, href)
