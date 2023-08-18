@@ -51,7 +51,8 @@ defmodule Jeopardy.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:req, "~> 0.3.11"},
-      {:typed_ecto_schema, "~> 0.4.1", runtime: false}
+      {:typed_ecto_schema, "~> 0.4.1", runtime: false},
+      {:dialyxir, "~> 1.3", only: [:dev], runtime: false}
     ]
   end
 
