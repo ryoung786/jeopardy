@@ -50,7 +50,8 @@ defmodule Jeopardy.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:req, "~> 0.3.11"}
+      {:req, "~> 0.3.11"},
+      {:typed_ecto_schema, "~> 0.4.1", runtime: false}
     ]
   end
 
