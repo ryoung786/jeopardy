@@ -17,9 +17,11 @@ defmodule Jeopardy.Application do
       # Start Finch
       {Finch, name: Jeopardy.Finch},
       # Start the Endpoint (http/https)
-      JeopardyWeb.Endpoint
+      JeopardyWeb.Endpoint,
       # Start a worker by calling: Jeopardy.Worker.start_link(arg)
       # {Jeopardy.Worker, arg}
+      {Registry, keys: :unique, name: Jeopardy.GameRegistry},
+      {DynamicSupervisor, name: Jeopardy.GameSupervisor, strategy: :one_for_one}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
