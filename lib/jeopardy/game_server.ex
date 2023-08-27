@@ -4,7 +4,10 @@ defmodule Jeopardy.GameServer do
   require Logger
 
   defmodule State do
-    defstruct ~w/code status last_interaction players game/a
+    defstruct ~w/code last_interaction game/a
+
+    def new(code, game),
+      do: %__MODULE__{code: code, game: game, last_interaction: DateTime.utc_now()}
   end
 
   def start_link(code), do: GenServer.start_link(__MODULE__, code, name: via_tuple(code))
@@ -12,14 +15,10 @@ defmodule Jeopardy.GameServer do
   def new_game_server() do
     code = generate_code()
 
-    case start_server_process(code) do
+    case DynamicSupervisor.start_child(Jeopardy.GameSupervisor, {__MODULE__, code}) do
       {:ok, _pid} -> code
       {:error, {:already_started, _}} -> new_game_server()
     end
-  end
-
-  defp start_server_process(code) do
-    DynamicSupervisor.start_child(Jeopardy.GameSupervisor, {__MODULE__, code})
   end
 
   def delete_game_server(code) do
@@ -32,8 +31,8 @@ defmodule Jeopardy.GameServer do
     end
   end
 
-  def add_player(code, name), do: call(code, {:add_player, name})
-  def remove_player(code, name), do: call(code, {:remove_player, name})
+  def action(code, action, data), do: call(code, {:action, action, data})
+  def get_game(code), do: call(code, :get_game)
 
   # SERVER
   @impl true
@@ -42,26 +41,13 @@ defmodule Jeopardy.GameServer do
   end
 
   @impl true
-  def handle_call({:add_player, name}, _from, state) do
-    case Game.add_player(state.game, name) do
-      {:ok, %Game{} = game} ->
-        # broadcast(state.code, state.game, :player_added, name)
-        {:reply, {:ok, game.players}, %{state | game: game}}
-
-      {:error, reason} ->
-        {:reply, {:error, reason}, state}
-    end
-  end
+  def handle_call(:get_game, _from, state), do: {:reply, state.game, state}
 
   @impl true
-  def handle_call({:remove_player, name}, _from, state) do
-    case Game.remove_player(state.game, name) do
-      {:ok, %Game{} = game} ->
-        # broadcast(state.code, state.game, :player_removed, name)
-        {:reply, {:ok, game.players}, %{state | game: game}}
-
-      {:error, _reason} ->
-        {:reply, {:ok, state.game.players}, state}
+  def handle_call({:action, action, data}, _from, state) do
+    case Jeopardy.FSM.handle_action(action, state.game, data) do
+      {:ok, game} -> {:reply, {:ok, game}, State.new(state.code, game)}
+      {:error, reason} -> {:reply, {:error, reason}, state}
     end
   end
 

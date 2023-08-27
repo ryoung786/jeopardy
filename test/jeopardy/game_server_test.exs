@@ -17,18 +17,19 @@ defmodule Jeopardy.GameServerTest do
              } = :sys.get_state(GameServer.game_pid(code))
     end
 
-    test "add_player/2", %{code: code} do
-      assert {:ok, ["ryan"]} = GameServer.add_player(code, "ryan")
-      assert {:ok, ["john", "ryan"]} = GameServer.add_player(code, "john")
-      assert {:error, :name_not_unique} = GameServer.add_player(code, "john")
+    test "action/3 adds players", %{code: code} do
+      game = GameServer.get_game(code)
+      assert :awaiting_players = game.status
+
+      assert {:ok, game} = GameServer.action(code, :add_player, "ryan")
+      assert ["ryan"] = game.players
     end
 
-    test "remove_player/2", %{code: code} do
-      assert {:ok, []} = GameServer.remove_player(code, "ryan")
+    test "action/3 shows invalid action", %{code: code} do
+      game = GameServer.get_game(code)
+      assert :awaiting_players = game.status
 
-      GameServer.add_player(code, "ryan")
-      GameServer.add_player(code, "john")
-      assert {:ok, ["john"]} = GameServer.remove_player(code, "ryan")
+      assert {:error, :invalid_action} = GameServer.action(code, :foo, "ryan")
     end
   end
 end
