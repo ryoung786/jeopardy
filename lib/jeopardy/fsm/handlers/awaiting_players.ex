@@ -10,13 +10,16 @@ defmodule Jeopardy.FSM.AwaitingPlayers do
 
   @impl true
   def valid_actions() do
-    ~w/add_player remove_player continue/a
+    ~w/add_player remove_player continue load_game/a
   end
 
   @impl true
   def handle_action(:add_player, %Game{} = game, name), do: add_player(game, name)
   def handle_action(:remove_player, %Game{} = game, name), do: remove_player(game, name)
   def handle_action(:continue, %Game{} = game, _), do: continue(game)
+
+  def handle_action(:load_game, %Game{} = game, jarchive_game_id),
+    do: load_game(game, jarchive_game_id)
 
   def add_player(%Game{} = game, name) do
     if name not in game.players do
@@ -42,6 +45,15 @@ defmodule Jeopardy.FSM.AwaitingPlayers do
       {:ok, %{game | status: :selecting_trebek}}
     else
       {:error, :needs_at_least_2_players}
+    end
+  end
+
+  def load_game(%Game{} = game, jarchive_game_id) do
+    with {:ok, jarchive_game} <- Jeopardy.JArchive.load_game(jarchive_game_id) do
+      broadcast_data = Map.take(jarchive_game, ~w/air_date comments/a)
+      FSM.broadcast(game, {:jarchive_game_loaded, broadcast_data})
+
+      {:ok, %{game | jarchive_game: jarchive_game}}
     end
   end
 end

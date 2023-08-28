@@ -15,7 +15,9 @@ defmodule JeopardyWeb.Router do
   scope "/", JeopardyWeb do
     pipe_through :browser
 
-    live "/", HomeLive, :home
+    get "/", HomeController, :home
+    post "/", HomeController, :join
+    live "/games", GamesLive
 
     scope "/games/:code" do
       pipe_through [:require_game]
