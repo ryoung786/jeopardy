@@ -1,4 +1,4 @@
-defmodule JeopardyWeb.GameLobbyLive do
+defmodule JeopardyWeb.GameLive do
   use JeopardyWeb, :live_view
 
   def mount(params, _session, socket) do

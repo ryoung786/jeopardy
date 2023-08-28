@@ -41,7 +41,7 @@ defmodule Jeopardy.GameServer do
   end
 
   @impl true
-  def handle_call(:get_game, _from, state), do: {:reply, state.game, state}
+  def handle_call(:get_game, _from, state), do: {:reply, {:ok, state.game}, state}
 
   @impl true
   def handle_call({:action, action, data}, _from, state) do

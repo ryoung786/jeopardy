@@ -10,4 +10,6 @@ defmodule Jeopardy.FSM do
   end
 
   def get_handler(:awaiting_players), do: FSM.AwaitingPlayers
+  def get_handler(:selecting_trebek), do: FSM.SelectingTrebek
+  def get_handler(:game_over), do: FSM.GameOver
 end

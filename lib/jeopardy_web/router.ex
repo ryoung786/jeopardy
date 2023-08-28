@@ -10,20 +10,20 @@ defmodule JeopardyWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :require_game, do: plug(JeopardyWeb.Plugs.RequireGame)
+
   scope "/", JeopardyWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
-    live "/join/:code", GameLobbyLive
+    live "/", HomeLive, :home
+
+    scope "/games/:code" do
+      pipe_through [:require_game]
+      live "/", GameLive
+    end
   end
 
-  # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:jeopardy, :dev_routes) do
-    # If you want to use the LiveDashboard in production, you should put
-    # it behind authentication and allow only admins to access it.
-    # If your application does not have an admins-only section yet,
-    # you can use Plug.BasicAuth to set up some basic authentication
-    # as long as you are also using SSL (which you should anyway).
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do
