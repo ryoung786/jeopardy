@@ -21,12 +21,13 @@ defmodule JeopardyWeb.HomeLive do
 
   def handle_event("new_game", _data, socket) do
     code = Jeopardy.GameServer.new_game_server()
-    {:noreply, push_navigate(socket, to: ~p"/games/#{code}")}
+    {:noreply, push_navigate(socket, to: ~p"/games/#{code}/tv")}
   end
 
   def handle_event("join", %{"name" => name, "room_code" => code} = form, socket) do
     case Jeopardy.GameServer.action(code, :add_player, name) do
       {:ok, _game} ->
+        # TODO: put name in user session
         {:noreply, push_navigate(socket, to: ~p"/games/#{code}")}
 
       {:error, :game_not_found} ->

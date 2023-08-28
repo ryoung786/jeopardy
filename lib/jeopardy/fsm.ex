@@ -12,4 +12,10 @@ defmodule Jeopardy.FSM do
   def get_handler(:awaiting_players), do: FSM.AwaitingPlayers
   def get_handler(:selecting_trebek), do: FSM.SelectingTrebek
   def get_handler(:game_over), do: FSM.GameOver
+
+  def broadcast(%Jeopardy.Game{code: code}, message), do: broadcast(code, message)
+
+  def broadcast(code, message) do
+    Phoenix.PubSub.broadcast(Jeopardy.PubSub, "games:#{code}", message)
+  end
 end

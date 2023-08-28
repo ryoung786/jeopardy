@@ -20,6 +20,7 @@ defmodule JeopardyWeb.Router do
     scope "/games/:code" do
       pipe_through [:require_game]
       live "/", GameLive
+      live "/tv", TvLive
     end
   end
 

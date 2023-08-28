@@ -37,7 +37,7 @@ defmodule Jeopardy.GameServer do
   # SERVER
   @impl true
   def init(code) do
-    {:ok, %State{code: code, game: %Game{}, last_interaction: DateTime.utc_now()}}
+    {:ok, %State{code: code, game: %Game{code: code}, last_interaction: DateTime.utc_now()}}
   end
 
   @impl true
