@@ -1,5 +1,5 @@
 defmodule JeopardyWeb.Plugs.RequireGame do
-  use Phoenix.VerifiedRoutes, endpoint: JeopardyWeb.Endpoint, router: JeopardyWeb.Router
+  use JeopardyWeb, :verified_routes
 
   def init(default), do: default
 
