@@ -17,9 +17,7 @@ defmodule Jeopardy.FSM.IntroducingRoles do
   def handle_action(:continue, %Game{} = game, _args), do: continue(game)
 
   defp continue(game) do
-    {:ok,
-     game
-     |> Map.put(:fsm, FSM.to_state(RevealingBoard, game))
-     |> Map.put(:board, Board.from_game(game.jarchive_game, :jeopardy))}
+    board = Board.from_game(game.jarchive_game, :jeopardy)
+    {:ok, %{game | fsm: FSM.to_state(RevealingBoard, game), board: board}}
   end
 end
