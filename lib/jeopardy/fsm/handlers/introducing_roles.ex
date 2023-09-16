@@ -3,10 +3,11 @@ defmodule Jeopardy.FSM.IntroducingRoles do
   :introducing_roles -> :revealing_board
   """
 
-  @behaviour Jeopardy.FSM.Handler
+  use Jeopardy.FSM.Handler
 
   alias Jeopardy.Game
   alias Jeopardy.Board
+  alias Jeopardy.FSM.RevealingBoard
 
   @impl true
   def valid_actions(), do: ~w/continue/a
@@ -17,8 +18,8 @@ defmodule Jeopardy.FSM.IntroducingRoles do
   defp continue(game) do
     {:ok,
      game
-     |> Map.put(:status, :revealing_board)
-     |> Map.put(:state_data, Jeopardy.FSM.RevealingBoard.initial_state())
+     |> Map.put(:fsm_handler, RevealingBoard)
+     |> Map.put(:state_data, RevealingBoard.initial_state())
      |> Map.put(:board, Board.from_game(game.jarchive_game, :jeopardy))}
   end
 end

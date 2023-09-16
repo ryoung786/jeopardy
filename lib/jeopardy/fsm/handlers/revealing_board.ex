@@ -3,7 +3,8 @@ defmodule Jeopardy.FSM.RevealingBoard do
   :revealing_board ->
   """
 
-  @behaviour Jeopardy.FSM.Handler
+  use Jeopardy.FSM.Handler
+  alias Jeopardy.FSM.RevealingBoard
 
   def initial_state(), do: %{revealed_category_count: 0}
 
@@ -16,6 +17,6 @@ defmodule Jeopardy.FSM.RevealingBoard do
   defp reveal_next_category(%Jeopardy.Game{} = game) do
     # idx = Map.get(game.state_data, :revealed_category_count)
 
-    {:ok, %{game | status: :reading_categories}}
+    {:ok, %{game | fsm_handler: RevealingBoard}}
   end
 end

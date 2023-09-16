@@ -1,5 +1,5 @@
 defmodule Jeopardy.FSM.GameOver do
-  @behaviour Jeopardy.FSM.Handler
+  use Jeopardy.FSM.Handler
 
   alias Jeopardy.Game
 

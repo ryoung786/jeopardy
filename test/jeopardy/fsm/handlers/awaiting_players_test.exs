@@ -41,7 +41,7 @@ defmodule Jeopardy.FSM.AwaitingPlayersTest do
       {:ok, game} = AwaitingPlayers.add_player(game, "john")
 
       {:ok, game} = AwaitingPlayers.continue(game)
-      assert :selecting_trebek = game.status
+      assert Jeopardy.FSM.SelectingTrebek == game.fsm_handler
     end
   end
 end

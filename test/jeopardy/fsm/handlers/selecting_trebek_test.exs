@@ -6,14 +6,14 @@ defmodule Jeopardy.FSM.SelectingTrebekTest do
 
   describe "SelectingTrebek.select_trebek/2" do
     test "advances to the next state" do
-      game = %Game{status: :selecting_trebek, players: ["ryan", "john"]}
+      game = %Game{fsm_handler: SelectingTrebek, players: ["ryan", "john"]}
       {:ok, game} = SelectingTrebek.select_trebek(game, "ryan")
-      assert :introducing_roles = game.status
+      assert Jeopardy.FSM.IntroducingRoles == game.fsm_handler
       assert "ryan" = game.trebek
     end
 
     test "doesn't advance if player doesn't exist" do
-      game = %Game{status: :selecting_trebek, players: ["ryan", "john"]}
+      game = %Game{fsm_handler: SelectingTrebek, players: ["ryan", "john"]}
       assert {:error, :player_does_not_exist} = SelectingTrebek.select_trebek(game, "bob")
     end
   end

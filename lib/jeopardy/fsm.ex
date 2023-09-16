@@ -1,19 +1,9 @@
 defmodule Jeopardy.FSM do
-  alias Jeopardy.FSM
-
   def handle_action(action, game, data) do
-    handler = get_handler(game.status)
-
-    if action in handler.valid_actions(),
-      do: handler.handle_action(action, game, data),
+    if action in game.fsm_handler.valid_actions(),
+      do: game.fsm_handler.handle_action(action, game, data),
       else: {:error, :invalid_action}
   end
-
-  def get_handler(:awaiting_players), do: FSM.AwaitingPlayers
-  def get_handler(:selecting_trebek), do: FSM.SelectingTrebek
-  def get_handler(:introducing_roles), do: FSM.IntroducingRoles
-  def get_handler(:revealing_board), do: FSM.RevealingBoard
-  def get_handler(:game_over), do: FSM.GameOver
 
   def broadcast(%Jeopardy.Game{code: code}, message), do: broadcast(code, message)
 

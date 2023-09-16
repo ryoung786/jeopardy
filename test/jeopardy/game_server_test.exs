@@ -18,16 +18,16 @@ defmodule Jeopardy.GameServerTest do
     end
 
     test "action/3 adds players", %{code: code} do
-      game = GameServer.get_game(code)
-      assert :awaiting_players = game.status
+      {:ok, game} = GameServer.get_game(code)
+      assert Jeopardy.FSM.AwaitingPlayers == game.fsm_handler
 
       assert {:ok, game} = GameServer.action(code, :add_player, "ryan")
       assert ["ryan"] = game.players
     end
 
     test "action/3 shows invalid action", %{code: code} do
-      game = GameServer.get_game(code)
-      assert :awaiting_players = game.status
+      {:ok, game} = GameServer.get_game(code)
+      assert Jeopardy.FSM.AwaitingPlayers == game.fsm_handler
 
       assert {:error, :invalid_action} = GameServer.action(code, :foo, "ryan")
     end
