@@ -35,7 +35,7 @@ defmodule Jeopardy.GameServer do
     end
   end
 
-  def action(code, action, data), do: call(code, {:action, action, data})
+  def action(code, action, data \\ nil), do: call(code, {:action, action, data})
   def get_game(code), do: call(code, :get_game)
 
   # SERVER

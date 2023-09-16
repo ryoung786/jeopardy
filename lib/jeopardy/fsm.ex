@@ -11,6 +11,8 @@ defmodule Jeopardy.FSM do
 
   def get_handler(:awaiting_players), do: FSM.AwaitingPlayers
   def get_handler(:selecting_trebek), do: FSM.SelectingTrebek
+  def get_handler(:introducing_roles), do: FSM.IntroducingRoles
+  def get_handler(:revealing_board), do: FSM.RevealingBoard
   def get_handler(:game_over), do: FSM.GameOver
 
   def broadcast(%Jeopardy.Game{code: code}, message), do: broadcast(code, message)
