@@ -17,7 +17,7 @@ defmodule Jeopardy.FSM.SelectingTrebek do
 
   def select_trebek(%Game{} = game, name) do
     if name in game.players,
-      do: {:ok, %{game | trebek: name, fsm: FSM.to_state(IntroducingRoles, game)}},
+      do: {:ok, %{game | trebek: name} |> FSM.to_state(IntroducingRoles)},
       else: {:error, :player_does_not_exist}
   end
 end

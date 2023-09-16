@@ -18,6 +18,6 @@ defmodule Jeopardy.FSM.IntroducingRoles do
 
   defp continue(game) do
     board = Board.from_game(game.jarchive_game, :jeopardy)
-    {:ok, %{game | fsm: FSM.to_state(RevealingBoard, game), board: board}}
+    {:ok, %{game | board: board} |> FSM.to_state(RevealingBoard)}
   end
 end

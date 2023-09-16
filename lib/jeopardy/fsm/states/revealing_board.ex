@@ -18,7 +18,7 @@ defmodule Jeopardy.FSM.RevealingBoard do
     idx = game.fsm.data.revealed_category_count
 
     if idx >= Enum.count(game.board.categories),
-      do: {:ok, %{game | fsm: FSM.to_state(FSM.GameOver)}},
+      do: {:ok, FSM.to_state(game, FSM.GameOver)},
       else: {:ok, update_in(game, [:fsm, :data, :revealed_category_count], &(&1 + 1))}
   end
 end
