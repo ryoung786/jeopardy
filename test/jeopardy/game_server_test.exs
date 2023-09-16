@@ -1,8 +1,9 @@
 defmodule Jeopardy.GameServerTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   alias Jeopardy.GameServer
   alias Jeopardy.Game
+  alias Jeopardy.FSM
 
   describe "Jeopardy.GameServerTest" do
     setup do
@@ -19,7 +20,7 @@ defmodule Jeopardy.GameServerTest do
 
     test "action/3 adds players", %{code: code} do
       {:ok, game} = GameServer.get_game(code)
-      assert Jeopardy.FSM.AwaitingPlayers == game.fsm_handler
+      assert %FSM{state: FSM.AwaitingPlayers} = game.fsm
 
       assert {:ok, game} = GameServer.action(code, :add_player, "ryan")
       assert ["ryan"] = game.players
@@ -27,7 +28,7 @@ defmodule Jeopardy.GameServerTest do
 
     test "action/3 shows invalid action", %{code: code} do
       {:ok, game} = GameServer.get_game(code)
-      assert Jeopardy.FSM.AwaitingPlayers == game.fsm_handler
+      assert %FSM{state: FSM.AwaitingPlayers} = game.fsm
 
       assert {:error, :invalid_action} = GameServer.action(code, :foo, "ryan")
     end

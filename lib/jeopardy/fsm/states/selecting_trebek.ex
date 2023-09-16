@@ -3,9 +3,11 @@ defmodule Jeopardy.FSM.SelectingTrebek do
   :selecting_trebek -> :introducing_roles
   """
 
-  use Jeopardy.FSM.Handler
+  use Jeopardy.FSM.State
 
   alias Jeopardy.Game
+  alias Jeopardy.FSM
+  alias Jeopardy.FSM.IntroducingRoles
 
   @impl true
   def valid_actions(), do: ~w/select_trebek/a
@@ -15,7 +17,7 @@ defmodule Jeopardy.FSM.SelectingTrebek do
 
   def select_trebek(%Game{} = game, name) do
     if name in game.players,
-      do: {:ok, %{game | trebek: name, fsm_handler: Jeopardy.FSM.IntroducingRoles}},
+      do: {:ok, %{game | trebek: name, fsm: FSM.to_state(IntroducingRoles, game)}},
       else: {:error, :player_does_not_exist}
   end
 end

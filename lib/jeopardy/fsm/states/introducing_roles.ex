@@ -3,10 +3,11 @@ defmodule Jeopardy.FSM.IntroducingRoles do
   :introducing_roles -> :revealing_board
   """
 
-  use Jeopardy.FSM.Handler
+  use Jeopardy.FSM.State
 
   alias Jeopardy.Game
   alias Jeopardy.Board
+  alias Jeopardy.FSM
   alias Jeopardy.FSM.RevealingBoard
 
   @impl true
@@ -18,8 +19,7 @@ defmodule Jeopardy.FSM.IntroducingRoles do
   defp continue(game) do
     {:ok,
      game
-     |> Map.put(:fsm_handler, RevealingBoard)
-     |> Map.put(:state_data, RevealingBoard.initial_state())
+     |> Map.put(:fsm, FSM.to_state(RevealingBoard, game))
      |> Map.put(:board, Board.from_game(game.jarchive_game, :jeopardy))}
   end
 end

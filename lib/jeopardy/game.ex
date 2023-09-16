@@ -1,7 +1,9 @@
 defmodule Jeopardy.Game do
+  alias Jeopardy.FSM
+  alias Jeopardy.FSM.AwaitingPlayers
+
   defstruct code: nil,
-            fsm_handler: Jeopardy.FSM.AwaitingPlayers,
-            state: %{},
+            fsm: %FSM{state: AwaitingPlayers},
             round: :jeopardy,
             players: [],
             board: %{},

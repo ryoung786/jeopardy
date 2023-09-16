@@ -3,9 +3,10 @@ defmodule Jeopardy.FSM.AwaitingPlayers do
   :awaiting_players -> :selecting_trebek
   """
 
-  use Jeopardy.FSM.Handler
+  use Jeopardy.FSM.State
 
   alias Jeopardy.FSM
+  alias Jeopardy.FSM.SelectingTrebek
   alias Jeopardy.Game
 
   @impl true
@@ -41,8 +42,8 @@ defmodule Jeopardy.FSM.AwaitingPlayers do
 
   def continue(%Game{} = game) do
     if Enum.count(game.players) >= 2 do
-      FSM.broadcast(game, {:status_changed, :selecting_trebek})
-      {:ok, %{game | fsm_handler: Jeopardy.FSM.SelectingTrebek}}
+      FSM.broadcast(game, {:status_changed, SelectingTrebek})
+      {:ok, %{game | fsm: FSM.to_state(SelectingTrebek, game)}}
     else
       {:error, :needs_at_least_2_players}
     end

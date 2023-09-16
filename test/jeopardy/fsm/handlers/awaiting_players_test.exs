@@ -1,7 +1,9 @@
 defmodule Jeopardy.FSM.AwaitingPlayersTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
+  alias Jeopardy.FSM
   alias Jeopardy.FSM.AwaitingPlayers
+  alias Jeopardy.FSM.SelectingTrebek
   alias Jeopardy.Game
 
   describe "AwaitingPlayers.add_player/2" do
@@ -41,7 +43,7 @@ defmodule Jeopardy.FSM.AwaitingPlayersTest do
       {:ok, game} = AwaitingPlayers.add_player(game, "john")
 
       {:ok, game} = AwaitingPlayers.continue(game)
-      assert Jeopardy.FSM.SelectingTrebek == game.fsm_handler
+      assert %FSM{state: SelectingTrebek} = game.fsm
     end
   end
 end
