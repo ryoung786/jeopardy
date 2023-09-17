@@ -6,6 +6,7 @@ defmodule Jeopardy.FSM.SelectingTrebek do
   use Jeopardy.FSM.State
 
   alias Jeopardy.Game
+  alias Jeopardy.Contestant
   alias Jeopardy.FSM
   alias Jeopardy.FSM.IntroducingRoles
 
@@ -15,9 +16,18 @@ defmodule Jeopardy.FSM.SelectingTrebek do
   @impl true
   def handle_action(:select_trebek, %Game{} = game, name), do: select_trebek(game, name)
 
-  def select_trebek(%Game{} = game, name) do
-    if name in game.players,
-      do: {:ok, %{game | trebek: name} |> FSM.to_state(IntroducingRoles)},
-      else: {:error, :player_does_not_exist}
+  def select_trebek(%Game{} = game, trebek) do
+    if trebek in game.players do
+      rest = List.delete(game.players, trebek)
+      contestants = Map.new(rest, &{&1, %Contestant{name: &1}})
+
+      {:ok,
+       game
+       |> Map.put(:trebek, trebek)
+       |> Map.put(:contestants, contestants)
+       |> FSM.to_state(IntroducingRoles)}
+    else
+      {:error, :player_does_not_exist}
+    end
   end
 end

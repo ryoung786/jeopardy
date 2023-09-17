@@ -1,5 +1,10 @@
 defmodule Jeopardy.FSM do
-  defstruct [:state, data: nil]
+  use TypedStruct
+
+  typedstruct do
+    field :state, module()
+    field :data, any()
+  end
 
   alias Jeopardy.Game
 

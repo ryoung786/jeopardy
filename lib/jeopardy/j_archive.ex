@@ -14,7 +14,8 @@ defmodule Jeopardy.JArchive do
   end
 
   def load_game(game_id) do
-    path = Application.app_dir(:jeopardy, "priv/jarchive")
+    default_path = Application.app_dir(:jeopardy, "priv/jarchive")
+    path = Application.get_env(:jeopardy, :jarchive_dir, default_path)
 
     with {:ok, file} <- File.read(Path.join(path, "#{game_id}.json")),
          {:ok, json} <- Jason.decode(file) do
