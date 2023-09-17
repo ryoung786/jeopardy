@@ -6,7 +6,7 @@ defmodule Jeopardy.FSM.IntroducingRolesTest do
 
   describe "IntroducingRoles.continue/1" do
     test "sets up the board" do
-      code = GameServer.new_game_server("basic")
+      code = GameServer.new_game_server(game_id: "basic")
       GameServer.action(code, :add_player, "ryan")
       GameServer.action(code, :add_player, "john")
       GameServer.action(code, :continue)

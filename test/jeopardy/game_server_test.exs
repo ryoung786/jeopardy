@@ -5,7 +5,7 @@ defmodule Jeopardy.GameServerTest do
   alias Jeopardy.Game
   alias Jeopardy.FSM
 
-  describe "Jeopardy.GameServerTest" do
+  describe "Jeopardy.GameServer" do
     setup do
       [code: GameServer.new_game_server()]
     end
@@ -13,8 +13,7 @@ defmodule Jeopardy.GameServerTest do
     test "init", %{code: code} do
       assert %{
                code: ^code,
-               game: %Game{},
-               last_interaction: _datetime
+               game: %Game{}
              } = :sys.get_state(GameServer.game_pid(code))
     end
 
@@ -31,6 +30,18 @@ defmodule Jeopardy.GameServerTest do
       assert %FSM{state: FSM.AwaitingPlayers} = game.fsm
 
       assert {:error, :invalid_action} = GameServer.action(code, :foo, "ryan")
+    end
+
+    test "terminates after inactivity" do
+      code = GameServer.new_game_server(timeout: 2)
+
+      # each GenServer msg resets the timeout
+      assert {:ok, _} = GameServer.get_game(code)
+      Process.sleep(1)
+      assert {:ok, _} = GameServer.get_game(code) |> dbg()
+
+      Process.sleep(2)
+      assert {:error, :game_not_found} = GameServer.get_game(code)
     end
   end
 end

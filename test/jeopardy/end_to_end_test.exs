@@ -6,7 +6,7 @@ defmodule Jeopardy.EndToEndTest do
 
   describe "Jeopardy" do
     test "play a full game" do
-      code = GameServer.new_game_server("basic")
+      code = GameServer.new_game_server(game_id: "basic")
       GameServer.action(code, :add_player, "a")
       GameServer.action(code, :add_player, "b")
       GameServer.action(code, :add_player, "trebek")
@@ -116,7 +116,7 @@ defmodule Jeopardy.EndToEndTest do
     end
 
     test "daily double" do
-      code = GameServer.new_game_server("daily_double")
+      code = GameServer.new_game_server(game_id: "daily_double")
       GameServer.action(code, :add_player, "a")
       GameServer.action(code, :add_player, "trebek")
       GameServer.action(code, :continue)

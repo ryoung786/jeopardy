@@ -4,34 +4,28 @@ defmodule Jeopardy.GameServer do
   require Logger
 
   defmodule State do
-    defstruct ~w/code last_interaction game/a
+    defstruct ~w/code inactivity_timeout game/a
   end
 
-  def start_link(code), do: GenServer.start_link(__MODULE__, code, name: via_tuple(code))
+  @inactivity_timeout :timer.hours(4)
 
-  @spec new_game_server(pos_integer() | :random) :: String.t()
-  def new_game_server(jarchive_game_id) do
-    code = new_game_server()
-    {:ok, _game} = action(code, :load_game, jarchive_game_id)
-    code
+  def start_link({code, timeout}) do
+    GenServer.start_link(__MODULE__, {code, timeout}, name: via_tuple(code))
   end
 
-  def new_game_server() do
+  # CLIENT API
+
+  def new_game_server(opts \\ []) do
+    id_to_load = Keyword.get(opts, :game_id, :random)
+    inactivity_timeout = Keyword.get(opts, :timeout, @inactivity_timeout)
     code = generate_code()
 
-    case DynamicSupervisor.start_child(Jeopardy.GameSupervisor, {__MODULE__, code}) do
-      {:ok, _pid} -> code
-      {:error, {:already_started, _}} -> new_game_server()
-    end
-  end
-
-  def delete_game_server(code) do
-    case game_pid(code) do
-      pid when is_pid(pid) ->
-        DynamicSupervisor.terminate_child(Jeopardy.GameSupervisor, pid)
-
-      nil ->
-        :ok
+    case DynamicSupervisor.start_child(
+           Jeopardy.GameSupervisor,
+           {__MODULE__, {code, inactivity_timeout}}
+         ) do
+      {:ok, _pid} -> action(code, :load_game, id_to_load) && code
+      {:error, {:already_started, _}} -> new_game_server(opts)
     end
   end
 
@@ -40,20 +34,25 @@ defmodule Jeopardy.GameServer do
 
   # SERVER
   @impl true
-  def init(code) do
-    {:ok, %State{code: code, game: %Game{code: code}, last_interaction: DateTime.utc_now()}}
+  def init({code, timeout}) do
+    state = %State{code: code, inactivity_timeout: timeout, game: %Game{code: code}}
+    {:ok, state, state.inactivity_timeout}
   end
 
   @impl true
-  def handle_call(:get_game, _from, state), do: {:reply, {:ok, state.game}, state}
+  def handle_info(:timeout, state) do
+    {:stop, :normal, state}
+  end
+
+  @impl true
+  def handle_call(:get_game, _from, state),
+    do: {:reply, {:ok, state.game}, state, state.inactivity_timeout}
 
   @impl true
   def handle_call({:action, action, data}, _from, state) do
-    state = %{state | last_interaction: DateTime.utc_now()}
-
     case Jeopardy.FSM.handle_action(action, state.game, data) do
-      {:ok, game} -> {:reply, {:ok, game}, %{state | game: game}}
-      {:error, reason} -> {:reply, {:error, reason}, state}
+      {:ok, game} -> {:reply, {:ok, game}, %{state | game: game}, state.inactivity_timeout}
+      {:error, reason} -> {:reply, {:error, reason}, state, state.inactivity_timeout}
     end
   end
 
