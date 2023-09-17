@@ -55,6 +55,7 @@ defmodule Jeopardy.JArchive.RecordedGame.Category do
       field :category, :string
       field :answer, :string
       field :clue, :string
+      field :daily_double?, :boolean, default: false
     end
   end
 
@@ -64,6 +65,6 @@ defmodule Jeopardy.JArchive.RecordedGame.Category do
   end
 
   defp clue_changeset(schema, data) do
-    Ecto.Changeset.cast(schema, data, ~w/value category answer clue/a)
+    Ecto.Changeset.cast(schema, data, ~w/value category answer clue daily_double?/a)
   end
 end

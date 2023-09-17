@@ -19,7 +19,12 @@ defmodule Jeopardy.Board do
           {category.category,
            Map.new(category.clues, fn clue ->
              {clue.value,
-              %Clue{clue: clue.clue, answer: clue.answer, value: clue.value, daily_double?: false}}
+              %Clue{
+                clue: clue.clue,
+                answer: clue.answer,
+                value: clue.value,
+                daily_double?: clue.daily_double?
+              }}
            end)}
         end)
     }

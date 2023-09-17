@@ -1,0 +1,43 @@
+{
+  "air_date": "2004-09-06",
+  "categories": {
+    "jeopardy": ["A"],
+    "double_jeopardy": ["B"],
+    "final_jeopardy": "COMIC BOOKS"
+  },
+  "comments": "game comments",
+  "contestants": ["J.D. Smith", "Betsey Casman", "Ken Jennings"],
+  "jeopardy": [
+    {
+      "category": "A",
+      "clues": [
+        {
+	  "daily_double?": true,
+          "answer": "sheep",
+          "category": "THE OLD TESTAMENT",
+          "clue": "Let's all flock to read Psalm 95, in which humans are compared to these animals",
+          "value": 100
+        }
+      ]
+    }
+  ],
+  "double_jeopardy": [
+    {
+      "category": "B",
+      "clues": [
+        {
+	  "daily_double?": true,
+          "answer": "Francisco Franco",
+          "category": "WORLD HISTORY",
+          "clue": "Toledo military academy class of 1910 grad who went on to become a dictator",
+          "value": 200
+        }
+      ]
+    }
+  ],
+  "final_jeopardy": {
+    "answer": "Final Jeopardy answer",
+    "category": "Final Jeopardy category",
+    "clue": "Final Jeopardy clue"
+  }
+}

@@ -6,7 +6,7 @@ defmodule Jeopardy.FSM.IntroducingRolesTest do
 
   describe "IntroducingRoles.continue/1" do
     test "sets up the board" do
-      code = GameServer.new_game_server(1)
+      code = GameServer.new_game_server("basic")
       GameServer.action(code, :add_player, "ryan")
       GameServer.action(code, :add_player, "john")
       GameServer.action(code, :continue)
@@ -14,16 +14,9 @@ defmodule Jeopardy.FSM.IntroducingRolesTest do
       GameServer.action(code, :continue)
       {:ok, %Game{board: board}} = GameServer.get_game(code)
 
-      assert board.categories == [
-               "THE OLD TESTAMENT",
-               "SEAN SONG",
-               "CITY WALK",
-               "SLOGANEERING",
-               "ROOM",
-               "\"BOARD\""
-             ]
+      assert board.categories == ["THE OLD TESTAMENT", "xyz"]
 
-      assert board.clues["ROOM"][400].answer == "the basement"
+      assert board.clues["xyz"][500].answer == "bar"
     end
   end
 end

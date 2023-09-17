@@ -9,16 +9,16 @@ defmodule Jeopardy.FSM.AwaitingDailyDoubleWager do
   @wager_cap %{jeopardy: 1_000, double_jeopardy: 2_000}
 
   @impl true
-  def valid_actions(), do: ~w/wagered_amount/a
+  def valid_actions(), do: ~w/wagered/a
 
   @impl true
-  def handle_action(:wagered_amount, game, amount), do: wager(game, amount)
+  def handle_action(:wagered, game, amount), do: wager(game, amount)
 
   defp wager(%Game{} = game, amount) do
-    %{score: score} = Enum.find(game.contestants, &(&1.name == game.board.control))
+    %{score: score} = game.contestants[game.board.control]
 
     with :ok <- validate_wager_amount(amount, score, game.round) do
-      {:ok, game |> put_in([:clue, :wager], amount) |> FSM.to_state(FSM.ReadingDailyDoubleClue)}
+      {:ok, put_in(game.clue.wager, amount) |> FSM.to_state(FSM.ReadingDailyDoubleClue)}
     end
   end
 

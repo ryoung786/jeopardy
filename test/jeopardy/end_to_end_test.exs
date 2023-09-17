@@ -6,7 +6,6 @@ defmodule Jeopardy.EndToEndTest do
 
   describe "Jeopardy" do
     test "play a full game" do
-      # awaiting_players
       code = GameServer.new_game_server("basic")
       GameServer.action(code, :add_player, "a")
       GameServer.action(code, :add_player, "b")
@@ -63,6 +62,12 @@ defmodule Jeopardy.EndToEndTest do
       assert fsm_state(code) == FSM.RecappingRound
       GameServer.action(code, :next_round)
 
+      assert fsm_state(code) == FSM.RevealingBoard
+      GameServer.action(code, :reveal_next_category)
+
+      assert fsm_state(code) == FSM.RevealingBoard
+      GameServer.action(code, :reveal_next_category)
+
       assert fsm_state(code) == FSM.SelectingClue
       GameServer.action(code, :clue_selected, {"WORLD HISTORY", 200})
 
@@ -83,6 +88,62 @@ defmodule Jeopardy.EndToEndTest do
 
       assert fsm_state(code) == FSM.RecappingRound
       assert %{"a" => %{score: -300}, "b" => %{score: 300}} = game.contestants
+      {:ok, game} = GameServer.action(code, :zero_out_negative_scores)
+      assert %{"a" => %{score: 0}, "b" => %{score: 300}} = game.contestants
+      GameServer.action(code, :next_round)
+
+      assert fsm_state(code) == FSM.AwaitingFinalJeopardyWagers
+      assert {:error, _} = GameServer.action(code, :wagered, {"b", 301})
+      GameServer.action(code, :wagered, {"b", 100})
+
+      assert fsm_state(code) == FSM.ReadingFinalJeopardyClue
+      GameServer.action(code, :answered, {"b", "some answer"})
+
+      assert fsm_state(code) == FSM.ReadingFinalJeopardyClue
+      GameServer.action(code, :time_expired)
+
+      assert fsm_state(code) == FSM.GradingFinalJeopardyAnswers
+      GameServer.action(code, :submitted_grades, ["b"])
+
+      assert fsm_state(code) == FSM.GameOver
+      GameServer.action(code, :revealed_contestant, "a")
+      {:ok, game} = GameServer.action(code, :revealed_contestant, "b")
+      assert game.contestants["b"].score == 400
+
+      {:ok, game} = GameServer.action(code, :play_again)
+      assert fsm_state(code) == FSM.AwaitingPlayers
+      assert game.players -- ["a", "b", "trebek"] == []
+    end
+
+    test "daily double" do
+      code = GameServer.new_game_server("daily_double")
+      GameServer.action(code, :add_player, "a")
+      GameServer.action(code, :add_player, "trebek")
+      GameServer.action(code, :continue)
+      GameServer.action(code, :select_trebek, "trebek")
+      GameServer.action(code, :continue)
+      GameServer.action(code, :reveal_next_category)
+      GameServer.action(code, :reveal_next_category)
+      GameServer.action(code, :clue_selected, {"A", 100})
+
+      assert fsm_state(code) == FSM.AwaitingDailyDoubleWager
+      assert {:error, :wager_not_in_range} = GameServer.action(code, :wagered, 1_001)
+      assert {:error, :wager_not_in_range} = GameServer.action(code, :wagered, 4)
+      GameServer.action(code, :wagered, 1_000)
+
+      assert fsm_state(code) == FSM.ReadingDailyDoubleClue
+      {:ok, game} = GameServer.action(code, :answered, :correct)
+      assert game.contestants["a"].score == 1_000
+
+      {:ok, _} = GameServer.action(code, :next_round)
+      GameServer.action(code, :reveal_next_category)
+      GameServer.action(code, :reveal_next_category)
+      GameServer.action(code, :clue_selected, {"B", 200})
+      assert {:error, :wager_not_in_range} = GameServer.action(code, :wagered, 2_001)
+      assert {:error, :wager_not_in_range} = GameServer.action(code, :wagered, 4)
+      GameServer.action(code, :wagered, 1_001)
+      {:ok, game} = GameServer.action(code, :answered, :incorrect)
+      assert game.contestants["a"].score == -1
     end
   end
 
