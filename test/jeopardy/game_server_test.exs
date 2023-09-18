@@ -38,7 +38,7 @@ defmodule Jeopardy.GameServerTest do
       # each GenServer msg resets the timeout
       assert {:ok, _} = GameServer.get_game(code)
       Process.sleep(1)
-      assert {:ok, _} = GameServer.get_game(code) |> dbg()
+      assert {:ok, _} = GameServer.get_game(code)
 
       Process.sleep(2)
       assert {:error, :game_not_found} = GameServer.get_game(code)
