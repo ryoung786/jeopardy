@@ -1,5 +1,0 @@
-<div class="trebek daily-double">
-
-    <%= live_component @socket, JeopardyWeb.WagerComponent, player: contestant_from_name(@players, @game.board_control),
-    id: "1", changeset: :wager, clue: @current_clue, game_code: @game.code, perspective: :trebek %>
-</div>
