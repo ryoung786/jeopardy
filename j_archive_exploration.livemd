@@ -1,0 +1,200 @@
+# J-Archive
+
+```elixir
+Mix.install([
+  {:jason, "~> 1.4"},
+  {:req, "~> 0.3.11"},
+  {:floki, "~> 0.34.3"}
+])
+```
+
+## Experimentation
+
+Get Season IDs
+
+```elixir
+req = Req.new(base_url: "https://j-archive.com")
+
+%{status: 200, body: seasons_html} = Req.get!(req, url: "listseasons.php")
+
+season_ids =
+  seasons_html
+  |> Floki.parse_document!()
+  |> Floki.attribute("#content a", "href")
+  |> Enum.map(fn "showseason.php?season=" <> season_id -> season_id end)
+```
+
+For each season, get all game ids
+
+```elixir
+get_game_ids = fn season_id ->
+  Req.get!(req, url: "showseason.php", params: [season: season_id]).body
+  |> Floki.parse_document!()
+  |> Floki.attribute("#content table td:first-child a", "href")
+  |> Enum.map(fn href ->
+    IO.puts(href)
+    [_, id] = Regex.run(~r/showgame.php\?game_id=([0-9]+)/, href)
+    id
+  end)
+end
+```
+
+```elixir
+get_game_ids.(1)
+```
+
+```elixir
+parse_round_category = fn html, round, category_idx ->
+  {round_selector, round_abbrev, dollar_multiplier} =
+    case round do
+      :jeopardy -> {"#jeopardy_round", "J", 1}
+      :double_jeopardy -> {"#double_jeopardy_round", "DJ", 2}
+    end
+
+  html = Floki.find(html, round_selector)
+  category_name = Floki.find(html, ".category_name") |> Enum.at(category_idx - 1) |> Floki.text()
+
+  clues =
+    Enum.map(1..6, fn clue_idx ->
+      clue_selector = "#clue_#{round_abbrev}_#{category_idx}_#{clue_idx}"
+      answer_selector = "#clue_#{round_abbrev}_#{category_idx}_#{clue_idx}_r .correct_response"
+
+      %{
+        clue: Floki.find(html, clue_selector) |> Floki.text(),
+        answer: Floki.find(html, answer_selector) |> Floki.text(),
+        value: dollar_multiplier * 100 * clue_idx,
+        category: category_name
+      }
+    end)
+
+  %{category: category_name, clues: clues}
+end
+```
+
+```elixir
+download_and_parse_game = fn game_id ->
+  html =
+    Req.get!(req, url: "showgame.php", params: [game_id: game_id]).body
+    |> Floki.parse_document!()
+
+  %{
+    jeopardy: Enum.map(1..6, &parse_round_category.(html, :jeopardy, &1)),
+    double_jeopardy: Enum.map(1..6, &parse_round_category.(html, :double_jeopardy, &1)),
+    final_jeopardy: %{
+      category: Floki.find(html, "#final_jeopardy_round .category_name") |> Floki.text(),
+      clue: Floki.find(html, "#clue_FJ") |> Floki.text(),
+      answer: Floki.find(html, "#clue_FJ_r .correct_response") |> Floki.text()
+    },
+    categories: %{
+      jeopardy: Floki.find(html, "#jeopardy_round .category_name") |> Enum.map(&Floki.text/1),
+      double_jeopardy:
+        Floki.find(html, "#double_jeopardy_round .category_name") |> Enum.map(&Floki.text/1),
+      final_jeopardy: Floki.find(html, "#final_jeopardy_round .category_name") |> Floki.text()
+    }
+  }
+end
+```
+
+```elixir
+html =
+  Req.get!(req, url: "showgame.php", params: [game_id: 7620]).body
+  |> Floki.parse_document!()
+
+Floki.find(html, "#double_jeopardy_round .category_name") |> Enum.map(&Floki.text/1)
+```
+
+```elixir
+download_and_parse_game.(7620)
+```
+
+## Implementation
+
+```elixir
+defmodule JArchive.Parser do
+  def parse_game(html) do
+    %{
+      jeopardy: Enum.map(1..6, &parse_round_category(html, :jeopardy, &1)),
+      double_jeopardy: Enum.map(1..6, &parse_round_category(html, :double_jeopardy, &1)),
+      final_jeopardy: %{
+        category: Floki.find(html, "#final_jeopardy_round .category_name") |> Floki.text(),
+        clue: Floki.find(html, "#clue_FJ") |> Floki.text(),
+        answer: Floki.find(html, "#clue_FJ_r .correct_response") |> Floki.text()
+      },
+      categories: %{
+        jeopardy: Floki.find(html, "#jeopardy_round .category_name") |> Enum.map(&Floki.text/1),
+        double_jeopardy:
+          Floki.find(html, "#double_jeopardy_round .category_name") |> Enum.map(&Floki.text/1),
+        final_jeopardy: Floki.find(html, "#final_jeopardy_round .category_name") |> Floki.text()
+      },
+      air_date: parse_air_date(html),
+      contestants: Floki.find(html, "#contestants .contestants a") |> Enum.map(&Floki.text/1),
+      comments: Floki.find(html, "#game_comments") |> Floki.text()
+    }
+  end
+
+  def parse_round_category(entire_game_html, round, category_idx) do
+    {round_selector, round_abbrev, dollar_multiplier} =
+      case round do
+        :jeopardy -> {"#jeopardy_round", "J", 1}
+        :double_jeopardy -> {"#double_jeopardy_round", "DJ", 2}
+      end
+
+    html = Floki.find(entire_game_html, round_selector)
+
+    category_name =
+      Floki.find(html, ".category_name") |> Enum.at(category_idx - 1) |> Floki.text()
+
+    clues =
+      Enum.map(1..5, fn clue_idx ->
+        clue_selector = "#clue_#{round_abbrev}_#{category_idx}_#{clue_idx}"
+        answer_selector = "#clue_#{round_abbrev}_#{category_idx}_#{clue_idx}_r .correct_response"
+
+        %{
+          clue: Floki.find(html, clue_selector) |> Floki.text(),
+          answer: Floki.find(html, answer_selector) |> Floki.text(),
+          value: dollar_multiplier * 100 * clue_idx,
+          category: category_name
+        }
+      end)
+
+    %{category: category_name, clues: clues}
+  end
+
+  def parse_air_date(html) do
+    title = Floki.find(html, "head title") |> Floki.text()
+
+    with [_, date_str] <- Regex.run(~r/aired (\d\d\d\d-\d\d?-\d\d?)$/, title),
+         {:ok, air_date} <- Date.from_iso8601(date_str) do
+      air_date
+    else
+      _ -> nil
+    end
+  end
+end
+```
+
+```elixir
+defmodule JArchive do
+  @req Req.new(base_url: "https://j-archive.com")
+
+  def download_and_parse_game(game_id) do
+    Req.get!(@req, url: "showgame.php", params: [game_id: game_id]).body
+    |> Floki.parse_document!()
+    |> JArchive.Parser.parse_game()
+  end
+end
+```
+
+```elixir
+html =
+  Req.get!("https://j-archive.com/showgame.php", params: [game_id: 38]).body
+  |> Floki.parse_document!()
+```
+
+```elixir
+JArchive.Parser.parse_game(html).contestants
+```
+
+```elixir
+JArchive.download_and_parse_game(38)
+```
