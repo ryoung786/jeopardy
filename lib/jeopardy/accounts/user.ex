@@ -7,6 +7,7 @@ defmodule Jeopardy.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    field :role, Ecto.Enum, values: [:admin, :user], default: :user
 
     timestamps()
   end
@@ -154,5 +155,14 @@ defmodule Jeopardy.Accounts.User do
     else
       add_error(changeset, :current_password, "is not valid")
     end
+  end
+
+  @doc """
+  Modifies the admin/user role by setting `role`.
+  """
+  def admin_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:role])
+    |> validate_inclusion(:role, [:admin, :user], message: "Role must be :user or :admin")
   end
 end

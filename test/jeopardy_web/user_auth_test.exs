@@ -269,4 +269,25 @@ defmodule JeopardyWeb.UserAuthTest do
       refute conn.status
     end
   end
+
+  describe "require_admin_user/2" do
+    test "404s if user is not authenticated", %{conn: conn} do
+      conn = UserAuth.require_admin_user(conn, [])
+      assert conn.halted
+      assert conn.status == 404
+    end
+
+    test "404s if user is authenticated but not admin", %{conn: conn, user: user} do
+      conn = conn |> assign(:current_user, user) |> UserAuth.require_admin_user([])
+      assert conn.halted
+      assert conn.status == 404
+    end
+
+    test "does not 404 if user is admin", %{conn: conn, user: user} do
+      {:ok, user} = Jeopardy.Accounts.make_admin(user)
+      conn = conn |> assign(:current_user, user) |> UserAuth.require_admin_user([])
+      refute conn.halted
+      refute conn.status == 404
+    end
+  end
 end

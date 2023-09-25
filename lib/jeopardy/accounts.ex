@@ -350,4 +350,16 @@ defmodule Jeopardy.Accounts do
       {:error, :user, changeset, _} -> {:error, changeset}
     end
   end
+
+  def make_admin(user) do
+    user
+    |> Ecto.Changeset.change(role: :admin)
+    |> Repo.update()
+  end
+
+  def remove_admin(user) do
+    user
+    |> Ecto.Changeset.change(role: :user)
+    |> Repo.update()
+  end
 end

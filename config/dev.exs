@@ -62,9 +62,6 @@ config :jeopardy, JeopardyWeb.Endpoint,
     ]
   ]
 
-# Enable dev routes for dashboard and mailbox
-config :jeopardy, dev_routes: true
-
 # Do not include metadata nor timestamps in development logs
 config :logger, :console,
   format: "[$level] $message $metadata\n",

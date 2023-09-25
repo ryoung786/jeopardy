@@ -211,6 +211,21 @@ defmodule JeopardyWeb.UserAuth do
     end
   end
 
+  def require_admin_user(conn, _opts) do
+    user = conn.assigns[:current_user]
+
+    if user && user.role == :admin do
+      conn
+    else
+      conn
+      |> put_status(404)
+      |> put_view(JeopardyWeb.ErrorHTML)
+      |> put_format(:html)
+      |> render(:"404")
+      |> halt()
+    end
+  end
+
   defp put_token_in_session(conn, token) do
     conn
     |> put_session(:user_token, token)

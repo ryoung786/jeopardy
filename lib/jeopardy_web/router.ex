@@ -29,15 +29,12 @@ defmodule JeopardyWeb.Router do
     end
   end
 
-  if Application.compile_env(:jeopardy, :dev_routes) do
-    import Phoenix.LiveDashboard.Router
+  import Phoenix.LiveDashboard.Router
 
-    scope "/dev" do
-      pipe_through :browser
-
-      live_dashboard "/dashboard", metrics: JeopardyWeb.Telemetry
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
-    end
+  scope "/admin" do
+    pipe_through [:browser, :require_admin_user]
+    live_dashboard "/dashboard", metrics: JeopardyWeb.Telemetry
+    forward "/mailbox", Plug.Swoosh.MailboxPreview
   end
 
   ## Authentication routes
