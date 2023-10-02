@@ -1,6 +1,8 @@
 defmodule JeopardyWeb.HomeHTML do
   use JeopardyWeb, :html
 
+  embed_templates("home_html/*")
+
   def home(assigns) do
     ~H"""
     <div>

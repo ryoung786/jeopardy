@@ -30,4 +30,8 @@ defmodule JeopardyWeb.HomeController do
         render(conn, :home, form: form)
     end
   end
+
+  def privacy_policy(conn, _params) do
+    render(conn, :privacy_policy)
+  end
 end
