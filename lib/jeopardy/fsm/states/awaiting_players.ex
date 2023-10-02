@@ -42,7 +42,6 @@ defmodule Jeopardy.FSM.AwaitingPlayers do
 
   def continue(%Game{} = game) do
     if Enum.count(game.players) >= 2 do
-      FSM.broadcast(game, {:status_changed, SelectingTrebek})
       {:ok, FSM.to_state(game, SelectingTrebek)}
     else
       {:error, :needs_at_least_2_players}

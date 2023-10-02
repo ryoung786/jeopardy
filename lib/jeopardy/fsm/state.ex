@@ -4,7 +4,7 @@ defmodule Jeopardy.FSM.State do
               {:ok, %Jeopardy.Game{}} | {:error, term}
   @callback initial_data(%Jeopardy.Game{}) :: any()
 
-  defmacro __using__(_) do
+  defmacro __using__(_opts) do
     quote do
       @behaviour Jeopardy.FSM.State
 

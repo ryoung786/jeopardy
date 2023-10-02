@@ -6,7 +6,6 @@ defmodule JeopardyWeb.GameLive do
 
     {:ok,
      socket
-     |> assign(code: params["code"])
      |> assign(players: game.players)}
   end
 
@@ -16,9 +15,6 @@ defmodule JeopardyWeb.GameLive do
       <ul>
         <li :for={player <- @players}><%= player %></li>
       </ul>
-      <a :if={Enum.count(@players) >= 2} href="#">
-        "Start Game"
-      </a>
     </div>
     """
   end
