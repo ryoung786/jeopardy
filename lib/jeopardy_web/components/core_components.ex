@@ -661,4 +661,15 @@ defmodule JeopardyWeb.CoreComponents do
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
+
+  def fade_away_left(js \\ %JS{}) do
+    JS.transition(
+      js,
+      {
+        "transition-all transform ease-in duration-200",
+        "motion-safe:-translate-x-10 opacity-0",
+        "hidden"
+      }
+    )
+  end
 end

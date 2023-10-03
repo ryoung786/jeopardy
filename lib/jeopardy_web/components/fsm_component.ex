@@ -13,10 +13,8 @@ defmodule JeopardyWeb.FSMComponent do
       @behaviour JeopardyWeb.FSMComponent
 
       def assign_init(socket, _game), do: socket
-      defoverridable assign_init: 2
-
       def handle_game_server_msg(_, socket), do: {:ok, socket}
-      defoverridable handle_game_server_msg: 2
+      defoverridable JeopardyWeb.FSMComponent
 
       def update(%{game_server_message: msg}, socket) do
         handle_game_server_msg(msg, socket)
@@ -27,7 +25,9 @@ defmodule JeopardyWeb.FSMComponent do
 
         {:ok,
          socket
-         |> assign(Map.drop(assigns, [:socket, :flash]))
+         |> assign(name: Map.get(assigns, :name))
+         |> assign(code: game.code)
+         |> assign(trebek: game.trebek)
          |> assign_init(game)}
       end
     end

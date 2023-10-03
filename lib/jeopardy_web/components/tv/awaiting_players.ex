@@ -17,6 +17,7 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
   def render(assigns) do
     ~H"""
     <div>
+      tv
       <ul>
         <li
           :for={player <- Enum.sort(@players)}
@@ -83,16 +84,5 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
   defp remove_player(name) do
     JS.push("remove_player", value: %{player: name})
     |> hide_modal("remove-modal-#{name}")
-  end
-
-  defp fade_away_left(js \\ %JS{}) do
-    JS.transition(
-      js,
-      {
-        "transition-all transform ease-in duration-200",
-        "motion-safe:-translate-x-10 opacity-0",
-        "hidden"
-      }
-    )
   end
 end

@@ -12,6 +12,6 @@ defmodule JeopardyWeb.GamesLive do
 
   def handle_event("random_game", _data, socket) do
     code = Jeopardy.GameServer.new_game_server()
-    {:noreply, push_navigate(socket, to: ~p"/games/#{code}/tv")}
+    {:noreply, push_navigate(socket, to: ~p"/games/#{code}")}
   end
 end

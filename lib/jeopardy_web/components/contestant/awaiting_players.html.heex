@@ -1,0 +1,9 @@
+<div>
+  contestant: <%= @name %>
+  <ul>
+    <li :for={player <- Enum.sort(@players)} phx-remove={fade_away_left()}>
+      <% # display podiums %>
+      <span><%= player %></span>
+    </li>
+  </ul>
+</div>

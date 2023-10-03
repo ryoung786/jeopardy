@@ -23,12 +23,10 @@ defmodule JeopardyWeb.Router do
     get "/privacy-policy", HomeController, :privacy_policy
     live "/games", GamesLive
 
-    live_session :game, on_mount: JeopardyWeb.GameAssigns do
-      scope "/games/:code" do
-        pipe_through [:require_game]
-        live "/", GameLive
-        live "/tv", TvLive
-      end
+    scope "/games/:code" do
+      pipe_through [:require_game]
+      live "/", GameLive
+      get "/trebek", AssignTrebekController, :assign
     end
   end
 

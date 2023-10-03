@@ -1,0 +1,21 @@
+<div>
+  <.modal id="volunteer-modal">
+    <p class="mb-4">Are you sure you want to be the host?</p>
+    <div class="flex justify-end gap-4">
+      <button class="btn" phx-click={hide_modal("volunteer-modal")} phx-target={@myself}>
+        Cancel
+      </button>
+      <button
+        class="btn btn-primary"
+        phx-click={JS.push("volunteer") |> hide_modal("volunteer-modal")}
+        phx-target={@myself}
+      >
+        Volunteer
+      </button>
+    </div>
+  </.modal>
+
+  <button class="btn btn-primary" phx-click={show_modal("volunteer-modal")} phx-target={@myself}>
+    Volunteer to host
+  </button>
+</div>

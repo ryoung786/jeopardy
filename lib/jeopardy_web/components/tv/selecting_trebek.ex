@@ -14,11 +14,7 @@ defmodule JeopardyWeb.Components.Tv.SelectingTrebek do
           <.modal id={"elect-modal-#{player}"}>
             <p class="mb-4">Are you sure you want to make <%= player %> the host?</p>
             <div class="flex justify-end gap-4">
-              <button
-                class="btn"
-                phx-click={hide_modal("remove-modal-#{player}")}
-                phx-target={@myself}
-              >
+              <button class="btn" phx-click={hide_modal("elect-modal-#{player}")} phx-target={@myself}>
                 Cancel
               </button>
               <button class="btn btn-primary" phx-click={elect_host(player)} phx-target={@myself}>
