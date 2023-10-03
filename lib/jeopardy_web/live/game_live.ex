@@ -11,9 +11,9 @@ defmodule JeopardyWeb.GameLive do
 
     socket =
       if Map.get(session, "code") == code do
-        socket
-        |> assign(name: Map.get(session, "name"))
-        |> assign(role: Map.get(session, "role", :tv))
+        name = Map.get(session, "name")
+        role = if name == game.trebek, do: :trebek, else: :contestant
+        assign(socket, name: name, role: role)
       else
         assign(socket, name: nil, role: :tv)
       end
@@ -29,7 +29,7 @@ defmodule JeopardyWeb.GameLive do
 
   def handle_info({:trebek_selected, name}, socket) do
     if name == socket.assigns.name,
-      do: {:noreply, redirect(socket, to: ~p"/games/#{socket.assigns.code}/trebek")},
+      do: {:noreply, assign(socket, role: :trebek)},
       else: {:noreply, socket}
   end
 

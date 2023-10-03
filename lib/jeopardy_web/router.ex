@@ -26,7 +26,6 @@ defmodule JeopardyWeb.Router do
     scope "/games/:code" do
       pipe_through [:require_game]
       live "/", GameLive
-      get "/trebek", AssignTrebekController, :assign
     end
   end
 
