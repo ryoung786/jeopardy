@@ -2,6 +2,7 @@ defmodule Jeopardy.Board.Clue do
   use TypedStruct
 
   typedstruct do
+    field :category, String.t()
     field :clue, String.t()
     field :answer, String.t()
     field :value, pos_integer()

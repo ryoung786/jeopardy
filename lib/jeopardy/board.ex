@@ -20,6 +20,7 @@ defmodule Jeopardy.Board do
            Map.new(category.clues, fn clue ->
              {clue.value,
               %Clue{
+		category: category.category,
                 clue: clue.clue,
                 answer: clue.answer,
                 value: clue.value,
