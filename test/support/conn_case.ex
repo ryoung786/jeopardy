@@ -61,4 +61,11 @@ defmodule JeopardyWeb.ConnCase do
     |> Phoenix.ConnTest.init_test_session(%{})
     |> Plug.Conn.put_session(:user_token, token)
   end
+
+  def join_game(conn, code, name) do
+    conn
+    |> Phoenix.ConnTest.init_test_session(%{})
+    |> Plug.Conn.put_session(:name, name)
+    |> Plug.Conn.put_session(:code, code)
+  end
 end

@@ -15,7 +15,6 @@ defmodule JeopardyWeb.HomeController do
         conn
         |> put_session(:name, name)
         |> put_session(:code, code)
-        |> put_session(:role, :contestant)
         |> redirect(to: "/games/#{code}")
 
       {:error, :game_not_found} ->
