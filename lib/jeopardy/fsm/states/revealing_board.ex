@@ -17,6 +17,7 @@ defmodule Jeopardy.FSM.RevealingBoard do
 
   defp reveal_next_category(%Jeopardy.Game{} = game) do
     if game.fsm.data.revealed_category_count < Enum.count(game.board.categories) do
+      FSM.broadcast(game, {:revealed_category, game.fsm.data.revealed_category_count})
       {:ok, update_in(game.fsm.data.revealed_category_count, &(&1 + 1))}
     else
       contestant = contestant_with_lowest_score(game)
