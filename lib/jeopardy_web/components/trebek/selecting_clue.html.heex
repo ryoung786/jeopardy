@@ -1,0 +1,33 @@
+<div>
+  <div :if={!@category}>
+    <ul>
+      <li
+        :for={category <- @categories}
+        phx-click="category-selected"
+        phx-value-category={category}
+        phx-target={@myself}
+      >
+        <%= category %>
+      </li>
+    </ul>
+  </div>
+
+  <div :if={@category}>
+    <span phx-click="back" phx-target={@myself}>Back</span>
+    <ul>
+      <%= for {_, clue} <- Enum.sort(@clues[@category]) do %>
+        <li :if={clue.asked?}></li>
+        <li
+          :if={!clue.asked?}
+          phx-click="clue-selected"
+          phx-value-clue={clue.value}
+          phx-target={@myself}
+        >
+          <%= clue.value %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+
+  <p>Ask <%= @board_control %> to select a clue.</p>
+</div>
