@@ -11,7 +11,7 @@ defmodule JeopardyWeb.Components.Trebek.ReadingClue do
     <div>
       <h3><%= @category %></h3>
       <h1><%= @clue %></h1>
-      <button class="btn btn-primary" phx-click="continue">
+      <button class="btn btn-primary" phx-click="continue" phx-target={@myself}>
         Finished Reading
       </button>
     </div>

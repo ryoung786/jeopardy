@@ -29,6 +29,9 @@ defmodule Jeopardy.GameServer do
     end
   end
 
+  @doc """
+  Send an action to the game server.  Returns {:ok, game} or error tuple.
+  """
   def action(code, action, data \\ nil), do: call(code, {:action, action, data})
   def get_game(code), do: call(code, :get_game)
 
