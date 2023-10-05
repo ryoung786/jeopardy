@@ -1,7 +1,6 @@
 defmodule JeopardyWeb.Components.Trebek.AwaitingBuzz do
   use JeopardyWeb.FSMComponent
 
-
   def render(assigns) do
     ~H"""
     <div>

@@ -44,6 +44,7 @@ defmodule Jeopardy.FSM.AwaitingFinalJeopardyWagers do
       else: {:error, :contestant_does_not_exist}
   end
 
+  defp validate_amount(amount, _) when amount < 0, do: {:error, :negative_wager}
   defp validate_amount(amount, %{score: score}) when amount < score, do: :ok
   defp validate_amount(_, _), do: {:error, :wager_is_more_than_contestant_score}
 end
