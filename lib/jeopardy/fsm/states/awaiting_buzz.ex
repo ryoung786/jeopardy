@@ -4,9 +4,24 @@ defmodule Jeopardy.FSM.AwaitingBuzz do
   """
 
   use Jeopardy.FSM.State
+  alias Jeopardy.Timers
+
+  @timer_seconds 4
 
   @impl true
   def valid_actions(), do: ~w/buzz time_expired/a
+
+  @impl true
+  def initial_data(game) do
+    {:ok, tref} =
+      :timer.apply_after(:timer.seconds(@timer_seconds), Jeopardy.GameServer, :action, [
+        game.code,
+        :time_expired,
+        nil
+      ])
+
+    %{expires_at: Timers.add(@timer_seconds), tref: tref}
+  end
 
   @impl true
   def handle_action(:buzz, game, contestant_name), do: buzz(game, contestant_name)
@@ -14,6 +29,8 @@ defmodule Jeopardy.FSM.AwaitingBuzz do
 
   defp buzz(game, contestant_name) do
     with :ok <- validate_contestant(game, contestant_name) do
+      :timer.cancel(game.fsm.data.tref)
+
       {:ok,
        game
        |> Map.put(:buzzer, contestant_name)
