@@ -672,4 +672,19 @@ defmodule JeopardyWeb.CoreComponents do
       }
     )
   end
+
+  attr :max_ms, :integer, default: 30
+  attr :time_remaining, :integer, default: 3_000
+
+  def pie_timer(assigns) do
+    ~H"""
+    <div class={[
+      "w-[70px] h-[70px] rounded-full relative overflow-hidden",
+      "bg-gradient-to-r from-slate-200 from-50% to-white to-50%",
+      "after:absolute after:left-1/2 after:w-1/2 after:h-full after:bg-slate-200 after:origin-[0_50%]",
+      "after:animate-[pietimer_30s_linear_forwards]"
+    ]}>
+    </div>
+    """
+  end
 end

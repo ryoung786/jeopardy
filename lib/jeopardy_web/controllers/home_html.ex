@@ -13,6 +13,7 @@ defmodule JeopardyWeb.HomeHTML do
       </.form>
       <p>Or</p>
       <.link class="btn btn-primary" href={~p"/games"}>New Game</.link>
+      <.pie_timer />
     </div>
     """
   end
