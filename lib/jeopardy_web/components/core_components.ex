@@ -705,4 +705,36 @@ defmodule JeopardyWeb.CoreComponents do
     </div>
     """
   end
+
+  @doc """
+  Renders jeopardy podium lights that tick down discretely each second.
+
+  By default it is a 5 second timer.
+
+  It is animated such that one light will disappear each second.
+
+  `time_remaining` allows the timer to pick up in the middle
+  of a countdown, like if the page is refreshed.
+
+  ## Examples
+
+      <.lights_timer />
+      <.lights_timer timer_seconds={6} time-remaining={2_000} />
+  """
+  attr :timer_seconds, :integer, default: 5
+  attr :time_remaining, :integer, default: 5_000
+
+  def lights_timer(assigns) do
+    ~H"""
+    <div
+      class="flex justify-center gap-x-2"
+      style={[
+        "clip-path: inset(0 0%);",
+        "animation: #{@timer_seconds}s steps(#{@timer_seconds}) -#{:timer.seconds(@timer_seconds) - @time_remaining}ms forwards lights-timer"
+      ]}
+    >
+      <div :for={_ <- 1..(@timer_seconds * 2 - 1)} class="bg-amber-400 w-full h-4" />
+    </div>
+    """
+  end
 end

@@ -14,3 +14,9 @@
 .pie-timer::after {
     animation: var(--timer) linear var(--delay) forwards pietimer;
 }
+
+@keyframes lights-timer {
+  to {
+    clip-path: inset(0 55%);
+  }
+}
