@@ -673,17 +673,35 @@ defmodule JeopardyWeb.CoreComponents do
     )
   end
 
-  attr :max_ms, :integer, default: 30
-  attr :time_remaining, :integer, default: 3_000
+  @doc """
+  Renders a timer in the shape of a filled circle.
+
+  It is animated such that the circle will slowly disappear, like
+  a countdown timer.
+
+  By default, it's set to 30 seconds, but you can set the attributes (in ms)
+  to adjust.  `time_remaining` allows the timer to pick up in the middle
+  of a countdown, like if the page is refreshed.
+
+  ## Examples
+
+      <.pie_timer />
+      <.pie_timer timer={5_000} time-remaining={2_000} />
+  """
+  attr :timer, :integer, default: 30_000
+  attr :time_remaining, :integer, default: 30_000
 
   def pie_timer(assigns) do
     ~H"""
-    <div class={[
-      "w-[70px] h-[70px] rounded-full relative overflow-hidden",
-      "bg-gradient-to-r from-slate-200 from-50% to-white to-50%",
-      "after:absolute after:left-1/2 after:w-1/2 after:h-full after:bg-slate-200 after:origin-[0_50%]",
-      "after:animate-[pietimer_30s_linear_forwards]"
-    ]}>
+    <div
+      class={[
+        "pie-timer",
+        "w-14 h-14 rounded-full relative overflow-hidden",
+        "bg-gradient-to-r from-slate-200 from-50% to-white to-50%",
+        "after:absolute after:left-1/2 after:w-1/2 after:h-full after:bg-slate-200 after:origin-[0_50%]"
+      ]}
+      style={"--timer: #{@timer}ms; --delay: -#{@timer - @time_remaining}ms"}
+    >
     </div>
     """
   end

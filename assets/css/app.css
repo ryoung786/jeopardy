@@ -10,3 +10,7 @@
    50%        { transform: rotate(0deg);   background: white; }
    100%       { transform: rotate(180deg); background: white; }
 }
+
+.pie-timer::after {
+    animation: var(--timer) linear var(--delay) forwards pietimer;
+}
