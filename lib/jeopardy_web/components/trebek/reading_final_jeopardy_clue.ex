@@ -1,23 +1,28 @@
-defmodule JeopardyWeb.Components.Trebek.AwaitingFinalJeopardyWagers do
+defmodule JeopardyWeb.Components.Trebek.ReadingFinalJeopardyClue do
   use JeopardyWeb.FSMComponent
   alias Jeopardy.Timers
 
   def assign_init(socket, game) do
-    assign(socket,
-      contestants: Map.new(game.contestants, &{&1.name, &1.final_jeopardy_wager}),
-      time_remaining: Timers.time_remaining(game.fsm.data[:expires_at])
-    )
+    time_remaining = Timers.time_remaining(game.fsm.data[:expires_at])
+
+    {:ok,
+     assign(socket,
+       category: game.clue.category,
+       clue: game.clue.clue,
+       time_remaining: time_remaining,
+       contestants: Map.new(game.contestants, &{&1.name, &1.final_jeopardy_answer}),
+       finished_reading: time_remaining != nil
+     )}
   end
 
   def render(assigns) do
     ~H"""
     <div>
       <ul>
-        <li :for={{name, wager} <- @contestants}>
-          <.status_icon wagered?={wager != nil} /> <%= name %>
+        <li :for={{name, answer} <- @contestants}>
+          <.status_icon answered?={answer != nil} /> <%= name %>
         </li>
       </ul>
-      <.pie_timer time_remaining={@time_remaining} />
     </div>
     """
   end

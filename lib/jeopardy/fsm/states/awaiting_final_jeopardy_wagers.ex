@@ -5,35 +5,44 @@ defmodule Jeopardy.FSM.AwaitingFinalJeopardyWagers do
 
   use Jeopardy.FSM.State
   alias Jeopardy.Game
+  alias Jeopardy.Timers
+
+  @timer_seconds 30
 
   @impl true
-  def valid_actions(), do: ~w/wagered time_expired/a
+  def valid_actions(), do: ~w/wagered awaiting_final_jeopardy_wagers_time_expired/a
 
   @impl true
   def initial_data(game) do
-    :timer.apply_after(:timer.seconds(30), Jeopardy.GameServer, :action, [
-      game.code,
-      :time_expired,
-      nil
-    ])
+    {:ok, tref} =
+      :timer.apply_after(:timer.seconds(@timer_seconds), Jeopardy.GameServer, :action, [
+        game.code,
+        :awaiting_final_jeopardy_wagers_time_expired,
+        nil
+      ])
 
-    %{expires_at: DateTime.utc_now() |> DateTime.add(30, :second)}
+    %{expires_at: Timers.add(@timer_seconds), tref: tref}
   end
 
   @impl true
-  def handle_action(:wagered, game, {contestant_name, amount}),
-    do: wager(game, contestant_name, amount)
+  def handle_action(:wagered, game, {contestant_name, amount}) do
+    wager(game, contestant_name, amount)
+  end
 
-  def handle_action(:time_expired, game, _), do: time_expired(game)
+  def handle_action(:awaiting_final_jeopardy_wagers_time_expired, game, _), do: time_expired(game)
 
   defp wager(%Game{} = game, name, amount) do
     with :ok <- validate_contestant_exists(game, name),
          :ok <- validate_amount(amount, game.contestants[name]) do
       game = put_in(game.contestants[name].final_jeopardy_wager, amount)
 
-      if Enum.any?(Map.values(game.contestants), &(&1.final_jeopardy_wager == nil)),
-        do: FSM.broadcast(game, {:wager_submitted, {name, amount}}) && {:ok, game},
-        else: {:ok, FSM.to_state(game, FSM.ReadingFinalJeopardyClue)}
+      if Enum.any?(Map.values(game.contestants), &(&1.final_jeopardy_wager == nil)) do
+        FSM.broadcast(game, {:wager_submitted, {name, amount}})
+        {:ok, game}
+      else
+        :timer.cancel(game.fsm.data.tref)
+        {:ok, FSM.to_state(game, FSM.ReadingFinalJeopardyClue)}
+      end
     end
   end
 

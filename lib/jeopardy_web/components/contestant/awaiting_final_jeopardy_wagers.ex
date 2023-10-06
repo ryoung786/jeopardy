@@ -1,6 +1,7 @@
 defmodule JeopardyWeb.Components.Contestant.AwaitingFinalJeopardyWagers do
   use JeopardyWeb.FSMComponent
   alias Jeopardy.GameServer
+  alias Jeopardy.Timers
 
   def assign_init(socket, game) do
     contestant = game.contestants[socket.assigns.name]
@@ -12,7 +13,7 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingFinalJeopardyWagers do
        score: score,
        has_submitted_wager?: wager != nil,
        amount_wagered: wager,
-       time_left: DateTime.diff(game.fsm.data.expires_at, DateTime.utc_now(), :millisecond),
+       time_remaining: Timers.time_remaining(game.fsm.data[:expires_at]),
        form: %{wager: wager}
      )}
   end
@@ -20,12 +21,13 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingFinalJeopardyWagers do
   def render(assigns) do
     ~H"""
     <div>
-      <div :if={!@has_submitted_wager?}>
+      <div :if={not @has_submitted_wager?}>
         <h3>Place wager</h3>
         <.form for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself}>
           <.input type="number" field={@form[:wager]} max={@score} />
           <button class="btn btn-primary">Submit</button>
         </.form>
+        <.pie_timer time_remaining={@time_remaining} />
       </div>
 
       <div :if={@has_submitted_wager?}>

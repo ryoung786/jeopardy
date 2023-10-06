@@ -16,15 +16,18 @@ defmodule Jeopardy.FSM do
 
   @spec to_state(%Game{}, module()) :: %Game{}
   def to_state(%Game{} = game, module) do
-    broadcast(game, {:status_changed, module})
-
-    Map.put(game, :fsm, %__MODULE__{
+    game
+    |> Map.put(:fsm, %__MODULE__{
       state: module,
       data: module.initial_data(game)
     })
+    |> broadcast({:status_changed, module})
   end
 
-  def broadcast(%Jeopardy.Game{code: code}, message), do: broadcast(code, message)
+  def broadcast(%Jeopardy.Game{code: code} = game, message) do
+    broadcast(code, message)
+    game
+  end
 
   def broadcast(code, message) do
     Phoenix.PubSub.broadcast(Jeopardy.PubSub, "games:#{code}", message)
