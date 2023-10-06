@@ -25,7 +25,7 @@ defmodule Jeopardy.FSM.ReadingFinalJeopardyClue do
       if Enum.any?(Map.values(game.contestants), &(&1.final_jeopardy_answer == nil)) do
         {:ok, game}
       else
-        Process.cancel_timer(game.fsm.data[:tref])
+        :timer.cancel(game.fsm.data[:tref])
         {:ok, FSM.to_state(game, FSM.GradingFinalJeopardyAnswers)}
       end
     end
@@ -35,12 +35,12 @@ defmodule Jeopardy.FSM.ReadingFinalJeopardyClue do
     expires_at = Timers.add(@timer_seconds)
     FSM.broadcast(game, {:timer_started, expires_at})
 
-    tref =
-      Process.send_after(
-        self(),
-        {:action, :awaiting_final_jeopardy_wagers_time_expired, nil},
-        :timer.seconds(@timer_seconds)
-      )
+    {:ok, tref} =
+      :timer.apply_after(:timer.seconds(@timer_seconds), Jeopardy.GameServer, :action, [
+        game.code,
+        :awaiting_final_jeopardy_wagers_time_expired,
+        nil
+      ])
 
     {:ok, put_in(game, [:fsm, :data], %{tref: tref, expires_at: expires_at})}
   end
