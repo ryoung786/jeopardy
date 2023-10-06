@@ -12,6 +12,7 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingFinalJeopardyWagers do
        score: score,
        has_submitted_wager?: wager != nil,
        amount_wagered: wager,
+       time_left: DateTime.diff(game.fsm.data.expires_at, DateTime.utc_now(), :millisecond),
        form: %{wager: wager}
      )}
   end

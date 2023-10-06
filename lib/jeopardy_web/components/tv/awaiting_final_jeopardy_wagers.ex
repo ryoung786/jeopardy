@@ -2,8 +2,11 @@ defmodule JeopardyWeb.Components.Tv.AwaitingFinalJeopardyWagers do
   use JeopardyWeb.FSMComponent
 
   def assign_init(socket, game) do
-    [category | _] = game.board.categories
-    {:ok, assign(socket, category: category)}
+    {:ok,
+     assign(socket,
+       category: List.first(game.board.categories),
+       time_left: DateTime.diff(game.fsm.data.expires_at, DateTime.utc_now(), :millisecond)
+     )}
   end
 
   def render(assigns) do

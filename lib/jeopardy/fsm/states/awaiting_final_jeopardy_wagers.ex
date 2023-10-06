@@ -10,6 +10,17 @@ defmodule Jeopardy.FSM.AwaitingFinalJeopardyWagers do
   def valid_actions(), do: ~w/wagered time_expired/a
 
   @impl true
+  def initial_data(game) do
+    :timer.apply_after(:timer.seconds(30), Jeopardy.GameServer, :action, [
+      game.code,
+      :time_expired,
+      nil
+    ])
+
+    %{expires_at: DateTime.utc_now() |> DateTime.add(30, :second)}
+  end
+
+  @impl true
   def handle_action(:wagered, game, {contestant_name, amount}),
     do: wager(game, contestant_name, amount)
 
@@ -21,7 +32,7 @@ defmodule Jeopardy.FSM.AwaitingFinalJeopardyWagers do
       game = put_in(game.contestants[name].final_jeopardy_wager, amount)
 
       if Enum.any?(Map.values(game.contestants), &(&1.final_jeopardy_wager == nil)),
-        do: {:ok, game},
+        do: FSM.broadcast(game, {:wager_submitted, {name, amount}}) && {:ok, game},
         else: {:ok, FSM.to_state(game, FSM.ReadingFinalJeopardyClue)}
     end
   end
@@ -35,7 +46,7 @@ defmodule Jeopardy.FSM.AwaitingFinalJeopardyWagers do
         {name, c} -> {name, c}
       end)
 
-    {:ok, %{game | contestants: contestants}}
+    {:ok, %{game | contestants: contestants} |> FSM.to_state(FSM.ReadingFinalJeopardyClue)}
   end
 
   defp validate_contestant_exists(game, name) do
@@ -44,7 +55,11 @@ defmodule Jeopardy.FSM.AwaitingFinalJeopardyWagers do
       else: {:error, :contestant_does_not_exist}
   end
 
-  defp validate_amount(amount, _) when amount < 0, do: {:error, :negative_wager}
-  defp validate_amount(amount, %{score: score}) when amount < score, do: :ok
-  defp validate_amount(_, _), do: {:error, :wager_is_more_than_contestant_score}
+  defp validate_amount(amount, %{score: score}) do
+    cond do
+      amount < 0 -> {:error, :negative_wager}
+      amount > score -> {:error, :wager_exceeds_score}
+      true -> :ok
+    end
+  end
 end
