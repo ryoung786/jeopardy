@@ -11,8 +11,8 @@ defmodule JeopardyWeb.Components.Trebek.ReadingAnswer do
     ~H"""
     <div>
       <p><%= @answer %></p>
-      <.button class="btn-primary" phx-click="finished-reading" phx-target={@myself} >
-      Continue
+      <.button class="btn-primary" phx-click="finished-reading" phx-target={@myself}>
+        Continue
       </.button>
     </div>
     """

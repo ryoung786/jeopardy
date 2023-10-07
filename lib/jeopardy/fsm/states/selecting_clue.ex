@@ -1,6 +1,6 @@
 defmodule Jeopardy.FSM.SelectingClue do
   @moduledoc """
-  selecting clue -> awaiting wager | reading clue
+  selecting clue -> awaiting daily double wager | reading clue
   """
 
   use Jeopardy.FSM.State
