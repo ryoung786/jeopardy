@@ -3,12 +3,11 @@ defmodule JeopardyWeb.Components.Tv.ReadingFinalJeopardyClue do
   alias Jeopardy.Timers
 
   def assign_init(socket, game) do
-    {:ok,
-     assign(socket,
-       category: game.clue.category,
-       clue: game.clue.clue,
-       time_remaining: Timers.time_remaining(game.fsm.data[:expires_at])
-     )}
+    assign(socket,
+      category: game.clue.category,
+      clue: game.clue.clue,
+      time_remaining: Timers.time_remaining(game.fsm.data[:expires_at])
+    )
   end
 
   def render(assigns) do

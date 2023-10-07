@@ -38,7 +38,7 @@ defmodule Jeopardy.FSM.ReadingFinalJeopardyClue do
     {:ok, tref} =
       :timer.apply_after(:timer.seconds(@timer_seconds), Jeopardy.GameServer, :action, [
         game.code,
-        :awaiting_final_jeopardy_wagers_time_expired,
+        :time_expired,
         nil
       ])
 

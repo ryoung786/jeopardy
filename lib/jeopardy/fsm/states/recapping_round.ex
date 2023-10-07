@@ -6,6 +6,7 @@ defmodule Jeopardy.FSM.RecappingRound do
   use Jeopardy.FSM.State
   alias Jeopardy.Game
   alias Jeopardy.Board
+  alias Jeopardy.Board.Clue
 
   @impl true
   def valid_actions(), do: ~w/zero_out_negative_scores next_round/a
@@ -33,6 +34,16 @@ defmodule Jeopardy.FSM.RecappingRound do
   end
 
   defp go_to_next_round(%Game{round: :double_jeopardy} = game) do
-    {:ok, %{game | round: :final_jeopardy} |> FSM.to_state(FSM.AwaitingFinalJeopardyWagers)}
+    clue = %Clue{
+      category: game.jarchive_game.final_jeopardy.category,
+      clue: game.jarchive_game.final_jeopardy.clue,
+      answer: game.jarchive_game.final_jeopardy.answer
+    }
+
+    {:ok,
+     game
+     |> Map.put(:clue, clue)
+     |> Map.put(:round, :final_jeopardy)
+     |> FSM.to_state(FSM.AwaitingFinalJeopardyWagers)}
   end
 end

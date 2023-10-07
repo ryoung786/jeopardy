@@ -33,6 +33,11 @@ defmodule Jeopardy.GameServer do
   Send an action to the game server.  Returns {:ok, game} or error tuple.
   """
   def action(code, action, data \\ nil), do: call(code, {:action, action, data})
+
+  @doc """
+  Send an action to the game server.  Returns {:ok, game} or error tuple.
+  """
+  def admin_action(code, action, data \\ nil), do: call(code, {:admin_action, action, data})
   def get_game(code), do: call(code, :get_game)
 
   # SERVER
@@ -54,6 +59,14 @@ defmodule Jeopardy.GameServer do
   @impl true
   def handle_call({:action, action, data}, _from, state) do
     case Jeopardy.FSM.handle_action(action, state.game, data) do
+      {:ok, game} -> {:reply, {:ok, game}, %{state | game: game}, state.inactivity_timeout}
+      {:error, reason} -> {:reply, {:error, reason}, state, state.inactivity_timeout}
+    end
+  end
+
+  @impl true
+  def handle_call({:admin_action, action, data}, _from, state) do
+    case Jeopardy.AdminActions.handle_action(action, state.game, data) do
       {:ok, game} -> {:reply, {:ok, game}, %{state | game: game}, state.inactivity_timeout}
       {:error, reason} -> {:reply, {:error, reason}, state, state.inactivity_timeout}
     end

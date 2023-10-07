@@ -26,7 +26,7 @@ defmodule JeopardyWeb.Components.Trebek.RecappingRound do
   end
 
   def handle_event("continue", _params, socket) do
-    GameServer.action(socket.assigns.code, :continue)
+    GameServer.action(socket.assigns.code, :next_round)
     {:noreply, socket}
   end
 end

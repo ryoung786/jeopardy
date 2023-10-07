@@ -3,8 +3,11 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingFinalJeopardyWagers do
   alias Jeopardy.Timers
 
   def assign_init(socket, game) do
+    contestants =
+      game.contestants |> Map.values() |> Map.new(&{&1.name, &1.final_jeopardy_answer})
+
     assign(socket,
-      contestants: Map.new(game.contestants, &{&1.name, &1.final_jeopardy_wager}),
+      contestants: contestants,
       time_remaining: Timers.time_remaining(game.fsm.data[:expires_at])
     )
   end

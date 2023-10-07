@@ -4,7 +4,7 @@ defmodule JeopardyWeb.Components.Contestant.GradingFinalJeopardyAnswers do
   def assign_init(socket, game) do
     contestant = game.contestants[socket.assigns.name]
 
-    {:ok, assign(socket, answer: contestant.final_jeopardy_answer)}
+    assign(socket, answer: contestant.final_jeopardy_answer)
   end
 
   def render(assigns) do

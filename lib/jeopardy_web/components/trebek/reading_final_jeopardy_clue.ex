@@ -8,14 +8,16 @@ defmodule JeopardyWeb.Components.Trebek.ReadingFinalJeopardyClue do
   def assign_init(socket, game) do
     time_remaining = Timers.time_remaining(game.fsm.data[:expires_at])
 
-    {:ok,
-     assign(socket,
-       category: game.clue.category,
-       clue: game.clue.clue,
-       time_remaining: time_remaining,
-       contestants: Map.new(game.contestants, &{&1.name, &1.final_jeopardy_answer}),
-       finished_reading?: time_remaining != nil
-     )}
+    contestants =
+      game.contestants |> Map.values() |> Map.new(&{&1.name, &1.final_jeopardy_answer})
+
+    assign(socket,
+      category: game.clue.category,
+      clue: game.clue.clue,
+      time_remaining: time_remaining,
+      contestants: contestants,
+      finished_reading?: time_remaining != nil
+    )
   end
 
   def render(assigns) do
@@ -27,7 +29,7 @@ defmodule JeopardyWeb.Components.Trebek.ReadingFinalJeopardyClue do
             <.status_icon answered?={answer != nil} /> <%= name %>
           </li>
         </ul>
-        <.pie_timer timer={@timer} time_remaining={@time_remaining} />
+        <.pie_timer time_remaining={@time_remaining} />
       </div>
 
       <div :if={not @finished_reading?}>
@@ -50,4 +52,8 @@ defmodule JeopardyWeb.Components.Trebek.ReadingFinalJeopardyClue do
     GameServer.action(socket.assigns.code, {:timer_started})
     {:noreply, assign(socket, finished_reading?: true, time_remaining: @timer)}
   end
+
+  # def handle_game_server_msg({:timer_started, expires_at}, socket) do
+  #   {:ok, assign(socket, time_remaining: Timers.time_remaining(expires_at))}
+  # end
 end

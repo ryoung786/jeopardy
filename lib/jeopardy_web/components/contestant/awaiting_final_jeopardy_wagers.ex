@@ -8,14 +8,13 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingFinalJeopardyWagers do
     score = contestant.score
     wager = contestant.final_jeopardy_wager
 
-    {:ok,
-     assign(socket,
-       score: score,
-       has_submitted_wager?: wager != nil,
-       amount_wagered: wager,
-       time_remaining: Timers.time_remaining(game.fsm.data[:expires_at]),
-       form: %{wager: wager}
-     )}
+    assign(socket,
+      score: score,
+      has_submitted_wager?: wager != nil,
+      amount_wagered: wager,
+      time_remaining: Timers.time_remaining(game.fsm.data[:expires_at]),
+      form: to_form(%{"wager" => wager})
+    )
   end
 
   def render(assigns) do
@@ -38,15 +37,41 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingFinalJeopardyWagers do
     """
   end
 
-  def handle_event("submit", %{"wager" => amount}, socket) do
-    with {:ok, _game} <- GameServer.action(socket.assigns.code, :wagered, amount) do
-      {:ok, assign(socket, has_submitted_wager?: true, amount_wagered: amount)}
+  def handle_game_server_msg({:wager_submitted, name}, socket) do
+    if name == socket.assigns.name,
+      do: {:ok, assign(socket, has_submitted_wager?: true)},
+      else: {:ok, socket}
+  end
+
+  def handle_event("submit", %{"wager" => wager}, socket) do
+    with :ok <- validate(wager, 0..socket.assigns.score),
+         {wager, _} = Integer.parse(wager) do
+      GameServer.action(socket.assigns.code, :wagered, {socket.assigns.name, wager})
+      {:noreply, assign(socket, has_submitted_wager?: true, amount_wagered: wager)}
     else
-      _ -> {:ok, socket}
+      {:error, msg} ->
+        form = to_form(%{"wager" => wager}, errors: [wager: {msg, []}])
+        {:noreply, assign(socket, form: form)}
     end
   end
 
-  def handle_game_server_msg({:wager_submitted, _name}, socket) do
-    {:ok, socket}
+  def handle_event("validate", %{"wager" => wager}, socket) do
+    case validate(wager, 0..socket.assigns.score) do
+      :ok ->
+        {:noreply, socket}
+
+      {:error, msg} ->
+        form = to_form(%{"wager" => wager}, errors: [wager: {msg, []}])
+        {:noreply, assign(socket, form: form)}
+    end
+  end
+
+  defp validate(wager, min..max = range) do
+    with {wager, _} <- Integer.parse(wager),
+         true <- wager in range do
+      :ok
+    else
+      _ -> {:error, "Must be between $#{min} and #{max}"}
+    end
   end
 end

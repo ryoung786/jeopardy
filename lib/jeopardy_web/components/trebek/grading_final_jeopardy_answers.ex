@@ -3,11 +3,13 @@ defmodule JeopardyWeb.Components.Trebek.GradingFinalJeopardyAnswers do
   alias Jeopardy.GameServer
 
   def assign_init(socket, game) do
-    {:ok,
-     assign(socket,
-       answer: game.clue.answer,
-       contestants: Map.new(game.contestants, &{&1.name, &1.final_jeopardy_answer})
-     )}
+    contestants =
+      game.contestants |> Map.values() |> Map.new(&{&1.name, &1.final_jeopardy_answer})
+
+    assign(socket,
+      answer: game.clue.answer,
+      contestants: contestants
+    )
   end
 
   def render(assigns) do

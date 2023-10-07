@@ -15,7 +15,7 @@ defmodule JeopardyWeb.Components.Tv.AwaitingBuzz do
     <div>
       <h3><%= @category %></h3>
       <h1><%= @clue %></h1>
-      <.pie_timer timer={4_000} time_remaining={@time_remaining} />
+      <.lights_timer timer_seconds={5} time_remaining={@time_remaining} />
     </div>
     """
   end
