@@ -5,10 +5,10 @@
 /* This file is for your main application CSS */
 
 @keyframes pietimer {
-   0%         { transform: rotate(0deg);   background: rgb(226 232 240); }
-   49.999999% { transform: rotate(180deg); background: rgb(226 232 240); }
-   50%        { transform: rotate(0deg);   background: white; }
-   100%       { transform: rotate(180deg); background: white; }
+   0%        { transform: rotate(0deg);   background: rgb(226 232 240); }
+   49.99999% { transform: rotate(180deg); background: rgb(226 232 240); }
+   50%       { transform: rotate(0deg);   background: white; }
+   100%      { transform: rotate(180deg); background: white; }
 }
 
 .pie-timer::after {
