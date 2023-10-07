@@ -5,6 +5,7 @@ defmodule Jeopardy.FSM.AwaitingBuzz do
 
   use Jeopardy.FSM.State
   alias Jeopardy.Timers
+  alias Jeopardy.GameServer
 
   @timer_seconds 4
 
@@ -14,7 +15,7 @@ defmodule Jeopardy.FSM.AwaitingBuzz do
   @impl true
   def initial_data(game) do
     {:ok, tref} =
-      :timer.apply_after(:timer.seconds(@timer_seconds), Jeopardy.GameServer, :action, [
+      :timer.apply_after(:timer.seconds(@timer_seconds), GameServer, :action, [
         game.code,
         :time_expired,
         nil

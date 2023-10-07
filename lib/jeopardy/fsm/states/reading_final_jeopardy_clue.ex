@@ -5,6 +5,7 @@ defmodule Jeopardy.FSM.ReadingFinalJeopardyClue do
 
   use Jeopardy.FSM.State
   alias Jeopardy.Timers
+  alias Jeopardy.GameServer
 
   @timer_seconds 60
 
@@ -36,13 +37,13 @@ defmodule Jeopardy.FSM.ReadingFinalJeopardyClue do
     FSM.broadcast(game, {:timer_started, expires_at})
 
     {:ok, tref} =
-      :timer.apply_after(:timer.seconds(@timer_seconds), Jeopardy.GameServer, :action, [
+      :timer.apply_after(:timer.seconds(@timer_seconds), GameServer, :action, [
         game.code,
         :time_expired,
         nil
       ])
 
-    {:ok, put_in(game, [:fsm, :data], %{tref: tref, expires_at: expires_at})}
+    {:ok, put_in(game.fsm.data, %{tref: tref, expires_at: expires_at})}
   end
 
   defp time_expired(game) do

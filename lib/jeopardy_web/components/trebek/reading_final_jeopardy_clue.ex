@@ -49,7 +49,7 @@ defmodule JeopardyWeb.Components.Trebek.ReadingFinalJeopardyClue do
   defp status_icon(assigns), do: ~H|<.icon name="hero-check-circle" />|
 
   def handle_event("finished-reading", _params, socket) do
-    GameServer.action(socket.assigns.code, {:timer_started})
+    GameServer.action(socket.assigns.code, :timer_started)
     {:noreply, assign(socket, finished_reading?: true, time_remaining: @timer)}
   end
 

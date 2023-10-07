@@ -59,8 +59,12 @@ defmodule Jeopardy.GameServer do
   @impl true
   def handle_call({:action, action, data}, _from, state) do
     case Jeopardy.FSM.handle_action(action, state.game, data) do
-      {:ok, game} -> {:reply, {:ok, game}, %{state | game: game}, state.inactivity_timeout}
-      {:error, reason} -> {:reply, {:error, reason}, state, state.inactivity_timeout}
+      {:ok, game} ->
+        {:reply, {:ok, game}, %{state | game: game}, state.inactivity_timeout}
+
+      {:error, reason} ->
+        Logger.error("Invalid action", action: action)
+        {:reply, {:error, reason}, state, state.inactivity_timeout}
     end
   end
 
@@ -87,6 +91,8 @@ defmodule Jeopardy.GameServer do
   end
 
   defp call(code, command) do
+    IO.inspect(command, label: "[xxx] action")
+
     case game_pid(code) do
       pid when is_pid(pid) -> GenServer.call(pid, command)
       nil -> {:error, :game_not_found}

@@ -4,7 +4,7 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingFinalJeopardyWagers do
 
   def assign_init(socket, game) do
     contestants =
-      game.contestants |> Map.values() |> Map.new(&{&1.name, &1.final_jeopardy_answer})
+      game.contestants |> Map.values() |> Map.new(&{&1.name, &1.final_jeopardy_wager})
 
     assign(socket,
       contestants: contestants,

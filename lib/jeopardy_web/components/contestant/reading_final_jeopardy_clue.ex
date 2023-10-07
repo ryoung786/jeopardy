@@ -39,9 +39,9 @@ defmodule JeopardyWeb.Components.Contestant.ReadingFinalJeopardyClue do
   def handle_event("submit", %{"answer" => answer}, socket) do
     with {:ok, _game} <-
            GameServer.action(socket.assigns.code, :answered, {socket.assigns.name, answer}) do
-      {:ok, assign(socket, has_submitted_answer?: true, answer: answer)}
+      {:noreply, assign(socket, has_submitted_answer?: true, answer: answer)}
     else
-      _ -> {:ok, socket}
+      _ -> {:noreply, socket}
     end
   end
 

@@ -15,6 +15,7 @@ defmodule JeopardyWeb.Components.Trebek.GradingFinalJeopardyAnswers do
   def render(assigns) do
     ~H"""
     <div>
+      <h3><%= @answer %></h3>
       <ul>
         <li :for={{_name, answer} <- Enum.shuffle(@contestants)}>
           <%= answer %>
@@ -28,7 +29,7 @@ defmodule JeopardyWeb.Components.Trebek.GradingFinalJeopardyAnswers do
   end
 
   def handle_event("submit", _params, socket) do
-    GameServer.action(socket.assigns.code, {:submitted_grades})
+    GameServer.action(socket.assigns.code, :submitted_grades, [])
     {:noreply, socket}
   end
 end

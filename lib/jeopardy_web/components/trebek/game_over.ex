@@ -13,7 +13,7 @@ defmodule JeopardyWeb.Components.Trebek.GameOver do
   end
 
   def handle_event("play-again", _params, socket) do
-    GameServer.action(socket.assigns.code, {:play_again})
+    GameServer.action(socket.assigns.code, :play_again)
     {:noreply, socket}
   end
 end
