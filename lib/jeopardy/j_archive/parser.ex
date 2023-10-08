@@ -34,13 +34,21 @@ defmodule Jeopardy.JArchive.Parser do
 
     clues =
       Enum.map(1..5, fn clue_idx ->
+        cell_html =
+          Floki.find(
+            html,
+            ".round > tr:nth-of-type(#{clue_idx + 1}) > td:nth-of-type(#{category_idx})"
+          )
+
+        dd_selector = ".clue_value_daily_double"
         clue_selector = "#clue_#{round_abbrev}_#{category_idx}_#{clue_idx}"
         answer_selector = "#clue_#{round_abbrev}_#{category_idx}_#{clue_idx}_r .correct_response"
 
         %{
-          clue: Floki.find(html, clue_selector) |> Floki.text(),
-          answer: Floki.find(html, answer_selector) |> Floki.text(),
+          clue: Floki.find(cell_html, clue_selector) |> Floki.text(),
+          answer: Floki.find(cell_html, answer_selector) |> Floki.text(),
           value: dollar_multiplier * 100 * clue_idx,
+          daily_double?: Floki.find(cell_html, dd_selector) != [],
           category: category_name
         }
       end)
