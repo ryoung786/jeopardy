@@ -16,8 +16,8 @@ defmodule Jeopardy.FSM.GradingFinalJeopardyAnswers do
   defp grade_answers(game, correct_contestants) do
     with :ok <- validate_all_contestants_exist(game, correct_contestants) do
       game =
-        Enum.reduce(game.contestants, game, fn {name, c}, game ->
-          Game.update_contestant_score(game, name, c.final_jeopardy_wager)
+        Enum.reduce(correct_contestants, game, fn name, game ->
+          Game.update_contestant_score(game, name, game.contestants[name].final_jeopardy_wager)
         end)
 
       {:ok, FSM.to_state(game, FSM.GameOver)}

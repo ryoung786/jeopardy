@@ -23,7 +23,7 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingFinalJeopardyWagers do
       <div :if={not @has_submitted_wager?}>
         <h3>Place wager</h3>
         <.form for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself}>
-          <.input type="number" field={@form[:wager]} max={@score} />
+          <.input type="number" field={@form[:wager]} max={max(@score, 0)} />
           <button class="btn btn-primary">Submit</button>
         </.form>
         <.pie_timer time_remaining={@time_remaining} />
@@ -43,25 +43,27 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingFinalJeopardyWagers do
       else: {:ok, socket}
   end
 
-  def handle_event("submit", %{"wager" => wager}, socket) do
-    with :ok <- validate(wager, 0..socket.assigns.score),
+  def handle_event("submit", %{"wager" => wager} = params, socket) do
+    with :ok <- validate(wager, 0..max(socket.assigns.score, 0)),
          {wager, _} = Integer.parse(wager) do
       GameServer.action(socket.assigns.code, :wagered, {socket.assigns.name, wager})
-      {:noreply, assign(socket, has_submitted_wager?: true, amount_wagered: wager)}
+
+      {:noreply,
+       assign(socket, has_submitted_wager?: true, amount_wagered: wager, form: to_form(params))}
     else
       {:error, msg} ->
-        form = to_form(%{"wager" => wager}, errors: [wager: {msg, []}])
+        form = to_form(params, errors: [wager: {msg, []}])
         {:noreply, assign(socket, form: form)}
     end
   end
 
-  def handle_event("validate", %{"wager" => wager}, socket) do
-    case validate(wager, 0..socket.assigns.score) do
+  def handle_event("validate", %{"wager" => wager} = params, socket) do
+    case validate(wager, 0..max(socket.assigns.score, 0)) do
       :ok ->
-        {:noreply, socket}
+        {:noreply, assign(socket, form: to_form(params))}
 
       {:error, msg} ->
-        form = to_form(%{"wager" => wager}, errors: [wager: {msg, []}])
+        form = to_form(params, errors: [wager: {msg, []}])
         {:noreply, assign(socket, form: form)}
     end
   end

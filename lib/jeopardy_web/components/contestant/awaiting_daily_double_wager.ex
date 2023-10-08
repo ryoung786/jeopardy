@@ -4,15 +4,19 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingDailyDoubleWager do
   def assign_init(socket, game) do
     contestant = game.contestants[socket.assigns.name]
     score = contestant.score
-    min_wager = if game.round == :jeopardy, do: 5, else: 10
 
-    {:ok,
-     assign(socket,
-       score: score,
-       has_board_control?: socket.assigns.name == game.board.control,
-       board_control: game.board.control,
-       min_wager: min_wager
-     )}
+    {min_wager, max_wager} =
+      if game.round == :jeopardy,
+        do: {5, max(score, 1_000)},
+        else: {10, max(score, 2_000)}
+
+    assign(socket,
+      score: score,
+      has_board_control?: socket.assigns.name == game.board.control,
+      board_control: game.board.control,
+      min_wager: min_wager,
+      max_wager: max_wager
+    )
   end
 
   def render(assigns) do
@@ -20,7 +24,7 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingDailyDoubleWager do
     <div>
       <div :if={@has_board_control?}>
         <p>Tell <%= @trebek %> how much you'd like to wager.</p>
-        <p>You can wager between $<%= @min_wager %> and $<%= @score %>.</p>
+        <p>You can wager between $<%= @min_wager %> and $<%= @max_wager %>.</p>
       </div>
 
       <div :if={not @has_board_control?}>
