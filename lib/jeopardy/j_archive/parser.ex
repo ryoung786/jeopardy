@@ -23,8 +23,8 @@ defmodule Jeopardy.JArchive.Parser do
   def parse_round_category(entire_game_html, round, category_idx) do
     {round_selector, round_abbrev, dollar_multiplier} =
       case round do
-        :jeopardy -> {"#jeopardy_round", "J", 1}
-        :double_jeopardy -> {"#double_jeopardy_round", "DJ", 2}
+        :jeopardy -> {"#jeopardy_round", "J", 2}
+        :double_jeopardy -> {"#double_jeopardy_round", "DJ", 4}
       end
 
     html = Floki.find(entire_game_html, round_selector)
