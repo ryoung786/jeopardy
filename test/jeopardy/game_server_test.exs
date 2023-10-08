@@ -33,14 +33,14 @@ defmodule Jeopardy.GameServerTest do
     end
 
     test "terminates after inactivity" do
-      code = GameServer.new_game_server(timeout: 5)
+      code = GameServer.new_game_server(timeout: 10)
 
       # each GenServer msg resets the timeout
       assert {:ok, _} = GameServer.get_game(code)
       Process.sleep(1)
       assert {:ok, _} = GameServer.get_game(code)
 
-      Process.sleep(10)
+      Process.sleep(20)
       assert {:error, :game_not_found} = GameServer.get_game(code)
     end
   end
