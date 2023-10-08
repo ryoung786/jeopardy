@@ -1,8 +1,11 @@
 defmodule Jeopardy.JArchive do
   @spec load_game(any) :: {:ok, Jeopardy.JArchive.RecordedGame.t()} | {:error, any}
   def load_game(:random) do
+    default_path = Application.app_dir(:jeopardy, "priv/jarchive")
+    path = Application.get_env(:jeopardy, :jarchive_dir, default_path)
+
     file_name =
-      Application.app_dir(:jeopardy, "priv/jarchive")
+      path
       |> File.ls!()
       |> Enum.shuffle()
       |> Enum.drop_while(fn filename -> !String.ends_with?(filename, ".json") end)
