@@ -37,6 +37,10 @@ defmodule JeopardyWeb.GameLive do
     {:noreply, assign(socket, state: state)}
   end
 
+  def handle_info(:play_again_triggered, socket) do
+    {:noreply, redirect(socket, to: ~p"/games/#{socket.assigns.code}")}
+  end
+
   def handle_info(data, socket) do
     send_update(FSM.to_component(socket.assigns.state, socket.assigns.role),
       id: "c-id",

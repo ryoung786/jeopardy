@@ -23,7 +23,7 @@ defmodule Jeopardy.FSM.GameOver do
     game = %Game{code: game.code, players: game.players}
 
     with {:ok, game} <- FSM.AwaitingPlayers.load_game(game, :random) do
-      {:ok, FSM.to_state(game, FSM.SelectingTrebek)}
+      {:ok, FSM.broadcast(game, :play_again_triggered)}
     end
   end
 end

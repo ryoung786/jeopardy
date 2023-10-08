@@ -8,6 +8,7 @@ defmodule JeopardyWeb.Components.Tv.ReadingFinalJeopardyClue do
     assign(socket,
       category: game.clue.category,
       clue: game.clue.clue,
+      timer: @timer,
       time_remaining: Timers.time_remaining(game.fsm.data[:expires_at])
     )
   end

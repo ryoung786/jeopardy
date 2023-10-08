@@ -10,6 +10,7 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingFinalJeopardyWagers do
 
     assign(socket,
       contestants: contestants,
+      timer: @timer,
       time_remaining: Timers.time_remaining(game.fsm.data[:expires_at])
     )
   end

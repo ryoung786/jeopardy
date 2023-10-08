@@ -14,6 +14,7 @@ defmodule JeopardyWeb.Components.Trebek.ReadingFinalJeopardyClue do
     assign(socket,
       category: game.clue.category,
       clue: game.clue.clue,
+      timer: @timer,
       time_remaining: time_remaining,
       contestants: contestants,
       finished_reading?: time_remaining != nil
@@ -45,15 +46,11 @@ defmodule JeopardyWeb.Components.Trebek.ReadingFinalJeopardyClue do
     """
   end
 
-  defp status_icon(%{wagered?: true} = assigns), do: ~H|<.icon name="hero-clock" />|
-  defp status_icon(assigns), do: ~H|<.icon name="hero-check-circle" />|
+  defp status_icon(%{wagered?: true} = assigns), do: ~H|<.icon name="hero-check-circle" />|
+  defp status_icon(assigns), do: ~H|<.icon name="hero-clock" />|
 
   def handle_event("finished-reading", _params, socket) do
     GameServer.action(socket.assigns.code, :timer_started)
     {:noreply, assign(socket, finished_reading?: true, time_remaining: @timer)}
   end
-
-  # def handle_game_server_msg({:timer_started, expires_at}, socket) do
-  #   {:ok, assign(socket, time_remaining: Timers.time_remaining(expires_at))}
-  # end
 end
