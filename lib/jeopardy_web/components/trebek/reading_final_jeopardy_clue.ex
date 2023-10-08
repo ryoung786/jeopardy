@@ -29,7 +29,7 @@ defmodule JeopardyWeb.Components.Trebek.ReadingFinalJeopardyClue do
             <.status_icon answered?={answer != nil} /> <%= name %>
           </li>
         </ul>
-        <.pie_timer time_remaining={@time_remaining} />
+        <.pie_timer timer={@timer} time_remaining={@time_remaining} />
       </div>
 
       <div :if={not @finished_reading?}>

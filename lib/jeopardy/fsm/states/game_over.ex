@@ -1,6 +1,7 @@
 defmodule Jeopardy.FSM.GameOver do
   use Jeopardy.FSM.State
 
+  alias Jeopardy.FSM
   alias Jeopardy.Game
 
   @impl true
@@ -19,6 +20,10 @@ defmodule Jeopardy.FSM.GameOver do
   end
 
   defp play_again(game) do
-    {:ok, %Game{code: game.code, players: game.players}}
+    game = %Game{code: game.code, players: game.players}
+
+    with {:ok, game} <- FSM.AwaitingPlayers.load_game(game, :random) do
+      {:ok, FSM.to_state(game, FSM.SelectingTrebek)}
+    end
   end
 end
