@@ -1,31 +1,44 @@
-<div>
+<div class="p-4">
   <div :if={!@category}>
-    <ul>
-      <li
-        :for={category <- @game.categories}
-        phx-click="category-selected"
-        phx-value-category={category}
-        phx-target={@myself}
-      >
-        <span :if={Enum.any?(@game.board[category], fn clue -> not clue.asked? end)}>
-          <%= category %>
-        </span>
-      </li>
+    <ul class="grid grid-cols-2 auto-rows-fr gap-4 h-[80vh]">
+      <%= for category <- @game.categories do %>
+        <%= if Enum.all?(@game.board[category], fn clue -> clue.asked? end) do %>
+          <li class="bg-blue-700"></li>
+        <% else %>
+          <li
+            class="p-4 bg-blue-700 text-neutral-100 uppercase grid place-content-center text-center cursor-pointer"
+            phx-click="category-selected"
+            phx-value-category={category}
+            phx-target={@myself}
+          >
+            <span :if={Enum.any?(@game.board[category], fn clue -> not clue.asked? end)}>
+              <%= category %>
+            </span>
+          </li>
+        <% end %>
+      <% end %>
     </ul>
   </div>
 
   <div :if={@category}>
-    <span phx-click="back" phx-target={@myself}>Back</span>
-    <ul>
+    <span
+      class="inline-block -ml-4 -mt-4 p-4 cursor-pointer"
+      phx-click="back"
+      phx-target={@myself}
+    >
+      Back
+    </span>
+    <ul class="grid auto-rows-fr h-[80vh] gap-4">
       <%= for clue <- @game.board[@category] do %>
-        <li :if={clue.asked?}></li>
+        <li :if={clue.asked?} class="bg-blue-700 text-neutral-100"></li>
         <li
           :if={!clue.asked?}
+          class="p-4 bg-blue-700 text-neutral-100 grid place-content-center cursor-pointer"
           phx-click="clue-selected"
           phx-value-clue={clue.value}
           phx-target={@myself}
         >
-          <%= clue.value %>
+          $<%= clue.value %>
         </li>
       <% end %>
     </ul>
