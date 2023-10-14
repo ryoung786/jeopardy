@@ -2,12 +2,14 @@
   <div :if={!@category}>
     <ul>
       <li
-        :for={category <- @categories}
+        :for={category <- @game.categories}
         phx-click="category-selected"
         phx-value-category={category}
         phx-target={@myself}
       >
-        <%= category %>
+        <span :if={Enum.any?(@game.board[category], fn clue -> not clue.asked? end)}>
+          <%= category %>
+        </span>
       </li>
     </ul>
   </div>
@@ -15,7 +17,7 @@
   <div :if={@category}>
     <span phx-click="back" phx-target={@myself}>Back</span>
     <ul>
-      <%= for {_, clue} <- Enum.sort(@clues[@category]) do %>
+      <%= for clue <- @game.board[@category] do %>
         <li :if={clue.asked?}></li>
         <li
           :if={!clue.asked?}
@@ -29,5 +31,5 @@
     </ul>
   </div>
 
-  <p>Ask <%= @board_control %> to select a clue.</p>
+  <p>Ask <%= @game.board_control %> to select a clue.</p>
 </div>

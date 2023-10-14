@@ -3,7 +3,7 @@ defmodule JeopardyWeb.Components.Contestant.SelectingClue do
 
   def assign_init(socket, game) do
     assign(socket,
-      has_board_control?: game.board.control == socket.assigns.name,
+      has_board_control?: socket.assigns.game.board_control == socket.assigns.name,
       board_control: game.board.control
     )
   end
@@ -16,7 +16,7 @@ defmodule JeopardyWeb.Components.Contestant.SelectingClue do
         <p>Tell <%= @trebek %> which clue you select.</p>
       </div>
       <div :if={!@has_board_control?}>
-        <p>Waiting for <%= @board_control %> to select a clue.</p>
+        <p>Waiting for <%= @game.board_control %> to select a clue.</p>
       </div>
     </div>
     """

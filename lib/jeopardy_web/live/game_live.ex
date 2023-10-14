@@ -18,12 +18,19 @@ defmodule JeopardyWeb.GameLive do
         assign(socket, name: nil, role: :tv)
       end
 
-    {:ok, assign(socket, code: code, state: game.fsm.state)}
+    {:ok, assign(socket, code: code, state: game.fsm.state),
+     layout: {JeopardyWeb.Layouts, :game_app}}
   end
 
   def render(assigns) do
     ~H"""
-    <.live_component module={FSM.to_component(@state, @role)} id="c-id" code={@code} name={@name} />
+    <.live_component
+      module={FSM.to_component(@state, @role)}
+      id="c-id"
+      code={@code}
+      name={@name}
+      role={@role}
+    />
     """
   end
 

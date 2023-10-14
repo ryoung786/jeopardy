@@ -1,11 +1,8 @@
 defmodule JeopardyWeb.Components.Contestant.AwaitingAnswer do
   use JeopardyWeb.FSMComponent
 
-  def assign_init(socket, game) do
-    assign(socket,
-      buzzed?: game.buzzer == socket.assigns.name,
-      buzzer: game.buzzer
-    )
+  def assign_init(socket, _game) do
+    assign(socket, buzzed?: socket.assigns.game.buzzer == socket.assigns.name)
   end
 
   def render(assigns) do
@@ -13,10 +10,10 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingAnswer do
     <div>
       <div :if={@buzzed?}>
         <h3>You buzzed in!</h3>
-        <p>Tell <%= @trebek %> your answer.</p>
+        <p>Tell <%= @game.trebek %> your answer.</p>
       </div>
       <div :if={!@buzzed?}>
-        <p><%= @buzzer %> buzzed in.</p>
+        <p><%= @game.buzzer %> buzzed in.</p>
         <p>Waiting for them to answer.</p>
       </div>
     </div>

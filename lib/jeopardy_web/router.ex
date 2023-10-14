@@ -13,7 +13,10 @@ defmodule JeopardyWeb.Router do
     plug :fetch_current_user
   end
 
-  pipeline :require_game, do: plug(JeopardyWeb.Plugs.RequireGame)
+  pipeline :game do
+    plug JeopardyWeb.Plugs.RequireGame
+    plug :put_root_layout, html: {JeopardyWeb.Layouts, :game_root}
+  end
 
   scope "/", JeopardyWeb do
     pipe_through :browser
@@ -24,7 +27,7 @@ defmodule JeopardyWeb.Router do
     live "/games", GamesLive
 
     scope "/games/:code" do
-      pipe_through [:require_game]
+      pipe_through [:game]
       live "/", GameLive
     end
   end

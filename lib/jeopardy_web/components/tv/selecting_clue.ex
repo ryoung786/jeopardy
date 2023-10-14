@@ -14,10 +14,9 @@ defmodule JeopardyWeb.Components.Tv.SelectingClue do
   def render(assigns) do
     ~H"""
     <div>
-      <div :for={category <- @categories}>
-        <div><%= category %></div>
-        <div :for={clue_value <- @clues[category]}><%= clue_value %></div>
-      </div>
+      <.tv contestants={@contestants}>
+        <.board categories={@game.categories} clues={@game.board} />
+      </.tv>
     </div>
     """
   end

@@ -85,6 +85,7 @@ defmodule JeopardyWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import JeopardyWeb.CoreComponents
+      import JeopardyWeb.Components
       import JeopardyWeb.Gettext
 
       # Shortcut for generating JS commands

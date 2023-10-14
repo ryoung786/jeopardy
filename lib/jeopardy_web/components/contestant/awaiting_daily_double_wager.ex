@@ -1,19 +1,17 @@
 defmodule JeopardyWeb.Components.Contestant.AwaitingDailyDoubleWager do
   use JeopardyWeb.FSMComponent
 
-  def assign_init(socket, game) do
-    contestant = game.contestants[socket.assigns.name]
+  def assign_init(socket, _game) do
+    contestant = socket.assigns.game.contestants[socket.assigns.game.board_control]
     score = contestant.score
 
     {min_wager, max_wager} =
-      if game.round == :jeopardy,
+      if socket.assigns.game.round == :jeopardy,
         do: {5, max(score, 1_000)},
         else: {10, max(score, 2_000)}
 
     assign(socket,
-      score: score,
-      has_board_control?: socket.assigns.name == game.board.control,
-      board_control: game.board.control,
+      has_board_control?: socket.assigns.name == socket.assigns.game.board_control,
       min_wager: min_wager,
       max_wager: max_wager
     )
@@ -28,7 +26,9 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingDailyDoubleWager do
       </div>
 
       <div :if={not @has_board_control?}>
-        <p>Waiting for <%= @board_control %> to tell <%= @trebek %> how much they'd like to wager.</p>
+        <p>
+          Waiting for <%= @game.board_control %> to tell <%= @trebek %> how much they'd like to wager.
+        </p>
       </div>
     </div>
     """

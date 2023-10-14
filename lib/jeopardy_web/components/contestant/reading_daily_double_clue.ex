@@ -1,12 +1,12 @@
 defmodule JeopardyWeb.Components.Contestant.ReadingDailyDoubleClue do
   use JeopardyWeb.FSMComponent
 
-  def assign_init(socket, game) do
+  def assign_init(socket, _game) do
     assign(socket,
-      has_board_control?: socket.assigns.name == game.board.control,
-      board_control: game.board.control,
-      wager: game.clue.wager,
-      clue: game.clue.clue
+      has_board_control?: socket.assigns.name == socket.assigns.game.board_control,
+      board_control: socket.assigns.game.board_control,
+      wager: socket.assigns.game.clue.wager,
+      clue: socket.assigns.game.clue.clue
     )
   end
 

@@ -10,11 +10,11 @@ defmodule JeopardyWeb.Components.Tv.RevealingBoard do
 
   def render(assigns) do
     ~H"""
-    <ul class="bg-blue-700">
-      <li :for={{category, i} <- Enum.with_index(@categories)} class={i == @index && "bg-emerald-400"}>
-        <%= category %>
-      </li>
-    </ul>
+    <div>
+      <.tv contestants={@contestants}>
+        <.board categories={@game.categories} clues={@game.board} category_reveal_index={@index} />
+      </.tv>
+    </div>
     """
   end
 

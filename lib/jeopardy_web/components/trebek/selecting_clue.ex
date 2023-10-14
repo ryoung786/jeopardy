@@ -2,13 +2,8 @@ defmodule JeopardyWeb.Components.Trebek.SelectingClue do
   use JeopardyWeb.FSMComponent
   alias Jeopardy.GameServer
 
-  def assign_init(socket, game) do
-    assign(socket,
-      board_control: game.board.control,
-      categories: game.board.categories,
-      category: nil,
-      clues: game.board.clues
-    )
+  def assign_init(socket, _game) do
+    assign(socket, category: nil)
   end
 
   def handle_event("back", _params, socket) do

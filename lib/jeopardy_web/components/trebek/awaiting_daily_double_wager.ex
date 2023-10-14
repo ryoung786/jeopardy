@@ -2,18 +2,16 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingDailyDoubleWager do
   use JeopardyWeb.FSMComponent
   alias Jeopardy.GameServer
 
-  def assign_init(socket, game) do
-    contestant = game.contestants[game.board.control]
+  def assign_init(socket, _game) do
+    contestant = socket.assigns.game.contestants[socket.assigns.game.board_control]
     score = contestant.score
 
     {min_wager, max_wager} =
-      if game.round == :jeopardy,
+      if socket.assigns.game.round == :jeopardy,
         do: {5, max(score, 1_000)},
         else: {10, max(score, 2_000)}
 
     assign(socket,
-      name: contestant.name,
-      score: contestant.score,
       form: to_form(%{}),
       min_wager: min_wager,
       max_wager: max_wager
@@ -54,8 +52,9 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingDailyDoubleWager do
     end
   end
 
-  def handle_game_server_msg({:wager_submitted, {name, amount}}, socket) do
-    {:ok, assign(socket, contestants: Map.put(socket.assigns.contestants, name, amount))}
+  def handle_game_server_msg({:wager_submitted, {_name, _amount}}, socket) do
+    # {:ok, assign(socket, contestants: Map.put(socket.assigns.contestants, name, amount))}
+    {:ok, socket}
   end
 
   defp validate(wager, min..max = range) do
