@@ -33,13 +33,23 @@ defmodule JeopardyWeb.Components do
 
   def board(assigns) do
     ~H"""
-    <div class="grid grid-cols-6 gap-2 text-center font-serif uppercase">
-      <div :for={{category, i} <- Enum.with_index(@categories)}>
-        <div class={["category", @category_reveal_index < i && "hidden"]}>
+    <div
+      class="grid grid-cols-6 auto-cols-auto gap-1 text-center font-serif uppercase text-neutral-100"
+      style="text-shadow: 2px 2px 2px #000"
+    >
+      <div :for={{category, i} <- Enum.with_index(@categories)} class="grid grid-rows-6 gap-1">
+        <div class={[
+          "category bg-blue-800 p-4 grid place-content-center min-h-[95px]",
+          @category_reveal_index < i && "hidden"
+        ]}>
           <%= category %>
         </div>
-        <div :for={clue <- @clues[category]}>
-          <span :if={not clue.asked?}><%= clue.value %></span>
+        <div
+          :for={clue <- @clues[category]}
+          class="text-amber-500 bg-blue-800 p-4 grid place-content-center font-bold font-sans text-3xl"
+          style="color: #dda95e"
+        >
+          <span :if={not clue.asked?}>$<%= clue.value %></span>
         </div>
       </div>
     </div>
