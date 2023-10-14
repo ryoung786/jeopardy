@@ -30,7 +30,6 @@ defmodule Jeopardy.FSM do
   end
 
   def broadcast(code, message) do
-    IO.inspect(message, label: "[xxx] broadcast")
     Phoenix.PubSub.broadcast(Jeopardy.PubSub, "games:#{code}", message)
   end
 

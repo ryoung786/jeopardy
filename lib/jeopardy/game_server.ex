@@ -91,8 +91,6 @@ defmodule Jeopardy.GameServer do
   end
 
   defp call(code, command) do
-    IO.inspect(command, label: "[xxx] action")
-
     case game_pid(code) do
       pid when is_pid(pid) -> GenServer.call(pid, command)
       nil -> {:error, :game_not_found}
