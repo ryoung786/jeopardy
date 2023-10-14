@@ -3,7 +3,11 @@ defmodule JeopardyWeb.Components.Tv.RecappingRound do
 
   def render(assigns) do
     ~H"""
-    <h3>Round complete</h3>
+    <div>
+      <.tv contestants={@game.contestants}>
+        <h3>Round complete</h3>
+      </.tv>
+    </div>
     """
   end
 end

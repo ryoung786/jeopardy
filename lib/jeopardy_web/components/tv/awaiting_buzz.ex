@@ -11,9 +11,10 @@ defmodule JeopardyWeb.Components.Tv.AwaitingBuzz do
   def render(assigns) do
     ~H"""
     <div>
-      <h3><%= @game.clue.category %></h3>
-      <h1><%= @game.clue.clue %></h1>
-      <.lights_timer timer_seconds={5} time_remaining={@time_remaining} />
+      <.tv contestants={@game.contestants}>
+        <.clue category={@game.clue.category} clue={@game.clue.clue} />
+        <.lights_timer timer_seconds={5} time_remaining={@time_remaining} />
+      </.tv>
     </div>
     """
   end

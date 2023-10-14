@@ -29,9 +29,9 @@ defmodule Jeopardy.FSM.AwaitingAnswer do
       |> Game.update_contestant_score(game.buzzer, -1 * game.clue.value)
       |> Map.put(:buzzer, nil)
 
-    # if everybody's tried, go to the next clue, otherwise allow others a chance to buzz
+    # if everybody's tried, read the answer, otherwise allow others a chance to buzz
     if Enum.count(incorrect_contestants) >= Enum.count(game.contestants),
-      do: {:ok, to_next_state(game)},
+      do: {:ok, FSM.to_state(game, FSM.ReadingAnswer)},
       else: {:ok, FSM.to_state(game, FSM.AwaitingBuzz)}
   end
 

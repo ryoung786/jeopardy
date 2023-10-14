@@ -4,8 +4,9 @@ defmodule JeopardyWeb.Components.Tv.AwaitingDailyDoubleWager do
   def render(assigns) do
     ~H"""
     <div>
-      <h3><%= @game.clue.category %></h3>
-      <h3>Daily Double</h3>
+      <.tv contestants={@game.contestants} buzzer={@game.buzzer}>
+        <.clue category={@game.clue.category} clue="Daily Double" />
+      </.tv>
     </div>
     """
   end

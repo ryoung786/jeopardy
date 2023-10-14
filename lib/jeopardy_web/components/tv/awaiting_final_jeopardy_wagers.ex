@@ -3,17 +3,16 @@ defmodule JeopardyWeb.Components.Tv.AwaitingFinalJeopardyWagers do
   alias Jeopardy.Timers
 
   def assign_init(socket, game) do
-    assign(socket,
-      category: List.first(game.board.categories),
-      time_remaining: Timers.time_remaining(game.fsm.data[:expires_at])
-    )
+    assign(socket, time_remaining: Timers.time_remaining(game.fsm.data[:expires_at]))
   end
 
   def render(assigns) do
     ~H"""
     <div>
-      <h3><%= @category %></h3>
-      <.pie_timer time_remaining={@time_remaining} />
+      <.tv contestants={@game.contestants}>
+        <.clue clue={@game.clue.category} />
+        <.pie_timer time_remaining={@time_remaining} />
+      </.tv>
     </div>
     """
   end

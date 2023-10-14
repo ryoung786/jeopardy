@@ -86,6 +86,9 @@ defmodule Jeopardy.EndToEndTest do
       assert fsm_state(code) == FSM.AwaitingAnswer
       {:ok, game} = GameServer.action(code, :answered, :incorrect)
 
+      assert fsm_state(code) == FSM.ReadingAnswer
+      GameServer.action(code, :finished_reading)
+
       assert fsm_state(code) == FSM.RecappingRound
       assert %{"a" => %{score: -300}, "b" => %{score: 300}} = game.contestants
       {:ok, game} = GameServer.action(code, :zero_out_negative_scores)

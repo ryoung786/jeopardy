@@ -6,8 +6,6 @@ defmodule JeopardyWeb.Components.Tv.ReadingFinalJeopardyClue do
 
   def assign_init(socket, game) do
     assign(socket,
-      category: game.clue.category,
-      clue: game.clue.clue,
       timer: @timer,
       time_remaining: Timers.time_remaining(game.fsm.data[:expires_at])
     )
@@ -16,9 +14,10 @@ defmodule JeopardyWeb.Components.Tv.ReadingFinalJeopardyClue do
   def render(assigns) do
     ~H"""
     <div>
-      <h3><%= @category %></h3>
-      <h3><%= @clue %></h3>
-      <.pie_timer :if={@time_remaining} timer={@timer} time_remaining={@time_remaining} />
+      <.tv contestants={@game.contestants}>
+        <.clue category={@game.clue.category} clue={@game.clue.clue} />
+        <.pie_timer :if={@time_remaining} timer={@timer} time_remaining={@time_remaining} />
+      </.tv>
     </div>
     """
   end

@@ -4,7 +4,9 @@ defmodule JeopardyWeb.Components.Tv.ReadingAnswer do
   def render(assigns) do
     ~H"""
     <div>
-      <h3><%= @game.clue.answer %></h3>
+      <.tv contestants={@game.contestants}>
+        <.clue category={@game.clue.category} clue={@game.clue.answer} />
+      </.tv>
     </div>
     """
   end
