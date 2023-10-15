@@ -33,7 +33,7 @@
         <li :if={clue.asked?} class="bg-blue-800"></li>
         <li
           :if={!clue.asked?}
-          class="p-2 bg-blue-800 font-bold grid place-content-center cursor-pointer text-shadow text-3xl"
+          class="p-2 bg-blue-800 font-bold grid place-content-center cursor-pointer text-shadow tall:text-3xl"
           style="color: #dda95e"
           phx-click="clue-selected"
           phx-value-clue={clue.value}

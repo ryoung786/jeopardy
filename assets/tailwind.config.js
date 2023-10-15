@@ -15,6 +15,9 @@ module.exports = {
     extend: {
       colors: {
         brand: "#FD4F00",
+      },
+      screens: {
+        'tall': { 'raw': '(min-height: 450px)' }
       }
     },
   },
