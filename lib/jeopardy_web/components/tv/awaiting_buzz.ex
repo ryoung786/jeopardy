@@ -13,7 +13,7 @@ defmodule JeopardyWeb.Components.Tv.AwaitingBuzz do
     <div>
       <.tv contestants={@game.contestants}>
         <.clue category={@game.clue.category} clue={@game.clue.clue} />
-        <.lights_timer timer_seconds={5} time_remaining={@time_remaining} />
+        <:timer><.lights_timer timer_seconds={5} time_remaining={@time_remaining} /></:timer>
       </.tv>
     </div>
     """

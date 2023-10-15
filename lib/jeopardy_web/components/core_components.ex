@@ -733,7 +733,7 @@ defmodule JeopardyWeb.CoreComponents do
         "animation: #{@timer_seconds}s steps(#{@timer_seconds}) -#{:timer.seconds(@timer_seconds) - @time_remaining}ms forwards lights-timer"
       ]}
     >
-      <div :for={_ <- 1..(@timer_seconds * 2 - 1)} class="bg-amber-400 w-full h-4" />
+      <div :for={_ <- 1..(@timer_seconds * 2 - 1)} class="bg-amber-200 w-full h-1" />
     </div>
     """
   end

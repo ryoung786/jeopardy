@@ -17,7 +17,7 @@
 
 @keyframes lights-timer {
   to {
-    clip-path: inset(0 55%);
+    clip-path: inset(0 55.5%);
   }
 }
 

@@ -4,8 +4,8 @@
       <%= if Enum.all?(@game.board[category], fn clue -> clue.asked? end) do %>
         <li class="bg-blue-800"></li>
       <% else %>
-        <li
-          class="p-4 bg-blue-800 text-neutral-100 uppercase grid place-content-center text-center cursor-pointer text-shadow font-serif"
+        <.button
+          class="p-4 bg-blue-800 text-neutral-100 uppercase grid place-content-center text-center cursor-pointer text-shadow font-serif h-full rounded-none hover:bg-blue-900"
           phx-click="category-selected"
           phx-value-category={category}
           phx-target={@myself}
@@ -13,7 +13,7 @@
           <span :if={Enum.any?(@game.board[category], fn clue -> not clue.asked? end)}>
             <%= category %>
           </span>
-        </li>
+        </.button>
       <% end %>
     <% end %>
   </ul>
@@ -31,16 +31,16 @@
     <ul class="grid grid-cols-x2 auto-rows-fr gap-1">
       <%= for clue <- @game.board[@category] do %>
         <li :if={clue.asked?} class="bg-blue-800"></li>
-        <li
+        <.button
           :if={!clue.asked?}
-          class="p-2 bg-blue-800 font-bold grid place-content-center cursor-pointer text-shadow tall:text-3xl"
+          class="p-2 bg-blue-800 font-bold grid place-content-center cursor-pointer text-shadow tall:text-3xl rounded-none hover:bg-blue-900"
           style="color: #dda95e"
           phx-click="clue-selected"
           phx-value-clue={clue.value}
           phx-target={@myself}
         >
           $<%= clue.value %>
-        </li>
+        </.button>
       <% end %>
     </ul>
   </div>

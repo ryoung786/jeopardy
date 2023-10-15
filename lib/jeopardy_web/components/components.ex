@@ -10,11 +10,11 @@ defmodule JeopardyWeb.Components do
 
   def tv(assigns) do
     ~H"""
-    <div class="h-screen grid grid-rows-[1fr_30px_auto]">
-      <div class="">
-        <%= render_slot(@inner_block) %>
+    <div class="h-screen grid grid-rows-[1fr_25px_auto]" style="background: #221e21">
+      <div><%= render_slot(@inner_block) %></div>
+      <div class="grid items-center h-full px-2">
+        <%= render_slot(@timer) %>
       </div>
-      <div><%= render_slot(@timer) %></div>
       <div
         class="podiums flex justify-evenly w-screen"
         style="background: linear-gradient(to bottom, #5f3929, #5f3929 7%, #dab777 7%, #dab777 10%, #5f3929 10%, #5f3929 17%, #dab777 17%, #dab777 20%, #5f3929 20%, #5f3929 30%, #221e21 30%, #221e21 95%, #5f3929 95%, #5f3929)"
@@ -66,7 +66,7 @@ defmodule JeopardyWeb.Components do
     ~H"""
     <div
       class="podium grid gap-2 bg-black text-neutral-100 h-[200px] p-1 w-[120px] text-shadow grid-rows-[28%_1fr]"
-      style="border-left: 5px solid #5f3929; border-right: 5px solid #5f3929;"
+      style="border: 5px solid #5f3929; border-bottom: none;"
     >
       <div class="score grid place-content-center text-2xl font-bold bg-blue-800 ">
         $<%= @score %>
@@ -100,7 +100,7 @@ defmodule JeopardyWeb.Components do
         </div>
         <div
           :for={clue <- @clues[category]}
-          class="bg-blue-800 p-2 grid place-content-center font-bold font-sans sm:text-lg md:text-xl lg:text-3xl"
+          class="bg-blue-800 p-2 grid place-content-center font-bold font-sans text-3xl lg:text-4xl"
           style="color: #dda95e"
         >
           <span :if={not clue.asked?}>$<%= clue.value %></span>
