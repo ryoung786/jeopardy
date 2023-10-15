@@ -4,7 +4,7 @@ defmodule JeopardyWeb.Components.Contestant.RecappingRound do
   def render(assigns) do
     ~H"""
     <div>
-      <p>Round complete.</p>
+      <.instructions>Round complete.</.instructions>
     </div>
     """
   end
