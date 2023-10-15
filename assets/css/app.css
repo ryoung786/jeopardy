@@ -20,3 +20,16 @@
     clip-path: inset(0 55%);
   }
 }
+
+.lit {
+  background: #e4e2c0;
+  box-shadow: inset -4px -4px 4px 0 hsla(0,0%,100%,.3), 0 0 30px 6px hsla(0,0%,100%,.5);
+}
+
+.unlit {
+  background: #000b6e;
+}
+
+.text-shadow {
+  text-shadow: 2px 2px 2px #000;
+}

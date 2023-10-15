@@ -8,14 +8,14 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingAnswer do
   def render(assigns) do
     ~H"""
     <div>
-      <div :if={@buzzed?}>
-        <h3>You buzzed in!</h3>
-        <p>Tell <%= @game.trebek %> your answer.</p>
-      </div>
-      <div :if={!@buzzed?}>
-        <p><%= @game.buzzer %> buzzed in.</p>
-        <p>Waiting for them to answer.</p>
-      </div>
+      <.instructions>
+        <span :if={@buzzed?}>
+          You buzzed in!  Tell <%= @game.trebek %> your answer.
+        </span>
+        <span :if={not @buzzed?}>
+          <%= @game.buzzer %> buzzed in.<br />Waiting for them to answer.
+        </span>
+      </.instructions>
     </div>
     """
   end
