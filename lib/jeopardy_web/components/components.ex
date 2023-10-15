@@ -90,11 +90,13 @@ defmodule JeopardyWeb.Components do
         class="grid gap-1 overflow-hidden"
         style="grid-template-rows: 16% repeat(5, 1fr)"
       >
-        <div class={[
-          "category bg-blue-800 p-4 grid place-content-center text-xs md:text-base overflow-hidden",
-          @category_reveal_index < i && "hidden"
-        ]}>
-          <%= category %>
+        <div class="category bg-blue-800 p-4 grid place-content-center text-xs md:text-base overflow-hidden">
+          <span class={[
+            "transition-all",
+            @category_reveal_index < i && "invisible opacity-0 translate-y-0.5"
+          ]}>
+            <%= category %>
+          </span>
         </div>
         <div
           :for={clue <- @clues[category]}

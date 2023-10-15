@@ -10,11 +10,30 @@ defmodule JeopardyWeb.Components.Contestant.RevealingBoard do
 
   def render(assigns) do
     ~H"""
-    <ul class="bg-blue-700">
-      <li :for={{category, i} <- Enum.with_index(@categories)} class={i == @index && "bg-emerald-400"}>
-        <%= category %>
-      </li>
-    </ul>
+    <div class="w-screen h-screen overflow-clip">
+      <ul
+        class={[
+          "w-full h-full text-neutral-100 text-shadow font-serif grid",
+          "transition-transform duration-1000"
+        ]}
+        style={[
+          "grid-template-columns: repeat(#{Enum.count(@categories) + 1}, 100%);",
+          "transform: translateX(calc(-100vw * #{@index + 1}))"
+        ]}
+      >
+        <li class="bg-blue-800 w-full h-full"></li>
+        <li
+          :for={{category, i} <- Enum.with_index(@categories)}
+          class={[
+            "bg-blue-800 transition-transform w-full h-full grid place-items-center text-3xl",
+            i != @index && "opacity-100 translate-x-fullx",
+            i == @index && "opacity-100 translate-x-0x"
+          ]}
+        >
+          <%= category %>
+        </li>
+      </ul>
+    </div>
     """
   end
 
