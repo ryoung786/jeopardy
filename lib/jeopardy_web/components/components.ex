@@ -10,7 +10,7 @@ defmodule JeopardyWeb.Components do
 
   def tv(assigns) do
     ~H"""
-    <div class="h-screen grid grid-rows-[1fr_25px_auto]" style="background: #221e21">
+    <div class="h-screen grid grid-rows-[1fr_25px_auto]" style="background: #221e21;">
       <div><%= render_slot(@inner_block) %></div>
       <div class="grid items-center h-full px-2">
         <%= render_slot(@timer) %>
@@ -32,12 +32,26 @@ defmodule JeopardyWeb.Components do
 
   attr :clue, :string, required: true
   attr :category, :string, default: nil
+  attr :daily_double_background?, :boolean, default: false
 
   def clue(assigns) do
     ~H"""
-    <div class="bg-blue-800 h-full text-neutral-100 grid p-12 gap-2 grid-rows-[auto_1fr] text-shadow">
+    <div
+      class="bg-blue-800 h-full text-neutral-100 grid p-12 gap-2 grid-rows-[auto_1fr] text-shadow"
+      style={
+        @daily_double_background? &&
+          "background: radial-gradient(circle, rgba(236,182,144,1) 12%, rgba(220,128,129,1) 24%, rgba(171,83,131,1) 40%, rgba(145,77,167,1) 58%, rgba(1,11,121,1) 100%);"
+      }
+    >
       <h3 class="text-xl font-sans"><%= @category %></h3>
-      <h1 class="grid place-content-center text-5xl font-serif text-center place-self-center max-w-[700px]">
+      <h1
+        class={[
+          "grid text-4xl text-center place-self-center max-w-4xl leading-snug",
+          !@daily_double_background? && "font-serif",
+          @daily_double_background? && "font-sans font-bold text-7xl"
+        ]}
+        style={@daily_double_background? && "animation: daily-double 1s;"}
+      >
         <%= @clue %>
       </h1>
     </div>
@@ -51,7 +65,7 @@ defmodule JeopardyWeb.Components do
     ~H"""
     <div class="bg-blue-800 h-full text-neutral-100 grid p-4 gap-2 grid-rows-[auto_1fr] text-shadow">
       <h3 class="font-sans"><%= @category %></h3>
-      <h1 class="grid place-content-center text-2xl font-serif text-center place-self-center max-w-[700px]">
+      <h1 class="grid text-2xl font-serif text-center place-self-center max-w-4xl">
         <%= @clue %>
       </h1>
     </div>
