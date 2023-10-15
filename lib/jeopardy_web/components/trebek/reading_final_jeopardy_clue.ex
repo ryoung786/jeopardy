@@ -33,14 +33,13 @@ defmodule JeopardyWeb.Components.Trebek.ReadingFinalJeopardyClue do
         <.pie_timer timer={@timer} time_remaining={@time_remaining} />
       </div>
 
-      <div :if={not @finished_reading?}>
-        <h3><%= @category %></h3>
-        <h3><%= @clue %></h3>
-
-        <p>Read the clue, then click the button to start the timer.</p>
-        <.button class="btn btn-primary" phx-target={@myself} phx-click="finished-reading">
-          Start Timer
-        </.button>
+      <div :if={not @finished_reading?} class="grid grid-rows-[1fr_auto] min-h-screen">
+        <.trebek_clue category={@game.clue.category} clue={@game.clue.clue} />
+        <div class="p-4 grid">
+          <.button class="btn-primary" phx-target={@myself} phx-click="finished-reading">
+            Start Timer
+          </.button>
+        </div>
       </div>
     </div>
     """

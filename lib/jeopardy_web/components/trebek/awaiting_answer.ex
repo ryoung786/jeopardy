@@ -13,7 +13,7 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingAnswer do
         <button class="btn btn-error" phx-click="incorrect" phx-target={@myself}>
           Incorrect
         </button>
-        <button class="btn btn-primary" phx-click="correct" phx-target={@myself}>
+        <button class="btn btn-success" phx-click="correct" phx-target={@myself}>
           Correct
         </button>
       </div>
