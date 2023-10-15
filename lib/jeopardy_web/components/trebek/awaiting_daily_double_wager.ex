@@ -20,9 +20,20 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingDailyDoubleWager do
 
   def render(assigns) do
     ~H"""
-    <div>
-      <.form for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself}>
-        <.input type="text" field={@form[:wager]} placeholder={@max_wager} />
+    <div class="bg-sky-100 min-h-screen p-4 grid place-items-center">
+      <.form
+        for={@form}
+        class="flex flex-col gap-4 max-w-screen-sm w-full"
+        phx-change="validate"
+        phx-submit="submit"
+        phx-target={@myself}
+      >
+        <.input
+          type="number"
+          field={@form[:wager]}
+          placeholder={@max_wager}
+          style="text-align: center"
+        />
         <.button class="btn-primary">Submit Wager</.button>
       </.form>
     </div>

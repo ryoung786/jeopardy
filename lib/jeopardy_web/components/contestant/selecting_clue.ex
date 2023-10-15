@@ -11,13 +11,13 @@ defmodule JeopardyWeb.Components.Contestant.SelectingClue do
   def render(assigns) do
     ~H"""
     <div>
-      <div :if={@has_board_control?}>
-        <h3>You have control of the board.</h3>
-        <p>Tell <%= @trebek %> which clue you select.</p>
-      </div>
-      <div :if={!@has_board_control?}>
-        <p>Waiting for <%= @game.board_control %> to select a clue.</p>
-      </div>
+      <.instructions>
+        <%= if @has_board_control? do %>
+          You have control of the board.<br /> Tell <%= @trebek %> which clue you select.
+        <% else %>
+          Waiting for <%= @game.board_control %> to select a clue.
+        <% end %>
+      </.instructions>
     </div>
     """
   end

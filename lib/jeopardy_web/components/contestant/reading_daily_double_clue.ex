@@ -13,14 +13,13 @@ defmodule JeopardyWeb.Components.Contestant.ReadingDailyDoubleClue do
   def render(assigns) do
     ~H"""
     <div>
-      <div :if={@has_board_control?}>
-        <h3>For $<%= @wager %>:</h3>
-        <p>Tell <%= @trebek %> your answer.</p>
-      </div>
-
-      <div :if={not @has_board_control?}>
-        <p>Waiting for <%= @board_control %> to answer.</p>
-      </div>
+      <.instructions>
+        <%= if @has_board_control? do %>
+          For $<%= @wager %>:<br /> Tell <%= @game.trebek %> your answer.
+        <% else %>
+          Waiting for <%= @game.board_control %> to answer.
+        <% end %>
+      </.instructions>
     </div>
     """
   end

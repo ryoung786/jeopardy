@@ -20,16 +20,14 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingDailyDoubleWager do
   def render(assigns) do
     ~H"""
     <div>
-      <div :if={@has_board_control?}>
-        <p>Tell <%= @trebek %> how much you'd like to wager.</p>
-        <p>You can wager between $<%= @min_wager %> and $<%= @max_wager %>.</p>
-      </div>
-
-      <div :if={not @has_board_control?}>
-        <p>
-          Waiting for <%= @game.board_control %> to tell <%= @trebek %> how much they'd like to wager.
-        </p>
-      </div>
+      <.instructions>
+        <%= if @has_board_control? do %>
+          Tell <%= @trebek %> how much you'd like to wager.<br />
+          You can wager between $<%= @min_wager %> and $<%= @max_wager %>.
+        <% else %>
+          Waiting for <%= @game.board_control %> to tell <%= @game.trebek %> how much they'd like to wager.
+        <% end %>
+      </.instructions>
     </div>
     """
   end

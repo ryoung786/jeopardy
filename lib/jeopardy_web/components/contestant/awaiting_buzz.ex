@@ -4,9 +4,15 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingBuzz do
 
   def render(assigns) do
     ~H"""
-    <button class="btn btn-primary w-full h-full" phx-click="buzz" phx-target={@myself}>
-      Buzz
-    </button>
+    <div>
+      <.button
+        class="btn-primary rounded-none w-screen h-screen"
+        phx-click="buzz"
+        phx-target={@myself}
+      >
+        Buzz
+      </.button>
+    </div>
     """
   end
 

@@ -4,14 +4,16 @@ defmodule JeopardyWeb.Components.Trebek.ReadingDailyDoubleClue do
 
   def render(assigns) do
     ~H"""
-    <div>
-      <h3><%= @game.clue.answer %></h3>
-      <.button class="btn-error" phx-click="incorrect" phx-target={@myself}>
-        Incorrect
-      </.button>
-      <.button class="btn-primary" phx-click="correct" phx-target={@myself}>
-        Correct
-      </.button>
+    <div class="grid grid-rows-[1fr_auto] min-h-screen">
+      <.trebek_clue clue={@game.clue.answer} />
+      <div class="grid grid-cols-2 p-4 gap-4">
+        <button class="btn btn-error" phx-click="incorrect" phx-target={@myself}>
+          Incorrect
+        </button>
+        <button class="btn btn-primary" phx-click="correct" phx-target={@myself}>
+          Correct
+        </button>
+      </div>
     </div>
     """
   end

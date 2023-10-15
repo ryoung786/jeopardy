@@ -4,12 +4,13 @@ defmodule JeopardyWeb.Components.Trebek.ReadingClue do
 
   def render(assigns) do
     ~H"""
-    <div>
-      <h3><%= @game.clue.category %></h3>
-      <h1><%= @game.clue.clue %></h1>
-      <button class="btn btn-primary" phx-click="continue" phx-target={@myself}>
-        Finished Reading
-      </button>
+    <div class="grid grid-rows-[1fr_auto] min-h-screen">
+      <.trebek_clue category={@game.clue.category} clue={@game.clue.clue} />
+      <div class="p-4 grid">
+        <.button class="btn-primary" phx-click="continue" phx-target={@myself}>
+          Finished Reading
+        </.button>
+      </div>
     </div>
     """
   end

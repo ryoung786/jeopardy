@@ -4,13 +4,8 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingAnswer do
 
   def render(assigns) do
     ~H"""
-    <div class="grid grid-rows-[1fr_auto_auto] h-screen">
-      <div
-        class="bg-blue-800 grid place-content-center font-serif text-2xl text-neutral-100"
-        style="text-shadow: 2px 2px 2px #000"
-      >
-        <%= @game.clue.answer %>
-      </div>
+    <div class="grid grid-rows-[1fr_auto_auto] min-h-screen">
+      <.trebek_clue clue={@game.clue.answer} />
       <div class="text-center p-4">
         <%= @game.buzzer %> buzzed in.
       </div>
