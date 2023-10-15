@@ -65,7 +65,7 @@ defmodule JeopardyWeb.Components do
     ~H"""
     <div class="bg-blue-800 h-full text-neutral-100 grid p-4 gap-2 grid-rows-[auto_1fr] text-shadow">
       <h3 class="font-sans"><%= @category %></h3>
-      <h1 class="grid text-2xl font-serif text-center place-self-center max-w-4xl">
+      <h1 class="grid text-2xl leading-snug font-serif text-center place-self-center max-w-4xl">
         <%= @clue %>
       </h1>
     </div>

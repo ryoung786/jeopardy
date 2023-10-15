@@ -14,18 +14,15 @@ defmodule JeopardyWeb.Components.Trebek.RevealingBoard do
     <div class="grid grid-rows-[1fr_auto] h-screen">
       <div class="w-screen overflow-clip">
         <ul
-          class="h-full text-neutral-100 text-shadow font-serif grid transition-transform duration-1000"
+          class="h-full grid transition-transform duration-1000"
           style={[
             "grid-template-columns: repeat(#{Enum.count(@categories) + 1}, 100%);",
             "transform: translateX(calc(-100vw * #{@index + 1}))"
           ]}
         >
           <li class="bg-blue-800 w-full h-full"></li>
-          <li
-            :for={category <- @categories}
-            class="bg-blue-800 transition-transform grid place-items-center text-3xl leading-snug p-4"
-          >
-            <span class="max-w-4xl"><%= category %></span>
+          <li :for={category <- @categories} class="xp-4">
+            <.trebek_clue clue={category} />
           </li>
         </ul>
       </div>
