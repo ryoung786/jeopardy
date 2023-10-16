@@ -1,4 +1,5 @@
 defmodule JeopardyWeb.Components.Trebek.AwaitingBuzz do
+  @moduledoc false
   use JeopardyWeb.FSMComponent
 
   def render(assigns) do

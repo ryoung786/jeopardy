@@ -1,4 +1,5 @@
 defmodule JeopardyWeb.GameLive do
+  @moduledoc false
   use JeopardyWeb, :live_view
 
   alias Jeopardy.FSM
@@ -18,8 +19,7 @@ defmodule JeopardyWeb.GameLive do
         assign(socket, name: nil, role: :tv)
       end
 
-    {:ok, assign(socket, code: code, state: game.fsm.state),
-     layout: {JeopardyWeb.Layouts, :game_app}}
+    {:ok, assign(socket, code: code, state: game.fsm.state), layout: {JeopardyWeb.Layouts, :game_app}}
   end
 
   def render(assigns) do

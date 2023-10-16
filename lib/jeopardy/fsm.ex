@@ -1,12 +1,13 @@
 defmodule Jeopardy.FSM do
+  @moduledoc false
   use TypedStruct
+
+  alias Jeopardy.Game
 
   typedstruct do
     field :state, module()
     field :data, any()
   end
-
-  alias Jeopardy.Game
 
   def handle_action(action, game, data) do
     if action in game.fsm.state.valid_actions(),
@@ -35,16 +36,16 @@ defmodule Jeopardy.FSM do
 
   def to_component(state, :tv) do
     alias = state |> to_string() |> String.split(".") |> List.last()
-    "Elixir.JeopardyWeb.Components.Tv.#{alias}" |> String.to_existing_atom()
+    String.to_existing_atom("Elixir.JeopardyWeb.Components.Tv.#{alias}")
   end
 
   def to_component(state, :trebek) do
     alias = state |> to_string() |> String.split(".") |> List.last()
-    "Elixir.JeopardyWeb.Components.Trebek.#{alias}" |> String.to_existing_atom()
+    String.to_existing_atom("Elixir.JeopardyWeb.Components.Trebek.#{alias}")
   end
 
   def to_component(state, _) do
     alias = state |> to_string() |> String.split(".") |> List.last()
-    "Elixir.JeopardyWeb.Components.Contestant.#{alias}" |> String.to_existing_atom()
+    String.to_existing_atom("Elixir.JeopardyWeb.Components.Contestant.#{alias}")
   end
 end

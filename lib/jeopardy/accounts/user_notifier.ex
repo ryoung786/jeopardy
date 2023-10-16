@@ -1,4 +1,5 @@
 defmodule Jeopardy.Accounts.UserNotifier do
+  @moduledoc false
   import Swoosh.Email
 
   alias Jeopardy.Mailer

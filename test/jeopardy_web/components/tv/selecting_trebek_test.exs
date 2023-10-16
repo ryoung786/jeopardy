@@ -2,6 +2,7 @@ defmodule JeopardyWeb.Components.Tv.SelectingTrebekTest do
   use JeopardyWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
+
   alias Jeopardy.GameServer
 
   setup do

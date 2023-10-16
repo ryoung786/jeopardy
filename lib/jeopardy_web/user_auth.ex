@@ -1,8 +1,9 @@
 defmodule JeopardyWeb.UserAuth do
+  @moduledoc false
   use JeopardyWeb, :verified_routes
 
-  import Plug.Conn
   import Phoenix.Controller
+  import Plug.Conn
 
   alias Jeopardy.Accounts
 

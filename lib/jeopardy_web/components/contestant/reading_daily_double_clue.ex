@@ -1,4 +1,5 @@
 defmodule JeopardyWeb.Components.Contestant.ReadingDailyDoubleClue do
+  @moduledoc false
   use JeopardyWeb.FSMComponent
 
   def assign_init(socket, _game) do

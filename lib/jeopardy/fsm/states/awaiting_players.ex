@@ -10,7 +10,7 @@ defmodule Jeopardy.FSM.AwaitingPlayers do
   alias Jeopardy.Game
 
   @impl true
-  def valid_actions() do
+  def valid_actions do
     ~w/add_player remove_player continue load_game/a
   end
 
@@ -19,15 +19,14 @@ defmodule Jeopardy.FSM.AwaitingPlayers do
   def handle_action(:remove_player, %Game{} = game, name), do: remove_player(game, name)
   def handle_action(:continue, %Game{} = game, _), do: continue(game)
 
-  def handle_action(:load_game, %Game{} = game, jarchive_game_id),
-    do: load_game(game, jarchive_game_id)
+  def handle_action(:load_game, %Game{} = game, jarchive_game_id), do: load_game(game, jarchive_game_id)
 
   def add_player(%Game{} = game, name) do
-    if name not in game.players do
+    if name in game.players do
+      {:error, :name_not_unique}
+    else
       FSM.broadcast(game, {:player_added, name})
       {:ok, %{game | players: [name | game.players]}}
-    else
-      {:error, :name_not_unique}
     end
   end
 

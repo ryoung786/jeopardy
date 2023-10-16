@@ -1,5 +1,7 @@
 defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
+  @moduledoc false
   use JeopardyWeb.FSMComponent
+
   alias Phoenix.LiveView.JS
 
   def assign_init(socket, game) do
@@ -82,7 +84,8 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
   # JS interactions
 
   defp remove_player(name) do
-    JS.push("remove_player", value: %{player: name})
+    "remove_player"
+    |> JS.push(value: %{player: name})
     |> hide_modal("remove-modal-#{name}")
   end
 end

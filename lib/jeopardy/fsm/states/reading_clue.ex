@@ -6,7 +6,7 @@ defmodule Jeopardy.FSM.ReadingClue do
   use Jeopardy.FSM.State
 
   @impl true
-  def valid_actions(), do: ~w/finished_reading/a
+  def valid_actions, do: ~w/finished_reading/a
 
   @impl true
   def handle_action(:finished_reading, game, _), do: unlock_buzzers(game)

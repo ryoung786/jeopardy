@@ -1,14 +1,15 @@
 defmodule Jeopardy.Board do
+  @moduledoc false
   use TypedStruct
+
+  alias Jeopardy.Board.Clue
+  alias Jeopardy.JArchive.RecordedGame
 
   typedstruct do
     field :control, String.t()
     field :categories, [String.t()], default: []
     field :clues, map(), default: %{}
   end
-
-  alias Jeopardy.JArchive.RecordedGame
-  alias Jeopardy.Board.Clue
 
   @spec from_game(%RecordedGame{}, :jeopardy | :double_jeopardy) :: %Jeopardy.Board{}
   def from_game(%RecordedGame{} = game, round) do
@@ -24,7 +25,8 @@ defmodule Jeopardy.Board do
                 clue: clue.clue,
                 answer: clue.answer,
                 value: clue.value,
-                daily_double?: clue.daily_double?
+                daily_double?: clue.daily_double?,
+                asked?: clue.clue == nil
               }}
            end)}
         end)

@@ -4,10 +4,11 @@ defmodule Jeopardy.FSM.ReadingAnswer do
   """
 
   use Jeopardy.FSM.State
+
   alias Jeopardy.Board
 
   @impl true
-  def valid_actions(), do: ~w/finished_reading/a
+  def valid_actions, do: ~w/finished_reading/a
 
   @impl true
   def handle_action(:finished_reading, game, _), do: continue(game)

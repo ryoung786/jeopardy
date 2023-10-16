@@ -4,12 +4,13 @@ defmodule Jeopardy.FSM.AwaitingDailyDoubleWager do
   """
 
   use Jeopardy.FSM.State
+
   alias Jeopardy.Game
 
   @wager_cap %{jeopardy: 1_000, double_jeopardy: 2_000}
 
   @impl true
-  def valid_actions(), do: ~w/wagered/a
+  def valid_actions, do: ~w/wagered/a
 
   @impl true
   def handle_action(:wagered, game, amount), do: wager(game, amount)
@@ -18,7 +19,7 @@ defmodule Jeopardy.FSM.AwaitingDailyDoubleWager do
     %{score: score} = game.contestants[game.board.control]
 
     with :ok <- validate_wager_amount(amount, score, game.round) do
-      {:ok, put_in(game.clue.wager, amount) |> FSM.to_state(FSM.ReadingDailyDoubleClue)}
+      {:ok, game.clue.wager |> put_in(amount) |> FSM.to_state(FSM.ReadingDailyDoubleClue)}
     end
   end
 

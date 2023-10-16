@@ -1,5 +1,7 @@
 defmodule JeopardyWeb.Components.Trebek.SelectingClue do
+  @moduledoc false
   use JeopardyWeb.FSMComponent
+
   alias Jeopardy.GameServer
 
   def assign_init(socket, _game) do
@@ -19,9 +21,8 @@ defmodule JeopardyWeb.Components.Trebek.SelectingClue do
     code = socket.assigns.code
     category = socket.assigns.category
 
-    with {:ok, _game} <- GameServer.action(code, :clue_selected, {category, clue}) do
-      {:noreply, socket}
-    else
+    case GameServer.action(code, :clue_selected, {category, clue}) do
+      {:ok, _game} -> {:noreply, socket}
       {:error, :clue_already_asked} -> {:noreply, socket}
       _ -> {:noreply, socket}
     end

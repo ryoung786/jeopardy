@@ -4,11 +4,12 @@ defmodule Jeopardy.FSM.ReadingDailyDoubleClue do
   """
 
   use Jeopardy.FSM.State
-  alias Jeopardy.Game
+
   alias Jeopardy.Board
+  alias Jeopardy.Game
 
   @impl true
-  def valid_actions(), do: ~w/answered/a
+  def valid_actions, do: ~w/answered/a
 
   @impl true
   def handle_action(:answered, game, correct_or_incorrect), do: answer(game, correct_or_incorrect)

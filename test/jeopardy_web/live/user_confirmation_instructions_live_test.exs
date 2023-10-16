@@ -1,8 +1,8 @@
 defmodule JeopardyWeb.UserConfirmationInstructionsLiveTest do
   use JeopardyWeb.ConnCase
 
-  import Phoenix.LiveViewTest
   import Jeopardy.AccountsFixtures
+  import Phoenix.LiveViewTest
 
   alias Jeopardy.Accounts
   alias Jeopardy.Repo

@@ -1,12 +1,13 @@
 defmodule Jeopardy.Game do
+  @moduledoc false
   use TypedStruct
 
   alias Jeopardy.Board
   alias Jeopardy.Board.Clue
   alias Jeopardy.Contestant
-  alias Jeopardy.JArchive.RecordedGame
   alias Jeopardy.FSM
   alias Jeopardy.FSM.AwaitingPlayers
+  alias Jeopardy.JArchive.RecordedGame
 
   typedstruct do
     field :code, String.t()
@@ -36,7 +37,8 @@ defmodule Jeopardy.Game do
   @spec set_contestant_score(t(), String.t(), integer()) :: integer()
   def set_contestant_score(game, name, amount) do
     with {:ok, _} <- find_contestant(game, name) do
-      put_in(game.contestants[name].score, amount)
+      game.contestants[name].score
+      |> put_in(amount)
       |> FSM.broadcast({:score_updated, {name, amount}})
     end
   end

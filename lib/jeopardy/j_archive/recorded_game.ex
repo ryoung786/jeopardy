@@ -1,8 +1,10 @@
 defmodule Jeopardy.JArchive.RecordedGame do
-  alias Jeopardy.JArchive.RecordedGame.Category
-
+  @moduledoc false
   use TypedEctoSchema
+
   import Ecto.Changeset
+
+  alias Jeopardy.JArchive.RecordedGame.Category
 
   @primary_key false
   typed_embedded_schema do
@@ -27,7 +29,8 @@ defmodule Jeopardy.JArchive.RecordedGame do
   end
 
   def changeset(attrs) do
-    cast(%__MODULE__{}, attrs, ~w/air_date comments contestants/a)
+    %__MODULE__{}
+    |> cast(attrs, ~w/air_date comments contestants/a)
     |> cast_embed(:categories, with: &categories_changeset/2)
     |> cast_embed(:final_jeopardy, with: &final_jeopardy_changeset/2)
     |> cast_embed(:jeopardy)
@@ -44,6 +47,7 @@ defmodule Jeopardy.JArchive.RecordedGame do
 end
 
 defmodule Jeopardy.JArchive.RecordedGame.Category do
+  @moduledoc false
   use TypedEctoSchema
 
   @primary_key false
@@ -60,7 +64,8 @@ defmodule Jeopardy.JArchive.RecordedGame.Category do
   end
 
   def changeset(schema, data) do
-    Ecto.Changeset.cast(schema, data, ~w/category/a)
+    schema
+    |> Ecto.Changeset.cast(data, ~w/category/a)
     |> Ecto.Changeset.cast_embed(:clues, with: &clue_changeset/2)
   end
 

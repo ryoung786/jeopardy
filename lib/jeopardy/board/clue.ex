@@ -1,4 +1,5 @@
 defmodule Jeopardy.Board.Clue do
+  @moduledoc false
   use TypedStruct
 
   typedstruct do

@@ -4,17 +4,17 @@ defmodule Jeopardy.FSM.ReadingFinalJeopardyClue do
   """
 
   use Jeopardy.FSM.State
-  alias Jeopardy.Timers
+
   alias Jeopardy.GameServer
+  alias Jeopardy.Timers
 
   @timer_seconds 60
 
   @impl true
-  def valid_actions(), do: ~w/answered timer_started time_expired/a
+  def valid_actions, do: ~w/answered timer_started time_expired/a
 
   @impl true
-  def handle_action(:answered, game, {contestant_name, response}),
-    do: answer(game, contestant_name, response)
+  def handle_action(:answered, game, {contestant_name, response}), do: answer(game, contestant_name, response)
 
   def handle_action(:time_expired, game, _), do: time_expired(game)
   def handle_action(:timer_started, game, _), do: timer_started(game)

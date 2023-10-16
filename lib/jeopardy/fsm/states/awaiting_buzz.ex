@@ -4,13 +4,14 @@ defmodule Jeopardy.FSM.AwaitingBuzz do
   """
 
   use Jeopardy.FSM.State
-  alias Jeopardy.Timers
+
   alias Jeopardy.GameServer
+  alias Jeopardy.Timers
 
   @timer_seconds 4
 
   @impl true
-  def valid_actions(), do: ~w/buzz time_expired/a
+  def valid_actions, do: ~w/buzz time_expired/a
 
   @impl true
   def initial_data(game) do

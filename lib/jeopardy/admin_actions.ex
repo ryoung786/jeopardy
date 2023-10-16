@@ -3,8 +3,8 @@ defmodule Jeopardy.AdminActions do
     Actions that an admin or Trebek can execute at any time, regardless of the game's current state.
   """
 
-  alias Jeopardy.Game
   alias Jeopardy.FSM
+  alias Jeopardy.Game
 
   def handle_action(:set_score, game, {name, score}) do
     with game <- Game.set_contestant_score(game, name, score) do

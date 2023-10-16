@@ -1,4 +1,5 @@
 defmodule JeopardyWeb.Components do
+  @moduledoc false
   use Phoenix.Component
 
   # alias Phoenix.LiveView.JS

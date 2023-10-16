@@ -18,12 +18,12 @@ defmodule Jeopardy.DataCase do
 
   using do
     quote do
-      alias Jeopardy.Repo
-
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
       import Jeopardy.DataCase
+
+      alias Jeopardy.Repo
     end
   end
 

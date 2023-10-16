@@ -1,4 +1,5 @@
 defmodule Jeopardy.FSM.State do
+  @moduledoc false
   @callback valid_actions() :: [atom]
   @callback handle_action(atom, %Jeopardy.Game{}, term) ::
               {:ok, %Jeopardy.Game{}} | {:error, term}

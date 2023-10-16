@@ -1,10 +1,11 @@
 defmodule JeopardyWeb.UserAuthTest do
   use JeopardyWeb.ConnCase, async: true
 
-  alias Phoenix.LiveView
+  import Jeopardy.AccountsFixtures
+
   alias Jeopardy.Accounts
   alias JeopardyWeb.UserAuth
-  import Jeopardy.AccountsFixtures
+  alias Phoenix.LiveView
 
   @remember_me_cookie "_jeopardy_web_user_remember_me"
 
@@ -139,7 +140,7 @@ defmodule JeopardyWeb.UserAuthTest do
     end
 
     test "assigns nil to current_user assign if there isn't a user_token", %{conn: conn} do
-      session = conn |> get_session()
+      session = get_session(conn)
 
       {:cont, updated_socket} =
         UserAuth.on_mount(:mount_current_user, %{}, session, %LiveView.Socket{})
@@ -173,7 +174,7 @@ defmodule JeopardyWeb.UserAuthTest do
     end
 
     test "redirects to login page if there isn't a user_token", %{conn: conn} do
-      session = conn |> get_session()
+      session = get_session(conn)
 
       socket = %LiveView.Socket{
         endpoint: JeopardyWeb.Endpoint,
@@ -200,7 +201,7 @@ defmodule JeopardyWeb.UserAuthTest do
     end
 
     test "doesn't redirect if there is no authenticated user", %{conn: conn} do
-      session = conn |> get_session()
+      session = get_session(conn)
 
       assert {:cont, _updated_socket} =
                UserAuth.on_mount(

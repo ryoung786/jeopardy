@@ -2,6 +2,7 @@ defmodule JeopardyWeb.Components.Trebek.SelectingTrebekTest do
   use JeopardyWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
+
   alias Jeopardy.GameServer
 
   setup do
@@ -25,7 +26,7 @@ defmodule JeopardyWeb.Components.Trebek.SelectingTrebekTest do
 
       assert_received({:trebek_selected, "a"})
       assert_received({:status_changed, _state})
-      assert lv |> has_element?("p", "Congratulations, you'll be hosting this round of Jeopardy!")
+      assert has_element?(lv, "p", "Congratulations, you'll be hosting this round of Jeopardy!")
     end
   end
 end

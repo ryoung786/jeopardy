@@ -1,4 +1,5 @@
 defmodule JeopardyWeb.Game do
+  @moduledoc false
   use TypedStruct
 
   typedstruct do

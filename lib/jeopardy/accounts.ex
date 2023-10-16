@@ -4,9 +4,11 @@ defmodule Jeopardy.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias Jeopardy.Repo
 
-  alias Jeopardy.Accounts.{User, UserToken, UserNotifier}
+  alias Jeopardy.Accounts.User
+  alias Jeopardy.Accounts.UserNotifier
+  alias Jeopardy.Accounts.UserToken
+  alias Jeopardy.Repo
 
   ## Database getters
 
@@ -38,8 +40,7 @@ defmodule Jeopardy.Accounts do
       nil
 
   """
-  def get_user_by_email_and_password(email, password)
-      when is_binary(email) and is_binary(password) do
+  def get_user_by_email_and_password(email, password) when is_binary(email) and is_binary(password) do
     user = Repo.get_by(User, email: email)
     if User.valid_password?(user, password), do: user
   end

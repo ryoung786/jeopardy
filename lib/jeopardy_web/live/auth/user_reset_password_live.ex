@@ -1,4 +1,5 @@
 defmodule JeopardyWeb.UserResetPasswordLive do
+  @moduledoc false
   use JeopardyWeb, :live_view
 
   alias Jeopardy.Accounts

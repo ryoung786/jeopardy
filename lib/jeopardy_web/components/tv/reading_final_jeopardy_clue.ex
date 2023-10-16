@@ -1,5 +1,7 @@
 defmodule JeopardyWeb.Components.Tv.ReadingFinalJeopardyClue do
+  @moduledoc false
   use JeopardyWeb.FSMComponent
+
   alias Jeopardy.Timers
 
   @timer 60_000
