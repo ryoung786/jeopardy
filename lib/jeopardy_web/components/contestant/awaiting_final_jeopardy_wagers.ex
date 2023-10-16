@@ -46,15 +46,16 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingFinalJeopardyWagers do
   end
 
   def handle_event("submit", %{"wager" => wager} = params, socket) do
-    with :ok <- validate(wager, 0..max(socket.assigns.score, 0)) do
-      {wager, _} = Integer.parse(wager)
+    case validate(wager, 0..max(socket.assigns.score, 0)) do
+      :ok ->
+        {wager, _} = Integer.parse(wager)
 
-      (
-        GameServer.action(socket.assigns.code, :wagered, {socket.assigns.name, wager})
+        (
+          GameServer.action(socket.assigns.code, :wagered, {socket.assigns.name, wager})
 
-        {:noreply, assign(socket, has_submitted_wager?: true, amount_wagered: wager, form: to_form(params))}
-      )
-    else
+          {:noreply, assign(socket, has_submitted_wager?: true, amount_wagered: wager, form: to_form(params))}
+        )
+
       {:error, msg} ->
         form = to_form(params, errors: [wager: {msg, []}])
         {:noreply, assign(socket, form: form)}

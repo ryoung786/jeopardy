@@ -43,14 +43,15 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingDailyDoubleWager do
   end
 
   def handle_event("submit", %{"wager" => wager} = params, socket) do
-    with :ok <- validate(wager, socket.assigns.min_wager..socket.assigns.max_wager) do
-      {wager, _} = Integer.parse(wager)
+    case validate(wager, socket.assigns.min_wager..socket.assigns.max_wager) do
+      :ok ->
+        {wager, _} = Integer.parse(wager)
 
-      (
-        GameServer.action(socket.assigns.code, :wagered, wager)
-        {:noreply, assign(socket, form: to_form(params))}
-      )
-    else
+        (
+          GameServer.action(socket.assigns.code, :wagered, wager)
+          {:noreply, assign(socket, form: to_form(params))}
+        )
+
       {:error, msg} ->
         form = to_form(params, errors: [wager: {msg, []}])
         {:noreply, assign(socket, form: form)}
