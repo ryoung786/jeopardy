@@ -3,7 +3,7 @@ defmodule JeopardyWeb.Components.Contestant.ReadingClue do
 
   def render(assigns) do
     ~H"""
-    <div>
+    <div class="w-screen h-screen">
       <.instructions><%= @game.trebek %> is reading the clue</.instructions>
     </div>
     """

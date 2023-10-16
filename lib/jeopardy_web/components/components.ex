@@ -126,10 +126,14 @@ defmodule JeopardyWeb.Components do
 
   slot :inner_block, required: true
   slot :additional
+  attr :full_width?, :boolean, default: false
 
   def instructions(assigns) do
     ~H"""
-    <div class="bg-sky-100 grid place-content-center w-screen h-screen">
+    <div class={[
+      "bg-sky-100 grid p-4 h-full w-full items-center",
+      !@full_width? && "justify-center"
+    ]}>
       <div>
         <%= render_slot(@additional) %>
         <p class="shadow-lg p-4 bg-white rounded-lg text-center">

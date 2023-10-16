@@ -18,9 +18,11 @@ defmodule JeopardyWeb.Components.Contestant.ReadingFinalJeopardyClue do
   def render(assigns) do
     ~H"""
     <div>
-      <.instructions :if={@has_submitted_answer?}>
-        Your answer is locked in.<br /> Waiting for others to finish submitting their wagers.
-      </.instructions>
+      <div :if={@has_submitted_answer?} class="w-screen h-screen">
+        <.instructions>
+          Your answer is locked in.<br /> Waiting for others to finish submitting their wagers.
+        </.instructions>
+      </div>
 
       <div
         :if={not @has_submitted_answer?}

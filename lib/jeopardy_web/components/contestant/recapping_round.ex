@@ -3,7 +3,7 @@ defmodule JeopardyWeb.Components.Contestant.RecappingRound do
 
   def render(assigns) do
     ~H"""
-    <div>
+    <div class="w-screen h-screen">
       <.instructions>Round complete.</.instructions>
     </div>
     """

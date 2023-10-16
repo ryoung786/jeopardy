@@ -14,12 +14,10 @@ defmodule JeopardyWeb.Components.Contestant.GradingFinalJeopardyAnswers do
     ~H"""
     <div class="grid grid-rows-[1fr_auto] min-h-screen">
       <.trebek_clue category={"$#{@wager}"} clue={@answer} />
-      <div class="p-4 bg-sky-100">
-        <p class="p-4 shadow-lg bg-white rounded-lg text-center">
-          Your answer is locked in.<br />
-          Please wait while <%= @game.trebek %> checks all the submitted answers.
-        </p>
-      </div>
+      <.instructions full_width?={true}>
+        Your answer is locked in.<br />
+        Please wait while <%= @game.trebek %> checks all the submitted answers.
+      </.instructions>
     </div>
     """
   end

@@ -19,7 +19,7 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingDailyDoubleWager do
 
   def render(assigns) do
     ~H"""
-    <div>
+    <div class="w-screen h-screen">
       <.instructions>
         <%= if @has_board_control? do %>
           Tell <%= @trebek %> how much you'd like to wager.<br />

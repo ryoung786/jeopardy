@@ -7,7 +7,7 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingAnswer do
 
   def render(assigns) do
     ~H"""
-    <div>
+    <div class="w-screen h-screen">
       <.instructions>
         <span :if={@buzzed?}>
           You buzzed in!  Tell <%= @game.trebek %> your answer.

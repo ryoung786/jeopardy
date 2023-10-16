@@ -1,5 +1,5 @@
-<div class="p-4 bg-sky-100 grid grid-rows-[1fr_auto] min-h-screen font-sans">
-  <ul :if={!@category} class="grid grid-cols-2 auto-rows-fr gap-4">
+<div class="bg-sky-100 grid grid-rows-[1fr_auto] min-h-screen font-sans">
+  <ul :if={!@category} class="grid grid-cols-2 auto-rows-fr gap-4 p-4 pb-0">
     <%= for category <- @game.categories do %>
       <%= if Enum.all?(@game.board[category], fn clue -> clue.asked? end) do %>
         <li class="bg-blue-800"></li>
@@ -18,7 +18,7 @@
     <% end %>
   </ul>
 
-  <div :if={@category} class="grid grid-rows-[auto_1fr]">
+  <div :if={@category} class="grid grid-rows-[auto_1fr] p-4 pb-0">
     <div>
       <span
         class="inline-block -ml-4 -mt-4 p-4 cursor-pointer"
@@ -28,12 +28,12 @@
         Back
       </span>
     </div>
-    <ul class="grid grid-cols-x2 auto-rows-fr gap-1">
+    <ul class="grid auto-rows-fr gap-1">
       <%= for clue <- @game.board[@category] do %>
-        <li :if={clue.asked?} class="bg-blue-800"></li>
+        <li :if={clue.asked?} class="bg-blue-800 h-full"></li>
         <.button
           :if={!clue.asked?}
-          class="p-2 bg-blue-800 font-bold grid place-content-center cursor-pointer text-shadow tall:text-3xl rounded-none hover:bg-blue-900"
+          class="p-2 bg-blue-800 font-bold grid place-content-center cursor-pointer text-shadow tall:text-3xl rounded-none hover:bg-blue-900 h-full"
           style="color: #dda95e"
           phx-click="clue-selected"
           phx-value-clue={clue.value}
@@ -45,9 +45,7 @@
     </ul>
   </div>
 
-  <div class="pt-4 text-center">
-    <p class="shadow-lg p-4 bg-white rounded-lg text-center">
-      Ask <%= @game.board_control %> to select a clue.
-    </p>
-  </div>
+  <.instructions full_width?={true}>
+    Ask <%= @game.board_control %> to select a clue.
+  </.instructions>
 </div>
