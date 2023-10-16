@@ -1,8 +1,8 @@
 defmodule Jeopardy.EndToEndTest do
   use ExUnit.Case, async: true
 
-  alias Jeopardy.GameServer
   alias Jeopardy.FSM
+  alias Jeopardy.GameServer
 
   describe "Jeopardy" do
     test "play a full game" do

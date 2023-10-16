@@ -1,9 +1,10 @@
 defmodule JeopardyWeb.UserSettingsLiveTest do
   use JeopardyWeb.ConnCase
 
-  alias Jeopardy.Accounts
-  import Phoenix.LiveViewTest
   import Jeopardy.AccountsFixtures
+  import Phoenix.LiveViewTest
+
+  alias Jeopardy.Accounts
 
   describe "Settings page" do
     test "renders settings page", %{conn: conn} do

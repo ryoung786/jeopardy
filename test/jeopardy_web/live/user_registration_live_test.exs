@@ -1,8 +1,8 @@
 defmodule JeopardyWeb.UserRegistrationLiveTest do
   use JeopardyWeb.ConnCase
 
-  import Phoenix.LiveViewTest
   import Jeopardy.AccountsFixtures
+  import Phoenix.LiveViewTest
 
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do

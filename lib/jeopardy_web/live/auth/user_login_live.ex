@@ -1,4 +1,5 @@
 defmodule JeopardyWeb.UserLoginLive do
+  @moduledoc false
   use JeopardyWeb, :live_view
 
   def render(assigns) do

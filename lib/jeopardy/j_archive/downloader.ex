@@ -1,4 +1,5 @@
 defmodule Jeopardy.JArchive.Downloader do
+  @moduledoc false
   require Logger
 
   @req Req.new(base_url: "https://j-archive.com")
@@ -6,7 +7,7 @@ defmodule Jeopardy.JArchive.Downloader do
   @completed_seasons_path Application.app_dir(:jeopardy, "priv/jarchive/completed_seasons")
 
   @spec download_all_seasons() :: :ok
-  def download_all_seasons() do
+  def download_all_seasons do
     Req.get!(@req, url: "listseasons.php").body
     |> season_ids_from_listseasons_html()
     |> Enum.each(&download_season/1)
@@ -22,7 +23,8 @@ defmodule Jeopardy.JArchive.Downloader do
         |> Floki.parse_document!()
         |> game_ids_from_season_html()
 
-      Task.async_stream(game_ids, &download_and_parse_game/1, max_concurrency: 5)
+      game_ids
+      |> Task.async_stream(&download_and_parse_game/1, max_concurrency: 5)
       |> Enum.to_list()
 
       if season_finished_airing?(game_ids) do
@@ -69,13 +71,14 @@ defmodule Jeopardy.JArchive.Downloader do
   end
 
   @spec fully_downloaded_season_ids() :: [String.t()]
-  defp fully_downloaded_season_ids() do
+  defp fully_downloaded_season_ids do
     # Once we are sure all of a season's games have been downloaded, parsed, and stored
     # in a json file, an empty file with the `season_id` as its name is placed in the
     # priv/jarchive/completed_seasons directory.
     # In this way, we can avoid repeatedly downloading seasons we already have
 
-    Application.app_dir(:jeopardy, "priv/jarchive/completed_seasons")
+    :jeopardy
+    |> Application.app_dir("priv/jarchive/completed_seasons")
     |> File.ls!()
   end
 
@@ -86,8 +89,8 @@ defmodule Jeopardy.JArchive.Downloader do
 
   @spec season_finished_airing?(list(any)) :: boolean
   defp season_finished_airing?(season_game_ids) do
-    two_months_ago = Date.utc_today() |> Date.add(-60)
-    {:ok, most_recent_game} = List.first(season_game_ids) |> Jeopardy.JArchive.load_game()
+    two_months_ago = Date.add(Date.utc_today(), -60)
+    {:ok, most_recent_game} = season_game_ids |> List.first() |> Jeopardy.JArchive.load_game()
     Date.before?(most_recent_game.air_date, two_months_ago)
   end
 end

@@ -1,6 +1,9 @@
 defmodule Jeopardy.Accounts.UserToken do
+  @moduledoc false
   use Ecto.Schema
+
   import Ecto.Query
+
   alias Jeopardy.Accounts.UserToken
 
   @hash_algorithm :sha256

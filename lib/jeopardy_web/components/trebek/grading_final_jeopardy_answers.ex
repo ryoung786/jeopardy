@@ -1,5 +1,7 @@
 defmodule JeopardyWeb.Components.Trebek.GradingFinalJeopardyAnswers do
+  @moduledoc false
   use JeopardyWeb.FSMComponent
+
   alias Jeopardy.GameServer
 
   def assign_init(socket, game) do

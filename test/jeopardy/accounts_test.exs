@@ -1,10 +1,11 @@
 defmodule Jeopardy.AccountsTest do
   use Jeopardy.DataCase
 
-  alias Jeopardy.Accounts
-
   import Jeopardy.AccountsFixtures
-  alias Jeopardy.Accounts.{User, UserToken}
+
+  alias Jeopardy.Accounts
+  alias Jeopardy.Accounts.User
+  alias Jeopardy.Accounts.UserToken
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do

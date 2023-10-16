@@ -5,13 +5,13 @@ defmodule Jeopardy.FSM.SelectingTrebek do
 
   use Jeopardy.FSM.State
 
-  alias Jeopardy.Game
   alias Jeopardy.Contestant
   alias Jeopardy.FSM
   alias Jeopardy.FSM.IntroducingRoles
+  alias Jeopardy.Game
 
   @impl true
-  def valid_actions(), do: ~w/select_trebek/a
+  def valid_actions, do: ~w/select_trebek/a
 
   @impl true
   def handle_action(:select_trebek, %Game{} = game, name), do: select_trebek(game, name)

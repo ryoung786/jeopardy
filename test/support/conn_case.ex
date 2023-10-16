@@ -20,14 +20,14 @@ defmodule JeopardyWeb.ConnCase do
   using do
     quote do
       # The default endpoint for testing
-      @endpoint JeopardyWeb.Endpoint
-
       use JeopardyWeb, :verified_routes
 
       # Import conveniences for testing with connections
-      import Plug.Conn
-      import Phoenix.ConnTest
       import JeopardyWeb.ConnCase
+      import Phoenix.ConnTest
+      import Plug.Conn
+
+      @endpoint JeopardyWeb.Endpoint
     end
   end
 

@@ -2,6 +2,7 @@ defmodule JeopardyWeb.Router do
   use JeopardyWeb, :router
 
   import JeopardyWeb.UserAuth
+  import Phoenix.LiveDashboard.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -31,8 +32,6 @@ defmodule JeopardyWeb.Router do
       live "/", GameLive
     end
   end
-
-  import Phoenix.LiveDashboard.Router
 
   scope "/admin" do
     pipe_through [:browser, :require_admin_user]

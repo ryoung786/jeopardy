@@ -1,4 +1,5 @@
 defmodule JeopardyWeb.FSMComponent do
+  @moduledoc false
   alias Jeopardy.Game
   alias Phoenix.LiveView.Socket
 
@@ -8,9 +9,9 @@ defmodule JeopardyWeb.FSMComponent do
 
   defmacro __using__(_opts) do
     quote do
-      use JeopardyWeb, :live_component
-
       @behaviour JeopardyWeb.FSMComponent
+
+      use JeopardyWeb, :live_component
 
       def assign_init(socket, _game), do: socket
       def handle_game_server_msg(_, socket), do: {:ok, socket}

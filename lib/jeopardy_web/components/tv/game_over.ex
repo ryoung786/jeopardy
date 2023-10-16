@@ -1,4 +1,5 @@
 defmodule JeopardyWeb.Components.Tv.GameOver do
+  @moduledoc false
   use JeopardyWeb.FSMComponent
 
   def assign_init(socket, game) do

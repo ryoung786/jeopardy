@@ -1,4 +1,5 @@
 defmodule JeopardyWeb.Components.Tv.SelectingTrebek do
+  @moduledoc false
   use JeopardyWeb.FSMComponent
 
   def assign_init(socket, game) do
@@ -48,7 +49,8 @@ defmodule JeopardyWeb.Components.Tv.SelectingTrebek do
   # JS interactions
 
   defp elect_host(name) do
-    JS.push("elect_host", value: %{player: name})
+    "elect_host"
+    |> JS.push(value: %{player: name})
     |> hide_modal("remove-modal-#{name}")
   end
 end

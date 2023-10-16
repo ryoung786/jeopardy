@@ -1,4 +1,5 @@
 defmodule JeopardyWeb.Plugs.RequireGame do
+  @moduledoc false
   use JeopardyWeb, :verified_routes
 
   def init(default), do: default

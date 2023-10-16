@@ -1,4 +1,5 @@
 defmodule Jeopardy.JArchive do
+  @moduledoc false
   @spec load_game(any) :: {:ok, Jeopardy.JArchive.RecordedGame.t()} | {:error, any}
   def load_game(:random) do
     default_path = Application.app_dir(:jeopardy, "priv/jarchive")
@@ -12,7 +13,7 @@ defmodule Jeopardy.JArchive do
       |> List.first()
 
     if file_name != nil,
-      do: Path.basename(file_name, ".json") |> load_game(),
+      do: file_name |> Path.basename(".json") |> load_game(),
       else: {:error, "No games exist"}
   end
 

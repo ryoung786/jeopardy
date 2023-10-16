@@ -1,4 +1,5 @@
 defmodule Jeopardy.FSM.GameOver do
+  @moduledoc false
   use Jeopardy.FSM.State
 
   alias Jeopardy.FSM
@@ -8,7 +9,7 @@ defmodule Jeopardy.FSM.GameOver do
   def initial_data(_game), do: %{revealed: []}
 
   @impl true
-  def valid_actions(), do: ~w/revealed_contestant play_again/a
+  def valid_actions, do: ~w/revealed_contestant play_again/a
 
   @impl true
   def handle_action(:play_again, %Game{} = game, _data), do: play_again(game)

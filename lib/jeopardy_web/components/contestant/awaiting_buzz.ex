@@ -1,5 +1,7 @@
 defmodule JeopardyWeb.Components.Contestant.AwaitingBuzz do
+  @moduledoc false
   use JeopardyWeb.FSMComponent
+
   alias Jeopardy.GameServer
 
   def render(assigns) do
@@ -17,9 +19,8 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingBuzz do
   end
 
   def handle_event("buzz", _params, socket) do
-    with {:ok, _game} <- GameServer.action(socket.assigns.code, :buzz, socket.assigns.name) do
-      {:noreply, socket}
-    else
+    case GameServer.action(socket.assigns.code, :buzz, socket.assigns.name) do
+      {:ok, _game} -> {:noreply, socket}
       {:error, _} -> {:noreply, socket}
     end
   end

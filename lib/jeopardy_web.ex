@@ -24,9 +24,9 @@ defmodule JeopardyWeb do
       use Phoenix.Router, helpers: false
 
       # Import common connection and controller functions to use in pipelines
-      import Plug.Conn
       import Phoenix.Controller
       import Phoenix.LiveView.Router
+      import Plug.Conn
     end
   end
 
@@ -42,8 +42,8 @@ defmodule JeopardyWeb do
         formats: [:html, :json],
         layouts: [html: JeopardyWeb.Layouts]
 
-      import Plug.Conn
       import JeopardyWeb.Gettext
+      import Plug.Conn
 
       unquote(verified_routes())
     end
@@ -82,11 +82,11 @@ defmodule JeopardyWeb do
   defp html_helpers do
     quote do
       # HTML escaping functionality
-      import Phoenix.HTML
+      import JeopardyWeb.Components
       # Core UI components and translation
       import JeopardyWeb.CoreComponents
-      import JeopardyWeb.Components
       import JeopardyWeb.Gettext
+      import Phoenix.HTML
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

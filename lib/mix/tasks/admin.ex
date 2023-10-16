@@ -1,5 +1,5 @@
 defmodule Mix.Tasks.Admin do
-  use Mix.Task
+  @shortdoc "Makes a user an admin"
 
   @moduledoc """
   Given an email, makes that user (if they exist) an admin.
@@ -7,7 +7,7 @@ defmodule Mix.Tasks.Admin do
   ## Examples:
       $ mix admin foo@test.com
   """
-  @shortdoc "Makes a user an admin"
+  use Mix.Task
 
   def run([email | _]) do
     Mix.Task.run("app.start")

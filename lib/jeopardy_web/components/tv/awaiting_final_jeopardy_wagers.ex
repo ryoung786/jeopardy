@@ -1,5 +1,7 @@
 defmodule JeopardyWeb.Components.Tv.AwaitingFinalJeopardyWagers do
+  @moduledoc false
   use JeopardyWeb.FSMComponent
+
   alias Jeopardy.Timers
 
   def assign_init(socket, game) do

@@ -1,5 +1,7 @@
 defmodule JeopardyWeb.Components.Trebek.ReadingDailyDoubleClue do
+  @moduledoc false
   use JeopardyWeb.FSMComponent
+
   alias Jeopardy.GameServer
 
   def render(assigns) do

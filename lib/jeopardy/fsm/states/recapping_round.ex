@@ -4,12 +4,13 @@ defmodule Jeopardy.FSM.RecappingRound do
   """
 
   use Jeopardy.FSM.State
-  alias Jeopardy.Game
+
   alias Jeopardy.Board
   alias Jeopardy.Board.Clue
+  alias Jeopardy.Game
 
   @impl true
-  def valid_actions(), do: ~w/zero_out_negative_scores next_round/a
+  def valid_actions, do: ~w/zero_out_negative_scores next_round/a
 
   @impl true
   def handle_action(:zero_out_negative_scores, game, _), do: zero_out_negative_scores(game)

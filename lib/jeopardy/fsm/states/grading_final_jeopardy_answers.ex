@@ -4,14 +4,14 @@ defmodule Jeopardy.FSM.GradingFinalJeopardyAnswers do
   """
 
   use Jeopardy.FSM.State
+
   alias Jeopardy.Game
 
   @impl true
-  def valid_actions(), do: ~w/submitted_grades/a
+  def valid_actions, do: ~w/submitted_grades/a
 
   @impl true
-  def handle_action(:submitted_grades, game, correct_contestants),
-    do: grade_answers(game, correct_contestants)
+  def handle_action(:submitted_grades, game, correct_contestants), do: grade_answers(game, correct_contestants)
 
   defp grade_answers(game, correct_contestants) do
     with :ok <- validate_all_contestants_exist(game, correct_contestants) do

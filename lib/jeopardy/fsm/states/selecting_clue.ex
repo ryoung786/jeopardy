@@ -4,16 +4,16 @@ defmodule Jeopardy.FSM.SelectingClue do
   """
 
   use Jeopardy.FSM.State
-  alias Jeopardy.Game
+
   alias Jeopardy.Board
   alias Jeopardy.Board.Clue
+  alias Jeopardy.Game
 
   @impl true
-  def valid_actions(), do: ~w/clue_selected/a
+  def valid_actions, do: ~w/clue_selected/a
 
   @impl true
-  def handle_action(:clue_selected, game, {category, value}),
-    do: select_clue(game, category, value)
+  def handle_action(:clue_selected, game, {category, value}), do: select_clue(game, category, value)
 
   def select_clue(%Game{} = game, category, value) do
     case game.board.clues |> Map.get(category, %{}) |> Map.get(value) do

@@ -4,13 +4,14 @@ defmodule Jeopardy.FSM.RevealingBoard do
   """
 
   use Jeopardy.FSM.State
+
   alias Jeopardy.Game
 
   @impl true
   def initial_data(_game), do: %{revealed_category_count: 0}
 
   @impl true
-  def valid_actions(), do: ~w/reveal_next_category/a
+  def valid_actions, do: ~w/reveal_next_category/a
 
   @impl true
   def handle_action(:reveal_next_category, game, _args), do: reveal_next_category(game)

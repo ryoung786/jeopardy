@@ -4,11 +4,12 @@ defmodule Jeopardy.FSM.AwaitingAnswer do
   """
 
   use Jeopardy.FSM.State
-  alias Jeopardy.Game
+
   alias Jeopardy.Board
+  alias Jeopardy.Game
 
   @impl true
-  def valid_actions(), do: ~w/answered/a
+  def valid_actions, do: ~w/answered/a
 
   @impl true
   def handle_action(:answered, game, correct_or_incorrect), do: answer(game, correct_or_incorrect)
@@ -25,7 +26,8 @@ defmodule Jeopardy.FSM.AwaitingAnswer do
     incorrect_contestants = [game.buzzer | game.clue.incorrect_contestants]
 
     game =
-      put_in(game.clue.incorrect_contestants, incorrect_contestants)
+      game.clue.incorrect_contestants
+      |> put_in(incorrect_contestants)
       |> Game.update_contestant_score(game.buzzer, -1 * game.clue.value)
       |> Map.put(:buzzer, nil)
 

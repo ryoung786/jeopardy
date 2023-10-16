@@ -4,13 +4,14 @@ defmodule Jeopardy.FSM.AwaitingFinalJeopardyWagers do
   """
 
   use Jeopardy.FSM.State
+
   alias Jeopardy.Game
   alias Jeopardy.Timers
 
   @timer_seconds 30
 
   @impl true
-  def valid_actions(), do: ~w/wagered awaiting_final_jeopardy_wagers_time_expired/a
+  def valid_actions, do: ~w/wagered awaiting_final_jeopardy_wagers_time_expired/a
 
   @impl true
   def initial_data(game) do
@@ -49,13 +50,12 @@ defmodule Jeopardy.FSM.AwaitingFinalJeopardyWagers do
   defp time_expired(game) do
     # set any nil wagers to zero
     contestants =
-      game.contestants
-      |> Map.new(fn
+      Map.new(game.contestants, fn
         {name, %{final_jeopardy_wager: nil} = c} -> {name, %{c | final_jeopardy_wager: 0}}
         {name, c} -> {name, c}
       end)
 
-    {:ok, %{game | contestants: contestants} |> FSM.to_state(FSM.ReadingFinalJeopardyClue)}
+    {:ok, FSM.to_state(%{game | contestants: contestants}, FSM.ReadingFinalJeopardyClue)}
   end
 
   defp validate_contestant_exists(game, name) do

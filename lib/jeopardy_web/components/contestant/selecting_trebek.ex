@@ -1,4 +1,5 @@
 defmodule JeopardyWeb.Components.Contestant.SelectingTrebek do
+  @moduledoc false
   use JeopardyWeb.FSMComponent
 
   def handle_event("volunteer", _params, socket) do

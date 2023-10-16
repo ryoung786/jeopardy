@@ -1,4 +1,5 @@
 defmodule JeopardyWeb.Components.Trebek.ReadingAnswer do
+  @moduledoc false
   use JeopardyWeb.FSMComponent
 
   alias Jeopardy.GameServer

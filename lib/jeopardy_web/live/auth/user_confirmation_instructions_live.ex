@@ -1,4 +1,5 @@
 defmodule JeopardyWeb.UserConfirmationInstructionsLive do
+  @moduledoc false
   use JeopardyWeb, :live_view
 
   alias Jeopardy.Accounts

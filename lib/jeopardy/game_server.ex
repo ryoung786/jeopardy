@@ -1,9 +1,13 @@
 defmodule Jeopardy.GameServer do
+  @moduledoc false
   use GenServer, restart: :transient
+
   alias Jeopardy.Game
+
   require Logger
 
   defmodule State do
+    @moduledoc false
     defstruct ~w/code inactivity_timeout game/a
   end
 
@@ -53,8 +57,7 @@ defmodule Jeopardy.GameServer do
   end
 
   @impl true
-  def handle_call(:get_game, _from, state),
-    do: {:reply, {:ok, state.game}, state, state.inactivity_timeout}
+  def handle_call(:get_game, _from, state), do: {:reply, {:ok, state.game}, state, state.inactivity_timeout}
 
   @impl true
   def handle_call({:action, action, data}, _from, state) do
@@ -82,7 +85,7 @@ defmodule Jeopardy.GameServer do
 
   defp via_tuple(code), do: {:via, Registry, {Jeopardy.GameRegistry, code}}
 
-  defp generate_code() do
+  defp generate_code do
     "ABCDEFGHJKMNPQRSTUVWXYZ"
     |> String.graphemes()
     |> Enum.shuffle()

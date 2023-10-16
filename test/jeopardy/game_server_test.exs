@@ -1,9 +1,9 @@
 defmodule Jeopardy.GameServerTest do
   use ExUnit.Case, async: true
 
-  alias Jeopardy.GameServer
-  alias Jeopardy.Game
   alias Jeopardy.FSM
+  alias Jeopardy.Game
+  alias Jeopardy.GameServer
 
   describe "Jeopardy.GameServer" do
     setup do

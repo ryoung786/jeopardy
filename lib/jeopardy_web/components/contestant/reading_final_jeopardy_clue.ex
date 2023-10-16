@@ -1,5 +1,7 @@
 defmodule JeopardyWeb.Components.Contestant.ReadingFinalJeopardyClue do
+  @moduledoc false
   use JeopardyWeb.FSMComponent
+
   alias Jeopardy.GameServer
   alias Jeopardy.Timers
 
