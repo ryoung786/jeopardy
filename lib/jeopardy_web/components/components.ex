@@ -105,7 +105,7 @@ defmodule JeopardyWeb.Components do
         class="grid gap-1 overflow-hidden"
         style="grid-template-rows: 16% repeat(5, 1fr)"
       >
-        <div class="category bg-blue-800 p-4 grid place-content-center text-xs md:text-base overflow-hidden">
+        <div class="category bg-blue-800 p-2 md:p-4 grid place-content-center text-xs md:text-base overflow-hidden">
           <span class={[
             "transition-all",
             @category_reveal_index < i && "invisible opacity-0 translate-y-0.5"
@@ -115,7 +115,7 @@ defmodule JeopardyWeb.Components do
         </div>
         <div
           :for={clue <- @clues[category]}
-          class="bg-blue-800 p-2 grid place-content-center font-bold font-sans text-3xl lg:text-4xl"
+          class="bg-blue-800 p-2 grid place-content-center font-bold font-sans text-2xl md:text-3xl lg:text-4xl"
           style="color: #dda95e"
         >
           <span :if={not clue.asked?}>$<%= clue.value %></span>
@@ -160,15 +160,16 @@ defmodule JeopardyWeb.Components do
       <.pie_timer />
       <.pie_timer timer={5_000} time-remaining={2_000} />
   """
-  attr :timer, :integer, default: 30_000_000
-  attr :time_remaining, :integer, default: 30_000_000
+  attr :timer, :integer, default: 30_000
+  attr :time_remaining, :integer, default: 30_000
+  attr :color, :string, default: "bg-slate-200"
 
   def pie_timer(assigns) do
     ~H"""
-    <div class="flex h-full w-full">
+    <div class="flex h-full w-full drop-shadow-lg">
       <div class="overflow-hidden h-full w-1/2">
         <div
-          class="rounded-l-full h-full w-full bg-slate-200 origin-right"
+          class={"rounded-l-full h-full w-full origin-right #{@color}"}
           style={"animation: #{@timer}ms linear -#{@timer - @time_remaining}ms forwards pie-timer-left;"}
         >
         </div>
@@ -176,7 +177,7 @@ defmodule JeopardyWeb.Components do
 
       <div class="overflow-hidden h-full w-1/2">
         <div
-          class="rounded-r-full h-full w-full bg-slate-200 origin-left"
+          class={"rounded-r-full h-full w-full origin-left #{@color}"}
           style={"animation: #{@timer}ms linear -#{@timer - @time_remaining}ms forwards pie-timer-right;"}
         >
         </div>

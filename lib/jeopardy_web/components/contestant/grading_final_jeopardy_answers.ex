@@ -14,7 +14,7 @@ defmodule JeopardyWeb.Components.Contestant.GradingFinalJeopardyAnswers do
   def render(assigns) do
     ~H"""
     <div class="grid grid-rows-[1fr_auto] min-h-screen">
-      <.trebek_clue category={"$#{@wager}"} clue={@answer} />
+      <.trebek_clue category={"$#{@wager}"} clue={@answer || "No answer"} />
       <.instructions full_width?={true}>
         Your answer is locked in.<br />
         Please wait while <%= @game.trebek %> checks all the submitted answers.

@@ -31,7 +31,7 @@ defmodule JeopardyWeb.Components.Trebek.GradingFinalJeopardyAnswers do
           <label
             :for={{name, answer} <- Enum.shuffle(@contestants)}
             for={"input-#{name}"}
-            class="flex gap-4 cursor-pointer"
+            class="flex gap-2 cursor-pointer"
           >
             <input
               id={"input-#{name}"}
@@ -41,7 +41,7 @@ defmodule JeopardyWeb.Components.Trebek.GradingFinalJeopardyAnswers do
               value={name}
               checked={@form[name].value}
             />
-            <%= answer %>
+            <%= answer || "No answer" %>
           </label>
         </div>
         <div>

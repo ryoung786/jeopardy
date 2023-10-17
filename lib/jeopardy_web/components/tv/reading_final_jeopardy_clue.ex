@@ -18,7 +18,12 @@ defmodule JeopardyWeb.Components.Tv.ReadingFinalJeopardyClue do
     <div>
       <.tv contestants={@game.contestants}>
         <.clue category={@game.clue.category} clue={@game.clue.clue} />
-        <.pie_timer :if={@time_remaining} timer={@timer} time_remaining={@time_remaining} />
+        <div
+          class="w-8 h-8 opacity-50 absolute bottom-4"
+          style="transform: translateX(calc(50vw - 50%))"
+        >
+          <.pie_timer :if={@time_remaining} timer={@timer} time_remaining={@time_remaining} />
+        </div>
       </.tv>
     </div>
     """
@@ -26,5 +31,9 @@ defmodule JeopardyWeb.Components.Tv.ReadingFinalJeopardyClue do
 
   def handle_game_server_msg({:timer_started, expires_at}, socket) do
     {:ok, assign(socket, time_remaining: Timers.time_remaining(expires_at))}
+  end
+
+  def handle_game_server_msg({:final_jeopardy_answer_submitted, _}, socket) do
+    {:ok, socket}
   end
 end

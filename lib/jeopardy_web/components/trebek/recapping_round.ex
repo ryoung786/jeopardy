@@ -16,7 +16,7 @@ defmodule JeopardyWeb.Components.Trebek.RecappingRound do
           That's the end of the Jeopardy round!<br /> When you're ready, continue to the next round.
         <% else %>
           That's the end of the Double Jeopardy round!<br />
-          When you're ready, continue to Final Jeopardy.
+          When you're ready, continue to Final Jeopardy. <% "TODO: add button to zero out negative scores before Final Jeopardy." %>
         <% end %>
       </.instructions>
       <div class="bg-white p-4 grid">

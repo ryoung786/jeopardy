@@ -24,6 +24,7 @@ defmodule Jeopardy.FSM.ReadingFinalJeopardyClue do
       game = put_in(game.contestants[name].final_jeopardy_answer, response)
 
       if Enum.any?(Map.values(game.contestants), &(&1.final_jeopardy_answer == nil)) do
+        FSM.broadcast(game, {:final_jeopardy_answer_submitted, {name, response}})
         {:ok, game}
       else
         :timer.cancel(game.fsm.data[:tref])

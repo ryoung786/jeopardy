@@ -20,8 +20,20 @@ defmodule JeopardyWeb.Components.Contestant.ReadingFinalJeopardyClue do
   def render(assigns) do
     ~H"""
     <div>
-      <div :if={@has_submitted_answer?} class="w-screen h-screen">
+      <div :if={@has_submitted_answer?} class="h-screen">
         <.instructions>
+          <:additional>
+            <div class="grid place-items-center mb-8">
+              <div class="w-10 h-10">
+                <.pie_timer
+                  :if={@time_remaining}
+                  timer={60_000}
+                  time_remaining={@time_remaining}
+                  color="bg-primary"
+                />
+              </div>
+            </div>
+          </:additional>
           Your answer is locked in.<br /> Waiting for others to finish submitting their wagers.
         </.instructions>
       </div>
@@ -36,9 +48,16 @@ defmodule JeopardyWeb.Components.Contestant.ReadingFinalJeopardyClue do
           phx-submit="submit"
           phx-target={@myself}
         >
+          <div class="w-10 h-10 self-center">
+            <.pie_timer
+              :if={@time_remaining}
+              timer={60_000}
+              time_remaining={@time_remaining}
+              color="bg-primary"
+            />
+          </div>
           <.input type="text" field={@form[:answer]} placeholder="Answer" style="text-align: center" />
           <.button class="btn-primary">Submit</.button>
-          <.pie_timer :if={@time_remaining} timer={60_000} time_remaining={@time_remaining} />
         </.form>
       </div>
     </div>
@@ -68,5 +87,9 @@ defmodule JeopardyWeb.Components.Contestant.ReadingFinalJeopardyClue do
 
   def handle_game_server_msg({:timer_started, expires_at}, socket) do
     {:ok, assign(socket, time_remaining: Timers.time_remaining(expires_at))}
+  end
+
+  def handle_game_server_msg({:final_jeopardy_answer_submitted, _}, socket) do
+    {:ok, socket}
   end
 end

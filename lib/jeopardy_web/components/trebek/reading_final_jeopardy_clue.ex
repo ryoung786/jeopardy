@@ -26,13 +26,20 @@ defmodule JeopardyWeb.Components.Trebek.ReadingFinalJeopardyClue do
   def render(assigns) do
     ~H"""
     <div>
-      <div :if={@finished_reading?}>
-        <ul>
-          <li :for={{name, answer} <- @contestants}>
-            <.status_icon answered?={answer != nil} /> <%= name %>
-          </li>
-        </ul>
-        <.pie_timer timer={@timer} time_remaining={@time_remaining} />
+      <div :if={@finished_reading?} class="h-screen">
+        <.instructions>
+          <:additional>
+            <div class="grid mb-8">
+              <ul class="max-w-screen-sm place-self-center">
+                <li :for={{name, answer} <- @contestants} class="flex items-center gap-2">
+                  <.status_icon answered?={answer != nil} /> <%= name %>
+                </li>
+              </ul>
+              <.pie_timer timer={@timer} time_remaining={@time_remaining} />
+            </div>
+          </:additional>
+          Waiting for contestants to submit their answers.
+        </.instructions>
       </div>
 
       <div :if={not @finished_reading?} class="grid grid-rows-[1fr_auto] min-h-screen">
@@ -47,11 +54,22 @@ defmodule JeopardyWeb.Components.Trebek.ReadingFinalJeopardyClue do
     """
   end
 
-  defp status_icon(%{wagered?: true} = assigns), do: ~H|<.icon name="hero-check-circle" />|
+  defp status_icon(%{answered?: true} = assigns), do: ~H|<.icon name="hero-check-circle" />|
   defp status_icon(assigns), do: ~H|<.icon name="hero-clock" />|
 
   def handle_event("finished-reading", _params, socket) do
     GameServer.action(socket.assigns.code, :timer_started)
     {:noreply, assign(socket, finished_reading?: true, time_remaining: @timer)}
+  end
+
+  def handle_game_server_msg({:final_jeopardy_answer_submitted, {name, answer}}, socket) do
+    IO.inspect(socket.assigns.contestants, label: "[xxx] current contestants")
+    IO.inspect({name, answer}, label: "[xxx] final_jeopardy_answer_submitted")
+    socket.assigns.contestants |> Map.put(name, answer) |> IO.inspect(label: "[xxx] new contestants")
+    {:ok, assign(socket, contestants: Map.put(socket.assigns.contestants, name, answer))}
+  end
+
+  def handle_game_server_msg({:timer_started, expires_at}, socket) do
+    {:ok, assign(socket, time_remaining: Timers.time_remaining(expires_at))}
   end
 end
