@@ -11,9 +11,20 @@
    100%      { transform: rotate(180deg); background: white; }
 }
 
-.pie-timer::after {
-    animation: var(--timer) linear var(--delay) forwards pietimer;
+@keyframes pie-timer-right {
+  0% {    transform: rotate(0deg);  }
+  50% {    transform: rotate(180deg);  }
+  100% {transform: rotate(180deg);}
 }
+@keyframes pie-timer-left {
+  0% {    transform: rotate(0deg);  }
+  50% {    transform: rotate(0deg);  }
+  100% {transform: rotate(180deg);}
+}
+
+/* .pie-timer::after { */
+/*     animation: var(--timer) linear var(--delay) forwards pietimer; */
+/* } */
 
 @keyframes lights-timer {
   to {

@@ -21,20 +21,24 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingFinalJeopardyWagers do
 
   def render(assigns) do
     ~H"""
-    <div>
+    <div class="bg-sky-100 min-h-screen p-4 grid place-items-center">
       <div :if={not @has_submitted_wager?}>
-        <h3>Place wager</h3>
-        <.form for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself}>
-          <.input type="number" field={@form[:wager]} max={max(@score, 0)} />
-          <button class="btn btn-primary">Submit</button>
+        <.form
+          for={@form}
+          class="flex flex-col gap-4 max-w-screen-sm w-full"
+          phx-change="validate"
+          phx-submit="submit"
+          phx-target={@myself}
+        >
+          <.input type="number" field={@form[:wager]} placeholder={@score} style="text-align: center" />
+          <.button class="btn-primary">Submit Wager</.button>
         </.form>
-        <.pie_timer time_remaining={@time_remaining} />
       </div>
 
-      <div :if={@has_submitted_wager?}>
-        <p>$<%= @amount_wagered %> is locked in.</p>
-        <p>Waiting for others to finish submitting their wagers.</p>
-      </div>
+      <.instructions :if={@has_submitted_wager?}>
+        $<%= @amount_wagered %> is locked in.<br />
+        Waiting for others to finish submitting their wagers.
+      </.instructions>
     </div>
     """
   end

@@ -664,74 +664,9 @@ defmodule JeopardyWeb.CoreComponents do
       js,
       {
         "transition-all transform ease-in duration-200",
-        "motion-safe:-translate-x-10 opacity-0",
-        "hidden"
+        "motion-safe:-translate-x-0 opacity-100",
+        "motion-safe:-translate-x-10 opacity-0"
       }
     )
-  end
-
-  @doc """
-  Renders a timer in the shape of a filled circle.
-
-  It is animated such that the circle will slowly disappear, like
-  a countdown timer.
-
-  By default, it's set to 30 seconds, but you can set the attributes (in ms)
-  to adjust.  `time_remaining` allows the timer to pick up in the middle
-  of a countdown, like if the page is refreshed.
-
-  ## Examples
-
-      <.pie_timer />
-      <.pie_timer timer={5_000} time-remaining={2_000} />
-  """
-  attr :timer, :integer, default: 30_000
-  attr :time_remaining, :integer, default: 30_000
-
-  def pie_timer(assigns) do
-    ~H"""
-    <div
-      class={[
-        "pie-timer",
-        "w-14 h-14 rounded-full relative overflow-hidden",
-        "bg-gradient-to-r from-slate-200 from-50% to-white to-50%",
-        "after:absolute after:left-1/2 after:w-1/2 after:h-full after:bg-slate-200 after:origin-[0_50%]"
-      ]}
-      style={"--timer: #{@timer}ms; --delay: -#{@timer - @time_remaining}ms"}
-    >
-    </div>
-    """
-  end
-
-  @doc """
-  Renders jeopardy podium lights that tick down discretely each second.
-
-  By default it is a 5 second timer.
-
-  It is animated such that one light will disappear each second.
-
-  `time_remaining` allows the timer to pick up in the middle
-  of a countdown, like if the page is refreshed.
-
-  ## Examples
-
-      <.lights_timer />
-      <.lights_timer timer_seconds={6} time-remaining={2_000} />
-  """
-  attr :timer_seconds, :integer, default: 5
-  attr :time_remaining, :integer, default: 5_000
-
-  def lights_timer(assigns) do
-    ~H"""
-    <div
-      class="flex justify-center gap-x-2"
-      style={[
-        "clip-path: inset(0 0%);",
-        "animation: #{@timer_seconds}s steps(#{@timer_seconds}) -#{:timer.seconds(@timer_seconds) - @time_remaining}ms forwards lights-timer"
-      ]}
-    >
-      <div :for={_ <- 1..(@timer_seconds * 2 - 1)} class="bg-amber-200 w-full h-1" />
-    </div>
-    """
   end
 end

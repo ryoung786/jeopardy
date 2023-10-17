@@ -19,13 +19,19 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingFinalJeopardyWagers do
 
   def render(assigns) do
     ~H"""
-    <div>
-      <ul>
-        <li :for={{name, wager} <- @contestants}>
-          <.status_icon wagered?={wager != nil} /> <%= name %>
-        </li>
-      </ul>
-      <.pie_timer timer={@timer} time_remaining={@time_remaining} />
+    <div class="h-screen">
+      <.instructions>
+        <:additional>
+          <div class="grid mb-8">
+            <ul class="max-w-screen-sm place-self-center">
+              <li :for={{name, wager} <- @contestants} class="flex items-center gap-2">
+                <.status_icon wagered?={wager != nil} /> <%= name %>
+              </li>
+            </ul>
+          </div>
+        </:additional>
+        Waiting for contestants to submit their wagers.
+      </.instructions>
     </div>
     """
   end

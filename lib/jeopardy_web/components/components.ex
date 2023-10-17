@@ -12,7 +12,7 @@ defmodule JeopardyWeb.Components do
   def tv(assigns) do
     ~H"""
     <div class="h-screen grid grid-rows-[1fr_25px_auto]" style="background: #221e21;">
-      <div><%= render_slot(@inner_block) %></div>
+      <div class="relative"><%= render_slot(@inner_block) %></div>
       <div class="grid items-center h-full px-2">
         <%= render_slot(@timer) %>
       </div>
@@ -141,6 +141,78 @@ defmodule JeopardyWeb.Components do
           <%= render_slot(@inner_block) %>
         </p>
       </div>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders a timer in the shape of a filled circle.
+
+  It is animated such that the circle will slowly disappear, like
+  a countdown timer.
+
+  By default, it's set to 30 seconds, but you can set the attributes (in ms)
+  to adjust.  `time_remaining` allows the timer to pick up in the middle
+  of a countdown, like if the page is refreshed.
+
+  ## Examples
+
+      <.pie_timer />
+      <.pie_timer timer={5_000} time-remaining={2_000} />
+  """
+  attr :timer, :integer, default: 30_000_000
+  attr :time_remaining, :integer, default: 30_000_000
+
+  def pie_timer(assigns) do
+    ~H"""
+    <div class="flex h-full w-full">
+      <div class="overflow-hidden h-full w-1/2">
+        <div
+          class="rounded-l-full h-full w-full bg-slate-200 origin-right"
+          style={"animation: #{@timer}ms linear -#{@timer - @time_remaining}ms forwards pie-timer-left;"}
+        >
+        </div>
+      </div>
+
+      <div class="overflow-hidden h-full w-1/2">
+        <div
+          class="rounded-r-full h-full w-full bg-slate-200 origin-left"
+          style={"animation: #{@timer}ms linear -#{@timer - @time_remaining}ms forwards pie-timer-right;"}
+        >
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders jeopardy podium lights that tick down discretely each second.
+
+  By default it is a 5 second timer.
+
+  It is animated such that one light will disappear each second.
+
+  `time_remaining` allows the timer to pick up in the middle
+  of a countdown, like if the page is refreshed.
+
+  ## Examples
+
+      <.lights_timer />
+      <.lights_timer timer_seconds={6} time-remaining={2_000} />
+  """
+  attr :timer_seconds, :integer, default: 5
+  attr :time_remaining, :integer, default: 5_000
+
+  def lights_timer(assigns) do
+    ~H"""
+    <div
+      class="flex justify-center gap-x-2"
+      style={[
+        "clip-path: inset(0 0%);",
+        "animation: #{@timer_seconds}s steps(#{@timer_seconds}) -#{:timer.seconds(@timer_seconds) - @time_remaining}ms forwards lights-timer"
+      ]}
+    >
+      <div :for={_ <- 1..(@timer_seconds * 2 - 1)} class="bg-amber-200 w-full h-1" />
     </div>
     """
   end

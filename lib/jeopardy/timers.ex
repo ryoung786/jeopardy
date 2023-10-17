@@ -13,6 +13,9 @@ defmodule Jeopardy.Timers do
 
   def time_remaining(nil), do: nil
 
+  @doc """
+    Returns a `DateTime` a given number of seconds in the future.
+  """
   @spec add(seconds :: non_neg_integer()) :: DateTime.t()
   def add(seconds) do
     DateTime.add(DateTime.utc_now(), seconds, :second)
