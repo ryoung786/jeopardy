@@ -5,6 +5,7 @@ defmodule Jeopardy.EndToEndTest do
   alias Jeopardy.GameServer
 
   describe "Jeopardy" do
+    @tag capture_log: true
     test "play a full game" do
       code = GameServer.new_game_server(game_id: "basic")
       GameServer.action(code, :add_player, "a")
@@ -118,6 +119,7 @@ defmodule Jeopardy.EndToEndTest do
       assert game.players -- ["a", "b", "trebek"] == []
     end
 
+    @tag capture_log: true
     test "daily double" do
       code = GameServer.new_game_server(game_id: "daily_double")
       GameServer.action(code, :add_player, "a")

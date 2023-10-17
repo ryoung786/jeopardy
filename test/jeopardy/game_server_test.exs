@@ -25,6 +25,7 @@ defmodule Jeopardy.GameServerTest do
       assert ["ryan"] = game.players
     end
 
+    @tag capture_log: true
     test "action/3 shows invalid action", %{code: code} do
       {:ok, game} = GameServer.get_game(code)
       assert %FSM{state: FSM.AwaitingPlayers} = game.fsm
