@@ -105,7 +105,10 @@ defmodule JeopardyWeb.Components do
         class="grid gap-1 overflow-hidden"
         style="grid-template-rows: 16% repeat(5, 1fr)"
       >
-        <div class="category bg-blue-800 p-2 md:p-4 grid place-content-center text-xs md:text-base overflow-hidden">
+        <div
+          class="category bg-blue-800 p-2 md:p-4 grid place-content-center text-xs md:text-base overflow-hidden"
+          style="font-size: 1.5vw;"
+        >
           <span class={[
             "transition-all",
             @category_reveal_index < i && "invisible opacity-0 translate-y-0.5"
@@ -115,8 +118,8 @@ defmodule JeopardyWeb.Components do
         </div>
         <div
           :for={clue <- @clues[category]}
-          class="bg-blue-800 p-2 grid place-content-center font-bold font-sans text-2xl md:text-3xl lg:text-4xl"
-          style="color: #dda95e"
+          class="bg-blue-800 grid place-content-center font-bold font-sans text-2xl md:text-3xl lg:text-4xl"
+          style="color: #dda95e; font-size: 3.5vw;"
         >
           <span :if={not clue.asked?}>$<%= clue.value %></span>
         </div>
