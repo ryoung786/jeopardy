@@ -45,7 +45,7 @@ defmodule JeopardyWeb.Components.Trebek.ReadingFinalJeopardyClue do
       </div>
 
       <div :if={not @finished_reading?} class="grid grid-rows-[1fr_auto] min-h-screen">
-        <.trebek_clue category={@game.clue.category} clue={@game.clue.clue} />
+        <.trebek_clue category={@game.clue.category}><%= @game.clue.clue %></.trebek_clue>
         <div class="p-4 grid">
           <.button class="btn-primary" phx-target={@myself} phx-click="finished-reading">
             Start Timer

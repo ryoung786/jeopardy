@@ -59,7 +59,7 @@ defmodule JeopardyWeb.Components do
     """
   end
 
-  attr :clue, :string, required: true
+  slot :inner_block, required: true
   attr :category, :string, default: nil
 
   def trebek_clue(assigns) do
@@ -67,7 +67,7 @@ defmodule JeopardyWeb.Components do
     <div class="bg-blue-800 h-full text-neutral-100 grid p-4 gap-2 grid-rows-[auto_1fr] text-shadow">
       <h3 class="font-sans"><%= @category %></h3>
       <h1 class="grid text-2xl leading-snug font-serif text-center place-self-center max-w-4xl">
-        <%= @clue %>
+        <%= render_slot(@inner_block) %>
       </h1>
     </div>
     """

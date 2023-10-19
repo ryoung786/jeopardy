@@ -25,7 +25,7 @@ defmodule JeopardyWeb.Components.Trebek.RevealingBoard do
         >
           <li class="bg-blue-800 w-full h-full"></li>
           <li :for={category <- @categories} class="xp-4">
-            <.trebek_clue clue={category} />
+            <.trebek_clue><%= category %></.trebek_clue>
           </li>
         </ul>
       </div>

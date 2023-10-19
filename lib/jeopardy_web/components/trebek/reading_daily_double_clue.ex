@@ -12,7 +12,7 @@ defmodule JeopardyWeb.Components.Trebek.ReadingDailyDoubleClue do
     ~H"""
     <div class="grid grid-rows-[1fr_auto] min-h-screen">
       <%= if @finished_reading do %>
-        <.trebek_clue clue={@game.clue.answer} />
+        <.trebek_clue><%= @game.clue.answer %></.trebek_clue>
         <div class="grid grid-cols-2 p-4 gap-4">
           <button class="btn btn-error" phx-click="incorrect" phx-target={@myself}>
             Incorrect
@@ -22,7 +22,7 @@ defmodule JeopardyWeb.Components.Trebek.ReadingDailyDoubleClue do
           </button>
         </div>
       <% else %>
-        <.trebek_clue category={@game.clue.category} clue={@game.clue.clue} />
+        <.trebek_clue category={@game.clue.category}><%= @game.clue.clue %></.trebek_clue>
         <div class="p-4 grid">
           <.button class="btn-primary" phx-click="finished-reading" phx-target={@myself}>
             Finished Reading

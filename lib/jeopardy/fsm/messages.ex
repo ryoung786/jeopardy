@@ -12,4 +12,5 @@ defmodule Jeopardy.FSM.Messages do
   defmodule TimerStarted, do: defstruct([:expires_at])
   defmodule FinalJeopardyAnswerSubmitted, do: defstruct([:name, :response])
   defmodule RevealedCategory, do: defstruct([:index])
+  defmodule FinalScoresRevealed, do: defstruct([])
 end

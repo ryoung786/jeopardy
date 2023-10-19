@@ -7,7 +7,7 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingAnswer do
   def render(assigns) do
     ~H"""
     <div class="grid grid-rows-[1fr_auto_auto] min-h-screen">
-      <.trebek_clue clue={@game.clue.answer} />
+      <.trebek_clue><%= @game.clue.answer %></.trebek_clue>
       <div class="text-center p-4">
         <%= @game.buzzer %> buzzed in.
       </div>
