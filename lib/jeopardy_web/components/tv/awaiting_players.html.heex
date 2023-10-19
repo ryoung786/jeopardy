@@ -1,0 +1,40 @@
+<div class="h-screen grid grid-rows-[1fr_25px_auto]" style="background: #221e21;">
+  <div class="relative grid place-content-center bg-blue-800">
+    <.button
+      :if={Enum.count(@players) >= 2}
+      class="bg-sky-100"
+      phx-click="start-game"
+      phx-target={@myself}
+    >
+      Start Game
+    </.button>
+  </div>
+  <span />
+  <div
+    class="podiums flex justify-evenly w-screen"
+    style="background: linear-gradient(to bottom, #5f3929, #5f3929 7%, #dab777 7%, #dab777 10%, #5f3929 10%, #5f3929 17%, #dab777 17%, #dab777 20%, #5f3929 20%, #5f3929 30%, #221e21 30%, #221e21 95%, #5f3929 95%, #5f3929)"
+  >
+    <div :for={name <- Enum.sort(@players)} id={"podium-#{name}"} class="relative">
+      <button
+        class="absolute rounded-full bg-error transition-transform -right-1 -top-1 w-4 h-4 active:scale-90 grid place-content-center text-xs"
+        phx-click={show_modal("remove-modal-#{name}")}
+        phx-target={@myself}
+      >
+        ✗
+      </button>
+      <.podium name={name} />
+    </div>
+  </div>
+
+  <.modal :for={name <- @players} id={"remove-modal-#{name}"}>
+    <p class="mb-4">Are you sure you want to remove <%= name %> from the game?</p>
+    <div class="flex justify-end gap-4">
+      <button class="btn" phx-click={hide_modal("remove-modal-#{name}")} phx-target={@myself}>
+        Cancel
+      </button>
+      <button class="btn btn-error" phx-click={remove_player(name)} phx-target={@myself}>
+        Remove
+      </button>
+    </div>
+  </.modal>
+</div>
