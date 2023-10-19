@@ -7,7 +7,7 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
   alias Phoenix.LiveView.JS
 
   def assign_init(socket, game) do
-    assign(socket, players: game.players)
+    assign(socket, players: game.players, original_players: game.players)
   end
 
   def handle_game_server_msg(%PlayerRemoved{name: name}, socket) do
@@ -19,6 +19,8 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
   end
 
   def handle_event("remove-player", %{"player" => player}, socket) do
+    socket = assign(socket, original_players: List.delete(socket.assigns.original_players, player))
+
     case Jeopardy.GameServer.action(socket.assigns.code, :remove_player, player) do
       {:ok, game} -> {:noreply, assign(socket, players: game.players)}
       _ -> {:noreply, socket}
@@ -40,8 +42,16 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
       to: "#podium-#{name}",
       time: 600,
       transition:
-        {"transition-all transform ease-in delay-200 duration-[400ms]", "opacity-100 translate-y-0",
+        {"transition-all transform ease-out delay-200 duration-[400ms]", "opacity-100 translate-y-0",
          "opacity-0 translate-y-full"}
+    )
+  end
+
+  defp add_player do
+    JS.show(
+      time: 400,
+      transition:
+        {"transition-all transform ease-in duration-[400ms]", "opacity-0 translate-y-full", "opacity-100 translate-y-0"}
     )
   end
 end

@@ -8,13 +8,19 @@
     >
       Start Game
     </.button>
+    <.clue :if={Enum.count(@players) < 2} clue="Waiting for players to join ..." />
   </div>
   <span />
   <div
     class="podiums flex justify-evenly w-screen h-full"
     style="background: linear-gradient(to bottom, #5f3929, #5f3929 7%, #dab777 7%, #dab777 10%, #5f3929 10%, #5f3929 17%, #dab777 17%, #dab777 20%, #5f3929 20%, #5f3929 30%, #221e21 30%, #221e21 95%, #5f3929 95%, #5f3929)"
   >
-    <div :for={name <- Enum.sort(@players)} id={"podium-#{name}"} class="relative">
+    <div
+      :for={name <- Enum.sort(@players)}
+      id={"podium-#{name}"}
+      class={["relative", name not in @original_players && "hidden"]}
+      phx-mounted={add_player()}
+    >
       <button
         class="absolute rounded-full bg-error transition-transform -right-1 -top-1 w-4 h-4 active:scale-90 grid place-content-center text-xs"
         phx-click={show_modal("remove-modal-#{name}")}
