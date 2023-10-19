@@ -80,16 +80,20 @@ defmodule JeopardyWeb.Components do
   def podium(assigns) do
     ~H"""
     <div
-      class="podium grid gap-2 bg-black text-neutral-100 h-[200px] p-1 w-[120px] text-shadow grid-rows-[28%_1fr]"
+      class="podium grid gap-2 bg-black text-neutral-100 h-full p-1 aspect-[3/5] text-shadow grid-rows-[28%_1fr]"
       style="border: 5px solid #5f3929; border-bottom: none;"
     >
-      <div class="score grid place-content-center text-2xl font-bold bg-blue-800 ">
-        <span class={[abs(@score) >= 10_000 && "text-xl", @score < 0 && "text-error"]}>
+      <div class="score grid place-content-center text-[3.5vh] font-bold bg-blue-800 overflow-hidden">
+        <span class={[abs(@score) >= 10_000 && "text-[.7em]", @score < 0 && "text-error"]}>
           <%= if @score < 0, do: "-" %>$<%= abs(@score) %>
         </span>
       </div>
-      <div class={if @lit, do: "lit", else: "unlit"}>
-        <div class="name mt-[20px] bg-blue-800 grid place-content-center h-[70px]"><%= @name %></div>
+      <div class={["overflow-hidden", @lit && "lit", !@lit && "unlit"]}>
+        <div class="name mt-[15%] bg-blue-800 grid text-[2vh] place-content-center h-[60%]">
+          <span class={[@name |> String.graphemes() |> Enum.count() > 10 && "text-[.8em]"]}>
+            <%= @name %>
+          </span>
+        </div>
       </div>
     </div>
     """

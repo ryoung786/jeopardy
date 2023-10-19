@@ -38,10 +38,10 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
     |> hide_modal("remove-modal-#{name}")
     |> JS.hide(
       to: "#podium-#{name}",
-      time: 800,
+      time: 600,
       transition:
-        {"transition-all transform ease-in delay-200 duration-[600ms]", "opacity-100 translate-y-0",
-         "opacity-0 translate-y-4"}
+        {"transition-all transform ease-in delay-200 duration-[400ms]", "opacity-100 translate-y-0",
+         "opacity-0 translate-y-full"}
     )
   end
 end
