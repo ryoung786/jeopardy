@@ -28,7 +28,7 @@ defmodule JeopardyWeb.Components.Trebek.SelectingTrebekTest do
 
       assert_received(%TrebekSelected{trebek: "a"})
       assert_received(%StatusChanged{to: _state})
-      assert has_element?(lv, "p", "Congratulations, you'll be hosting this round of Jeopardy!")
+      assert has_element?(lv, "div", "Congratulations, you'll be hosting this round of Jeopardy!")
     end
   end
 end

@@ -27,6 +27,7 @@ defmodule JeopardyWeb.Components.Tv.GameOver do
   end
 
   def handle_game_server_msg(%FinalScoresRevealed{}, socket) do
+    IO.inspect(5, label: "[xxx] final score rev tv")
     {:ok, socket}
   end
 end

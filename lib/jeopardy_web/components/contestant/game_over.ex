@@ -2,6 +2,8 @@ defmodule JeopardyWeb.Components.Contestant.GameOver do
   @moduledoc false
   use JeopardyWeb.FSMComponent
 
+  alias Jeopardy.FSM.Messages.FinalScoresRevealed
+  alias Jeopardy.FSM.Messages.ScoreUpdated
   alias Jeopardy.GameServer
 
   def assign_init(socket, game) do
@@ -37,5 +39,13 @@ defmodule JeopardyWeb.Components.Contestant.GameOver do
   def handle_event("play-again", _params, socket) do
     GameServer.action(socket.assigns.code, :play_again)
     {:noreply, socket}
+  end
+
+  def handle_game_server_msg(%ScoreUpdated{}, socket) do
+    {:ok, socket}
+  end
+
+  def handle_game_server_msg(%FinalScoresRevealed{}, socket) do
+    {:ok, assign(socket, show_play_again?: true)}
   end
 end

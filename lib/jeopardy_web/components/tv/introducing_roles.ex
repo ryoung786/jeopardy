@@ -8,7 +8,11 @@ defmodule JeopardyWeb.Components.Tv.IntroducingRoles do
 
   def render(assigns) do
     ~H"""
-    <h1>Host: <%= @trebek %></h1>
+    <div>
+      <.tv contestants={@game.contestants}>
+        <.clue clue={"Host: #{@trebek}"} />
+      </.tv>
+    </div>
     """
   end
 end

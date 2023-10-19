@@ -84,10 +84,12 @@ defmodule JeopardyWeb.Components do
       style="border: 5px solid #5f3929; border-bottom: none;"
     >
       <div class="score grid place-content-center text-2xl font-bold bg-blue-800 ">
-        $<%= @score %>
+        <span class={[abs(@score) >= 10_000 && "text-xl", @score < 0 && "text-error"]}>
+          <%= if @score < 0, do: "-" %>$<%= abs(@score) %>
+        </span>
       </div>
       <div class={if @lit, do: "lit", else: "unlit"}>
-        <div class="name mt-[20px] bg-blue-800 grid place-content-center h-[70px]">Ryan</div>
+        <div class="name mt-[20px] bg-blue-800 grid place-content-center h-[70px]"><%= @name %></div>
       </div>
     </div>
     """
@@ -110,7 +112,7 @@ defmodule JeopardyWeb.Components do
           style="font-size: 1.5vw;"
         >
           <span class={[
-            "transition-all",
+            "transition-all duration-1000",
             @category_reveal_index < i && "invisible opacity-0 translate-y-0.5"
           ]}>
             <%= category %>

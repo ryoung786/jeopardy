@@ -4,8 +4,10 @@ defmodule JeopardyWeb.Components.Contestant.IntroducingRoles do
 
   def render(assigns) do
     ~H"""
-    <div>
-      <p>Waiting for <em><%= @trebek %></em> to confirm.</p>
+    <div class="h-screen">
+      <.instructions>
+        Waiting for <em><%= @trebek %></em> to confirm.
+      </.instructions>
     </div>
     """
   end

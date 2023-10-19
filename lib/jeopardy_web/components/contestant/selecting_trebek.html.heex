@@ -10,12 +10,14 @@
         phx-click={JS.push("volunteer") |> hide_modal("volunteer-modal")}
         phx-target={@myself}
       >
-        Volunteer
+        Host
       </button>
     </div>
   </.modal>
 
-  <button class="btn btn-primary" phx-click={show_modal("volunteer-modal")} phx-target={@myself}>
-    Volunteer to host
-  </button>
+  <div class="h-screen bg-sky-100 grid p-4 place-content-center">
+    <button class="btn btn-primary" phx-click={show_modal("volunteer-modal")} phx-target={@myself}>
+      Volunteer to host
+    </button>
+  </div>
 </div>

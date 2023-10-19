@@ -52,9 +52,12 @@ defmodule Jeopardy.Game do
   end
 
   def contestants_lowest_to_highest_score(game, opts \\ []) do
-    case Keyword.get(opts, :sort, :random) do
-      :alphabetical -> Enum.sort_by(Map.values(game.contestants), & &1.name)
-      _ -> Enum.shuffle(Map.values(game.contestants))
-    end
+    contestants =
+      case Keyword.get(opts, :sort, :random) do
+        :alphabetical -> Enum.sort_by(Map.values(game.contestants), & &1.name)
+        _ -> Enum.shuffle(Map.values(game.contestants))
+      end
+
+    Enum.sort_by(contestants, & &1.score)
   end
 end

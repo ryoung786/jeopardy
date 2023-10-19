@@ -5,7 +5,7 @@ defmodule JeopardyWeb.Components.Tv.ReadingDailyDoubleClue do
   def render(assigns) do
     ~H"""
     <div>
-      <.tv contestants={@game.contestants} buzzer={@game.buzzer}>
+      <.tv contestants={@game.contestants} buzzer={@game.board_control}>
         <.clue category={@game.clue.category} clue={@game.clue.clue} />
       </.tv>
     </div>
