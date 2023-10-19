@@ -24,8 +24,4 @@ defmodule JeopardyWeb.Components.Contestant.ReadingDailyDoubleClue do
     </div>
     """
   end
-
-  def handle_game_server_msg({:revealed_category, index}, socket) do
-    {:ok, assign(socket, index: index)}
-  end
 end

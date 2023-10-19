@@ -2,6 +2,7 @@ defmodule Jeopardy.FSM do
   @moduledoc false
   use TypedStruct
 
+  alias Jeopardy.FSM.Messages.StatusChanged
   alias Jeopardy.Game
 
   typedstruct do
@@ -22,7 +23,7 @@ defmodule Jeopardy.FSM do
       state: module,
       data: module.initial_data(game)
     })
-    |> broadcast({:status_changed, module})
+    |> broadcast(%StatusChanged{from: game.fsm.state, to: module})
   end
 
   def broadcast(%Jeopardy.Game{code: code} = game, message) do

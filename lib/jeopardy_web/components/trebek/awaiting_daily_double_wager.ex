@@ -69,11 +69,6 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingDailyDoubleWager do
     end
   end
 
-  def handle_game_server_msg({:wager_submitted, {_name, _amount}}, socket) do
-    # {:ok, assign(socket, contestants: Map.put(socket.assigns.contestants, name, amount))}
-    {:ok, socket}
-  end
-
   defp validate(wager, min..max = range) do
     with {wager, _} <- Integer.parse(wager),
          true <- wager in range do

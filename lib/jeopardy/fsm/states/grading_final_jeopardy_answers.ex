@@ -5,8 +5,6 @@ defmodule Jeopardy.FSM.GradingFinalJeopardyAnswers do
 
   use Jeopardy.FSM.State
 
-  alias Jeopardy.Game
-
   @impl true
   def valid_actions, do: ~w/submitted_grades/a
 
@@ -15,12 +13,12 @@ defmodule Jeopardy.FSM.GradingFinalJeopardyAnswers do
 
   defp grade_answers(game, correct_contestants) do
     with :ok <- validate_all_contestants_exist(game, correct_contestants) do
-      game =
-        Enum.reduce(correct_contestants, game, fn name, game ->
-          Game.update_contestant_score(game, name, game.contestants[name].final_jeopardy_wager)
+      contestants =
+        Map.new(game.contestants, fn {name, c} ->
+          {name, %{c | final_jeopardy_correct?: name in correct_contestants}}
         end)
 
-      {:ok, FSM.to_state(game, FSM.GameOver)}
+      {:ok, game |> Map.put(:contestants, contestants) |> FSM.to_state(FSM.GameOver)}
     end
   end
 

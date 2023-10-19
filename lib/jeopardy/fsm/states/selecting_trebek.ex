@@ -21,7 +21,7 @@ defmodule Jeopardy.FSM.SelectingTrebek do
       rest = List.delete(game.players, trebek)
       contestants = Map.new(rest, &{&1, %Contestant{name: &1}})
 
-      FSM.broadcast(game, {:trebek_selected, trebek})
+      FSM.broadcast(game, %FSM.Messages.TrebekSelected{trebek: trebek})
 
       {:ok,
        game

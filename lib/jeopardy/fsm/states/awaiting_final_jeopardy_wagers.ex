@@ -5,6 +5,7 @@ defmodule Jeopardy.FSM.AwaitingFinalJeopardyWagers do
 
   use Jeopardy.FSM.State
 
+  alias Jeopardy.FSM.Messages.WagerSubmitted
   alias Jeopardy.Game
   alias Jeopardy.Timers
 
@@ -38,7 +39,7 @@ defmodule Jeopardy.FSM.AwaitingFinalJeopardyWagers do
       game = put_in(game.contestants[name].final_jeopardy_wager, amount)
 
       if Enum.any?(Map.values(game.contestants), &(&1.final_jeopardy_wager == nil)) do
-        FSM.broadcast(game, {:wager_submitted, {name, amount}})
+        FSM.broadcast(game, %WagerSubmitted{name: name, amount: amount})
         {:ok, game}
       else
         :timer.cancel(game.fsm.data.tref)

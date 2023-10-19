@@ -3,6 +3,8 @@ defmodule JeopardyWeb.GameLive do
   use JeopardyWeb, :live_view
 
   alias Jeopardy.FSM
+  alias Jeopardy.FSM.Messages.PlayAgain
+  alias Jeopardy.FSM.Messages.StatusChanged
 
   def mount(%{"code" => code}, session, socket) do
     {:ok, game} = Jeopardy.GameServer.get_game(code)
@@ -34,17 +36,17 @@ defmodule JeopardyWeb.GameLive do
     """
   end
 
-  def handle_info({:trebek_selected, name}, socket) do
+  def handle_info(%FSM.Messages.TrebekSelected{trebek: name}, socket) do
     if name == socket.assigns.name,
       do: {:noreply, assign(socket, role: :trebek)},
       else: {:noreply, socket}
   end
 
-  def handle_info({:status_changed, state}, socket) do
+  def handle_info(%StatusChanged{to: state}, socket) do
     {:noreply, assign(socket, state: state)}
   end
 
-  def handle_info(:play_again_triggered, socket) do
+  def handle_info(%PlayAgain{}, socket) do
     {:noreply, redirect(socket, to: ~p"/games/#{socket.assigns.code}")}
   end
 

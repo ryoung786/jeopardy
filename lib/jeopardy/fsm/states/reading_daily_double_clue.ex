@@ -17,14 +17,11 @@ defmodule Jeopardy.FSM.ReadingDailyDoubleClue do
   defp answer(%Game{} = game, response) do
     amount = if response == :correct, do: game.clue.wager, else: -game.clue.wager
 
+    next = if Board.empty?(game.board), do: FSM.RecappingRound, else: FSM.SelectingClue
+
     {:ok,
      game
      |> Game.update_contestant_score(game.board.control, amount)
-     |> to_next_state()}
-  end
-
-  defp to_next_state(%Game{} = game) do
-    next = if Board.empty?(game.board), do: FSM.RecappingRound, else: FSM.SelectingClue
-    FSM.to_state(game, next)
+     |> FSM.to_state(next)}
   end
 end

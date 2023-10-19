@@ -2,6 +2,7 @@ defmodule JeopardyWeb.Components.Trebek.RevealingBoard do
   @moduledoc false
   use JeopardyWeb.FSMComponent
 
+  alias Jeopardy.FSM.Messages.RevealedCategory
   alias Jeopardy.GameServer
 
   def assign_init(socket, game) do
@@ -42,7 +43,7 @@ defmodule JeopardyWeb.Components.Trebek.RevealingBoard do
     """
   end
 
-  def handle_game_server_msg({:revealed_category, index}, socket) do
+  def handle_game_server_msg(%RevealedCategory{index: index}, socket) do
     {:ok, assign(socket, index: index)}
   end
 

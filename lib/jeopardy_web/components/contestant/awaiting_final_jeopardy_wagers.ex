@@ -2,6 +2,7 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingFinalJeopardyWagers do
   @moduledoc false
   use JeopardyWeb.FSMComponent
 
+  alias Jeopardy.FSM.Messages.WagerSubmitted
   alias Jeopardy.GameServer
   alias Jeopardy.Timers
 
@@ -43,7 +44,7 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingFinalJeopardyWagers do
     """
   end
 
-  def handle_game_server_msg({:wager_submitted, name}, socket) do
+  def handle_game_server_msg(%WagerSubmitted{name: name}, socket) do
     if name == socket.assigns.name,
       do: {:ok, assign(socket, has_submitted_wager?: true)},
       else: {:ok, socket}

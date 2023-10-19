@@ -3,6 +3,8 @@ defmodule JeopardyWeb.Components.Trebek.SelectingTrebekTest do
 
   import Phoenix.LiveViewTest
 
+  alias Jeopardy.FSM.Messages.StatusChanged
+  alias Jeopardy.FSM.Messages.TrebekSelected
   alias Jeopardy.GameServer
 
   setup do
@@ -24,8 +26,8 @@ defmodule JeopardyWeb.Components.Trebek.SelectingTrebekTest do
 
       lv |> element("button.foo") |> render_click()
 
-      assert_received({:trebek_selected, "a"})
-      assert_received({:status_changed, _state})
+      assert_received(%TrebekSelected{trebek: "a"})
+      assert_received(%StatusChanged{to: _state})
       assert has_element?(lv, "p", "Congratulations, you'll be hosting this round of Jeopardy!")
     end
   end

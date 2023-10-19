@@ -19,6 +19,7 @@ defmodule Jeopardy.FSM.AwaitingAnswer do
      game
      |> Game.update_contestant_score(game.buzzer, game.clue.value)
      |> Map.put(:buzzer, nil)
+     |> Game.set_board_control(game.buzzer)
      |> to_next_state()}
   end
 

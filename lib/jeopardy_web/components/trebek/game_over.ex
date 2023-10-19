@@ -4,6 +4,11 @@ defmodule JeopardyWeb.Components.Trebek.GameOver do
 
   alias Jeopardy.GameServer
 
+  # def assign_init(socket, game) do
+  #   contestant =
+  #     assign(socket, revealed: game.fsm.revealed, contestant_name: contestant.name, contestant_state: :name)
+  # end
+
   def render(assigns) do
     ~H"""
     <div>

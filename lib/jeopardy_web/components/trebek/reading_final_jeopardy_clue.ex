@@ -2,6 +2,8 @@ defmodule JeopardyWeb.Components.Trebek.ReadingFinalJeopardyClue do
   @moduledoc false
   use JeopardyWeb.FSMComponent
 
+  alias Jeopardy.FSM.Messages.FinalJeopardyAnswerSubmitted
+  alias Jeopardy.FSM.Messages.TimerStarted
   alias Jeopardy.GameServer
   alias Jeopardy.Timers
 
@@ -62,14 +64,11 @@ defmodule JeopardyWeb.Components.Trebek.ReadingFinalJeopardyClue do
     {:noreply, assign(socket, finished_reading?: true, time_remaining: @timer)}
   end
 
-  def handle_game_server_msg({:final_jeopardy_answer_submitted, {name, answer}}, socket) do
-    IO.inspect(socket.assigns.contestants, label: "[xxx] current contestants")
-    IO.inspect({name, answer}, label: "[xxx] final_jeopardy_answer_submitted")
-    socket.assigns.contestants |> Map.put(name, answer) |> IO.inspect(label: "[xxx] new contestants")
+  def handle_game_server_msg(%FinalJeopardyAnswerSubmitted{name: name, response: answer}, socket) do
     {:ok, assign(socket, contestants: Map.put(socket.assigns.contestants, name, answer))}
   end
 
-  def handle_game_server_msg({:timer_started, expires_at}, socket) do
+  def handle_game_server_msg(%TimerStarted{expires_at: expires_at}, socket) do
     {:ok, assign(socket, time_remaining: Timers.time_remaining(expires_at))}
   end
 end

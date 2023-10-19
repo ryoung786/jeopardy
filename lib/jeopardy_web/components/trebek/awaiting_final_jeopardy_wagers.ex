@@ -2,6 +2,7 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingFinalJeopardyWagers do
   @moduledoc false
   use JeopardyWeb.FSMComponent
 
+  alias Jeopardy.FSM.Messages.WagerSubmitted
   alias Jeopardy.Timers
 
   @timer 30_000
@@ -39,7 +40,7 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingFinalJeopardyWagers do
   defp status_icon(%{wagered?: true} = assigns), do: ~H|<.icon name="hero-check-circle" />|
   defp status_icon(assigns), do: ~H|<.icon name="hero-clock" />|
 
-  def handle_game_server_msg({:wager_submitted, {name, amount}}, socket) do
+  def handle_game_server_msg(%WagerSubmitted{name: name, amount: amount}, socket) do
     {:ok, assign(socket, contestants: Map.put(socket.assigns.contestants, name, amount))}
   end
 end

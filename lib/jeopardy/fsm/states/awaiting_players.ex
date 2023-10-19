@@ -6,6 +6,9 @@ defmodule Jeopardy.FSM.AwaitingPlayers do
   use Jeopardy.FSM.State
 
   alias Jeopardy.FSM
+  alias Jeopardy.FSM.Messages.JArchiveGameLoaded
+  alias Jeopardy.FSM.Messages.PlayerAdded
+  alias Jeopardy.FSM.Messages.PlayerRemoved
   alias Jeopardy.FSM.SelectingTrebek
   alias Jeopardy.Game
 
@@ -25,14 +28,14 @@ defmodule Jeopardy.FSM.AwaitingPlayers do
     if name in game.players do
       {:error, :name_not_unique}
     else
-      FSM.broadcast(game, {:player_added, name})
+      FSM.broadcast(game, %PlayerAdded{name: name})
       {:ok, %{game | players: [name | game.players]}}
     end
   end
 
   def remove_player(%Game{} = game, name) do
     if name in game.players do
-      FSM.broadcast(game, {:player_removed, name})
+      FSM.broadcast(game, %PlayerRemoved{name: name})
       {:ok, %{game | players: List.delete(game.players, name)}}
     else
       {:error, :player_not_found}
@@ -49,8 +52,10 @@ defmodule Jeopardy.FSM.AwaitingPlayers do
 
   def load_game(%Game{} = game, jarchive_game_id) do
     with {:ok, jarchive_game} <- Jeopardy.JArchive.load_game(jarchive_game_id) do
-      broadcast_data = Map.take(jarchive_game, ~w/air_date comments/a)
-      FSM.broadcast(game, {:jarchive_game_loaded, broadcast_data})
+      FSM.broadcast(game, %JArchiveGameLoaded{
+        air_date: jarchive_game.air_date,
+        comments: jarchive_game.comments
+      })
 
       {:ok, %{game | jarchive_game: jarchive_game}}
     end

@@ -2,6 +2,8 @@ defmodule JeopardyWeb.Components.Tv.ReadingFinalJeopardyClue do
   @moduledoc false
   use JeopardyWeb.FSMComponent
 
+  alias Jeopardy.FSM.Messages.FinalJeopardyAnswerSubmitted
+  alias Jeopardy.FSM.Messages.TimerStarted
   alias Jeopardy.Timers
 
   @timer 60_000
@@ -29,11 +31,11 @@ defmodule JeopardyWeb.Components.Tv.ReadingFinalJeopardyClue do
     """
   end
 
-  def handle_game_server_msg({:timer_started, expires_at}, socket) do
+  def handle_game_server_msg(%TimerStarted{expires_at: expires_at}, socket) do
     {:ok, assign(socket, time_remaining: Timers.time_remaining(expires_at))}
   end
 
-  def handle_game_server_msg({:final_jeopardy_answer_submitted, _}, socket) do
+  def handle_game_server_msg(%FinalJeopardyAnswerSubmitted{}, socket) do
     {:ok, socket}
   end
 end

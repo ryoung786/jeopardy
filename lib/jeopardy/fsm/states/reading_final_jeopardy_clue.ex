@@ -5,6 +5,8 @@ defmodule Jeopardy.FSM.ReadingFinalJeopardyClue do
 
   use Jeopardy.FSM.State
 
+  alias Jeopardy.FSM.Messages.FinalJeopardyAnswerSubmitted
+  alias Jeopardy.FSM.Messages.TimerStarted
   alias Jeopardy.GameServer
   alias Jeopardy.Timers
 
@@ -24,7 +26,7 @@ defmodule Jeopardy.FSM.ReadingFinalJeopardyClue do
       game = put_in(game.contestants[name].final_jeopardy_answer, response)
 
       if Enum.any?(Map.values(game.contestants), &(&1.final_jeopardy_answer == nil)) do
-        FSM.broadcast(game, {:final_jeopardy_answer_submitted, {name, response}})
+        FSM.broadcast(game, %FinalJeopardyAnswerSubmitted{name: name, response: response})
         {:ok, game}
       else
         :timer.cancel(game.fsm.data[:tref])
@@ -35,7 +37,7 @@ defmodule Jeopardy.FSM.ReadingFinalJeopardyClue do
 
   defp timer_started(game) do
     expires_at = Timers.add(@timer_seconds)
-    FSM.broadcast(game, {:timer_started, expires_at})
+    FSM.broadcast(game, %TimerStarted{expires_at: expires_at})
 
     {:ok, tref} =
       :timer.apply_after(:timer.seconds(@timer_seconds), GameServer, :action, [
