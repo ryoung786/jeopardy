@@ -28,7 +28,7 @@ defmodule JeopardyWeb.Components.Trebek.GameOver do
 
   def render(assigns) do
     ~H"""
-    <div class="grid grid-rows-[1fr_auto] min-h-screen">
+    <div class="grid grid-rows-[1fr_auto] min-h-[100dvh]">
       <.trebek_clue>
         <div :if={!@game_over?}>
           <.reveal_text show={@show_name}><%= @contestant.name %></.reveal_text>

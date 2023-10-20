@@ -10,7 +10,7 @@ defmodule JeopardyWeb.Components.Trebek.RecappingRound do
 
   def render(assigns) do
     ~H"""
-    <div class="bg-sky-100 min-h-screen grid grid-rows-[1fr_auto]">
+    <div class="bg-sky-100 min-h-[100dvh] grid grid-rows-[1fr_auto]">
       <.instructions>
         <%= if @round == :jeopardy do %>
           That's the end of the Jeopardy round!<br /> When you're ready, continue to the next round.

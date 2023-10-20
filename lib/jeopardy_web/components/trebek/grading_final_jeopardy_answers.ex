@@ -16,7 +16,7 @@ defmodule JeopardyWeb.Components.Trebek.GradingFinalJeopardyAnswers do
 
   def render(assigns) do
     ~H"""
-    <div class="grid gap-4 grid-rows-[auto_1fr_auto] min-h-screen">
+    <div class="grid gap-4 grid-rows-[auto_1fr_auto] min-h-[100dvh]">
       <h3 class="bg-blue-800 text-neutral-100 text-shadow grid place-items-center text-2xl leading-snug p-4 text-center">
         Correct Response:<br />
         <%= @game.clue.answer %>

@@ -13,7 +13,7 @@ defmodule JeopardyWeb.Components.Contestant.ReadingDailyDoubleClue do
 
   def render(assigns) do
     ~H"""
-    <div class="w-screen h-screen">
+    <div class="w-screen h-[100dvh]">
       <.instructions>
         <%= if @has_board_control? do %>
           For $<%= @wager %>:<br /> Tell <%= @game.trebek %> your answer.

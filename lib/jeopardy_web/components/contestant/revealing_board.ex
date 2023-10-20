@@ -13,7 +13,7 @@ defmodule JeopardyWeb.Components.Contestant.RevealingBoard do
 
   def render(assigns) do
     ~H"""
-    <div class="w-screen h-screen overflow-clip">
+    <div class="w-screen h-[100dvh] overflow-clip">
       <ul
         class={[
           "w-full h-full text-neutral-100 text-shadow font-serif grid",

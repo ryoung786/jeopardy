@@ -6,7 +6,7 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingBuzz do
 
   def render(assigns) do
     ~H"""
-    <div class="h-screen">
+    <div class="h-[100dvh]">
       <.button
         :if={@name not in @game.clue.incorrect_contestants}
         class="btn-primary rounded-none w-full h-full"

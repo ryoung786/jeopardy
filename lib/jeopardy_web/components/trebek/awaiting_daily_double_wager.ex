@@ -22,7 +22,7 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingDailyDoubleWager do
 
   def render(assigns) do
     ~H"""
-    <div class="bg-sky-100 min-h-screen p-4 grid place-items-center">
+    <div class="bg-sky-100 min-h-[100dvh] p-4 grid place-items-center">
       <.form
         for={@form}
         class="flex flex-col gap-4 max-w-screen-sm w-full"

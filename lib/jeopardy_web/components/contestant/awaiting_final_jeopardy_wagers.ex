@@ -22,7 +22,7 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingFinalJeopardyWagers do
 
   def render(assigns) do
     ~H"""
-    <div class="bg-sky-100 min-h-screen p-4 grid place-items-center">
+    <div class="bg-sky-100 min-h-[100dvh] p-4 grid place-items-center">
       <div :if={not @has_submitted_wager?}>
         <.form
           for={@form}

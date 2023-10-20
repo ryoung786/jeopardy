@@ -10,7 +10,7 @@ defmodule JeopardyWeb.Components.Trebek.ReadingDailyDoubleClue do
 
   def render(assigns) do
     ~H"""
-    <div class="grid grid-rows-[1fr_auto] min-h-screen">
+    <div class="grid grid-rows-[1fr_auto] min-h-[100dvh]">
       <%= if @finished_reading do %>
         <.trebek_clue><%= @game.clue.answer %></.trebek_clue>
         <div class="grid grid-cols-2 p-4 gap-4">

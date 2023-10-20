@@ -4,7 +4,7 @@ defmodule JeopardyWeb.Components.Trebek.SelectingTrebek do
 
   def render(assigns) do
     ~H"""
-    <div class="h-screen">
+    <div class="h-[100dvh]">
       <.instructions>
         Congratulations, you'll be hosting this round of Jeopardy!
       </.instructions>

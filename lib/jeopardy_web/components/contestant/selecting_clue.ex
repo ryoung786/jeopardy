@@ -11,7 +11,7 @@ defmodule JeopardyWeb.Components.Contestant.SelectingClue do
 
   def render(assigns) do
     ~H"""
-    <div class="w-screen h-screen">
+    <div class="w-screen h-[100dvh]">
       <.instructions>
         <%= if @has_board_control? do %>
           You have control of the board.<br /> Tell <%= @trebek %> which clue you select.

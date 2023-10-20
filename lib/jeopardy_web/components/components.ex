@@ -11,7 +11,7 @@ defmodule JeopardyWeb.Components do
 
   def tv(assigns) do
     ~H"""
-    <div class="h-screen grid grid-rows-[1fr_25px_24%]" style="background: #221e21;">
+    <div class="h-[100dvh] grid grid-rows-[1fr_25px_24%]" style="background: #221e21;">
       <div class="relative"><%= render_slot(@inner_block) %></div>
       <div class="grid items-center h-full px-2">
         <%= render_slot(@timer) %>

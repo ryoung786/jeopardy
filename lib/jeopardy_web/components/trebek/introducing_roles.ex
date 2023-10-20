@@ -4,7 +4,7 @@ defmodule JeopardyWeb.Components.Trebek.IntroducingRoles do
 
   def render(assigns) do
     ~H"""
-    <div class="grid grid-rows-[1fr_auto] min-h-screen">
+    <div class="grid grid-rows-[1fr_auto] min-h-[100dvh]">
       <.trebek_clue>Congratulations, you'll be hosting this round of Jeopardy!</.trebek_clue>
 
       <div class="p-4 grid">

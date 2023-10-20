@@ -20,7 +20,7 @@ defmodule JeopardyWeb.Components.Trebek.AwaitingFinalJeopardyWagers do
 
   def render(assigns) do
     ~H"""
-    <div class="h-screen">
+    <div class="h-[100dvh]">
       <.instructions>
         <:additional>
           <div class="grid mb-8">

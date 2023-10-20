@@ -21,7 +21,7 @@ defmodule JeopardyWeb.Components.Contestant.ReadingFinalJeopardyClue do
   def render(assigns) do
     ~H"""
     <div>
-      <div :if={@has_submitted_answer?} class="h-screen">
+      <div :if={@has_submitted_answer?} class="h-[100dvh]">
         <.instructions>
           <:additional>
             <div class="grid place-items-center mb-8">
@@ -41,7 +41,7 @@ defmodule JeopardyWeb.Components.Contestant.ReadingFinalJeopardyClue do
 
       <div
         :if={not @has_submitted_answer?}
-        class="bg-sky-100 min-h-screen p-4 grid place-items-center"
+        class="bg-sky-100 min-h-[100dvh] p-4 grid place-items-center"
       >
         <.form
           for={@form}

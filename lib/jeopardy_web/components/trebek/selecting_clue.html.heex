@@ -1,4 +1,4 @@
-<div class="bg-sky-100 grid grid-rows-[1fr_auto] min-h-screen font-sans">
+<div class="bg-sky-100 grid grid-rows-[1fr_auto] min-h-[100dvh] font-sans">
   <ul :if={!@category} class="grid grid-cols-2 auto-rows-fr gap-4 p-4 pb-0">
     <%= for category <- @game.categories do %>
       <%= if Enum.all?(@game.board[category], fn clue -> clue.asked? end) do %>

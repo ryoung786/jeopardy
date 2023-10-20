@@ -14,7 +14,7 @@ defmodule JeopardyWeb.Components.Trebek.RevealingBoard do
 
   def render(assigns) do
     ~H"""
-    <div class="grid grid-rows-[1fr_auto] h-screen">
+    <div class="grid grid-rows-[1fr_auto] h-[100dvh]">
       <div class="w-screen overflow-clip">
         <ul
           class="h-full grid transition-transform duration-1000"
