@@ -6,10 +6,9 @@ defmodule JeopardyWeb.Components.Tv.AwaitingDailyDoubleWager do
     ~H"""
     <div>
       <.tv contestants={@game.contestants} buzzer={@game.board_control}>
-        <.clue
-          category={@game.clue.category}
-          clue="DAILY DOUBLE"
-          daily_double_background?={@game.clue.daily_double?}
+        <.clue category={@game.clue.category} daily_double_background?={@game.clue.daily_double?}>
+          DAILY DOUBLE
+        </.clue>
         />
       </.tv>
     </div>

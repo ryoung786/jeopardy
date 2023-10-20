@@ -10,7 +10,7 @@ defmodule JeopardyWeb.Components.Tv.IntroducingRoles do
     ~H"""
     <div>
       <.tv contestants={@game.contestants}>
-        <.clue clue={"Host: #{@trebek}"} />
+        <.clue><%= "Host: #{@trebek}" %></.clue>
       </.tv>
     </div>
     """

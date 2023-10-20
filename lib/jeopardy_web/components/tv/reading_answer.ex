@@ -6,7 +6,7 @@ defmodule JeopardyWeb.Components.Tv.ReadingAnswer do
     ~H"""
     <div>
       <.tv contestants={@game.contestants}>
-        <.clue category={@game.clue.category} clue={@game.clue.answer} />
+        <.clue category={@game.clue.category}><%= @game.clue.answer %></.clue>
       </.tv>
     </div>
     """

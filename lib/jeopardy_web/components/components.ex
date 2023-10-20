@@ -31,7 +31,7 @@ defmodule JeopardyWeb.Components do
     """
   end
 
-  attr :clue, :string, required: true
+  slot :inner_block, required: true
   attr :category, :string, default: nil
   attr :daily_double_background?, :boolean, default: false
 
@@ -53,7 +53,7 @@ defmodule JeopardyWeb.Components do
         ]}
         style={@daily_double_background? && "animation: daily-double 1s;"}
       >
-        <%= @clue %>
+        <%= render_slot(@inner_block) %>
       </h1>
     </div>
     """
@@ -111,10 +111,7 @@ defmodule JeopardyWeb.Components do
         class="grid gap-1 overflow-hidden"
         style="grid-template-rows: 16% repeat(5, 1fr)"
       >
-        <div
-          class="category bg-blue-800 p-2 md:p-4 grid place-content-center text-xs md:text-base overflow-hidden"
-          style="font-size: 1.5vw;"
-        >
+        <div class="category bg-blue-800 p-2 md:p-4 grid place-content-center overflow-hidden text-[2vw] lg:text-[1.5vw]">
           <span class={[
             "transition-all duration-1000",
             @category_reveal_index < i && "invisible opacity-0 translate-y-0.5"
@@ -124,8 +121,8 @@ defmodule JeopardyWeb.Components do
         </div>
         <div
           :for={clue <- @clues[category]}
-          class="bg-blue-800 grid place-content-center font-bold font-sans text-2xl md:text-3xl lg:text-4xl"
-          style="color: #dda95e; font-size: 3.5vw;"
+          class="bg-blue-800 grid place-content-center font-bold font-sans text-[3.5vw]"
+          style="color: #dda95e;"
         >
           <span :if={not clue.asked?}>$<%= clue.value %></span>
         </div>

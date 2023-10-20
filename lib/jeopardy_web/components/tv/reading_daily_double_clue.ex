@@ -6,7 +6,7 @@ defmodule JeopardyWeb.Components.Tv.ReadingDailyDoubleClue do
     ~H"""
     <div>
       <.tv contestants={@game.contestants} buzzer={@game.board_control}>
-        <.clue category={@game.clue.category} clue={@game.clue.clue} />
+        <.clue category={@game.clue.category}><%= @game.clue.clue %></.clue>
       </.tv>
     </div>
     """

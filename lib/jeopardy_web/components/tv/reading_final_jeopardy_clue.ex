@@ -19,7 +19,7 @@ defmodule JeopardyWeb.Components.Tv.ReadingFinalJeopardyClue do
     ~H"""
     <div>
       <.tv contestants={@game.contestants}>
-        <.clue category={@game.clue.category} clue={@game.clue.clue} />
+        <.clue category={@game.clue.category}><%= @game.clue.clue %></.clue>
         <div
           class="w-8 h-8 opacity-50 absolute bottom-4"
           style="transform: translateX(calc(50vw - 50%))"

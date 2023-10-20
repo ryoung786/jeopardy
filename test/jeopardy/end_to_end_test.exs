@@ -110,8 +110,14 @@ defmodule Jeopardy.EndToEndTest do
       GameServer.action(code, :submitted_grades, ["b"])
 
       assert fsm_state(code) == FSM.GameOver
-      GameServer.action(code, :revealed_contestant, "a")
-      {:ok, game} = GameServer.action(code, :revealed_contestant, "b")
+      GameServer.action(code, :revealed, :name)
+      GameServer.action(code, :revealed, :wager)
+      GameServer.action(code, :revealed, :answer)
+      GameServer.action(code, :revealed, :next_contestant)
+      GameServer.action(code, :revealed, :name)
+      GameServer.action(code, :revealed, :wager)
+      GameServer.action(code, :revealed, :answer)
+      {:ok, game} = GameServer.action(code, :revealed, :game_over)
       assert game.contestants["b"].score == 400
 
       {:ok, game} = GameServer.action(code, :play_again)

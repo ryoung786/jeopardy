@@ -9,13 +9,12 @@ defmodule JeopardyWeb.Components.Contestant.ReadingFinalJeopardyClue do
 
   def assign_init(socket, game) do
     contestant = game.contestants[socket.assigns.name]
-    time_remaining = Timers.time_remaining(game.fsm.data[:expires_at])
 
     assign(socket,
       form: to_form(%{"answer" => contestant.final_jeopardy_answer}),
       has_submitted_answer?: contestant.final_jeopardy_answer != nil,
       answer: contestant.final_jeopardy_answer,
-      time_remaining: time_remaining
+      expires_at: game.fsm.data[:expires_at]
     )
   end
 
@@ -28,9 +27,9 @@ defmodule JeopardyWeb.Components.Contestant.ReadingFinalJeopardyClue do
             <div class="grid place-items-center mb-8">
               <div class="w-10 h-10">
                 <.pie_timer
-                  :if={@time_remaining}
+                  :if={@expires_at}
                   timer={60_000}
-                  time_remaining={@time_remaining}
+                  time_remaining={Timers.time_remaining(@expires_at)}
                   color="bg-primary"
                 />
               </div>
@@ -52,9 +51,9 @@ defmodule JeopardyWeb.Components.Contestant.ReadingFinalJeopardyClue do
         >
           <div class="w-10 h-10 self-center">
             <.pie_timer
-              :if={@time_remaining}
+              :if={@expires_at}
               timer={60_000}
-              time_remaining={@time_remaining}
+              time_remaining={Timers.time_remaining(@expires_at)}
               color="bg-primary"
             />
           </div>
@@ -88,7 +87,7 @@ defmodule JeopardyWeb.Components.Contestant.ReadingFinalJeopardyClue do
   end
 
   def handle_game_server_msg(%TimerStarted{expires_at: expires_at}, socket) do
-    {:ok, assign(socket, time_remaining: Timers.time_remaining(expires_at))}
+    {:ok, assign(socket, expires_at: expires_at)}
   end
 
   def handle_game_server_msg(%FinalJeopardyAnswerSubmitted{}, socket) do

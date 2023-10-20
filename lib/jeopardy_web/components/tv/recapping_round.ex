@@ -6,7 +6,7 @@ defmodule JeopardyWeb.Components.Tv.RecappingRound do
     ~H"""
     <div>
       <.tv contestants={@game.contestants}>
-        <.clue clue="Round complete" />
+        <.clue>Round complete</.clue>
       </.tv>
     </div>
     """

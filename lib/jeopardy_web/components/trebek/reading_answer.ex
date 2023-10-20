@@ -7,7 +7,7 @@ defmodule JeopardyWeb.Components.Trebek.ReadingAnswer do
   def render(assigns) do
     ~H"""
     <div class="grid grid-rows-[1fr_auto] h-screen">
-      <.clue clue={@game.clue.answer} />
+      <.clue><%= @game.clue.answer %></.clue>
       <div class="p-4 grid">
         <.button class="btn-primary" phx-click="finished-reading" phx-target={@myself}>
           Continue

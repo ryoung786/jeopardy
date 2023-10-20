@@ -8,7 +8,7 @@
     >
       Start Game
     </.button>
-    <.clue :if={Enum.count(@players) < 2} clue="Waiting for players to join ..." />
+    <.clue :if={Enum.count(@players) < 2}>Waiting for players to join ...</.clue>
   </div>
   <span />
   <div

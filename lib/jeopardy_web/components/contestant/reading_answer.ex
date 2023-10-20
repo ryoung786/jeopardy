@@ -5,7 +5,7 @@ defmodule JeopardyWeb.Components.Contestant.ReadingAnswer do
   def render(assigns) do
     ~H"""
     <div class="h-screen">
-      <.clue clue={@game.clue.answer} />
+      <.clue><%= @game.clue.answer %></.clue>
     </div>
     """
   end
