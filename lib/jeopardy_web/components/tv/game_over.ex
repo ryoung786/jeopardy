@@ -9,12 +9,18 @@ defmodule JeopardyWeb.Components.Tv.GameOver do
     c = Enum.at(game.fsm.data.contestants, game.fsm.data.index)
 
     socket =
-      assign(socket, contestant: c, name: nil, wager: nil, answer: nil, game_over?: game.fsm.data.state == :game_over)
+      assign(socket,
+        contestant: c,
+        show_name: false,
+        show_wager: false,
+        show_answer: false,
+        game_over?: game.fsm.data.state == :game_over
+      )
 
     case game.fsm.data.state do
-      :answer -> assign(socket, name: c.name, wager: c.final_jeopardy_wager, answer: c.final_jeopardy_answer)
-      :wager -> assign(socket, name: c.name, wager: c.final_jeopardy_wager)
-      :name -> assign(socket, name: c.name)
+      :answer -> assign(socket, show_name: true, show_wager: true, show_answer: true)
+      :wager -> assign(socket, show_name: true, show_wager: true)
+      :name -> assign(socket, show_name: true)
       _ -> socket
     end
   end
@@ -23,12 +29,12 @@ defmodule JeopardyWeb.Components.Tv.GameOver do
     ~H"""
     <div>
       <pre :if={assigns[:foo]}>what</pre>
-      <.tv contestants={@game.contestants} buzzer={@name}>
+      <.tv contestants={@game.contestants} buzzer={@show_name && @contestant.name}>
         <.clue>
           <div :if={!@game_over?}>
-            <.reveal_text show={@name}><%= @contestant.name %></.reveal_text>
-            <.reveal_text show={@wager}><%= @contestant.final_jeopardy_wager %></.reveal_text>
-            <.reveal_text show={@answer}>
+            <.reveal_text show={@show_name}><%= @contestant.name %></.reveal_text>
+            <.reveal_text show={@show_wager}><%= @contestant.final_jeopardy_wager %></.reveal_text>
+            <.reveal_text show={@show_answer}>
               <%= @contestant.final_jeopardy_answer || "No answer" %>
             </.reveal_text>
           </div>
@@ -36,18 +42,6 @@ defmodule JeopardyWeb.Components.Tv.GameOver do
           <span :if={@game_over?}>Game Over</span>
         </.clue>
       </.tv>
-    </div>
-    """
-  end
-
-  defp reveal_text(assigns) do
-    ~H"""
-    <div class={[
-      "transition-all transform ease-out duration-300",
-      !@show && "opacity-0 -translate-y-4 scale-95",
-      @show && "opacity-100 translate-y-0 scale-100"
-    ]}>
-      <%= render_slot(@inner_block) %>
     </div>
     """
   end
@@ -65,11 +59,11 @@ defmodule JeopardyWeb.Components.Tv.GameOver do
         else: socket
 
     case state do
-      nil -> {:ok, assign(socket, name: nil, wager: nil, answer: nil)}
-      :name -> {:ok, assign(socket, name: value, wager: nil, answer: nil)}
-      :wager -> {:ok, assign(socket, wager: value, answer: nil)}
-      :answer -> {:ok, assign(socket, answer: value)}
-      :game_over -> {:ok, assign(socket, name: nil, wager: nil, answer: nil, game_over?: true)}
+      nil -> {:ok, assign(socket, show_name: false, show_wager: false, show_answer: false)}
+      :name -> {:ok, assign(socket, show_name: true, show_wager: false, show_answer: false)}
+      :wager -> {:ok, assign(socket, show_wager: true, show_answer: false)}
+      :answer -> {:ok, assign(socket, show_answer: true)}
+      :game_over -> {:ok, assign(socket, show_name: false, show_wager: false, show_answer: false, game_over?: true)}
     end
   end
 end
