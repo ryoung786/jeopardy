@@ -8,7 +8,7 @@ defmodule JeopardyWeb.HomeHTML do
     <div>
       <.form for={@form} class="flex flex-col gap-4" action={~p"/"}>
         <.input field={@form[:name]} placeholder="Name" required />
-        <.input field={@form[:code]} placeholder="ABCD" required />
+        <.input field={@form[:code]} placeholder="ABCD" uppercase required />
         <.button class="btn-primary">Join</.button>
       </.form>
       <p>Or</p>
