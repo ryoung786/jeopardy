@@ -9,6 +9,7 @@ defmodule Jeopardy.FSM.Messages do
   defmodule WagerSubmitted, do: defstruct([:name, :amount])
   defmodule PlayerAdded, do: defstruct([:name])
   defmodule PlayerRemoved, do: defstruct([:name])
+  defmodule PodiumSigned, do: defstruct([:name, :signature])
   defmodule TimerStarted, do: defstruct([:expires_at])
   defmodule FinalJeopardyAnswerSubmitted, do: defstruct([:name, :response])
   defmodule RevealedCategory, do: defstruct([:index])

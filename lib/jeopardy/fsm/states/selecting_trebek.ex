@@ -17,9 +17,9 @@ defmodule Jeopardy.FSM.SelectingTrebek do
   def handle_action(:select_trebek, %Game{} = game, name), do: select_trebek(game, name)
 
   def select_trebek(%Game{} = game, trebek) do
-    if trebek in game.players do
-      rest = List.delete(game.players, trebek)
-      contestants = Map.new(rest, &{&1, %Contestant{name: &1}})
+    if trebek in Map.keys(game.players) do
+      rest = game.players |> Map.delete(trebek) |> Map.values()
+      contestants = Map.new(rest, &{&1.name, Contestant.new(&1)})
 
       FSM.broadcast(game, %FSM.Messages.TrebekSelected{trebek: trebek})
 

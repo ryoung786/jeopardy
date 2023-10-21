@@ -11,7 +11,7 @@ defmodule Jeopardy.FSM.AwaitingPlayersTest do
       {:ok, game} = AwaitingPlayers.add_player(%Game{}, "ryan")
       {:ok, game} = AwaitingPlayers.add_player(game, "john")
 
-      assert ["john", "ryan"] = game.players
+      assert ["john", "ryan"] = game.players |> Map.keys() |> Enum.sort()
     end
 
     test "enforces unique names" do
@@ -25,7 +25,7 @@ defmodule Jeopardy.FSM.AwaitingPlayersTest do
       {:ok, game} = AwaitingPlayers.add_player(%Game{}, "ryan")
       {:ok, game} = AwaitingPlayers.remove_player(game, "ryan")
 
-      assert [] = game.players
+      assert Enum.empty?(game.players)
     end
 
     test "returns error tuple when removing a nonexistant player" do

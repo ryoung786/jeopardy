@@ -22,7 +22,7 @@ defmodule Jeopardy.GameServerTest do
       assert %FSM{state: FSM.AwaitingPlayers} = game.fsm
 
       assert {:ok, game} = GameServer.action(code, :add_player, "ryan")
-      assert ["ryan"] = game.players
+      assert ["ryan"] = Map.keys(game.players)
     end
 
     @tag capture_log: true

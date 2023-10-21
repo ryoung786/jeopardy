@@ -13,7 +13,7 @@ defmodule Jeopardy.Game do
   typedstruct do
     field :code, String.t()
     field :round, :jeopardy | :double_jeopardy | :final_jeopardy, default: :jeopardy
-    field :players, [String.t()], default: []
+    field :players, map(), default: %{}
     field :board, Board.t(), default: %Board{}
     field :trebek, String.t()
     field :contestants, map(), default: %{}

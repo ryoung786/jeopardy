@@ -8,7 +8,7 @@
     style="background: linear-gradient(to bottom, #5f3929, #5f3929 7%, #dab777 7%, #dab777 10%, #5f3929 10%, #5f3929 17%, #dab777 17%, #dab777 20%, #5f3929 20%, #5f3929 30%, #221e21 30%, #221e21 95%, #5f3929 95%, #5f3929)"
   >
     <div
-      :for={name <- Enum.sort(@players)}
+      :for={name <- @players}
       class="relative group cursor-pointer"
       phx-click={show_modal("elect-modal-#{name}")}
       phx-target={@myself}
@@ -16,7 +16,7 @@
       <button class="absolute rounded-full bg-success transition-transform -right-1 -top-1 w-4 h-4 opacity-50 grid place-content-center text-xs group-hover:opacity-100 group-hover:scale-110">
         <span style="font-size: .4rem">✔️</span>
       </button>
-      <.podium name={name} />
+      <.podium name={name} signature={@signatures[name]} />
     </div>
   </div>
 

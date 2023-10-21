@@ -122,7 +122,7 @@ defmodule Jeopardy.EndToEndTest do
 
       {:ok, game} = GameServer.action(code, :play_again)
       assert fsm_state(code) == FSM.AwaitingPlayers
-      assert game.players -- ["a", "b", "trebek"] == []
+      assert ["a", "b", "trebek"] = game.players |> Map.keys() |> Enum.sort()
     end
 
     @tag capture_log: true

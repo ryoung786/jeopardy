@@ -66,7 +66,7 @@ defmodule Jeopardy.GameServer do
         {:reply, {:ok, game}, %{state | game: game}, state.inactivity_timeout}
 
       {:error, reason} ->
-        Logger.error("Invalid action", action: action)
+        Logger.error("Invalid action: #{inspect(action)}", action: action)
         {:reply, {:error, reason}, state, state.inactivity_timeout}
     end
   end

@@ -4,10 +4,13 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
 
   alias Jeopardy.FSM.Messages.PlayerAdded
   alias Jeopardy.FSM.Messages.PlayerRemoved
+  alias Jeopardy.FSM.Messages.PodiumSigned
   alias Phoenix.LiveView.JS
 
   def assign_init(socket, game) do
-    assign(socket, players: game.players, original_players: game.players)
+    player_names = game.players |> Map.keys() |> Enum.sort()
+    signatures = Map.new(game.players, fn {name, player} -> {name, player.signature} end)
+    assign(socket, players: player_names, original_players: player_names, signatures: signatures)
   end
 
   def handle_game_server_msg(%PlayerRemoved{name: name}, socket) do
@@ -15,15 +18,27 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
   end
 
   def handle_game_server_msg(%PlayerAdded{name: name}, socket) do
-    {:ok, assign(socket, players: socket.assigns.players ++ [name])}
+    {:ok, assign(socket, players: Enum.sort([name | socket.assigns.players]))}
   end
 
-  def handle_event("remove-player", %{"player" => player}, socket) do
-    socket = assign(socket, original_players: List.delete(socket.assigns.original_players, player))
+  def handle_game_server_msg(%PodiumSigned{} = podium, socket) do
+    {:ok, assign(socket, signatures: Map.put(socket.assigns.signatures, podium.name, podium.signature))}
+  end
 
-    case Jeopardy.GameServer.action(socket.assigns.code, :remove_player, player) do
-      {:ok, game} -> {:noreply, assign(socket, players: game.players)}
-      _ -> {:noreply, socket}
+  def handle_event("remove-player", %{"player" => name}, socket) do
+    case Jeopardy.GameServer.action(socket.assigns.code, :remove_player, name) do
+      {:ok, game} ->
+        players = game.players |> Map.keys() |> Enum.sort()
+
+        {:noreply,
+         assign(socket,
+           original_players: players,
+           players: players,
+           signatures: Map.delete(socket.assigns.signatures, name)
+         )}
+
+      _ ->
+        {:noreply, socket}
     end
   end
 

@@ -3,12 +3,14 @@ defmodule JeopardyWeb.Components.Tv.SelectingTrebek do
   use JeopardyWeb.FSMComponent
 
   def assign_init(socket, game) do
-    assign(socket, players: game.players)
+    players = game.players |> Map.keys() |> Enum.sort()
+    signatures = Map.new(game.players, fn {name, player} -> {name, player.signature} end)
+    assign(socket, players: players, signatures: signatures)
   end
 
-  def handle_event("elect_host", %{"player" => player}, socket) do
-    case Jeopardy.GameServer.action(socket.assigns.code, :select_trebek, player) do
-      {:ok, game} -> {:noreply, assign(socket, players: game.players)}
+  def handle_event("elect_host", %{"player" => name}, socket) do
+    case Jeopardy.GameServer.action(socket.assigns.code, :select_trebek, name) do
+      {:ok, _game} -> {:noreply, socket}
       _ -> {:noreply, socket}
     end
   end

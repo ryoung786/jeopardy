@@ -1,9 +1,25 @@
-<div>
-  contestant: <%= @name %>
-  <ul>
-    <li :for={player <- Enum.sort(@players)} phx-remove={fade_away_left()}>
-      <% # display podiums %>
-      <span><%= player %></span>
-    </li>
-  </ul>
+<div class="live-component">
+  <h1>Welcome <%= @name %>!</h1>
+  <%= if !@signature do %>
+    <p>Please sign your podium below:</p>
+    <div class="grid place-items-center p-8">
+      <div class="grid place-items-center gap-4 w-full max-w-lg">
+        <canvas
+          id="canvas"
+          class="block w-full aspect-[4/3] bg-blue-800 rounded shadow"
+          phx-update="ignore"
+          phx-hook="Signature"
+        >
+        </canvas>
+        <div class="buttons w-full flex justify-end gap-4">
+          <.button id="clear">Clear</.button>
+          <.button class="btn-primary" id="screenshot">OK</.button>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="w-32">
+      <.podium name={@name} signature={@signature} />
+    </div>
+  <% end %>
 </div>

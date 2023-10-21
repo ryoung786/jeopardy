@@ -25,9 +25,10 @@ defmodule JeopardyWeb.Components do
         style="background: linear-gradient(to bottom, #5f3929, #5f3929 7%, #dab777 7%, #dab777 10%, #5f3929 10%, #5f3929 17%, #dab777 17%, #dab777 20%, #5f3929 20%, #5f3929 30%, #221e21 30%, #221e21 95%, #5f3929 95%, #5f3929)"
       >
         <.podium
-          :for={{name, %{score: score}} <- @contestants}
+          :for={{name, %{score: score, signature: signature}} <- @contestants}
           name={name}
           score={score}
+          signature={signature}
           lit={name == @buzzer}
         />
       </div>
@@ -51,7 +52,7 @@ defmodule JeopardyWeb.Components do
       <h3 class="text-xl font-sans"><%= @category %></h3>
       <div
         class={[
-          "grid text-4xl place-items-center max-w-4xl leading-snug",
+          "grid text-4xl text-center place-items-center max-w-4xl leading-snug",
           !@daily_double_background? && "font-serif",
           @daily_double_background? && "font-sans font-bold text-7xl"
         ]}
@@ -70,9 +71,9 @@ defmodule JeopardyWeb.Components do
     ~H"""
     <div class="bg-blue-800 h-full text-neutral-100 grid p-4 gap-2 grid-rows-[auto_1fr] text-shadow">
       <h3 class="font-sans"><%= @category %></h3>
-      <h1 class="grid text-2xl leading-snug font-serif text-center place-self-center max-w-4xl">
+      <div class="grid text-2xl leading-snug font-serif text-center place-self-center max-w-4xl">
         <%= render_slot(@inner_block) %>
-      </h1>
+      </div>
     </div>
     """
   end
@@ -80,6 +81,7 @@ defmodule JeopardyWeb.Components do
   attr :name, :string, required: true
   attr :score, :integer, default: 0
   attr :lit, :boolean, default: false
+  attr :signature, :string, default: nil
 
   def podium(assigns) do
     ~H"""
@@ -93,10 +95,20 @@ defmodule JeopardyWeb.Components do
         </span>
       </div>
       <div class={["overflow-hidden", @lit && "lit", !@lit && "unlit"]}>
-        <div class="name mt-[15%] bg-blue-800 grid text-[2vh] place-content-center h-[60%]">
-          <span class={[@name |> String.graphemes() |> Enum.count() > 10 && "text-[.8em]"]}>
-            <%= @name %>
-          </span>
+        <div class="name mt-[15%] bg-blue-800 grid text-[2vh] place-items-center h-[60%]">
+          <%= if @signature do %>
+            <div class="p-2 w-full h-full">
+              <div
+                class="w-full h-full bg-contain bg-center bg-no-repeat"
+                style={"background-image: url(#{@signature});"}
+              >
+              </div>
+            </div>
+          <% else %>
+            <span class={[@name |> String.graphemes() |> Enum.count() > 10 && "text-[.8em]"]}>
+              <%= @name %>
+            </span>
+          <% end %>
         </div>
       </div>
     </div>
