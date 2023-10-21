@@ -2,6 +2,10 @@ defmodule JeopardyWeb.Components do
   @moduledoc false
   use Phoenix.Component
 
+  use Phoenix.VerifiedRoutes,
+    endpoint: JeopardyWeb.Endpoint,
+    router: JeopardyWeb.Router
+
   # alias Phoenix.LiveView.JS
 
   slot :inner_block, required: true
@@ -45,16 +49,16 @@ defmodule JeopardyWeb.Components do
       }
     >
       <h3 class="text-xl font-sans"><%= @category %></h3>
-      <h1
+      <div
         class={[
-          "grid text-4xl text-center place-self-center max-w-4xl leading-snug",
+          "grid text-4xl place-items-center max-w-4xl leading-snug",
           !@daily_double_background? && "font-serif",
           @daily_double_background? && "font-sans font-bold text-7xl"
         ]}
         style={@daily_double_background? && "animation: daily-double 1s;"}
       >
         <%= render_slot(@inner_block) %>
-      </h1>
+      </div>
     </div>
     """
   end
@@ -233,6 +237,25 @@ defmodule JeopardyWeb.Components do
     ]}>
       <%= render_slot(@inner_block) %>
     </h1>
+    """
+  end
+
+  attr :content, :any
+  attr :width_class, :string, default: "w-full"
+
+  def qr_code(assigns) do
+    ~H"""
+    <div class={"grid place-content-center qr-code #{@width_class}"}>
+      <%= @content
+      |> EQRCode.encode()
+      |> EQRCode.svg(
+        color: "white",
+        shape: "circle",
+        background_color: :transparent,
+        viewbox: true
+      )
+      |> Phoenix.HTML.raw() %>
+    </div>
     """
   end
 end

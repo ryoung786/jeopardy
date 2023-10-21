@@ -53,6 +53,7 @@ defmodule Jeopardy.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:req, "~> 0.3.11"},
       {:typed_struct, "~> 0.3.0"},
+      {:eqrcode, "~> 0.1.10"},
       {:typed_ecto_schema, "~> 0.4.1", runtime: false},
       {:dialyxir, "~> 1.3", only: [:dev], runtime: false},
       {:styler, "~> 0.9", only: [:dev, :test], runtime: false}

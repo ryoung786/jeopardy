@@ -1,14 +1,13 @@
 <div class="h-[100dvh] grid grid-rows-[1fr_25px_24%]" style="background: #221e21;">
   <div class="relative grid place-content-center bg-blue-800">
-    <.button
-      :if={Enum.count(@players) >= 2}
-      class="bg-sky-100"
-      phx-click="start-game"
-      phx-target={@myself}
-    >
-      Start Game
-    </.button>
-    <.clue :if={Enum.count(@players) < 2}>Waiting for players to join ...</.clue>
+    <.clue>
+      <.qr_code content={url(~p"/join/#{@code}")} width_class="w-40" />
+      <span class="text-xl mt-2 mb-10"><%= url(~p"/join/#{@code}") %></span>
+      <span :if={Enum.count(@players) < 2}>Waiting for players to join ...</span>
+      <.button :if={Enum.count(@players) >= 2} phx-click="start-game" phx-target={@myself}>
+        Start Game
+      </.button>
+    </.clue>
   </div>
   <span />
   <div
