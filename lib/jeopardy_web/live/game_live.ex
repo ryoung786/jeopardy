@@ -4,6 +4,7 @@ defmodule JeopardyWeb.GameLive do
 
   alias Jeopardy.FSM
   alias Jeopardy.FSM.Messages.PlayAgain
+  alias Jeopardy.FSM.Messages.PlayerRemoved
   alias Jeopardy.FSM.Messages.StatusChanged
 
   def mount(%{"code" => code}, session, socket) do
@@ -13,12 +14,13 @@ defmodule JeopardyWeb.GameLive do
       do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, "games:#{code}")
 
     socket =
-      if Map.get(session, "code") == code do
-        name = Map.get(session, "name")
+      with ^code <- Map.get(session, "code"),
+           name = Map.get(session, "name"),
+           true <- name in Map.keys(game.players) do
         role = if name == game.trebek, do: :trebek, else: :contestant
         assign(socket, name: name, role: role)
       else
-        assign(socket, name: nil, role: :tv)
+        _ -> assign(socket, name: nil, role: :tv)
       end
 
     {:ok, assign(socket, code: code, state: game.fsm.state), layout: {JeopardyWeb.Layouts, :game_app}}
@@ -48,6 +50,19 @@ defmodule JeopardyWeb.GameLive do
 
   def handle_info(%PlayAgain{}, socket) do
     {:noreply, redirect(socket, to: ~p"/games/#{socket.assigns.code}")}
+  end
+
+  def handle_info(%PlayerRemoved{name: name} = msg, socket) do
+    if name == socket.assigns.name do
+      {:noreply, socket |> put_flash(:warning, "You've been removed from the game") |> redirect(to: ~p"/")}
+    else
+      send_update(FSM.to_component(socket.assigns.state, socket.assigns.role),
+        id: "c-id",
+        game_server_message: msg
+      )
+
+      {:noreply, socket}
+    end
   end
 
   def handle_info(data, socket) do
