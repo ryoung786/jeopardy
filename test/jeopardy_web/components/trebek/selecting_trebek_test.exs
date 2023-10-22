@@ -24,7 +24,7 @@ defmodule JeopardyWeb.Components.Trebek.SelectingTrebekTest do
 
       Phoenix.PubSub.subscribe(Jeopardy.PubSub, "games:#{code}")
 
-      lv |> element("button.foo") |> render_click()
+      lv |> element("button.unit-test-identifier") |> render_click()
 
       assert_received(%TrebekSelected{trebek: "a"})
       assert_received(%StatusChanged{to: _state})
