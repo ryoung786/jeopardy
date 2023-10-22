@@ -4,7 +4,7 @@ defmodule JeopardyWeb.JoinController do
   import Phoenix.Component, only: [to_form: 1, to_form: 2]
 
   def index(conn, params) do
-    render(conn, :index, form: to_form(%{}), code: String.upcase(params["code"]))
+    render(conn, :index, form: to_form(%{}), code: params["code"])
   end
 
   def join(conn, %{"name" => name, "code" => code} = params) do
