@@ -20,6 +20,8 @@
     id="accounts-menu"
     class="absolute right-0 mt-2 bg-white border rounded shadow-lg min-w-[180px] hidden"
     phx-click-away={JeopardyWeb.CoreComponents.hide(%JS{}, "#accounts-menu")}
+    phx-window-keydown={JeopardyWeb.CoreComponents.hide(%JS{}, "#accounts-menu")}
+    phx-key="escape"
   >
     <ul :if={@user} class="flex flex-col">
       <li class="px-4 pt-2 pb-1 nowrap hover:bg-sky-100"><%= @user.email %></li>
