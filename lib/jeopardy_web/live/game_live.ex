@@ -7,6 +7,8 @@ defmodule JeopardyWeb.GameLive do
   alias Jeopardy.FSM.Messages.PlayerRemoved
   alias Jeopardy.FSM.Messages.StatusChanged
 
+  on_mount {JeopardyWeb.UserAuth, :mount_current_user}
+
   @layouts %{
     tv: {JeopardyWeb.Layouts, :game_app},
     trebek: {JeopardyWeb.Layouts, :game_app},
@@ -26,11 +28,7 @@ defmodule JeopardyWeb.GameLive do
         :else -> :tv
       end
 
-    {
-      :ok,
-      assign(socket, code: code, name: session["name"], role: role, state: game.fsm.state),
-      layout: @layouts[role]
-    }
+    {:ok, assign(socket, code: code, name: session["name"], role: role, state: game.fsm.state), layout: @layouts[role]}
   end
 
   def render(assigns) do

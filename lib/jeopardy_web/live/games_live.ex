@@ -2,6 +2,8 @@ defmodule JeopardyWeb.GamesLive do
   @moduledoc false
   use JeopardyWeb, :live_view
 
+  on_mount {JeopardyWeb.UserAuth, :mount_current_user}
+
   def render(assigns) do
     ~H"""
     <div>
@@ -13,6 +15,6 @@ defmodule JeopardyWeb.GamesLive do
 
   def handle_event("random_game", _data, socket) do
     code = Jeopardy.GameServer.new_game_server()
-    {:noreply, push_navigate(socket, to: ~p"/games/#{code}")}
+    {:noreply, redirect(socket, to: ~p"/games/#{code}")}
   end
 end
