@@ -30,20 +30,7 @@ defmodule JeopardyWeb.FSMComponent do
          |> assign(game: JeopardyWeb.Game.new(game))
          |> assign(code: game.code)
          |> assign(trebek: game.trebek)
-         |> assign_for_role(Map.get(assigns, :role), game)
          |> assign_init(game)}
-      end
-
-      defp assign_for_role(socket, :tv, game) do
-        assign(socket, contestants: game.contestants)
-      end
-
-      defp assign_for_role(socket, :trebek, game) do
-        assign(socket, contestants: game.contestants)
-      end
-
-      defp assign_for_role(socket, :contestant, game) do
-        assign(socket, contestants: game.contestants)
       end
     end
   end

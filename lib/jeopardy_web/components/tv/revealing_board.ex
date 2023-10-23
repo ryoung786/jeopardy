@@ -14,7 +14,7 @@ defmodule JeopardyWeb.Components.Tv.RevealingBoard do
   def render(assigns) do
     ~H"""
     <div>
-      <.tv contestants={@contestants}>
+      <.tv contestants={@game.contestants}>
         <.board categories={@game.categories} clues={@game.board} category_reveal_index={@index} />
       </.tv>
     </div>

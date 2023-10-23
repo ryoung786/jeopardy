@@ -7,34 +7,35 @@ defmodule JeopardyWeb.GameLive do
   alias Jeopardy.FSM.Messages.PlayerRemoved
   alias Jeopardy.FSM.Messages.StatusChanged
 
+  @layouts %{
+    tv: {JeopardyWeb.Layouts, :game_app},
+    trebek: {JeopardyWeb.Layouts, :game_app},
+    contestant: {JeopardyWeb.Layouts, :game_app}
+  }
+
   def mount(%{"code" => code}, session, socket) do
     {:ok, game} = Jeopardy.GameServer.get_game(code)
 
     if connected?(socket),
       do: Phoenix.PubSub.subscribe(Jeopardy.PubSub, "games:#{code}")
 
-    socket =
-      with ^code <- Map.get(session, "code"),
-           name = Map.get(session, "name"),
-           true <- name in Map.keys(game.players) do
-        role = if name == game.trebek, do: :trebek, else: :contestant
-        assign(socket, name: name, role: role)
-      else
-        _ -> assign(socket, name: nil, role: :tv)
+    role =
+      cond do
+        code == session["code"] && game.trebek == session["name"] -> :trebek
+        code == session["code"] -> :contestant
+        :else -> :tv
       end
 
-    {:ok, assign(socket, code: code, state: game.fsm.state), layout: {JeopardyWeb.Layouts, :game_app}}
+    {
+      :ok,
+      assign(socket, code: code, name: session["name"], role: role, state: game.fsm.state),
+      layout: @layouts[role]
+    }
   end
 
   def render(assigns) do
     ~H"""
-    <.live_component
-      module={FSM.to_component(@state, @role)}
-      id="c-id"
-      code={@code}
-      name={@name}
-      role={@role}
-    />
+    <.live_component module={FSM.to_component(@state, @role)} id="c-id" code={@code} name={@name} />
     """
   end
 

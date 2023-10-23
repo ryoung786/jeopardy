@@ -4,7 +4,7 @@ defmodule JeopardyWeb.JoinController do
   import Phoenix.Component, only: [to_form: 1, to_form: 2]
 
   def index(conn, params) do
-    render(conn, :index, form: to_form(%{}), code: params["code"])
+    render(conn, :index, form: to_form(params), code: params["code"])
   end
 
   def join(conn, %{"name" => name, "code" => code} = params) do
@@ -18,11 +18,11 @@ defmodule JeopardyWeb.JoinController do
         |> redirect(to: ~p"/games/#{code}")
 
       {:error, :game_not_found} ->
-        form = to_form(params, errors: [code: {"Game does not exist", []}])
+        form = to_form(params, errors: [name: {"Game does not exist", []}])
         render(conn, :index, form: form, code: code)
 
       {:error, :invalid_action} ->
-        form = to_form(params, errors: [code: {"Game already in progress", []}])
+        form = to_form(params, errors: [name: {"Game already in progress", []}])
         render(conn, :index, form: form, code: code)
 
       {:error, :name_not_unique} ->
