@@ -28,11 +28,16 @@ defmodule Jeopardy.FSM.AwaitingPlayers do
   def handle_action(:load_game, %Game{} = game, jarchive_game_id), do: load_game(game, jarchive_game_id)
 
   def add_player(%Game{} = game, name) do
-    if name in Map.keys(game.players) do
-      {:error, :name_not_unique}
-    else
-      FSM.broadcast(game, %PlayerAdded{name: name})
-      {:ok, %{game | players: Map.put(game.players, name, %Player{name: name})}}
+    cond do
+      String.trim(name) == "" ->
+        {:error, :name_is_empty}
+
+      name in Map.keys(game.players) ->
+        {:error, :name_not_unique}
+
+      :else ->
+        FSM.broadcast(game, %PlayerAdded{name: name})
+        {:ok, %{game | players: Map.put(game.players, name, %Player{name: name})}}
     end
   end
 

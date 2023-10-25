@@ -6,10 +6,12 @@ defmodule JeopardyWeb.GamesLive do
 
   def render(assigns) do
     ~H"""
-    <div>
-      <h2>Play a random game from the Jeopardy Archives</h2>
-      <.link class="btn btn-primary" phx-click="random_game">Quick Start</.link>
-    </div>
+    <.main flash={@flash}>
+      <div class="flex flex-col gap-8 place-items-center">
+        <h2 class="text-4xl text-center max-w-md">Play a random game from the Jeopardy Archives</h2>
+        <.link class="btn btn-primary" phx-click="random_game">Quick Start</.link>
+      </div>
+    </.main>
     """
   end
 

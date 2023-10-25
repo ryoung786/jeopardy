@@ -1,10 +1,9 @@
 defmodule JeopardyWeb.Components do
   @moduledoc false
   use Phoenix.Component
+  use Phoenix.VerifiedRoutes, endpoint: JeopardyWeb.Endpoint, router: JeopardyWeb.Router
 
-  use Phoenix.VerifiedRoutes,
-    endpoint: JeopardyWeb.Endpoint,
-    router: JeopardyWeb.Router
+  import JeopardyWeb.CoreComponents
 
   alias Phoenix.LiveView.JS
 
@@ -90,4 +89,13 @@ defmodule JeopardyWeb.Components do
 
   attr :user, :any, required: true
   def account_icon(assigns)
+
+  slot :inner_block, default: nil
+  attr :text, :string
+  def curved(assigns)
+
+  slot :inner_block
+  slot :curved, default: nil
+  attr :flash, :any, required: true
+  def main(assigns)
 end

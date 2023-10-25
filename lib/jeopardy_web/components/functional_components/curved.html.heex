@@ -1,0 +1,15 @@
+<div class="z-5 relative">
+  <div class="bg-blue-800 px-4 pb-3 sm:px-6 lg:px-8 text-center text-white overflow-hidden text-5xl sm:text-6xl">
+    <%= render_slot(@inner_block) %>
+  </div>
+
+  <svg class="h-0">
+    <defs>
+      <clipPath id="curved-bottom-clip-path" clipPathUnits="objectBoundingBox">
+        <path d="M 0,0 L 0,.5 C .488,-.75 .475,1.75 1,.5 L 1,0 Z" />
+      </clipPath>
+    </defs>
+  </svg>
+  <div class="curved-div-bottom [clip-path:url(#curved-bottom-clip-path)] w-full h-6 bg-blue-800">
+  </div>
+</div>

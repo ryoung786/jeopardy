@@ -28,6 +28,10 @@ defmodule JeopardyWeb.HomeController do
       {:error, :name_not_unique} ->
         form = to_form(params, errors: [name: {"Already taken, please use another name", []}])
         render(conn, :home, form: form)
+
+      {:error, :name_is_empty} ->
+        form = to_form(params, errors: [name: {"Name cannot be empty", []}])
+        render(conn, :home, form: form)
     end
   end
 
