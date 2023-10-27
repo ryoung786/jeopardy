@@ -36,7 +36,14 @@ defmodule JeopardyWeb.Components.Trebek.RevealingBoard do
           phx-click="next-category"
           phx-target={@myself}
         >
-          <%= if @index < Enum.count(@categories) - 1, do: "Next Category", else: "Continue" %>
+          <%= cond do %>
+            <% @index == -1 -> %>
+              Reveal Categories
+            <% @index < Enum.count(@categories) - 1 -> %>
+              Next Category
+            <% :else -> %>
+              Continue
+          <% end %>
         </.button>
       </div>
     </div>

@@ -116,7 +116,7 @@ defmodule JeopardyWeb.CoreComponents do
       class={[
         "fixed top-2 right-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1",
         @kind == :info && "bg-emerald-50 text-emerald-800 ring-emerald-500 fill-cyan-900",
-        @kind == :warning && "bg-amber-50 text-amber-800 ring-amber-500 fill-cyan-900",
+        @kind == :warning && "bg-amber-50 text-amber-800 ring-amber-500 fill-amber-900",
         @kind == :error && "bg-rose-50 text-rose-900 shadow-md ring-rose-500 fill-rose-900"
       ]}
       {@rest}
