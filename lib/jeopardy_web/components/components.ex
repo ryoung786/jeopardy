@@ -3,8 +3,6 @@ defmodule JeopardyWeb.Components do
   use Phoenix.Component
   use Phoenix.VerifiedRoutes, endpoint: JeopardyWeb.Endpoint, router: JeopardyWeb.Router
 
-  import JeopardyWeb.CoreComponents
-
   alias Phoenix.LiveView.JS
 
   embed_templates "functional_components/*"

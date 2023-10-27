@@ -10,9 +10,9 @@ defmodule JeopardyWeb.GameLive do
   on_mount {JeopardyWeb.UserAuth, :mount_current_user}
 
   @layouts %{
-    tv: {JeopardyWeb.Layouts, :game_app},
-    trebek: {JeopardyWeb.Layouts, :game_app},
-    contestant: {JeopardyWeb.Layouts, :game_app}
+    tv: {JeopardyWeb.Layouts, :tv_app},
+    trebek: {JeopardyWeb.Layouts, :trebek_app},
+    contestant: {JeopardyWeb.Layouts, :trebek_app}
   }
 
   def mount(%{"code" => code}, session, socket) do

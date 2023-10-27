@@ -1,4 +1,4 @@
-<header class="relative z-10 px-4 sm:px-6 lg:px-8 bg-blue-800">
+<header class="absolute z-10 w-full transition-opacity px-4 sm:px-6 lg:px-8 bg-blue-800 opacity-0 hover:opacity-100">
   <div class="flex items-center justify-between py-3 text-sm">
     <div class="flex items-center gap-4">
       <a href="/">
@@ -11,5 +11,9 @@
   </div>
 </header>
 
-<.flash_group flash={@flash} />
-<%= @inner_content %>
+<main>
+  <div>
+    <.flash_group flash={@flash} />
+    <%= @inner_content %>
+  </div>
+</main>

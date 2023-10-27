@@ -4,12 +4,14 @@ defmodule JeopardyWeb.UserLoginLive do
 
   def render(assigns) do
     ~H"""
+    <.curved>
+      <h1 class="text-shadow text-4xl">Log in to account</h1>
+    </.curved>
     <div class="mx-auto max-w-sm">
       <.header class="text-center">
-        Sign in to account
         <:subtitle>
           Don't have an account?
-          <.link navigate={~p"/users/register"} class="font-semibold text-brand hover:underline">
+          <.link navigate={~p"/users/register"} class="font-semibold text-primary hover:underline">
             Sign up
           </.link>
           for an account now.
@@ -27,7 +29,7 @@ defmodule JeopardyWeb.UserLoginLive do
           </.link>
         </:actions>
         <:actions>
-          <.button phx-disable-with="Signing in..." class="w-full">
+          <.button phx-disable-with="Signing in..." class="w-full btn-primary">
             Sign in <span aria-hidden="true">→</span>
           </.button>
         </:actions>

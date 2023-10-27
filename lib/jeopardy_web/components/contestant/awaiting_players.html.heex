@@ -1,9 +1,11 @@
-<div class="live-component">
-  <h1>Welcome <%= @name %>!</h1>
-  <%= if !@signature do %>
-    <p>Please sign your podium below:</p>
-    <div class="grid place-items-center p-8">
-      <div class="grid place-items-center gap-4 w-full max-w-lg">
+<div class="min-h-[100dvh] flex flex-col">
+  <.curved>
+    <h1 class="text-shadow text-4xl pt-4">Welcome, <%= @name %>!</h1>
+  </.curved>
+  <div class="live-component p-4 grid place-content-center grow">
+    <%= if !@signature do %>
+      <div class="grid place-content-center gap-4 w-full max-w-lg">
+        <p>Please sign your podium below:</p>
         <canvas
           id="canvas"
           class="block w-full aspect-[4/3] bg-blue-800 rounded shadow"
@@ -16,10 +18,10 @@
           <.button class="btn-primary" id="screenshot">OK</.button>
         </div>
       </div>
-    </div>
-  <% else %>
-    <div class="w-32">
-      <.podium name={@name} signature={@signature} />
-    </div>
-  <% end %>
+    <% else %>
+      <div class="h-[60dvh]">
+        <.podium name={@name} signature={@signature} />
+      </div>
+    <% end %>
+  </div>
 </div>

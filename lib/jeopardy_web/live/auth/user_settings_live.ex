@@ -6,13 +6,14 @@ defmodule JeopardyWeb.UserSettingsLive do
 
   def render(assigns) do
     ~H"""
-    <.main flash={@flash}>
-      <.header class="text-center">
-        Account Settings
-        <:subtitle>Manage your account email address and password settings</:subtitle>
-      </.header>
-
-      <div class="space-y-12 divide-y">
+    <.curved>
+      <h1 class="text-shadow">Account Settings</h1>
+      <h2 class="text-base mt-2">
+        Manage your account email address and password settings
+      </h2>
+    </.curved>
+    <main class="pb-8 px-4 sm:px-6 lg:px-8 flex justify-center">
+      <div class="space-y-12 divide-y max-w-lg w-full">
         <div>
           <.simple_form
             for={@email_form}
@@ -31,7 +32,7 @@ defmodule JeopardyWeb.UserSettingsLive do
               required
             />
             <:actions>
-              <.button phx-disable-with="Changing...">Change Email</.button>
+              <.button class="btn-primary" phx-disable-with="Changing...">Change Email</.button>
             </:actions>
           </.simple_form>
         </div>
@@ -67,12 +68,12 @@ defmodule JeopardyWeb.UserSettingsLive do
               required
             />
             <:actions>
-              <.button phx-disable-with="Changing...">Change Password</.button>
+              <.button class="btn-primary" phx-disable-with="Changing...">Change Password</.button>
             </:actions>
           </.simple_form>
         </div>
       </div>
-    </.main>
+    </main>
     """
   end
 

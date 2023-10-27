@@ -24,7 +24,9 @@
     phx-key="escape"
   >
     <ul :if={@user} class="flex flex-col">
-      <li class="px-4 pt-2 pb-1 nowrap hover:bg-sky-100"><%= @user.email %></li>
+      <.link href={~p"/users/settings"}>
+        <li class="px-4 pt-1 pb-2 nowrap hover:bg-sky-100"><%= @user.email %></li>
+      </.link>
       <.link href={~p"/users/log_out"} method="delete">
         <li class="px-4 pt-1 pb-2 nowrap hover:bg-sky-100">Log out</li>
       </.link>
