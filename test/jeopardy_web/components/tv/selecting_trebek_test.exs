@@ -1,5 +1,5 @@
 defmodule JeopardyWeb.Components.Tv.SelectingTrebekTest do
-  use JeopardyWeb.ConnCase, async: true
+  use JeopardyWeb.ConnCase
 
   import Phoenix.LiveViewTest
 

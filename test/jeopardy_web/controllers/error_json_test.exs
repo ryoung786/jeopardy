@@ -1,5 +1,5 @@
 defmodule JeopardyWeb.ErrorJSONTest do
-  use JeopardyWeb.ConnCase, async: true
+  use JeopardyWeb.ConnCase
 
   test "renders 404" do
     assert JeopardyWeb.ErrorJSON.render("404.json", %{}) == %{errors: %{detail: "Not Found"}}

@@ -1,5 +1,5 @@
 defmodule Jeopardy.FSM.AwaitingPlayersTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   alias Jeopardy.FSM
   alias Jeopardy.FSM.AwaitingPlayers

@@ -1,5 +1,5 @@
 defmodule JeopardyWeb.UserSessionControllerTest do
-  use JeopardyWeb.ConnCase, async: true
+  use JeopardyWeb.ConnCase
 
   import Jeopardy.AccountsFixtures
 

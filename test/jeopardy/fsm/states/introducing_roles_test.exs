@@ -1,5 +1,5 @@
 defmodule Jeopardy.FSM.IntroducingRolesTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   alias Jeopardy.Game
   alias Jeopardy.GameServer

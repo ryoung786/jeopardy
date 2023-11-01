@@ -1,5 +1,5 @@
 defmodule Jeopardy.FSM.SelectingTrebekTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   alias Jeopardy.FSM
   alias Jeopardy.FSM.IntroducingRoles

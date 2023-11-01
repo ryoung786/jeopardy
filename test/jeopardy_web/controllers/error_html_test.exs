@@ -1,5 +1,5 @@
 defmodule JeopardyWeb.ErrorHTMLTest do
-  use JeopardyWeb.ConnCase, async: true
+  use JeopardyWeb.ConnCase
 
   # Bring render_to_string/4 for testing custom views
   import Phoenix.Template
