@@ -10,6 +10,9 @@
 # Where 3rd-party dependencies like ExDoc output generated docs.
 /doc/
 
+# The sqlite3 databases
+/db/
+
 # Ignore .fetch files in case you like to edit your project deps locally.
 /.fetch
 
@@ -34,4 +37,3 @@ jeopardy-*.tar
 # In case you use Node.js/npm, you want to ignore these.
 npm-debug.log
 /assets/node_modules/
-
