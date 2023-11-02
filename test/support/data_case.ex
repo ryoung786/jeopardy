@@ -18,23 +18,26 @@ defmodule Jeopardy.DataCase do
 
   using do
     quote do
-      alias Jeopardy.Repo
-
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
       import Jeopardy.DataCase
+
+      alias Jeopardy.Repo
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Jeopardy.Repo)
-
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Jeopardy.Repo, {:shared, self()})
-    end
-
+    Jeopardy.DataCase.setup_sandbox(tags)
     :ok
+  end
+
+  @doc """
+  Sets up the sandbox based on the test tags.
+  """
+  def setup_sandbox(tags) do
+    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Jeopardy.Repo, shared: not tags[:async])
+    on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
   end
 
   @doc """

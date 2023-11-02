@@ -5,24 +5,23 @@ defmodule Jeopardy.Application do
 
   use Application
 
+  @impl true
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
-      Jeopardy.Repo,
       # Start the Telemetry supervisor
       JeopardyWeb.Telemetry,
+      # Start the Ecto repository
+      Jeopardy.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: Jeopardy.PubSub},
-      # Start the Presence tracker
-      JeopardyWeb.Presence,
-      # Start cachex
-      {Cachex, :stats},
+      # Start Finch
+      {Finch, name: Jeopardy.Finch},
       # Start the Endpoint (http/https)
       JeopardyWeb.Endpoint,
       # Start a worker by calling: Jeopardy.Worker.start_link(arg)
       # {Jeopardy.Worker, arg}
-      Jeopardy.BIReplication,
-      Jeopardy.Cron.CullOldRecords
+      {Registry, keys: :unique, name: Jeopardy.GameRegistry},
+      {DynamicSupervisor, name: Jeopardy.GameSupervisor, strategy: :one_for_one}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -33,6 +32,7 @@ defmodule Jeopardy.Application do
 
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
+  @impl true
   def config_change(changed, _new, removed) do
     JeopardyWeb.Endpoint.config_change(changed, removed)
     :ok

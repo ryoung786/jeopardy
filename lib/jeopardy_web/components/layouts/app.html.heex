@@ -1,0 +1,15 @@
+<header class="relative z-10 px-4 sm:px-6 lg:px-8 bg-blue-800">
+  <div class="flex items-center justify-between py-3 text-sm">
+    <div class="flex items-center gap-4">
+      <a href="/">
+        <img src={~p"/images/logo.png"} class="w-6" />
+      </a>
+    </div>
+    <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
+      <.account_icon user={@current_user} />
+    </div>
+  </div>
+</header>
+
+<.flash_group flash={@flash} />
+<%= @inner_content %>

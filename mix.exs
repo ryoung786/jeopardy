@@ -5,9 +5,8 @@ defmodule Jeopardy.MixProject do
     [
       app: :jeopardy,
       version: "0.1.0",
-      elixir: "~> 1.7",
+      elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -20,7 +19,7 @@ defmodule Jeopardy.MixProject do
   def application do
     [
       mod: {Jeopardy.Application, []},
-      extra_applications: [:logger, :runtime_tools, :bamboo, :bamboo_smtp]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -33,37 +32,31 @@ defmodule Jeopardy.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.5.1"},
-      {:phoenix_ecto, "~> 4.1"},
-      {:ecto_sql, "~> 3.4"},
-      {:postgrex, ">= 0.0.0"},
-      {:phoenix_live_view, "~> 0.14.0"},
-      {:floki, ">= 0.0.0"},
-      {:phoenix_html, "~> 2.11"},
+      {:bcrypt_elixir, "~> 3.0"},
+      {:phoenix, "~> 1.7.7"},
+      {:phoenix_ecto, "~> 4.4"},
+      {:ecto_sql, "~> 3.10"},
+      {:ecto_sqlite3, "~> 0.12"},
+      {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:git_hooks, "~> 0.4.1", only: [:test, :dev], runtime: false},
-      {:phoenix_live_dashboard, "~> 0.2.7"},
-      {:telemetry_metrics, "~> 0.4"},
-      {:telemetry_poller, "~> 0.4"},
-      {:telemetry_influxdb, "~> 0.2.0"},
-      {:gettext, "~> 0.11"},
-      {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"},
-      {:calendar, "~> 1.0.0"},
-      {:cachex, "~> 3.2"},
-      {:distillery, "~> 2.1"},
-      {:bamboo, "~> 1.5"},
-      {:bamboo_smtp, "~> 2.1.0"},
-      {:google_api_storage, "~> 0.22"},
-      {:pow, "~> 1.0.20"},
-      {:pow_assent, "~> 0.4.8"},
-      {:certifi, "~> 2.4"},
-      {:ssl_verify_fun, "~> 1.1"},
-      {:scrivener, "~> 2.7"},
-      {:scrivener_ecto, "~> 2.0"},
-      {:logflare_logger_backend, "~> 0.8.0"},
+      {:phoenix_live_view, "~> 0.20.0"},
+      {:floki, "~> 0.34.3"},
+      {:phoenix_live_dashboard, "~> 0.8.0"},
+      {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
+      {:swoosh, "~> 1.3"},
+      {:finch, "~> 0.13"},
+      {:telemetry_metrics, "~> 0.6"},
+      {:telemetry_poller, "~> 1.0"},
+      {:gettext, "~> 0.20"},
+      {:jason, "~> 1.2"},
+      {:plug_cowboy, "~> 2.5"},
+      {:req, "~> 0.3.11"},
+      {:typed_struct, "~> 0.3.0"},
       {:eqrcode, "~> 0.1.10"},
-      {:goth, "~> 1.2.0"}
+      {:typed_ecto_schema, "~> 0.4.1", runtime: false},
+      {:dialyxir, "~> 1.3", only: [:dev], runtime: false},
+      {:styler, "~> 0.9", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -75,10 +68,13 @@ defmodule Jeopardy.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
+      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
+      "assets.build": ["tailwind default", "esbuild default"],
+      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
     ]
   end
 end

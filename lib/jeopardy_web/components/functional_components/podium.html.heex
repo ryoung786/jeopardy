@@ -1,0 +1,27 @@
+<div
+  class="podium grid gap-2 bg-black text-neutral-100 h-full p-1 aspect-[3/5] text-shadow grid-rows-[28%_1fr]"
+  style="border: 5px solid #5f3929; border-bottom: none;"
+>
+  <div class="score grid place-content-center text-[3.5vh] font-bold bg-blue-800 overflow-hidden">
+    <span class={[abs(@score) >= 10_000 && "text-[.7em]", @score < 0 && "text-error"]}>
+      <%= if @score < 0, do: "-" %>$<%= abs(@score) %>
+    </span>
+  </div>
+  <div class={["overflow-hidden", @lit && "lit", !@lit && "unlit"]}>
+    <div class="name mt-[15%] bg-blue-800 grid text-[2vh] place-items-center h-[60%]">
+      <%= if @signature do %>
+        <div class="p-2 w-full h-full">
+          <div
+            class="w-full h-full bg-contain bg-center bg-no-repeat"
+            style={"background-image: url(#{@signature});"}
+          >
+          </div>
+        </div>
+      <% else %>
+        <span class={[@name |> String.graphemes() |> Enum.count() > 10 && "text-[.8em]"]}>
+          <%= @name %>
+        </span>
+      <% end %>
+    </div>
+  </div>
+</div>

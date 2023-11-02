@@ -1,5 +1,19 @@
 # Jeopardy
 
-![img](docs/ss_index.png)
+To start your Phoenix server:
 
-This is the elixir/phoenix codebase that powers [jeopardy.ryoung.info](https://jeopardy.ryoung.info).  Jeopardy games are sourced from the [J!Archive](http://j-archive.com/), and users can create their own custom games.
+  * Run `mix setup` to install and setup dependencies
+  * `cd assets && npm i && cd ..`
+  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+
+Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+
+Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+
+## Learn more
+
+  * Official website: https://www.phoenixframework.org/
+  * Guides: https://hexdocs.pm/phoenix/overview.html
+  * Docs: https://hexdocs.pm/phoenix
+  * Forum: https://elixirforum.com/c/phoenix-forum
+  * Source: https://github.com/phoenixframework/phoenix

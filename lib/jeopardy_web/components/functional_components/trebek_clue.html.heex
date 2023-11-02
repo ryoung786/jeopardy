@@ -1,0 +1,6 @@
+<div class="bg-blue-800 h-full text-neutral-100 grid p-4 gap-2 grid-rows-[auto_1fr] text-shadow">
+  <h3 class="font-sans"><%= @category %></h3>
+  <div class="grid text-2xl leading-snug font-serif text-center place-self-center max-w-4xl">
+    <%= render_slot(@inner_block) %>
+  </div>
+</div>

@@ -2,33 +2,28 @@ import Config
 
 # Configure your database
 config :jeopardy, Jeopardy.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "jeopardy_dev",
-  hostname: "localhost",
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+  database: Path.expand("../db/jeopardy_dev.db", Path.dirname(__ENV__.file)),
+  pool_size: 5,
+  stacktrace: true,
+  show_sensitive_data_on_connection_error: true
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
 # The watchers configuration can be used to run external
-# watchers to your application. For example, we use it
-# with webpack to recompile .js and .css sources.
+# watchers to your application. For example, we can use it
+# to bundle .js and .css sources.
 config :jeopardy, JeopardyWeb.Endpoint,
-  http: [port: 4000],
-  debug_errors: true,
-  # catch_errors: true,
-  code_reloader: true,
+  # Binding to loopback ipv4 address prevents access from other machines.
+  # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
+  http: [ip: {127, 0, 0, 1}, port: 4000],
   check_origin: false,
+  code_reloader: true,
+  debug_errors: true,
+  secret_key_base: "ANItWO76Z4iL6oRV1LPAh0LZppNCcfQUi7Q8w9Rf7NUKgosM7W6/Av6SP3BONTcH",
   watchers: [
-    node: [
-      "node_modules/webpack/bin/webpack.js",
-      "--mode",
-      "development",
-      "--watch-stdin",
-      cd: Path.expand("../assets", __DIR__)
-    ]
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 
 # ## SSL Support
@@ -39,7 +34,6 @@ config :jeopardy, JeopardyWeb.Endpoint,
 #
 #     mix phx.gen.cert
 #
-# Note that this task requires Erlang/OTP 20 or later.
 # Run `mix help phx.gen.cert` for more information.
 #
 # The `http:` config above can be replaced with:
@@ -61,28 +55,14 @@ config :jeopardy, JeopardyWeb.Endpoint,
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/jeopardy_web/(live|views)/.*(ex)$",
-      ~r"lib/jeopardy_web/templates/.*(eex)$"
+      ~r"lib/jeopardy_web/(controllers|live|components)/.*(ex|heex)$"
     ]
   ]
 
-config :goth, json: {:system, "GCP_CREDENTIALS"}
-
-config :jeopardy, Jeopardy.BIReplication,
-  # 1 year, aka infinite
-  frequency: 365 * 24 * 60 * 60 * 1000,
-  bucket: "jeopardy_ryoung_test"
-
-config :jeopardy, Jeopardy.Cron.CullOldRecords,
-  # 1 year, aka infinite
-  frequency: 365 * 24 * 60 * 60 * 1000
-
-# milliseconds
-config :jeopardy, early_buzz_penalty: 1_000
-
 # Do not include metadata nor timestamps in development logs
-# , level: :info
-config :logger, :console, format: "$metadata[$level] $message\n"
+config :logger, :console,
+  format: "[$level] $message $metadata\n",
+  metadata: [:game_id]
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
@@ -91,8 +71,7 @@ config :phoenix, :stacktrace_depth, 20
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
 
-config :jeopardy, Jeopardy.Mailer,
-  adapter: Bamboo.LocalAdapter,
-  email_recipient: "foo@test.com"
+config :phoenix_live_view, debug_heex_annotations: true
 
-if File.exists?("config/dev.secret.exs"), do: import_config("dev.secret.exs")
+# Disable swoosh api client as it is only required for production adapters.
+config :swoosh, :api_client, false

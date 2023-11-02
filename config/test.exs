@@ -1,28 +1,35 @@
 import Config
 
+# Only in tests, remove the complexity from the password hashing algorithm
+config :bcrypt_elixir, :log_rounds, 1
+
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :jeopardy, Jeopardy.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "jeopardy_test#{System.get_env("MIX_TEST_PARTITION")}",
-  hostname: "localhost",
+  database: Path.expand("../db/jeopardy_test.db", Path.dirname(__ENV__.file)),
+  pool_size: 5,
   pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :jeopardy, JeopardyWeb.Endpoint,
-  http: [port: 4002],
+  http: [ip: {127, 0, 0, 1}, port: 4002],
+  secret_key_base: "zDyPsmqBBYgR4maOgl6sVgY1D8YfC5XSpxDAvq7xqXLGfDiNyhyEt6SboqWZ22eW",
   server: false
 
-config :jeopardy, :admin, ADMIN_USER_EMAILS: ~w(admin@foo.com)
+# In test we don't send emails.
+config :jeopardy, Jeopardy.Mailer, adapter: Swoosh.Adapters.Test
 
-config :goth,
-  json:
-    "{\"type\":\"service_account\",\"project_id\":\"jeopardy-281015\",\"private_key_id\":\"xxxx\",\"private_key\":\"xxxx\",\"client_email\":\"gigalixir@xxxx.iam.gserviceaccount.com\",\"client_id\":\"123\",\"auth_uri\":\"https:\/\/accounts.google.com\/o\/oauth2\/auth\",\"token_uri\":\"https:\/\/oauth2.googleapis.com\/token\",\"auth_provider_x509_cert_url\":\"https:\/\/www.googleapis.com\/oauth2\/v1\/certs\",\"client_x509_cert_url\":\"xxxx\"}"
+# Disable swoosh api client as it is only required for production adapters.
+config :swoosh, :api_client, false
 
 # Print only warnings and errors during test
-config :logger, level: :warn
+config :logger, level: :warning
+
+# Initialize plugs at runtime for faster test compilation
+config :phoenix, :plug_init_mode, :runtime
+
+config :jeopardy, jarchive_dir: "test/support/jarchive"

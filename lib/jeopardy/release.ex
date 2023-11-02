@@ -1,4 +1,8 @@
 defmodule Jeopardy.Release do
+  @moduledoc """
+  Used for executing DB release tasks when run in production without Mix
+  installed.
+  """
   @app :jeopardy
 
   def migrate do

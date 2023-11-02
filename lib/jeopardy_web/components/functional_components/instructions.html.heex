@@ -1,0 +1,11 @@
+<div class={[
+  "bg-sky-100 grid p-4 h-full w-full items-center",
+  !@full_width? && "justify-center"
+]}>
+  <div>
+    <%= render_slot(@additional) %>
+    <p class="shadow-lg p-4 bg-white rounded-lg text-center">
+      <%= render_slot(@inner_block) %>
+    </p>
+  </div>
+</div>

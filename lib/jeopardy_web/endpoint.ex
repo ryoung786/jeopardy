@@ -7,12 +7,9 @@ defmodule JeopardyWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_jeopardy_key",
-    signing_salt: "qIoUDLwK"
+    signing_salt: "ObcKm3aT",
+    same_site: "Lax"
   ]
-
-  socket "/socket", JeopardyWeb.UserSocket,
-    websocket: true,
-    longpoll: false
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 
@@ -24,8 +21,7 @@ defmodule JeopardyWeb.Endpoint do
     at: "/",
     from: :jeopardy,
     gzip: false,
-    only:
-      ~w(css fonts images js favicon.ico apple-touch-icon.png favicon-32x32.png favicon-16x16.png android-chrome-512x512.png android-chrome-192x192.png site.webmanifest robots.txt)
+    only: JeopardyWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -51,6 +47,5 @@ defmodule JeopardyWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug JeopardyWeb.Pow.Plug, otp_app: :jeopardy
   plug JeopardyWeb.Router
 end

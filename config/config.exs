@@ -1,5 +1,5 @@
 # This file is responsible for configuring your application
-# and its dependencies with the aid of the Mix.Config module.
+# and its dependencies with the aid of the Config module.
 #
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
@@ -10,86 +10,53 @@ import Config
 config :jeopardy,
   ecto_repos: [Jeopardy.Repo]
 
-config :jeopardy, env: config_env()
-
 # Configures the endpoint
 config :jeopardy, JeopardyWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "XbCnPpxwHXFVER5/cDxCSCiHIwUFlcc9AAT1XlZtAxWxkHKeKdG3zDt3JeJOJ5BL",
-  render_errors: [view: JeopardyWeb.ErrorView, accepts: ~w(html json), layout: false],
+  render_errors: [
+    formats: [html: JeopardyWeb.ErrorHTML, json: JeopardyWeb.ErrorJSON],
+    layout: false
+  ],
   pubsub_server: Jeopardy.PubSub,
-  live_view: [signing_salt: "wr7JpKlV"]
+  live_view: [signing_salt: "B1+IApTw"]
+
+# Configures the mailer
+#
+# By default it uses the "Local" adapter which stores the emails
+# locally. You can see the emails in your browser, at "/dev/mailbox".
+#
+# For production it's recommended to configure a different adapter
+# at the `config/runtime.exs`.
+config :jeopardy, Jeopardy.Mailer, adapter: Swoosh.Adapters.Local
+
+# Configure esbuild (the version is required)
+config :esbuild,
+  version: "0.17.11",
+  default: [
+    args: ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+    cd: Path.expand("../assets", __DIR__),
+    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+  ]
+
+# Configure tailwind (the version is required)
+config :tailwind,
+  version: "3.3.2",
+  default: [
+    args: ~w(
+      --config=tailwind.config.js
+      --input=css/app.css
+      --output=../priv/static/assets/app.css
+    ),
+    cd: Path.expand("../assets", __DIR__)
+  ]
 
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:game_id, :game_code, :player_name]
+  metadata: [:request_id]
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
-
-config :jeopardy, :pow,
-  user: Jeopardy.Users.User,
-  repo: Jeopardy.Repo,
-  extensions: [PowResetPassword],
-  controller_callbacks: Pow.Extension.Phoenix.ControllerCallbacks,
-  mailer_backend: MyAppWeb.Pow.Mailer,
-  web_module: JeopardyWeb
-
-config :jeopardy, :pow_assent,
-  providers: [
-    google: [
-      client_id: System.get_env("GOOGLE_CLIENT_ID"),
-      client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),
-      strategy: Assent.Strategy.Google
-    ],
-    facebook: [
-      client_id: System.get_env("FACEBOOK_CLIENT_ID"),
-      client_secret: System.get_env("FACEBOOK_CLIENT_SECRET"),
-      strategy: Assent.Strategy.Facebook
-    ]
-  ]
-
-config :jeopardy, Jeopardy.Mailer,
-  adapter: Bamboo.SendGridAdapter,
-  server: "smtp.domain",
-  hostname: "ryoung.info",
-  port: 1025,
-  api_key: System.get_env("SMTP_API_KEY"),
-  email_recipient: System.get_env("EMAIL_NOTIFICATION_RECIPIENT"),
-  tls: :if_available,
-  allowed_tls_versions: [:tlsv1, :"tlsv1.1", :"tlsv1.2"],
-  ssl: false,
-  retries: 1,
-  no_mx_lookups: false,
-  auth: :if_available
-
-config :jeopardy, Jeopardy.BIReplication,
-  # 1 hour
-  frequency: 1 * 60 * 60 * 1000,
-  bucket: "jeopardy_ryoung_test"
-
-config :jeopardy, Jeopardy.Cron.CullOldRecords,
-  # daily
-  frequency: 24 * 60 * 60 * 1000
-
-config :jeopardy, gtag: false
-
-# milliseconds
-config :jeopardy, early_buzz_penalty: 1_000
-
-if config_env() != :prod do
-  config :git_hooks,
-    auto_install: true,
-    verbose: true,
-    hooks: [
-      pre_commit: [
-        tasks: [
-          "mix format --check-formatted"
-        ]
-      ]
-    ]
-end
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

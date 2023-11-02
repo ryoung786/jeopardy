@@ -1,0 +1,23 @@
+<div class="h-full grid grid-cols-6 auto-cols-auto gap-1 text-center font-serif uppercase text-neutral-100 text-shadow">
+  <div
+    :for={{category, i} <- Enum.with_index(@categories)}
+    class="grid gap-1 overflow-hidden"
+    style="grid-template-rows: 16% repeat(5, 1fr)"
+  >
+    <div class="category bg-blue-800 p-2 md:p-4 grid place-content-center overflow-hidden text-[2vw] lg:text-[1.5vw]">
+      <span class={[
+        "transition-all duration-1000",
+        @category_reveal_index < i && "invisible opacity-0 translate-y-0.5"
+      ]}>
+        <%= category %>
+      </span>
+    </div>
+    <div
+      :for={clue <- @clues[category]}
+      class="bg-blue-800 grid place-content-center font-bold font-sans text-[3.5vw]"
+      style="color: #dda95e;"
+    >
+      <span :if={not clue.asked?}>$<%= clue.value %></span>
+    </div>
+  </div>
+</div>

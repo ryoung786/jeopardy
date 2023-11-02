@@ -1,34 +1,23 @@
 defmodule JeopardyWeb.GamesLive do
+  @moduledoc false
   use JeopardyWeb, :live_view
-  alias JeopardyWeb.Games.SearchComponent
-  require Logger
 
-  @impl true
-  def mount(_params, %{"current_user_id" => user_id} = _session, socket) do
-    user = Jeopardy.Users.get_user!(user_id)
-    mount_with_current_user(user, socket)
+  on_mount {JeopardyWeb.UserAuth, :mount_current_user}
+
+  def render(assigns) do
+    ~H"""
+    <.curved>
+      <h1 class="text-shadow">Choose Game</h1>
+    </.curved>
+    <main class="pt-16 pb-8 px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-8">
+      <h2 class="text-4xl text-center max-w-md">Play a random game from the Jeopardy Archives</h2>
+      <.link class="btn btn-primary" phx-click="random_game">Quick Start</.link>
+    </main>
+    """
   end
 
-  @impl true
-  def mount(_params, _session, socket), do: mount_with_current_user(nil, socket)
-
-  defp mount_with_current_user(user, socket) do
-    socket =
-      socket
-      |> assign(user: user)
-      |> assign(confirm_selection: nil)
-      |> assign(available_games_count: Jeopardy.Drafts.count_games())
-
-    {:ok, socket}
-  end
-
-  @impl true
-  def handle_params(_, _, socket),
-    do: {:noreply, assign(socket, confirm_selection: nil)}
-
-  @impl true
-  def handle_info({:game_selected, id}, socket) do
-    game = Jeopardy.Drafts.get_game!(id)
-    {:noreply, assign(socket, confirm_selection: game)}
+  def handle_event("random_game", _data, socket) do
+    code = Jeopardy.GameServer.new_game_server()
+    {:noreply, redirect(socket, to: ~p"/games/#{code}")}
   end
 end

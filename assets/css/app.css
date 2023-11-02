@@ -1,0 +1,58 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* This file is for your main application CSS */
+
+@keyframes pietimer {
+   0%        { transform: rotate(0deg);   background: rgb(226 232 240); }
+   49.99999% { transform: rotate(180deg); background: rgb(226 232 240); }
+   50%       { transform: rotate(0deg);   background: white; }
+   100%      { transform: rotate(180deg); background: white; }
+}
+
+@keyframes pie-timer-right {
+  0% {    transform: rotate(0deg);  }
+  50% {    transform: rotate(180deg);  }
+  100% {transform: rotate(180deg);}
+}
+@keyframes pie-timer-left {
+  0% {    transform: rotate(0deg);  }
+  50% {    transform: rotate(0deg);  }
+  100% {transform: rotate(180deg);}
+}
+
+/* .pie-timer::after { */
+/*     animation: var(--timer) linear var(--delay) forwards pietimer; */
+/* } */
+
+@keyframes lights-timer {
+  to {
+    clip-path: inset(0 55.5%);
+  }
+}
+
+@keyframes daily-double {
+    0%   { transform: scale(0)   rotate(40deg); }
+    60%  { transform: scale(1.8) rotate(-25deg); }
+    85%  { transform: scale(.5)  rotate(15deg); }
+    95%  { transform: scale(1.2) rotate(-5deg); }
+    100% { transform: scale(1)   rotate(0); }
+}
+
+.lit {
+  background: #e4e2c0;
+  box-shadow: inset -4px -4px 4px 0 hsla(0,0%,100%,.3), 0 0 30px 6px hsla(0,0%,100%,.5);
+}
+
+.unlit {
+  background: #000b6e;
+}
+
+.text-shadow {
+  text-shadow: 2px 2px 2px #000;
+}
+
+.qr-code > svg{
+  width: 100%;
+}

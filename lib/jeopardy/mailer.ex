@@ -1,3 +1,4 @@
 defmodule Jeopardy.Mailer do
-  use Bamboo.Mailer, otp_app: :jeopardy
+  @moduledoc false
+  use Swoosh.Mailer, otp_app: :jeopardy
 end

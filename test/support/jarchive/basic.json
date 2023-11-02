@@ -1,0 +1,61 @@
+{
+  "air_date": "2004-09-06",
+  "categories": {
+    "double_jeopardy": [
+      "WORLD HISTORY"
+    ],
+    "final_jeopardy": "COMIC BOOKS",
+    "jeopardy": [
+      "THE OLD TESTAMENT",
+      "xyz"
+    ]
+  },
+  "comments": "Ken Jennings game 39.\n\r\nFirst game of Season 21.  New title graphics.",
+  "contestants": [
+    "J.D. Smith",
+    "Betsey Casman",
+    "Ken Jennings"
+  ],
+  "double_jeopardy": [
+    {
+      "category": "WORLD HISTORY",
+      "clues": [
+        {
+          "answer": "Francisco Franco",
+          "category": "WORLD HISTORY",
+          "clue": "Toledo military academy class of 1910 grad who went on to become a dictator",
+          "value": 200
+        }
+      ]
+    }
+  ],
+  "final_jeopardy": {
+    "answer": "Final Jeopardy answer",
+    "category": "COMIC BOOKS",
+    "clue": "Final Jeopardy clue"
+  },
+  "jeopardy": [
+    {
+      "category": "THE OLD TESTAMENT",
+      "clues": [
+        {
+          "answer": "sheep",
+          "category": "THE OLD TESTAMENT",
+          "clue": "Let's all flock to read Psalm 95, in which humans are compared to these animals",
+          "value": 100
+        }
+      ]
+    },
+    {
+      "category": "xyz",
+      "clues": [
+        {
+          "answer": "bar",
+          "category": "xyz",
+          "clue": "foo",
+          "value": 500
+        }
+      ]
+    }
+  ]
+}
