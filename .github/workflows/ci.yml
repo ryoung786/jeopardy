@@ -127,6 +127,5 @@ jobs:
           USERNAME: ${{ secrets.DEPLOY_USER }}
           KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
-            # sudo systemctl restart jeopardy.service
-            ${{ secrets.DEPLOY_DIR }}/_build/prod/rel/jeopardy/bin/server
+            sudo systemctl restart jeopardy
             ${{ secrets.DEPLOY_DIR }}/_build/prod/rel/jeopardy/bin/migrate
