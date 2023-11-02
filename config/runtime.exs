@@ -56,7 +56,7 @@ if config_env() == :prod do
     System.get_env("SENDGRID_API_KEY") ||
       raise "environment variable SENDGRID_API_KEY is missing."
 
-  config :sample, Sample.Mailer,
+  config :jeopardy, Jeopardy.Mailer,
     adapter: Swoosh.Adapters.Sendgrid,
     api_key: sendgrid_api_key
 end
