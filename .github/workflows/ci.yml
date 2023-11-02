@@ -6,9 +6,9 @@ name: CI/CD
 # different name for the main branch like "master" or "production".
 on:
   push:
-    branches: [ "main", "rewrite" ]  # adapt branch for project
+    branches: [ "main"]
   pull_request:
-    branches: [ "main", "rewrite" ]  # adapt branch for project
+    branches: [ "main"]
 
 # Sets the ENV `MIX_ENV` to `test` for running tests
 env:
@@ -98,7 +98,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: master
+          ref: main
           fetch-depth: 0
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
