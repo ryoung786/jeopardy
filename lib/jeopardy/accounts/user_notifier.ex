@@ -9,7 +9,7 @@ defmodule Jeopardy.Accounts.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"Jeopardy", "contact@example.com"})
+      |> from({"Jeopardy", "notifications@ryoung.info"})
       |> subject(subject)
       |> text_body(body)
 
