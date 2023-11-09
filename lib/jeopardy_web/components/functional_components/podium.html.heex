@@ -18,7 +18,10 @@
           </div>
         </div>
       <% else %>
-        <span class={[@name |> String.graphemes() |> Enum.count() > 10 && "text-[.8em]"]}>
+        <span class={[
+          "text-center",
+          @name |> String.graphemes() |> Enum.count() > 10 && "text-[.8em]"
+        ]}>
           <%= @name %>
         </span>
       <% end %>
