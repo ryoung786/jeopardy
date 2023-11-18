@@ -22,10 +22,6 @@
   100% {transform: rotate(180deg);}
 }
 
-/* .pie-timer::after { */
-/*     animation: var(--timer) linear var(--delay) forwards pietimer; */
-/* } */
-
 @keyframes lights-timer {
   to {
     clip-path: inset(0 55.5%);

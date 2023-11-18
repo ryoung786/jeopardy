@@ -29,18 +29,18 @@ defmodule Jeopardy.Game do
          do: %{game | board: %{game.board | control: name}}
   end
 
-  @spec update_contestant_score(game :: t(), name :: String.t(), amount :: integer()) :: t()
-  def update_contestant_score(game, name, amount) do
+  @spec update_contestant_score(game :: t(), name :: String.t(), amount :: integer(), correct? :: boolean()) :: t()
+  def update_contestant_score(game, name, amount, correct?) do
     with {:ok, _} <- find_contestant(game, name),
-         do: update_in(game.contestants[name].score, &(&1 + amount))
+         do: set_contestant_score(game, name, game.contestants[name].score + amount, correct?)
   end
 
-  @spec set_contestant_score(t(), String.t(), integer()) :: integer()
-  def set_contestant_score(game, name, amount) do
+  @spec set_contestant_score(t(), String.t(), integer(), boolean()) :: integer()
+  def set_contestant_score(game, name, amount, correct?) do
     with {:ok, c} <- find_contestant(game, name) do
       game.contestants[name].score
       |> put_in(amount)
-      |> FSM.broadcast(%ScoreUpdated{contestant_name: name, from: c.score, to: amount})
+      |> FSM.broadcast(%ScoreUpdated{contestant_name: name, from: c.score, to: amount, correct: correct?})
     end
   end
 

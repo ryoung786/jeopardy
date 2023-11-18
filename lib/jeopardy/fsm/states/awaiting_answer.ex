@@ -17,7 +17,7 @@ defmodule Jeopardy.FSM.AwaitingAnswer do
   defp answer(game, :correct) do
     {:ok,
      game
-     |> Game.update_contestant_score(game.buzzer, game.clue.value)
+     |> Game.update_contestant_score(game.buzzer, game.clue.value, true)
      |> Map.put(:buzzer, nil)
      |> Game.set_board_control(game.buzzer)
      |> to_next_state()}
@@ -29,7 +29,7 @@ defmodule Jeopardy.FSM.AwaitingAnswer do
     game =
       game.clue.incorrect_contestants
       |> put_in(incorrect_contestants)
-      |> Game.update_contestant_score(game.buzzer, -1 * game.clue.value)
+      |> Game.update_contestant_score(game.buzzer, -1 * game.clue.value, false)
       |> Map.put(:buzzer, nil)
 
     # if everybody's tried, read the answer, otherwise allow others a chance to buzz
