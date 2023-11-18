@@ -5,6 +5,7 @@ defmodule JeopardyWeb.GameLive do
   alias Jeopardy.FSM
   alias Jeopardy.FSM.Messages.PlayAgain
   alias Jeopardy.FSM.Messages.PlayerRemoved
+  alias Jeopardy.FSM.Messages.ScoreUpdated
   alias Jeopardy.FSM.Messages.StatusChanged
 
   on_mount {JeopardyWeb.UserAuth, :mount_current_user}
@@ -62,6 +63,12 @@ defmodule JeopardyWeb.GameLive do
 
       {:noreply, socket}
     end
+  end
+
+  def handle_info(%ScoreUpdated{} = msg, socket) do
+    if :tv == socket.assigns.role,
+      do: {:noreply, push_event(socket, "score-updated", Map.from_struct(msg))},
+      else: {:noreply, socket}
   end
 
   def handle_info(data, socket) do

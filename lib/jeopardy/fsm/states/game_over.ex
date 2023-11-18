@@ -81,17 +81,10 @@ defmodule Jeopardy.FSM.GameOver do
           do: curr.final_jeopardy_wager,
           else: -1 * curr.final_jeopardy_wager
 
-      msg = %FSM.Messages.ScoreUpdated{
-        contestant_name: curr.name,
-        from: curr.score,
-        to: curr.score + delta
-      }
-
       {:ok,
        game.fsm.data.index
        |> put_in(data.index + 1)
-       |> Game.update_contestant_score(curr.name, delta)
-       |> FSM.broadcast(msg)}
+       |> Game.update_contestant_score(curr.name, delta, curr.final_jeopardy_correct?)}
     else
       {:ok, game}
     end

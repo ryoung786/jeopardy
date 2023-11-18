@@ -1,7 +1,7 @@
 defmodule Jeopardy.FSM.Messages do
   @moduledoc "Collection of messages that can be broadcast."
 
-  defmodule ScoreUpdated, do: defstruct([:contestant_name, :from, :to])
+  defmodule ScoreUpdated, do: defstruct([:contestant_name, :from, :to, :correct])
   defmodule PlayAgain, do: defstruct([])
   defmodule JArchiveGameLoaded, do: defstruct([:air_date, :comments])
   defmodule TrebekSelected, do: defstruct([:trebek])

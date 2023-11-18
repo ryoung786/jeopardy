@@ -2,9 +2,15 @@
   class="podium grid gap-2 bg-black text-neutral-100 h-full p-1 aspect-[3/5] text-shadow grid-rows-[28%_1fr]"
   style="border: 5px solid #5f3929; border-bottom: none;"
 >
-  <div class="score grid place-content-center text-[3.5vh] font-bold bg-blue-800 overflow-hidden">
-    <span class={[abs(@score) >= 10_000 && "text-[.7em]", @score < 0 && "text-error"]}>
-      <%= if @score < 0, do: "-" %>$<%= abs(@score) %>
+  <div
+    id={"podium-#{@name}-score"}
+    class="grid text-[3.5vh] place-items-center font-bold bg-blue-800 overflow-hidden"
+    phx-update="ignore"
+    data-increase-score={update_score(@name, true)}
+    data-decrease-score={update_score(@name, false)}
+  >
+    <span class={["", abs(@score) >= 10_000 && "text-[.7em]", @score < 0 && "text-error"]}>
+      $<%= abs(@score) %>
     </span>
   </div>
   <div class={["overflow-hidden", @lit && "lit", !@lit && "unlit"]}>

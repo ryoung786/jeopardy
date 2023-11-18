@@ -96,4 +96,13 @@ defmodule JeopardyWeb.Components do
   slot :curved, default: nil
   attr :flash, :any, required: true
   def main(assigns)
+
+  ################################################################################
+  ## JS helpers
+
+  def update_score(js \\ %JS{}, _name, correct?) do
+    bg_color = if correct?, do: "bg-green-600", else: "bg-red-600"
+
+    JS.transition(js, {"transition-all duration-1000 transform ease-in", bg_color, "bg-blue-800"}, time: 1000)
+  end
 end

@@ -7,7 +7,7 @@ defmodule Jeopardy.AdminActions do
   alias Jeopardy.Game
 
   def handle_action(:set_score, game, {name, score}) do
-    with game <- Game.set_contestant_score(game, name, score) do
+    with game <- Game.set_contestant_score(game, name, score, true) do
       {:ok, game}
     end
   end
