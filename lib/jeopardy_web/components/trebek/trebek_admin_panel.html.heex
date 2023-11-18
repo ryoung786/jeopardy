@@ -4,9 +4,11 @@
     phx-click={show_panel()}
     phx-target={@myself}
   >
-    <.icon name="hero-bars-3" class="m-4 text-white" />
+    <div class="rounded-full bg-indigo-900 w-7 h-7 m-2 grid place-items-center">
+      <.icon name="hero-bars-3" class="text-white" />
+    </div>
   </div>
-  <div class="panel hidden fixed right-0 w-11/12 min-h-[100dvh] bg-indigo-900">
+  <div class="panel hidden fixed right-0 w-11/12 h-full bg-indigo-900">
     <div
       class="absolute left-0 top-0 cursor-pointer"
       phx-click={hide_panel()}
