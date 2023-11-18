@@ -1,0 +1,18 @@
+<div id="trebek-admin-panel" class="absolute">
+  <div
+    class="icon fixed right-0 top-0 cursor-pointer"
+    phx-click={show_panel()}
+    phx-target={@myself}
+  >
+    <.icon name="hero-bars-3" class="m-4 text-white" />
+  </div>
+  <div class="panel hidden fixed right-0 w-11/12 min-h-[100dvh] bg-indigo-900">
+    <div
+      class="absolute left-0 top-0 cursor-pointer"
+      phx-click={hide_panel()}
+      phx-target={@myself}
+    >
+      <.icon name="hero-bars-3" class="m-4 text-white" />
+    </div>
+  </div>
+</div>

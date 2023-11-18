@@ -7,6 +7,7 @@ defmodule JeopardyWeb.GameLive do
   alias Jeopardy.FSM.Messages.PlayerRemoved
   alias Jeopardy.FSM.Messages.ScoreUpdated
   alias Jeopardy.FSM.Messages.StatusChanged
+  alias JeopardyWeb.Components.Trebek.TrebekAdminPanel
 
   on_mount {JeopardyWeb.UserAuth, :mount_current_user}
 
@@ -34,6 +35,12 @@ defmodule JeopardyWeb.GameLive do
 
   def render(assigns) do
     ~H"""
+    <.live_component
+      :if={@role == :trebek}
+      module={TrebekAdminPanel}
+      id="trebek-admin-panel"
+      code={@code}
+    />
     <.live_component module={FSM.to_component(@state, @role)} id="c-id" code={@code} name={@name} />
     """
   end
