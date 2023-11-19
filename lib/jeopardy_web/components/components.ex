@@ -103,6 +103,6 @@ defmodule JeopardyWeb.Components do
   def update_score(js \\ %JS{}, _name, correct?) do
     bg_color = if correct?, do: "bg-green-600", else: "bg-red-600"
 
-    JS.transition(js, {"transition-all duration-1000 transform ease-in", bg_color, "bg-blue-800"}, time: 1000)
+    JS.transition(js, {"transition-all duration-500 transform ease-in", bg_color, "bg-blue-800"}, time: 500)
   end
 end
