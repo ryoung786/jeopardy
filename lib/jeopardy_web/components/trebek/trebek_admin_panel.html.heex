@@ -1,20 +1,39 @@
-<div id="trebek-admin-panel" class="absolute">
-  <div
-    class="icon fixed right-0 top-0 cursor-pointer"
-    phx-click={show_panel()}
-    phx-target={@myself}
-  >
-    <div class="rounded-full bg-indigo-900 w-7 h-7 m-2 grid place-items-center">
+<div id="trebek-admin-panel" class="absolute z-10">
+  <div class="icon fixed right-0 top-0 cursor-pointer" phx-click={show_panel()}>
+    <div class="rounded-full shadow-lg bg-indigo-900 w-7 h-7 m-2 grid place-items-center">
       <.icon name="hero-bars-3" class="text-white" />
     </div>
   </div>
-  <div class="panel hidden fixed right-0 w-11/12 h-full bg-indigo-900">
-    <div
-      class="absolute left-0 top-0 cursor-pointer"
-      phx-click={hide_panel()}
-      phx-target={@myself}
-    >
+  <div class="panel hidden fixed right-0 w-11/12 h-full bg-indigo-900 p-4 pt-12">
+    <div class="absolute left-0 top-0 cursor-pointer" phx-click={hide_panel()}>
       <.icon name="hero-bars-3" class="m-4 text-white" />
+    </div>
+
+    <div class="players grid">
+      <div
+        :for={{name, c} <- @game.contestants}
+        class="relative rounded p-2 flex justify-between"
+        id="foo"
+        data-contestant-name={c.name}
+      >
+        <div>
+          <span class="text-slate-400"><%= name %>:</span>
+          <span class="text-slate-200">$<%= c.score %></span>
+        </div>
+        <div class="flex gap-2">
+          <span class="text-slate-400 cursor-pointer">Edit</span>
+          <span class="text-rose-400 cursor-pointer" phx-click={show_confirm_remove(name)}>
+            Remove
+          </span>
+        </div>
+        <div class="confirm-remove absolute top-0 right-0 p-2 pl-4 flex gap-2 bg-indigo-800 h-full items-center rounded justify-end hidden w-full sm:w-auto">
+          <span class="text-slate-200 mr-2">Are you sure?</span>
+          <.button class="btn-xs" phx-click={cancel_remove(name)}>Cancel</.button>
+          <.button class="btn-xs btn-error" phx-click={confirm_remove(name)} phx-target={@myself}>
+            Remove
+          </.button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -30,7 +30,13 @@ defmodule JeopardyWeb.GameLive do
         :else -> :tv
       end
 
-    {:ok, assign(socket, code: code, name: session["name"], role: role, state: game.fsm.state), layout: @layouts[role]}
+    {:ok,
+     assign(socket,
+       name: session["name"],
+       role: role,
+       state: game.fsm.state,
+       game: JeopardyWeb.Game.new(game)
+     ), layout: @layouts[role]}
   end
 
   def render(assigns) do
@@ -39,9 +45,14 @@ defmodule JeopardyWeb.GameLive do
       :if={@role == :trebek}
       module={TrebekAdminPanel}
       id="trebek-admin-panel"
-      code={@code}
+      game={@game}
     />
-    <.live_component module={FSM.to_component(@state, @role)} id="c-id" code={@code} name={@name} />
+    <.live_component
+      module={FSM.to_component(@state, @role)}
+      id="c-id"
+      name={@name}
+      code={@game.code}
+    />
     """
   end
 
@@ -73,9 +84,17 @@ defmodule JeopardyWeb.GameLive do
   end
 
   def handle_info(%ScoreUpdated{} = msg, socket) do
-    if :tv == socket.assigns.role,
-      do: {:noreply, push_event(socket, "score-updated", Map.from_struct(msg))},
-      else: {:noreply, socket}
+    case socket.assigns.role do
+      :tv ->
+        {:noreply, push_event(socket, "score-updated", Map.from_struct(msg))}
+
+      :trebek ->
+        send_update(TrebekAdminPanel, id: "trebek-admin-panel", score_update: msg)
+        {:noreply, socket}
+
+      _ ->
+        {:noreply, socket}
+    end
   end
 
   def handle_info(data, socket) do
