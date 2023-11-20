@@ -1,0 +1,73 @@
+<div id="trebek-admin-panel" class="absolute z-10">
+  <button class="icon fixed right-0 top-0" phx-click={show_panel()}>
+    <div class="rounded-full shadow-lg bg-indigo-900 w-7 h-7 m-2 grid place-items-center">
+      <.icon name="hero-bars-3" class="text-white" />
+    </div>
+  </button>
+
+  <div id="trebek-admin-panel-bg" class="hidden bg-zinc-50/90 fixed inset-0" aria-hidden="true" />
+
+  <.focus_wrap
+    id="trebek-admin-panel-container"
+    phx-window-keydown={hide_panel()}
+    phx-key="escape"
+    phx-click-away={hide_panel()}
+    class="panel hidden fixed right-0 w-11/12 h-full bg-indigo-900 p-4 pt-12"
+  >
+    <div class="absolute left-0 top-0 cursor-pointer" phx-click={hide_panel()}>
+      <.icon name="hero-bars-3" class="m-4 text-white" />
+    </div>
+
+    <div class="players grid">
+      <div :for={{name, score} <- @contestants} class="relative py-2" data-contestant-name={name}>
+        <div class="row flex justify-between">
+          <div>
+            <span class="mr-2 text-slate-300"><%= name %>:</span>
+            <span class="text-slate-200">
+              <span :if={score < 0}>-</span>$<%= abs(score) %>
+            </span>
+          </div>
+          <div class="actions flex gap-2">
+            <button class="text-slate-300" phx-click={show_edit_score(name)}>Edit score</button>
+            <button class="text-rose-300" phx-click={show_confirm_remove(name)}>Remove</button>
+          </div>
+          <div class="confirm-remove absolute top-0 right-0 p-2 pl-4 shadow-md flex gap-2 bg-indigo-700 h-full items-center rounded justify-end hidden w-full sm:w-auto">
+            <span class="text-slate-200 mr-2">Are you sure?</span>
+            <.button class="btn-xs" phx-click={cancel_remove(name)}>Cancel</.button>
+            <.button
+              class="btn-xs btn-error"
+              phx-click={confirm_remove(name)}
+              phx-target={@myself}
+            >
+              Remove
+            </.button>
+          </div>
+        </div>
+        <.form
+          for={to_form(%{})}
+          class="edit-score hidden absolute top-0 left-0 py-2 w-full flex justify-between"
+          phx-submit={hide_edit_score(name) |> JS.push("edit-score")}
+          phx-target={@myself}
+        >
+          <div>
+            <span class="mr-2 text-slate-300"><%= name %>:</span>
+            <input type="hidden" name="player_name" value={name} />
+            <input
+              type="tel"
+              class="score-input shadow-inner rounded bg-slate-300 text-stone-800 text-right max-w-[5rem] sm:max-w-fit px-2 selection:bg-stone-800 selection:text-slate-300"
+              name="score"
+              value={score}
+              onfocus="this.select();"
+            />
+          </div>
+          <div class="flex gap-2">
+            <.button class="btn-xs" type="button" phx-click={hide_edit_score(name)}>
+              Cancel
+            </.button>
+            <.button class="btn-xs btn-accent" type="submit">Submit</.button>
+          </div>
+        </.form>
+      </div>
+    </div>
+  </.focus_wrap>
+</div>

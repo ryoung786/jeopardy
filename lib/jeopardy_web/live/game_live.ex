@@ -7,6 +7,7 @@ defmodule JeopardyWeb.GameLive do
   alias Jeopardy.FSM.Messages.PlayerRemoved
   alias Jeopardy.FSM.Messages.ScoreUpdated
   alias Jeopardy.FSM.Messages.StatusChanged
+  alias JeopardyWeb.Components.Trebek.TrebekAdminPanel
 
   on_mount {JeopardyWeb.UserAuth, :mount_current_user}
 
@@ -29,12 +30,29 @@ defmodule JeopardyWeb.GameLive do
         :else -> :tv
       end
 
-    {:ok, assign(socket, code: code, name: session["name"], role: role, state: game.fsm.state), layout: @layouts[role]}
+    {:ok,
+     assign(socket,
+       name: session["name"],
+       role: role,
+       state: game.fsm.state,
+       game: JeopardyWeb.Game.new(game)
+     ), layout: @layouts[role]}
   end
 
   def render(assigns) do
     ~H"""
-    <.live_component module={FSM.to_component(@state, @role)} id="c-id" code={@code} name={@name} />
+    <.live_component
+      :if={@role == :trebek}
+      module={TrebekAdminPanel}
+      id="trebek-admin-panel"
+      code={@game.code}
+    />
+    <.live_component
+      module={FSM.to_component(@state, @role)}
+      id="c-id"
+      name={@name}
+      code={@game.code}
+    />
     """
   end
 
@@ -56,6 +74,8 @@ defmodule JeopardyWeb.GameLive do
     if name == socket.assigns.name do
       {:noreply, socket |> put_flash(:warning, "You've been removed from the game") |> redirect(to: ~p"/")}
     else
+      send_update(TrebekAdminPanel, id: "trebek-admin-panel", player_removed: name)
+
       send_update(FSM.to_component(socket.assigns.state, socket.assigns.role),
         id: "c-id",
         game_server_message: msg
@@ -66,12 +86,22 @@ defmodule JeopardyWeb.GameLive do
   end
 
   def handle_info(%ScoreUpdated{} = msg, socket) do
-    if :tv == socket.assigns.role,
-      do: {:noreply, push_event(socket, "score-updated", Map.from_struct(msg))},
-      else: {:noreply, socket}
+    case socket.assigns.role do
+      :tv ->
+        {:noreply, push_event(socket, "score-updated", Map.from_struct(msg))}
+
+      :trebek ->
+        send_update(TrebekAdminPanel, id: "trebek-admin-panel", score_update: msg)
+        {:noreply, socket}
+
+      _ ->
+        {:noreply, socket}
+    end
   end
 
   def handle_info(data, socket) do
+    send_update(TrebekAdminPanel, id: "trebek-admin-panel", game_server_message: data)
+
     send_update(FSM.to_component(socket.assigns.state, socket.assigns.role),
       id: "c-id",
       game_server_message: data

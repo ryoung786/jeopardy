@@ -36,8 +36,10 @@ defmodule Jeopardy.Game do
   end
 
   @spec set_contestant_score(t(), String.t(), integer(), boolean()) :: integer()
-  def set_contestant_score(game, name, amount, correct?) do
+  def set_contestant_score(game, name, amount, correct? \\ nil) do
     with {:ok, c} <- find_contestant(game, name) do
+      correct? = if is_nil(correct?), do: amount >= c.score, else: correct?
+
       game.contestants[name].score
       |> put_in(amount)
       |> FSM.broadcast(%ScoreUpdated{contestant_name: name, from: c.score, to: amount, correct: correct?})
