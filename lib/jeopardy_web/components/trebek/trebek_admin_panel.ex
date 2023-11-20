@@ -2,51 +2,55 @@ defmodule JeopardyWeb.Components.Trebek.TrebekAdminPanel do
   @moduledoc false
   use JeopardyWeb, :live_component
 
-  alias Jeopardy.FSM.Messages.ScoreUpdated
   alias Jeopardy.GameServer
 
   def handle_event("remove-contestant", %{"player_name" => name}, socket) do
-    game = socket.assigns.game
-    game = update_in(game.contestants, &Map.delete(&1, name))
-    {:noreply, assign(socket, game: game)}
+    contestants = Enum.reject(socket.assigns.contestants, &match?({^name, _score}, &1))
+    {:noreply, assign(socket, contestants: contestants)}
   end
 
   def handle_event("edit-score", %{"player_name" => name, "score" => score}, socket) do
     with {score, _} <- Integer.parse(score),
-         do: GameServer.admin_action(socket.assigns.game.code, :set_score, {name, score})
+         do: GameServer.admin_action(socket.assigns.code, :set_score, {name, score})
 
     {:noreply, socket}
   end
 
-  def update(%{score_update: %ScoreUpdated{} = msg}, socket) do
-    game = socket.assigns.game
-    game = put_in(game.contestants[msg.contestant_name].score, msg.to)
-    {:ok, assign(socket, game: game)}
-  end
-
   def update(assigns, socket) do
-    {:ok, assign(socket, assigns)}
+    code = assigns[:code] || socket.assigns[:code]
+    {:ok, game} = GameServer.get_game(code)
+    contestants = Enum.map(game.contestants, fn {name, c} -> {name, c.score} end)
+    {:ok, assign(socket, code: code, contestants: contestants)}
   end
 
   ################################################################################
   ## JS Helpers
 
+  @fade_in {"transition-opacity ease-out", "opacity-0", "opacity-100"}
+  @fade_out {"transition-all transform ease-in", "opacity-100", "opacity-0"}
+
   def hide_panel(js \\ %JS{}) do
-    JS.hide(js,
+    js
+    |> JS.hide(to: "#trebek-admin-panel-bg", transition: @fade_out)
+    |> JS.hide(
       to: "#trebek-admin-panel .panel",
       transition: {"transition-all ease-in", "translate-x-0", "translate-x-full"}
     )
   end
 
   def show_panel(js \\ %JS{}) do
-    JS.show(js,
+    js
+    |> JS.show(to: "#trebek-admin-panel-bg", transition: @fade_in)
+    |> JS.show(
       to: "#trebek-admin-panel .panel",
       transition: {"transition-all ease-out", "translate-x-full", "translate-x-0"}
     )
   end
 
   def show_confirm_remove(js \\ %JS{}, name) do
-    JS.show(js,
+    js
+    |> JS.hide(to: "#trebek-admin-panel .actions", transition: @fade_out)
+    |> JS.show(
       to: "#trebek-admin-panel [data-contestant-name='#{name}'] .confirm-remove",
       transition: {"transition-all ease-out", "translate-x-full", "translate-x-0"},
       display: "flex"
@@ -54,7 +58,9 @@ defmodule JeopardyWeb.Components.Trebek.TrebekAdminPanel do
   end
 
   def cancel_remove(js \\ %JS{}, name) do
-    JS.hide(js,
+    js
+    |> JS.show(to: "#trebek-admin-panel .actions", transition: @fade_in)
+    |> JS.hide(
       to: "#trebek-admin-panel [data-contestant-name='#{name}'] .confirm-remove",
       transition: {"transition-all ease-out", "translate-x-0", "translate-x-full"}
     )
@@ -71,13 +77,10 @@ defmodule JeopardyWeb.Components.Trebek.TrebekAdminPanel do
 
   def show_edit_score(js \\ %JS{}, name) do
     js
-    |> JS.transition(
-      {"transition-all ease-in", "opacity-100", "opacity-0"},
-      to: "#trebek-admin-panel [data-contestant-name='#{name}'] > .row"
-    )
+    |> JS.transition(@fade_out, to: "#trebek-admin-panel [data-contestant-name='#{name}'] > .row")
     |> JS.show(
       to: "#trebek-admin-panel [data-contestant-name='#{name}'] .edit-score",
-      transition: {"transition-all ease-out", "opacity-0", "opacity-100"},
+      transition: @fade_in,
       display: "flex"
     )
     |> JS.focus(to: "#trebek-admin-panel [data-contestant-name='#{name}'] .score-input")
@@ -85,13 +88,7 @@ defmodule JeopardyWeb.Components.Trebek.TrebekAdminPanel do
 
   def hide_edit_score(js \\ %JS{}, name) do
     js
-    |> JS.transition(
-      {"transition-all ease-out", "opacity-0", "opacity-100"},
-      to: "#trebek-admin-panel [data-contestant-name='#{name}'] > .row"
-    )
-    |> JS.hide(
-      to: "#trebek-admin-panel [data-contestant-name='#{name}'] .edit-score",
-      transition: {"transition-all ease-in", "opacity-100", "opacity-0"}
-    )
+    |> JS.transition(@fade_in, to: "#trebek-admin-panel [data-contestant-name='#{name}'] > .row")
+    |> JS.hide(to: "#trebek-admin-panel [data-contestant-name='#{name}'] .edit-score", transition: @fade_out)
   end
 end

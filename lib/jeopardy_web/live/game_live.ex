@@ -45,7 +45,7 @@ defmodule JeopardyWeb.GameLive do
       :if={@role == :trebek}
       module={TrebekAdminPanel}
       id="trebek-admin-panel"
-      game={@game}
+      code={@game.code}
     />
     <.live_component
       module={FSM.to_component(@state, @role)}
@@ -74,6 +74,8 @@ defmodule JeopardyWeb.GameLive do
     if name == socket.assigns.name do
       {:noreply, socket |> put_flash(:warning, "You've been removed from the game") |> redirect(to: ~p"/")}
     else
+      send_update(TrebekAdminPanel, id: "trebek-admin-panel", player_removed: name)
+
       send_update(FSM.to_component(socket.assigns.state, socket.assigns.role),
         id: "c-id",
         game_server_message: msg
@@ -98,6 +100,8 @@ defmodule JeopardyWeb.GameLive do
   end
 
   def handle_info(data, socket) do
+    send_update(TrebekAdminPanel, id: "trebek-admin-panel", game_server_message: data)
+
     send_update(FSM.to_component(socket.assigns.state, socket.assigns.role),
       id: "c-id",
       game_server_message: data
