@@ -3,10 +3,8 @@ defmodule Jeopardy.JArchive.GameIndex do
   use TypedEctoSchema
 
   import Ecto.Changeset
-  import Ecto.Query
 
   alias Jeopardy.JArchive
-  alias Jeopardy.Repo
 
   @primary_key {:id, :id, autogenerate: true, source: :rowid}
   typed_schema "game_index" do
@@ -82,20 +80,5 @@ defmodule Jeopardy.JArchive.GameIndex do
     }
 
     changeset(attrs)
-  end
-
-  def search(query_string, opts \\ []) do
-    # wrap in double quotes to force phrases, otherwise characters like hyphens
-    # and periods are interpreted as column delimiters
-    query_string = "\"#{query_string}\""
-
-    q = from(game in __MODULE__, where: fragment("game_index MATCH ?", ^query_string))
-    q = if opts[:decades], do: where(q, [g], g.decade in ^opts[:decades]), else: q
-    q = if opts[:difficulty], do: where(q, [g], g.difficulty in ^opts[:difficulty]), else: q
-
-    q
-    |> select([:air_date, :rank])
-    |> order_by(asc: :rank)
-    |> Repo.all()
   end
 end
