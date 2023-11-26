@@ -11,6 +11,7 @@ defmodule Jeopardy.JArchive.RecordedGame do
     field :air_date, :date
     field :comments, :string
     field :contestants, {:array, :string}
+    field :season, :string
 
     embeds_one :categories, Categories, primary_key: false do
       field :jeopardy, {:array, :string}
@@ -30,7 +31,7 @@ defmodule Jeopardy.JArchive.RecordedGame do
 
   def changeset(attrs) do
     %__MODULE__{}
-    |> cast(attrs, ~w/air_date comments contestants/a)
+    |> cast(attrs, ~w/air_date comments contestants season/a)
     |> cast_embed(:categories, with: &categories_changeset/2)
     |> cast_embed(:final_jeopardy, with: &final_jeopardy_changeset/2)
     |> cast_embed(:jeopardy)
