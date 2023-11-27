@@ -9,11 +9,12 @@ defmodule Jeopardy.JArchive do
   alias Jeopardy.JArchive.GameIndex
   alias Jeopardy.Repo
 
-  @jarchive_path Application.app_dir(:jeopardy, "priv/jarchive")
-  @completed_seasons_path Application.app_dir(:jeopardy, "priv/jarchive/completed_seasons")
+  def path do
+    default = Application.app_dir(:jeopardy, "priv/jarchive")
+    Application.get_env(:jeopardy, :jarchive_dir, default)
+  end
 
-  def path, do: Application.get_env(:jeopardy, :jarchive_dir, @jarchive_path)
-  def completed_seasons_path, do: @completed_seasons_path
+  def completed_seasons_path, do: Application.app_dir(:jeopardy, "priv/jarchive/completed_seasons")
 
   @spec load_game(any) :: {:ok, Jeopardy.JArchive.RecordedGame.t()} | {:error, any}
   def load_game(:random) do
