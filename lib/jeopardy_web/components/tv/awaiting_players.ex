@@ -2,6 +2,7 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
   @moduledoc false
   use JeopardyWeb.FSMComponent
 
+  alias Jeopardy.FSM.Messages.JArchiveGameLoaded
   alias Jeopardy.FSM.Messages.PlayerAdded
   alias Jeopardy.FSM.Messages.PlayerRemoved
   alias Jeopardy.FSM.Messages.PodiumSigned
@@ -10,7 +11,13 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
   def assign_init(socket, game) do
     player_names = game.players |> Map.keys() |> Enum.sort()
     signatures = Map.new(game.players, fn {name, player} -> {name, player.signature} end)
-    assign(socket, players: player_names, original_players: player_names, signatures: signatures)
+
+    assign(socket,
+      players: player_names,
+      original_players: player_names,
+      signatures: signatures,
+      air_date: game.jarchive_game.air_date
+    )
   end
 
   def handle_game_server_msg(%PlayerRemoved{name: name}, socket) do
@@ -23,6 +30,10 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
 
   def handle_game_server_msg(%PodiumSigned{} = podium, socket) do
     {:ok, assign(socket, signatures: Map.put(socket.assigns.signatures, podium.name, podium.signature))}
+  end
+
+  def handle_game_server_msg(%JArchiveGameLoaded{} = game, socket) do
+    {:ok, assign(socket, air_date: game.air_date)}
   end
 
   def handle_event("remove-player", %{"player" => name}, socket) do
@@ -44,6 +55,11 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
 
   def handle_event("start-game", _, socket) do
     Jeopardy.GameServer.action(socket.assigns.code, :continue)
+    {:noreply, socket}
+  end
+
+  def handle_event("change-game", _, socket) do
+    Jeopardy.GameServer.action(socket.assigns.code, :load_game, :random)
     {:noreply, socket}
   end
 

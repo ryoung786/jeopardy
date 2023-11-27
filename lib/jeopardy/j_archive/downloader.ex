@@ -1,10 +1,13 @@
 defmodule Jeopardy.JArchive.Downloader do
   @moduledoc false
+
+  alias Jeopardy.JArchive
+  alias Jeopardy.JArchive.GameIndex
+  alias Jeopardy.Repo
+
   require Logger
 
   @req Req.new(base_url: "https://j-archive.com")
-  @jarchive_path Application.app_dir(:jeopardy, "priv/jarchive")
-  @completed_seasons_path Application.app_dir(:jeopardy, "priv/jarchive/completed_seasons")
 
   @spec download_all_seasons() :: :ok
   def download_all_seasons do
@@ -24,27 +27,31 @@ defmodule Jeopardy.JArchive.Downloader do
         |> game_ids_from_season_html()
 
       game_ids
-      |> Task.async_stream(&download_and_parse_game/1, max_concurrency: 5)
+      |> Task.async_stream(&download_and_parse_game(&1, season_id, force_download: opts[:force_download]),
+        max_concurrency: 5
+      )
       |> Enum.to_list()
 
       if season_finished_airing?(game_ids) do
-        File.touch(Path.join(@completed_seasons_path, "#{season_id}"))
+        File.touch(Path.join(JArchive.completed_seasons_path(), "#{season_id}"))
       end
     end
   end
 
   @spec download_and_parse_game(any, [{:force_download, boolean}]) :: :ok | {:error, File.posix()}
-  def download_and_parse_game(game_id, opts \\ [force_download: false]) do
+  def download_and_parse_game(game_id, season_id, opts \\ [force_download: false]) do
     if game_already_downloaded?(game_id) && !opts[:force_download] do
       Logger.info("Skipping download, game was cached", game_id: game_id)
     else
       Logger.info("Downloading game", game_id: game_id)
 
-      Req.get!(@req, url: "showgame.php", params: [game_id: game_id]).body
-      |> Floki.parse_document!()
-      |> Jeopardy.JArchive.Parser.parse_game()
-      |> Jason.encode!()
-      |> then(&File.write(Path.join(@jarchive_path, "#{game_id}.json"), &1))
+      json =
+        Req.get!(@req, url: "showgame.php", params: [game_id: game_id]).body
+        |> Floki.parse_document!()
+        |> Jeopardy.JArchive.Parser.parse_game(season_id)
+
+      File.write(Path.join(JArchive.path(), "#{game_id}.json"), Jason.encode!(json))
+      game_id |> GameIndex.from_json(json) |> Repo.insert()
     end
   end
 
@@ -84,7 +91,7 @@ defmodule Jeopardy.JArchive.Downloader do
 
   @spec game_already_downloaded?(any) :: boolean
   defp game_already_downloaded?(game_id) do
-    File.exists?(Path.join(@jarchive_path, "#{game_id}.json"))
+    File.exists?(Path.join(JArchive.path(), "#{game_id}.json"))
   end
 
   @spec season_finished_airing?(list(any)) :: boolean

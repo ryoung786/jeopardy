@@ -1,6 +1,6 @@
 defmodule Jeopardy.JArchive.Parser do
   @moduledoc false
-  def parse_game(html) do
+  def parse_game(html, season_id) do
     %{
       jeopardy: Enum.map(1..6, &parse_round_category(html, :jeopardy, &1)),
       double_jeopardy: Enum.map(1..6, &parse_round_category(html, :double_jeopardy, &1)),
@@ -16,7 +16,8 @@ defmodule Jeopardy.JArchive.Parser do
       },
       air_date: parse_air_date(html),
       contestants: html |> Floki.find("#contestants .contestants a") |> Enum.map(&Floki.text/1),
-      comments: html |> Floki.find("#game_comments") |> Floki.text()
+      comments: html |> Floki.find("#game_comments") |> Floki.text(),
+      season: season_id
     }
   end
 

@@ -7,6 +7,10 @@
       <.button :if={Enum.count(@players) >= 2} phx-click="start-game" phx-target={@myself}>
         Start Game
       </.button>
+      <div class="absolute bottom-2 text-base font-sans flex gap-4">
+        <span>Game aired <%= Calendar.strftime(@air_date, "%b %d, %Y") %></span>
+        <.button class="btn-xs" phx-click="change-game" phx-target={@myself}>Change</.button>
+      </div>
     </.clue>
   </div>
   <span />
