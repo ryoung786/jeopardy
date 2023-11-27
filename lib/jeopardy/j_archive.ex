@@ -40,6 +40,10 @@ defmodule Jeopardy.JArchive do
     end
   end
 
+  def get_game_index(id) do
+    Repo.get_by(GameIndex, game_id: id)
+  end
+
   def choose_game(filters \\ []) do
     q = GameIndex
     q = if filters[:decades], do: where(q, [g], g.decade in ^filters[:decades]), else: q
