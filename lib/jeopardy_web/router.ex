@@ -24,8 +24,8 @@ defmodule JeopardyWeb.Router do
 
     get "/", HomeController, :home
     post "/", HomeController, :join
+    post "/new-game", HomeController, :new_game
     get "/privacy-policy", HomeController, :privacy_policy
-    live "/games", GamesLive
 
     scope "/join/:code" do
       pipe_through [:game]

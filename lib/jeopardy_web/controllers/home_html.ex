@@ -20,7 +20,9 @@ defmodule JeopardyWeb.HomeHTML do
         </.form>
         <div class="w-full flex flex-col gap-4">
           <p class="text-center">Or</p>
-          <.link class="btn btn-primary w-full" href={~p"/games"}>New Game</.link>
+          <.form for={%{}} class="flex flex-col" action={~p"/new-game"}>
+            <.button class="btn-primary">New Game</.button>
+          </.form>
         </div>
       </div>
     </main>

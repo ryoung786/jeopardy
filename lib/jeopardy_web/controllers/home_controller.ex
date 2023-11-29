@@ -7,6 +7,11 @@ defmodule JeopardyWeb.HomeController do
     render(conn, :home, form: to_form(%{}))
   end
 
+  def new_game(conn, _params) do
+    code = Jeopardy.GameServer.new_game_server()
+    redirect(conn, to: ~p"/games/#{code}")
+  end
+
   def join(conn, %{"name" => name, "code" => code} = params) do
     code = String.upcase(code)
 
@@ -15,7 +20,7 @@ defmodule JeopardyWeb.HomeController do
         conn
         |> put_session(:name, name)
         |> put_session(:code, code)
-        |> redirect(to: "/games/#{code}")
+        |> redirect(to: ~p"/games/#{code}")
 
       {:error, :game_not_found} ->
         form = to_form(params, errors: [code: {"Game does not exist", []}])
