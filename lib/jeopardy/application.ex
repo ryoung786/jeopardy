@@ -21,7 +21,8 @@ defmodule Jeopardy.Application do
       # Start a worker by calling: Jeopardy.Worker.start_link(arg)
       # {Jeopardy.Worker, arg}
       {Registry, keys: :unique, name: Jeopardy.GameRegistry},
-      {DynamicSupervisor, name: Jeopardy.GameSupervisor, strategy: :one_for_one}
+      {DynamicSupervisor, name: Jeopardy.GameSupervisor, strategy: :one_for_one},
+      Jeopardy.JArchive.Cron
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
