@@ -7,9 +7,8 @@ defmodule Jeopardy.AdminActions do
   alias Jeopardy.Game
 
   def handle_action(:set_score, game, {name, score}) do
-    with game <- Game.set_contestant_score(game, name, score) do
-      {:ok, game}
-    end
+    game = Game.set_contestant_score(game, name, score)
+    {:ok, game}
   end
 
   def handle_action(:skip_to_next_round, game, _) do

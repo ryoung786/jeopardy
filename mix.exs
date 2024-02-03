@@ -32,6 +32,7 @@ defmodule Jeopardy.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:bandit, "~> 1.0"},
       {:bcrypt_elixir, "~> 3.0"},
       {:phoenix, "~> 1.7.7"},
       {:phoenix_ecto, "~> 4.4"},
@@ -44,14 +45,13 @@ defmodule Jeopardy.MixProject do
       {:phoenix_live_dashboard, "~> 0.8.0"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
-      {:swoosh, "~> 1.3"},
+      {:swoosh, "~> 1.15"},
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"},
-      {:req, "~> 0.3.11"},
+      {:req, "~> 0.4"},
       {:typed_struct, "~> 0.3.0"},
       {:eqrcode, "~> 0.1.10"},
       {:typed_ecto_schema, "~> 0.4.1", runtime: false},

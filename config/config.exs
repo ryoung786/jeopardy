@@ -12,6 +12,7 @@ config :jeopardy,
 
 # Configures the endpoint
 config :jeopardy, JeopardyWeb.Endpoint,
+  adapter: Bandit.PhoenixAdapter,
   url: [host: "localhost"],
   render_errors: [
     formats: [html: JeopardyWeb.ErrorHTML, json: JeopardyWeb.ErrorJSON],
