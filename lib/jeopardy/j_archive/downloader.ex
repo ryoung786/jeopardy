@@ -56,7 +56,7 @@ defmodule Jeopardy.JArchive.Downloader do
     if File.exists?(Path.join(JArchive.path(), "#{game_id}.json")) do
       Logger.info("Skipping download, game was cached", season_id: season_id, game_id: game_id)
     else
-      Logger.info("Downloading game", season_id: season_id, game_id: game_id)
+      Logger.info("Downloading game season_id: #{season_id}, game_id: #{game_id}", season_id: season_id, game_id: game_id)
 
       json =
         Req.get!(@req, url: "showgame.php", params: [game_id: game_id]).body
