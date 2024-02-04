@@ -13,10 +13,7 @@ defmodule Jeopardy.JArchive.Downloader do
   def download_all_seasons do
     html = Req.get!(@req, url: "listseasons.php").body
 
-    fully_downloaded_season_ids =
-      :jeopardy
-      |> Application.app_dir("priv/jarchive/completed_seasons")
-      |> File.ls!()
+    fully_downloaded_season_ids = File.ls!(JArchive.completed_seasons_path())
 
     html
     |> Floki.parse_document!()

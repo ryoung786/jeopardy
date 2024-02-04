@@ -14,7 +14,7 @@ defmodule Jeopardy.JArchive do
     Keyword.get(config, :path)
   end
 
-  def completed_seasons_path, do: Application.app_dir(:jeopardy, "priv/jarchive/completed_seasons")
+  def completed_seasons_path, do: Path.join(path(), "completed_seasons")
 
   @spec load_game(any) :: {:ok, Jeopardy.JArchive.RecordedGame.t()} | {:error, any}
   def load_game(:random) do
