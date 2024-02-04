@@ -50,6 +50,7 @@ WantedBy=multi-user.target
 
 ```
 DATABASE_PATH="/path/to/sqlite/database/file"
+JARCHIVE_PATH="/path/to/jarchive"
 SECRET_KEY_BASE="result of mix phx.gen.secret"
 PHX_HOST="public hostname"
 PORT=80

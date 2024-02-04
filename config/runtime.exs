@@ -50,6 +50,17 @@ if config_env() == :prod do
     secret_key_base: secret_key_base
 
   ##################################################
+  # JArchive
+  jarchive_path =
+    System.get_env("JARCHIVE_PATH") ||
+      raise """
+      environment variable JARCHIVE_PATH is missing.
+      For example: /etc/jeopardy/jarchive
+      """
+
+  config :jeopardy, Jeopardy.JArchive, path: jarchive_path
+
+  ##################################################
   # Mailer
 
   sendgrid_api_key =

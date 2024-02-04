@@ -38,4 +38,4 @@ jeopardy-*.tar
 npm-debug.log
 /assets/node_modules/
 
-/priv/jarchive
+/jarchive

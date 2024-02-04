@@ -10,8 +10,8 @@ defmodule Jeopardy.JArchive do
   alias Jeopardy.Repo
 
   def path do
-    default = Application.app_dir(:jeopardy, "priv/jarchive")
-    Application.get_env(:jeopardy, :jarchive_dir, default)
+    config = Application.get_env(:jeopardy, __MODULE__)
+    Keyword.get(config, :path)
   end
 
   def completed_seasons_path, do: Application.app_dir(:jeopardy, "priv/jarchive/completed_seasons")
