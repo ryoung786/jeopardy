@@ -36,6 +36,7 @@ ExecStop=/home/jeopardy/_build/prod/rel/jeopardy/bin/jeopardy stop
 
 Environment=LANG=en_US.utf8
 Environment=MIX_ENV=prod
+EnvironmentFile=/etc/environment
 
 LimitNOFILE=65535
 UMask=0027
