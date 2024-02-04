@@ -13,8 +13,16 @@ config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: Jeopardy.Finch
 # Disable Swoosh Local Memory Storage
 config :swoosh, local: false
 
-# Do not print debug messages in production
-config :logger, level: :info
+config :logger,
+  level: :info,
+  backends: [:console, LogflareLogger.HttpBackend]
+
+config :logflare_logger_backend,
+  url: "https://api.logflare.app",
+  level: :info,
+  flush_interval: 1_000,
+  max_batch_size: 50,
+  metadata: :all
 
 # Runtime production configuration, including reading
 # of environment variables, is done on config/runtime.exs.

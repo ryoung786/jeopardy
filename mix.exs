@@ -54,6 +54,7 @@ defmodule Jeopardy.MixProject do
       {:req, "~> 0.4"},
       {:typed_struct, "~> 0.3.0"},
       {:eqrcode, "~> 0.1.10"},
+      {:logflare_logger_backend, "~> 0.11.4"},
       {:typed_ecto_schema, "~> 0.4.1", runtime: false},
       {:dialyxir, "~> 1.3", only: [:dev], runtime: false},
       {:styler, "~> 0.9", only: [:dev, :test], runtime: false}

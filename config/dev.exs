@@ -60,7 +60,7 @@ config :jeopardy, JeopardyWeb.Endpoint,
   ]
 
 # Do not include metadata nor timestamps in development logs
-config :logger, :console,
+config :logger, :default_formatter,
   format: "[$level] $message $metadata\n",
   metadata: [:game_id, :season_id]
 
