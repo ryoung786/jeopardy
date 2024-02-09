@@ -3,7 +3,7 @@
   style="border: 5px solid #5f3929; border-bottom: none;"
 >
   <div
-    id={"podium-#{@name}-score"}
+    id={"podium-#{String.replace(@name, ~r/\s/, "_")}-score"}
     class="grid text-[3.5vh] place-items-center font-bold bg-blue-800 overflow-hidden"
     phx-update="ignore"
     data-increase-score={update_score(@name, true)}

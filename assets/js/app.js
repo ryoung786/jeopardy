@@ -35,11 +35,12 @@ window.addEventListener("phx:page-loading-start", _info => topbar.show(300))
 window.addEventListener("phx:page-loading-stop", _info => topbar.hide())
 
 window.addEventListener(`phx:score-updated`, (e) => {
-  let el = document.getElementById(`podium-${e.detail.contestant_name}-score`)
-  if(el) {
+  podium_score_id = `podium-${e.detail.contestant_name.replace(/\s/g, "_")}-score`
+  let el = document.getElementById(podium_score_id)
+  if (el) {
     attr = e.detail.correct ? "data-increase-score" : "data-decrease-score";
     liveSocket.execJS(el, el.getAttribute(attr));
-    span = document.querySelector(`#podium-${e.detail.contestant_name}-score span`);
+    span = document.querySelector(`#${podium_score_id} span`);
     span.innerText = `$${Math.abs(e.detail.to)}`;
     if (e.detail.to < 0) {
       span.classList.add("text-error");
