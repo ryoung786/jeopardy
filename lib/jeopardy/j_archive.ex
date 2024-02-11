@@ -56,7 +56,7 @@ defmodule Jeopardy.JArchive do
       |> limit(1)
       |> Repo.one()
 
-    if game, do: load_game(game.game_id), else: {:error, "No games exist"}
+    if game, do: {:ok, game.game_id}, else: {:error, "No games exist"}
   end
 
   def reset_archive do

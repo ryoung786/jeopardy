@@ -6,6 +6,7 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
   alias Jeopardy.FSM.Messages.PlayerAdded
   alias Jeopardy.FSM.Messages.PlayerRemoved
   alias Jeopardy.FSM.Messages.PodiumSigned
+  alias Jeopardy.JArchive
   alias Phoenix.LiveView.JS
 
   def assign_init(socket, game) do
@@ -16,7 +17,9 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
       players: player_names,
       original_players: player_names,
       signatures: signatures,
-      air_date: game.jarchive_game.air_date
+      air_date: game.jarchive_game.air_date,
+      difficulty_levels: ["easy", "normal", "hard", "very_hard"],
+      filters: %{decades: [], difficulty: []}
     )
   end
 
@@ -59,8 +62,35 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
   end
 
   def handle_event("change-game", _, socket) do
-    Jeopardy.GameServer.action(socket.assigns.code, :load_game, :random)
-    {:noreply, socket}
+    filters = Map.reject(socket.assigns.filters, fn {_k, v} -> Enum.empty?(v) end)
+
+    case JArchive.choose_game(Map.to_list(filters)) do
+      {:ok, game_id} ->
+        Jeopardy.GameServer.action(socket.assigns.code, :load_game, game_id)
+        {:noreply, socket}
+
+      {:error, "No games exist"} ->
+        # There are no "Very Hard" games in the 80s or 90s.
+        # To fix, automatically add "Hard" to the difficulty filters and try again
+
+        filters = %{
+          decades: socket.assigns.filters.decades,
+          difficulty: ["hard" | socket.assigns.filters.difficulty]
+        }
+
+        {:ok, game_id} = JArchive.choose_game(Map.to_list(filters))
+        Jeopardy.GameServer.action(socket.assigns.code, :load_game, game_id)
+        {:noreply, assign(socket, filters: filters)}
+    end
+  end
+
+  def handle_event("filters-changed", params, socket) do
+    filters = %{
+      decades: params |> Map.get("decades", []) |> Enum.map(&String.to_integer/1),
+      difficulty: Map.get(params, "difficulty", [])
+    }
+
+    {:noreply, assign(socket, filters: filters)}
   end
 
   # JS interactions
