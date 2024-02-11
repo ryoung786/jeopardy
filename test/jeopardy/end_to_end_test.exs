@@ -109,7 +109,7 @@ defmodule Jeopardy.EndToEndTest do
       assert fsm_state(code) == FSM.GradingFinalJeopardyAnswers
       GameServer.action(code, :submitted_grades, ["b"])
 
-      assert fsm_state(code) == FSM.GameOver
+      assert fsm_state(code) == FSM.RevealingFinalJeopardyAnswers
       GameServer.action(code, :revealed, :name)
       GameServer.action(code, :revealed, :wager)
       GameServer.action(code, :revealed, :answer)
@@ -120,6 +120,7 @@ defmodule Jeopardy.EndToEndTest do
       {:ok, game} = GameServer.action(code, :revealed, :game_over)
       assert game.contestants["b"].score == 400
 
+      assert fsm_state(code) == FSM.GameOver
       {:ok, game} = GameServer.action(code, :play_again)
       assert fsm_state(code) == FSM.AwaitingPlayers
       assert ["a", "b", "trebek"] = game.players |> Map.keys() |> Enum.sort()
