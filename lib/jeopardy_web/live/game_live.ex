@@ -67,7 +67,7 @@ defmodule JeopardyWeb.GameLive do
   end
 
   def handle_info(%PlayAgain{}, socket) do
-    {:noreply, redirect(socket, to: ~p"/games/#{socket.assigns.code}")}
+    {:noreply, redirect(socket, to: ~p"/games/#{socket.assigns.game.code}")}
   end
 
   def handle_info(%PlayerRemoved{name: name} = msg, socket) do

@@ -18,7 +18,7 @@ defmodule Jeopardy.FSM.GradingFinalJeopardyAnswers do
           {name, %{c | final_jeopardy_correct?: name in correct_contestants}}
         end)
 
-      {:ok, game |> Map.put(:contestants, contestants) |> FSM.to_state(FSM.GameOver)}
+      {:ok, game |> Map.put(:contestants, contestants) |> FSM.to_state(FSM.RevealingFinalJeopardyAnswers)}
     end
   end
 

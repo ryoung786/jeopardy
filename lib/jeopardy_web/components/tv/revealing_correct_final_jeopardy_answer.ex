@@ -1,4 +1,4 @@
-defmodule JeopardyWeb.Components.Tv.GameOver do
+defmodule JeopardyWeb.Components.Tv.RevealingCorrectFinalJeopardyAnswer do
   @moduledoc false
   use JeopardyWeb.FSMComponent
 
@@ -6,7 +6,7 @@ defmodule JeopardyWeb.Components.Tv.GameOver do
     ~H"""
     <div>
       <.tv contestants={@game.contestants}>
-        <.clue><span>Game Over</span></.clue>
+        <.clue category={@game.clue.category}><%= @game.clue.answer %></.clue>
       </.tv>
     </div>
     """
