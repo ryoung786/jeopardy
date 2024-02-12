@@ -75,7 +75,7 @@
   >
     <div
       :for={name <- @players}
-      id={"podium-#{name}"}
+      id={"podium-#{String.replace(name, ~r/\s+/, "-")}"}
       class={["relative group cursor-pointer", name not in @original_players && "hidden"]}
       phx-mounted={add_player()}
       phx-click={show_modal("remove-modal-#{name |> String.replace(~r/\s+/, "-")}")}
