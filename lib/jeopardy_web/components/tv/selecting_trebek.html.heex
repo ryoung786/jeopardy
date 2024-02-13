@@ -9,16 +9,16 @@
   >
     <div
       :for={name <- @players}
-      class="relative group cursor-pointer"
+      class="relative group cursor-pointer aspect-[3/5]"
       phx-click={show_modal("elect-modal-#{name |> String.replace(~r/\s+/, "-")}")}
       phx-target={@myself}
     >
-      <button class="absolute rounded-full bg-success transition-all -right-1 -top-1 w-4 h-4 opacity-50 grid place-content-center group-hover:opacity-100 group-hover:scale-110">
-        <span class="text-white text-[.7rem] opacity-0 group-hover:opacity-100">
+      <button class="absolute rounded-full bg-green-600 transition-all -right-1 -top-1 w-4 h-4 opacity-50 grid place-content-center group-hover:opacity-100 group-hover:scale-110">
+        <span class="text-white font-bold text-[.6rem] opacity-0 group-hover:opacity-100">
           &check;️
         </span>
       </button>
-      <.podium name={name} signature={@signatures[name]} />
+      <.podium name={name} signature={@signatures[name]} aspect_ratio={false} />
     </div>
   </div>
 

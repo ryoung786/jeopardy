@@ -26,6 +26,7 @@ defmodule JeopardyWeb.Components do
   attr :score, :integer, default: 0
   attr :lit, :boolean, default: false
   attr :signature, :string, default: nil
+  attr :aspect_ratio, :boolean, default: true
   def podium(assigns)
 
   attr :categories, :list, required: true
