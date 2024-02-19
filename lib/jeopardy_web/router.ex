@@ -37,6 +37,10 @@ defmodule JeopardyWeb.Router do
       pipe_through [:game]
       live "/", GameLive
     end
+
+    scope "/solo" do
+      live "/", SoloLive
+    end
   end
 
   scope "/admin" do

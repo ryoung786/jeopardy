@@ -1,0 +1,27 @@
+<%= case @card do %>
+  <% nil -> %>
+    Loading clues...
+  <% %Clue{} -> %>
+    <div class="flex flex-col gap-2">
+      <%= if @viewing_answer? do %>
+        <%= @card.answer %>
+        <div>
+          <.button phx-click="incorrect">&cross;</.button>
+          <.button phx-click="correct">&check;</.button>
+        </div>
+      <% else %>
+        <%= @card.clue %>
+        <div>
+          <.button phx-click="view_answer">Reveal</.button>
+        </div>
+      <% end %>
+    </div>
+  <% category -> %>
+    <div class="flex flex-col gap-2">
+      <%= category %>
+      <div>
+        <.button phx-click="skip_category">Skip Category</.button>
+        <.button phx-click="accept_category">Ok</.button>
+      </div>
+    </div>
+<% end %>
