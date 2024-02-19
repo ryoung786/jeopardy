@@ -22,10 +22,11 @@ import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 import Signature from "./hooks/signature";
+import Gestures from "./solo/gestures";
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
-  hooks: {Signature: Signature},
+  hooks: {Signature: Signature, Gestures: Gestures},
   params: { _csrf_token: csrfToken },
 });
 

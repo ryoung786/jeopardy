@@ -1,27 +1,14 @@
-<%= case @card do %>
-  <% nil -> %>
-    Loading clues...
-  <% %Clue{} -> %>
-    <div class="flex flex-col gap-2">
+<div id="solo" class="bg-red-100 h-[100dvh] text-slate-100 p-4 overflow-hidden" phx-hook="Gestures">
+  <%= case @card do %>
+    <% nil -> %>
+      Loading clues...
+    <% %Clue{} -> %>
       <%= if @viewing_answer? do %>
-        <%= @card.answer %>
-        <div>
-          <.button phx-click="incorrect">&cross;</.button>
-          <.button phx-click="correct">&check;</.button>
-        </div>
+        <.card type="clue" left="incorrect" right="correct"><%= @card.answer %></.card>
       <% else %>
-        <%= @card.clue %>
-        <div>
-          <.button phx-click="view_answer">Reveal</.button>
-        </div>
+        <.card type="clue" tap="view_answer"><%= @card.clue %></.card>
       <% end %>
-    </div>
-  <% category -> %>
-    <div class="flex flex-col gap-2">
-      <%= category %>
-      <div>
-        <.button phx-click="skip_category">Skip Category</.button>
-        <.button phx-click="accept_category">Ok</.button>
-      </div>
-    </div>
-<% end %>
+    <% category -> %>
+      <.card type="category" tap="accept_category" left="skip_category" right="accept_category"><%= category %></.card>
+  <% end %>
+</div>

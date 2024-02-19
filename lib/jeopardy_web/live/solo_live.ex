@@ -2,6 +2,8 @@ defmodule JeopardyWeb.SoloLive do
   @moduledoc false
   use JeopardyWeb, :live_view
 
+  import JeopardyWeb.SoloComponents
+
   alias Jeopardy.JArchive.RecordedGame.Category.Clue
 
   @refill_limit 8
@@ -11,7 +13,9 @@ defmodule JeopardyWeb.SoloLive do
 
   def mount(_params, _session, socket) do
     if connected?(socket), do: Task.async(&fetch_cards!/0)
-    {:ok, assign(socket, stats: %{}, deck: [], card: nil, viewing_answer?: false)}
+
+    {:ok, assign(socket, stats: %{}, deck: [], card: nil, viewing_answer?: false),
+     layout: {JeopardyWeb.Layouts, :trebek_app}}
   end
 
   # [category_name, clue1, clue2, clue3, category_name, clue1, clue2, ...]
@@ -49,6 +53,11 @@ defmodule JeopardyWeb.SoloLive do
     else
       {:noreply, socket}
     end
+  end
+
+  def handle_event("testing", params, socket) do
+    IO.inspect(params, label: "[xxx] testing")
+    {:noreply, socket}
   end
 
   def handle_event("view_answer", _, socket) when not socket.assigns.viewing_answer? do
