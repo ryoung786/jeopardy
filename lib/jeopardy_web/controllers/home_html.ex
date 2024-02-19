@@ -24,7 +24,7 @@ defmodule JeopardyWeb.HomeHTML do
             <.button class="btn-primary">New Game</.button>
           </.form>
           <p class="text-center">Or</p>
-          <.link class="btn btn-primary" href={~p"/solo"}>Practice</.link>
+          <.link class="btn btn-primary" href={~p"/solo"}>Practice (beta)</.link>
         </div>
       </div>
     </main>
