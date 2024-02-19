@@ -71,8 +71,7 @@ export default {
     let scale = (95 + 5 * Math.abs(propX)) / 100;
 
     // move and rotate top card
-    card.style.transform =
-    `translateX(${posX}px) translateY(${posY}px) rotate(${deg}deg) rotateY(0deg) scale(1)`;
+    card.style.transform = `translateX(${posX}px) translateY(${posY}px) rotate(${deg}deg) rotateY(0deg) scale(1)`;
 
     if (e.isFinal) {
       this.isPanning = false;
@@ -93,23 +92,24 @@ export default {
         // get left border position
         posX = -(this.el.clientWidth + card.clientWidth);
         console.log("Swiped right");
-      // } else if (propY < -0.25 && e.direction == Hammer.DIRECTION_UP) {
-      //   successful = true;
-      //   // get top border position
-      //   posY = -(this.el.clientHeight + card.clientHeight);
+        // } else if (propY < -0.25 && e.direction == Hammer.DIRECTION_UP) {
+        //   successful = true;
+        //   // get top border position
+        //   posY = -(this.el.clientHeight + card.clientHeight);
       }
 
       if (successful) {
         // throw card in the chosen direction
-        card.style.transform =
-        `translateX(${posX}px) translateY(${posY}px) rotate(${deg}deg)`;
+        card.style.transform = `translateX(${posX}px) translateY(${posY}px) rotate(${deg}deg)`;
 
         // wait transition end
         setTimeout(() => {
           // remove swiped card
           this.el.removeChild(card);
-          if (successful == Hammer.DIRECTION_LEFT) this.pushEvent(card.dataset.left)
-          if (successful == Hammer.DIRECTION_RIGHT) this.pushEvent(card.dataset.right)
+          if (successful == Hammer.DIRECTION_LEFT)
+            this.pushEvent(card.dataset.left);
+          if (successful == Hammer.DIRECTION_RIGHT)
+            this.pushEvent(card.dataset.right);
         }, 200);
       } else {
         // reset cards position and size
