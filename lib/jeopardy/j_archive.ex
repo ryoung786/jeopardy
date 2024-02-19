@@ -52,6 +52,7 @@ defmodule Jeopardy.JArchive do
 
     game =
       q
+      |> select([:game_id])
       |> order_by(fragment("RANDOM()"))
       |> limit(1)
       |> Repo.one()

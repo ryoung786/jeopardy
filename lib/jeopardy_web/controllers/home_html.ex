@@ -23,6 +23,8 @@ defmodule JeopardyWeb.HomeHTML do
           <.form for={%{}} class="flex flex-col" action={~p"/new-game"}>
             <.button class="btn-primary">New Game</.button>
           </.form>
+          <p class="text-center">Or</p>
+          <.link class="btn btn-primary" href={~p"/solo"}>Practice (beta)</.link>
         </div>
       </div>
     </main>

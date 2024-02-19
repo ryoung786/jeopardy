@@ -19,6 +19,10 @@ defmodule JeopardyWeb.Router do
     plug :put_root_layout, html: {JeopardyWeb.Layouts, :game_root}
   end
 
+  pipeline :solo_practice do
+    plug :put_root_layout, html: {JeopardyWeb.Layouts, :solo_root}
+  end
+
   scope "/", JeopardyWeb do
     pipe_through :browser
 
@@ -36,6 +40,11 @@ defmodule JeopardyWeb.Router do
     scope "/games/:code" do
       pipe_through [:game]
       live "/", GameLive
+    end
+
+    scope "/solo" do
+      pipe_through [:solo_practice]
+      live "/", SoloLive
     end
   end
 

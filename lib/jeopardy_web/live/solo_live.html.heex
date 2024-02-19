@@ -1,0 +1,20 @@
+<div
+  id="solo"
+  class="bg-red-100 h-[100dvh] text-slate-100 p-4 overflow-hidden"
+  phx-hook="Gestures"
+>
+  <%= case @card do %>
+    <% nil -> %>
+      Loading clues...
+    <% %Clue{} -> %>
+      <%= if @viewing_answer? do %>
+        <.card type="clue" left="incorrect" right="correct"><%= @card.answer %></.card>
+      <% else %>
+        <.card type="clue" tap="view_answer"><%= @card.clue %></.card>
+      <% end %>
+    <% category -> %>
+      <.card type="category" tap="accept_category" left="skip_category" right="accept_category">
+        <%= category %>
+      </.card>
+  <% end %>
+</div>

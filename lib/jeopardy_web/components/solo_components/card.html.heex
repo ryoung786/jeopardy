@@ -1,0 +1,8 @@
+<div
+  class="card bg-blue-600 h-full rounded p-4 grid place-items-center shadow-2xl text-center"
+  data-tap={@tap}
+  data-left={@left}
+  data-right={@right}
+>
+  <%= render_slot(@inner_block) %>
+</div>
