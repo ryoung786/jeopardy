@@ -10,7 +10,7 @@ defmodule JeopardyWeb.Components.Trebek.TrebekAdminPanel do
   end
 
   def handle_event("edit-score", %{"player_name" => name, "score" => score}, socket) do
-    with {score, _} <- Integer.parse(score),
+    with {score, _} <- score |> String.replace(~r/[^\d-]/, "") |> Integer.parse(),
          do: GameServer.admin_action(socket.assigns.code, :set_score, {name, score})
 
     {:noreply, socket}
