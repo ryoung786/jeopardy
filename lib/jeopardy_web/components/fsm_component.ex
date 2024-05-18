@@ -32,6 +32,11 @@ defmodule JeopardyWeb.FSMComponent do
          |> assign(trebek: game.trebek)
          |> assign_init(game)}
       end
+
+      defp handle_tv_player_removed(player_name, socket) do
+        game = socket.assigns.game || %{contestants: []}
+        {:ok, assign(socket, game: %{game | contestants: Map.delete(game.contestants, player_name)})}
+      end
     end
   end
 end

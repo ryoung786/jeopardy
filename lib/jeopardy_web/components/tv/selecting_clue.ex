@@ -2,6 +2,8 @@ defmodule JeopardyWeb.Components.Tv.SelectingClue do
   @moduledoc false
   use JeopardyWeb.FSMComponent
 
+  alias Jeopardy.FSM.Messages.PlayerRemoved
+
   def assign_init(socket, game) do
     assign(socket,
       categories: game.board.categories,
@@ -21,4 +23,7 @@ defmodule JeopardyWeb.Components.Tv.SelectingClue do
     </div>
     """
   end
+
+  def handle_game_server_msg(%PlayerRemoved{name: name}, socket), do: handle_tv_player_removed(name, socket)
+  def handle_game_server_msg(_, socket), do: {:ok, socket}
 end

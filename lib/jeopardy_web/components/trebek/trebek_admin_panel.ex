@@ -5,8 +5,8 @@ defmodule JeopardyWeb.Components.Trebek.TrebekAdminPanel do
   alias Jeopardy.GameServer
 
   def handle_event("remove-contestant", %{"player_name" => name}, socket) do
-    contestants = Enum.reject(socket.assigns.contestants, &match?({^name, _score}, &1))
-    {:noreply, assign(socket, contestants: contestants)}
+    GameServer.admin_action(socket.assigns.code, :remove_contestant, name)
+    {:noreply, socket}
   end
 
   def handle_event("edit-score", %{"player_name" => name, "score" => score}, socket) do
@@ -68,11 +68,12 @@ defmodule JeopardyWeb.Components.Trebek.TrebekAdminPanel do
 
   def confirm_remove(js \\ %JS{}, name) do
     js
-    |> JS.push("remove-contestant", value: %{player_name: name})
+    |> JS.show(to: "#trebek-admin-panel .actions", transition: @fade_in)
     |> JS.hide(
-      to: "#trebek-admin-panel [data-contestant-name='#{name}']",
-      transition: {"transition-all ease-out", "opacity-100 translate-y-0", "opacity-0 -translate-y-4"}
+      to: "#trebek-admin-panel [data-contestant-name='#{name}'] .confirm-remove",
+      transition: {"transition-all ease-out", "translate-x-0", "translate-x-full"}
     )
+    |> JS.push("remove-contestant", value: %{player_name: name})
   end
 
   def show_edit_score(js \\ %JS{}, name) do

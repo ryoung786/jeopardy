@@ -3,6 +3,7 @@ defmodule JeopardyWeb.Components.Tv.ReadingFinalJeopardyClue do
   use JeopardyWeb.FSMComponent
 
   alias Jeopardy.FSM.Messages.FinalJeopardyAnswerSubmitted
+  alias Jeopardy.FSM.Messages.PlayerRemoved
   alias Jeopardy.FSM.Messages.TimerStarted
   alias Jeopardy.Timers
 
@@ -38,4 +39,7 @@ defmodule JeopardyWeb.Components.Tv.ReadingFinalJeopardyClue do
   def handle_game_server_msg(%FinalJeopardyAnswerSubmitted{}, socket) do
     {:ok, socket}
   end
+
+  def handle_game_server_msg(%PlayerRemoved{name: name}, socket), do: handle_tv_player_removed(name, socket)
+  def handle_game_server_msg(_, socket), do: {:ok, socket}
 end

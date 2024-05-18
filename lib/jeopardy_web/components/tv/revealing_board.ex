@@ -2,6 +2,7 @@ defmodule JeopardyWeb.Components.Tv.RevealingBoard do
   @moduledoc false
   use JeopardyWeb.FSMComponent
 
+  alias Jeopardy.FSM.Messages.PlayerRemoved
   alias Jeopardy.FSM.Messages.RevealedCategory
 
   def assign_init(socket, game) do
@@ -24,4 +25,7 @@ defmodule JeopardyWeb.Components.Tv.RevealingBoard do
   def handle_game_server_msg(%RevealedCategory{index: index}, socket) do
     {:ok, assign(socket, index: index)}
   end
+
+  def handle_game_server_msg(%PlayerRemoved{name: name}, socket), do: handle_tv_player_removed(name, socket)
+  def handle_game_server_msg(_, socket), do: {:ok, socket}
 end

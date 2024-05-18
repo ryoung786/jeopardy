@@ -39,6 +39,8 @@ defmodule JeopardyWeb.Components.Tv.AwaitingPlayers do
     {:ok, assign(socket, air_date: game.air_date)}
   end
 
+  def handle_game_server_msg(_, socket), do: {:ok, socket}
+
   def handle_event("remove-player", %{"player" => name}, socket) do
     case Jeopardy.GameServer.action(socket.assigns.code, :remove_player, name) do
       {:ok, game} ->
