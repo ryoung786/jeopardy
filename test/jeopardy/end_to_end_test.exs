@@ -35,13 +35,14 @@ defmodule Jeopardy.EndToEndTest do
       GameServer.action(code, :finished_reading)
 
       assert fsm_state(code) == FSM.AwaitingBuzz
-      GameServer.action(code, :buzz, "a")
+      GameServer.action(code, :buzz, {"a", 0})
+      GameServer.action(code, :buzz_window_expired)
 
       assert fsm_state(code) == FSM.AwaitingAnswer
       {:ok, game} = GameServer.action(code, :answered, :incorrect)
       assert game.contestants["a"].score == -100
       assert fsm_state(code) == FSM.AwaitingBuzz
-      {:error, :already_answered_incorrectly} = GameServer.action(code, :buzz, "a")
+      {:error, :already_answered_incorrectly} = GameServer.action(code, :buzz, {"a", 2})
       GameServer.action(code, :time_expired)
 
       assert fsm_state(code) == FSM.ReadingAnswer
@@ -54,7 +55,8 @@ defmodule Jeopardy.EndToEndTest do
       GameServer.action(code, :finished_reading)
 
       assert fsm_state(code) == FSM.AwaitingBuzz
-      GameServer.action(code, :buzz, "b")
+      GameServer.action(code, :buzz, {"b", 0})
+      GameServer.action(code, :buzz_window_expired)
 
       assert fsm_state(code) == FSM.AwaitingAnswer
       {:ok, game} = GameServer.action(code, :answered, :correct)
@@ -76,13 +78,15 @@ defmodule Jeopardy.EndToEndTest do
       GameServer.action(code, :finished_reading)
 
       assert fsm_state(code) == FSM.AwaitingBuzz
-      GameServer.action(code, :buzz, "a")
+      GameServer.action(code, :buzz, {"a", 0})
+      GameServer.action(code, :buzz_window_expired)
 
       assert fsm_state(code) == FSM.AwaitingAnswer
       GameServer.action(code, :answered, :incorrect)
 
       assert fsm_state(code) == FSM.AwaitingBuzz
-      GameServer.action(code, :buzz, "b")
+      GameServer.action(code, :buzz, {"b", 0})
+      GameServer.action(code, :buzz_window_expired)
 
       assert fsm_state(code) == FSM.AwaitingAnswer
       {:ok, game} = GameServer.action(code, :answered, :incorrect)

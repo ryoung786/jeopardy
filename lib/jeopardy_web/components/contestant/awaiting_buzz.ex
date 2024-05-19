@@ -10,7 +10,7 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingBuzz do
       <.button
         :if={@name not in @game.clue.incorrect_contestants}
         class="btn-primary rounded-none w-full h-full"
-        phx-click={JS.dispatch("jeopardy:buzz")}
+        phx-click={JS.dispatch("jeopardy:buzz", to: "#awaiting-buzz")}
         phx-target={@myself}
       >
         Buzz
