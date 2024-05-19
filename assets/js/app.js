@@ -22,11 +22,12 @@ import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 import Signature from "./hooks/signature";
+import BuzzTimestamp from "./hooks/buzz_timestamp";
 import Gestures from "./solo/gestures";
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
-  hooks: {Signature: Signature, Gestures: Gestures},
+  hooks: {Signature: Signature, Gestures: Gestures, BuzzTimestamp: BuzzTimestamp},
   params: { _csrf_token: csrfToken },
 });
 

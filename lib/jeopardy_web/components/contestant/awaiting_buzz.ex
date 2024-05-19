@@ -6,11 +6,11 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingBuzz do
 
   def render(assigns) do
     ~H"""
-    <div class="h-[100dvh]">
+    <div id="awaiting-buzz" class="live-component h-[100dvh]" phx-hook="BuzzTimestamp">
       <.button
         :if={@name not in @game.clue.incorrect_contestants}
         class="btn-primary rounded-none w-full h-full"
-        phx-click="buzz"
+        phx-click={JS.dispatch("jeopardy:buzz")}
         phx-target={@myself}
       >
         Buzz
@@ -22,8 +22,8 @@ defmodule JeopardyWeb.Components.Contestant.AwaitingBuzz do
     """
   end
 
-  def handle_event("buzz", _params, socket) do
-    case GameServer.action(socket.assigns.code, :buzz, socket.assigns.name) do
+  def handle_event("buzz", %{"timestamp" => timestamp}, socket) do
+    case GameServer.action(socket.assigns.code, :buzz, {socket.assigns.name, timestamp}) do
       {:ok, _game} -> {:noreply, socket}
       {:error, _} -> {:noreply, socket}
     end
